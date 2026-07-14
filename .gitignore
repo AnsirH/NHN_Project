@@ -105,3 +105,34 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# ─────────────────────────────────────────────
+# 개인 작업 환경 (다른 작업자와 공유하지 않음)
+# ─────────────────────────────────────────────
+
+# Claude Code 설정·스킬·에이전트
+/.claude/
+CLAUDE.md
+CLAUDE.local.md
+/.mcp.json
+
+# CodeGraph 인덱스
+/.codegraph/
+
+# 기획 문서 (개인 관리)
+/Docs/
+
+# Unity 테스트 자동화 산출물 (unity-test-runner 스킬)
+/test-results*.xml
+/unity-test.log
+/setup.log
+/test-trigger*.flag
+/test-status.flag
+/setup-trigger.flag
+
+# Claude 자동화 브리지 (에디터 전용 — 개인 환경)
+/[Aa]ssets/Scripts/Editor/SetupBridge.cs*
+/[Aa]ssets/Scripts/Editor/TestRunnerBridge.cs*
+/[Aa]ssets/Scripts/Editor/Tests.EditorBridge.asmdef*
+/[Aa]ssets/Scripts/Editor/SceneSetup*.cs*
+/[Aa]ssets/Scripts/Editor/AutoSetup_*.cs*
