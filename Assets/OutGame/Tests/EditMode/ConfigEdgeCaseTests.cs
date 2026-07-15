@@ -1,0 +1,72 @@
+using System;
+using System.Linq;
+using NUnit.Framework;
+using OutGame.Logic.Maps;
+
+namespace OutGame.Tests.EditMode
+{
+    /// <summary>
+    /// config 경계값 검증 + 가중치 0 처리 회귀 테스트 (코드 리뷰 후속).
+    /// </summary>
+    public class ConfigEdgeCaseTests
+    {
+        [Test]
+        public void Validate_GridWidthBelowTwo_Throws()
+        {
+            var config = new MapGenerationConfig { gridWidth = 1 };
+            Assert.Throws<ArgumentException>(() => config.Validate());
+        }
+
+        [Test]
+        public void Validate_PathCountBelowOne_Throws()
+        {
+            var config = new MapGenerationConfig { pathCount = 0 };
+            Assert.Throws<ArgumentException>(() => config.Validate());
+        }
+
+        [Test]
+        public void Validate_PreBossNodeCountExceedsGridWidth_Throws()
+        {
+            var config = new MapGenerationConfig { preBossNodeCount = new IntRange(1, 6) };
+            Assert.Throws<ArgumentException>(() => config.Validate());
+        }
+
+        [Test]
+        public void Validate_NonPositiveBattleWeight_Throws()
+        {
+            var config = new MapGenerationConfig { battleWeight = 0f };
+            Assert.Throws<ArgumentException>(() => config.Validate());
+        }
+
+        [Test]
+        public void Generate_ZeroRestWeight_NoRestOnProbabilityFloors()
+        {
+            var config = new MapGenerationConfig { restWeight = 0f };
+            int fixedRestFloor = config.floorCount - 2;
+
+            for (int seed = 0; seed < 30; seed++)
+            {
+                MapState map = new MapGenerator(config, seed).Generate();
+                var violations = map.nodes
+                    .Where(n => n.roomType == RoomType.Rest && n.point.y != fixedRestFloor)
+                    .ToList();
+
+                Assert.IsEmpty(violations,
+                    $"seed {seed}: restWeight=0인데 확률 배정 층에 휴식 방 생성됨");
+            }
+        }
+
+        [Test]
+        public void Generate_ZeroEventWeight_NoEventRooms()
+        {
+            var config = new MapGenerationConfig { eventWeight = 0f };
+
+            for (int seed = 0; seed < 30; seed++)
+            {
+                MapState map = new MapGenerator(config, seed).Generate();
+                Assert.IsFalse(map.nodes.Any(n => n.roomType == RoomType.Event),
+                    $"seed {seed}: eventWeight=0인데 이벤트 방 생성됨");
+            }
+        }
+    }
+}

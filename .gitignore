@@ -131,8 +131,6 @@ CLAUDE.local.md
 /setup-trigger.flag
 
 # Claude 자동화 브리지 (에디터 전용 — 개인 환경)
-/[Aa]ssets/Scripts/Editor/SetupBridge.cs*
-/[Aa]ssets/Scripts/Editor/TestRunnerBridge.cs*
-/[Aa]ssets/Scripts/Editor/Tests.EditorBridge.asmdef*
-/[Aa]ssets/Scripts/Editor/SceneSetup*.cs*
-/[Aa]ssets/Scripts/Editor/AutoSetup_*.cs*
+# Assets/OutGame/Editor/ 폴더 전체를 개인 브리지 전용으로 사용
+/[Aa]ssets/OutGame/Editor/
+/[Aa]ssets/OutGame/Editor.meta
