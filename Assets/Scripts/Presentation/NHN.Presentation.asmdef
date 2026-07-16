@@ -5,7 +5,9 @@
         "NHN.Simulation",
         "NHN.Data",
         "NHN.Infra",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "UnityEngine.UI",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

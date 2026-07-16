@@ -30,6 +30,8 @@ namespace NHN.Data
 
         public int MaxUnits => maxUnits;
 
+        public int MaxSkillZones => maxSkillZones;
+
         public BattleConfig ToConfig()
         {
             return new BattleConfig(

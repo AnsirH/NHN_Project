@@ -3,6 +3,8 @@ using NHN.Data;
 using NHN.Infra;
 using NHN.Simulation.Battle;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 namespace NHN.Presentation.Battle
 {
@@ -20,6 +22,27 @@ namespace NHN.Presentation.Battle
 
         /// <summary>은신 유닛 표시 알파 — 뷰 표현 상수.</summary>
         private const float StealthAlpha = 0.35f;
+
+        // 스킬 조준/장판/플래시 디스크 표현 상수 — 전부 뷰 전용.
+        private const float DiscThickness = 0.02f;
+        private const float AimDiscY = 0.05f;
+        private const float ZoneDiscY = 0.03f;
+        private const float AimAlpha = 0.3f;
+        private const float ZoneAlpha = 0.25f;
+        /// <summary>장판이 사라지기 전 알파 페이드 구간(초).</summary>
+        private const float ZoneFadeSeconds = 1f;
+        private const int MaxFlashFx = 8;
+        private const float FlashDuration = 0.4f;
+        private const float FlashAlpha = 0.55f;
+
+        // 상태이상 유닛 틴트 — 가독성: 기절=노랑, 중독=초록, 화상=주황 (마스크 비트 순).
+        private const float StatusTintStrength = 0.55f;
+        private const byte StunMask = 1;
+        private const byte PoisonMask = 2;
+        private const byte BurnMask = 4;
+        private static readonly Color StunTint = new Color(1f, 0.92f, 0.3f);
+        private static readonly Color PoisonTint = new Color(0.2f, 0.9f, 0.2f);
+        private static readonly Color BurnTint = new Color(1f, 0.45f, 0.1f);
 
         [Serializable]
         private struct SquadSetup
@@ -39,6 +62,11 @@ namespace NHN.Presentation.Battle
         [SerializeField] private Transform projectileContainer;
         [SerializeField] private BattleHud hud;
 
+        [Header("플레이어 스킬 (기획 §8 — 스킬 버튼 탭 → 전장 탭으로 위치 지정)")]
+        [SerializeField] private SkillData[] playerSkills;
+        [Tooltip("조준 레이캐스트용 카메라 — 미지정 시 Camera.main")]
+        [SerializeField] private Camera worldCamera;
+
         private BattleSimulation _sim;
         private GameObjectPool _unitPool;
         private GameObjectPool _projectilePool;
@@ -48,8 +76,24 @@ namespace NHN.Presentation.Battle
         private Renderer[] _unitRenderers;
         private Color[] _unitColors;
         private bool[] _unitStealthShown;
+        /// <summary>표시 중인 상태이상 마스크 캐시 — 변화가 있는 프레임에만 색을 갱신한다.</summary>
+        private byte[] _unitStatusShown;
         private Material _baseMaterial;
         private Material _stealthMaterial;
+
+        // 플레이어 스킬 뷰 상태
+        private SkillDefinition[] _skillDefinitions;
+        private Color[] _skillColors;
+        private int _armedSkillSlot = -1;
+        private Transform _aimIndicator;
+        private Renderer _aimRenderer;
+        private Transform[] _zoneDiscs;
+        private Renderer[] _zoneRenderers;
+        private int _zoneShownCount;
+        private Transform[] _flashTransforms;
+        private Renderer[] _flashRenderers;
+        private float[] _flashRemainings;
+        private int _nextFlashIndex;
         private GameObject[] _projObjects;
         private Transform[] _projTransforms;
         private int _projVisibleCount;
@@ -80,13 +124,32 @@ namespace NHN.Presentation.Battle
             _unitRenderers = new Renderer[maxUnits];
             _unitColors = new Color[maxUnits];
             _unitStealthShown = new bool[maxUnits];
+            _unitStatusShown = new byte[maxUnits];
             _projObjects = new GameObject[config.MaxUnits];
             _projTransforms = new Transform[config.MaxUnits];
 
             _baseMaterial = unitPrefab.GetComponentInChildren<Renderer>().sharedMaterial;
             _stealthMaterial = CreateStealthMaterial(_baseMaterial);
 
+            int skillCount = playerSkills == null ? 0 : playerSkills.Length;
+            _skillDefinitions = new SkillDefinition[skillCount];
+            _skillColors = new Color[skillCount];
+            for (int s = 0; s < skillCount; s++)
+            {
+                _skillDefinitions[s] = playerSkills[s].ToDefinition();
+                _skillColors[s] = playerSkills[s].SkillColor;
+            }
+            if (worldCamera == null)
+            {
+                worldCamera = Camera.main; // 초기화 시점 1회 조회
+            }
+            CreateSkillFxObjects();
+
             hud.Initialize(this);
+            for (int s = 0; s < skillCount; s++)
+            {
+                hud.SetSkillColor(s, _skillColors[s]);
+            }
             StartBattle();
         }
 
@@ -95,9 +158,11 @@ namespace NHN.Presentation.Battle
         {
             ReleaseAllViews();
 
-            _sim = new BattleSimulation(config.ToConfig(), BuildArmy(armyA), BuildArmy(armyB), config.Seed);
+            _sim = new BattleSimulation(config.ToConfig(), BuildArmy(armyA), BuildArmy(armyB), config.Seed, _skillDefinitions);
             _accumulator = 0f;
             _resultShown = false;
+            _armedSkillSlot = -1;
+            ResetSkillFxViews();
             hud.Clear();
 
             // 유닛 인덱스는 (A군 분대 순서 → B군 분대 순서) — ArmyDefinition의 계약과 동일하게 순회한다.
@@ -130,6 +195,10 @@ namespace NHN.Presentation.Battle
             float alpha = _accumulator / tickDeltaTime;
             SyncUnitViews(alpha);
             SyncProjectileViews(alpha);
+            HandleSkillInput();
+            SyncZoneViews();
+            UpdateFlashFx(Time.deltaTime);
+            hud.SyncSkills(_sim, _armedSkillSlot);
 
             if (_sim.Finished && !_resultShown)
             {
@@ -161,23 +230,58 @@ namespace NHN.Presentation.Battle
                 }
 
                 bool stealthed = _sim.IsStealthed(i);
-                if (stealthed != _unitStealthShown[i])
+                byte statusMask = ComputeStatusMask(i);
+                if (stealthed != _unitStealthShown[i] || statusMask != _unitStatusShown[i])
                 {
-                    ApplyStealthVisual(i, stealthed);
+                    ApplyUnitVisual(i, stealthed, statusMask);
                 }
 
                 _unitTransforms[i].localPosition = SimViewMapper.ToWorld(_sim.GetInterpolatedPosition(i, alpha));
             }
         }
 
-        /// <summary>은신 표시 전환: 반투명 재질 스왑 + 롤 색 알파 조정. 상태 변화 시에만 호출된다.</summary>
-        private void ApplyStealthVisual(int unitIndex, bool stealthed)
+        private byte ComputeStatusMask(int unitIndex)
+        {
+            byte mask = 0;
+            if (_sim.HasStatus(unitIndex, StatusEffectType.Stun))
+            {
+                mask |= StunMask;
+            }
+            if (_sim.HasStatus(unitIndex, StatusEffectType.Poison))
+            {
+                mask |= PoisonMask;
+            }
+            if (_sim.HasStatus(unitIndex, StatusEffectType.Burn))
+            {
+                mask |= BurnMask;
+            }
+            return mask;
+        }
+
+        /// <summary>
+        /// 유닛 표시 갱신: 은신 = 반투명 재질 스왑 + 알파, 상태이상 = 롤 색에 틴트 혼합.
+        /// 상태 변화가 있는 프레임에만 호출된다.
+        /// </summary>
+        private void ApplyUnitVisual(int unitIndex, bool stealthed, byte statusMask)
         {
             _unitStealthShown[unitIndex] = stealthed;
+            _unitStatusShown[unitIndex] = statusMask;
             Renderer renderer = _unitRenderers[unitIndex];
             renderer.sharedMaterial = stealthed ? _stealthMaterial : _baseMaterial;
 
             Color color = _unitColors[unitIndex];
+            if ((statusMask & StunMask) != 0)
+            {
+                color = Color.Lerp(color, StunTint, StatusTintStrength);
+            }
+            if ((statusMask & PoisonMask) != 0)
+            {
+                color = Color.Lerp(color, PoisonTint, StatusTintStrength);
+            }
+            if ((statusMask & BurnMask) != 0)
+            {
+                color = Color.Lerp(color, BurnTint, StatusTintStrength);
+            }
             color.a = stealthed ? StealthAlpha : 1f;
             _propertyBlock.SetColor(BaseColorId, color);
             renderer.SetPropertyBlock(_propertyBlock);
@@ -251,8 +355,8 @@ namespace NHN.Presentation.Battle
                     // 초기화 시점 1회 조회 — Update에서는 캐시만 사용.
                     _unitRenderers[unitIndex] = unit.GetComponentInChildren<Renderer>();
                     _unitColors[unitIndex] = color;
-                    // 재질·색을 함께 리셋 — 풀 재사용 시 이전 은신 재질이 남지 않도록 항상 호출.
-                    ApplyStealthVisual(unitIndex, _sim.IsStealthed(unitIndex));
+                    // 재질·색을 함께 리셋 — 풀 재사용 시 이전 은신 재질/틴트가 남지 않도록 항상 호출.
+                    ApplyUnitVisual(unitIndex, _sim.IsStealthed(unitIndex), ComputeStatusMask(unitIndex));
 
                     unit.transform.localScale = Vector3.one * scale;
                     unit.transform.localPosition = SimViewMapper.ToWorld(_sim.GetPosition(unitIndex));
@@ -285,6 +389,211 @@ namespace NHN.Presentation.Battle
                 _projTransforms[p] = null;
             }
             _projVisibleCount = 0;
+        }
+
+        /// <summary>HUD 스킬 버튼에서 호출: 슬롯 무장/해제 토글. 시전 위치는 이후 전장 탭이 정한다.</summary>
+        public void ToggleArmSkill(int slot)
+        {
+            if (_sim == null || slot < 0 || slot >= _skillDefinitions.Length)
+            {
+                return;
+            }
+            if (_armedSkillSlot == slot)
+            {
+                _armedSkillSlot = -1;
+                return;
+            }
+            if (_sim.GetSkillCooldownRemaining(slot) > 0f)
+            {
+                return;
+            }
+            _armedSkillSlot = slot;
+        }
+
+        /// <summary>
+        /// 무장 상태의 조준 표시(포인터 아래 스킬 반경 링)와 전장 탭 시전.
+        /// 입력은 여기(Presentation)서 받아 TryCastSkill로 틱 정렬 명령만 주입한다 — 시뮬 결정론 유지.
+        /// </summary>
+        private void HandleSkillInput()
+        {
+            if (_armedSkillSlot < 0 || _sim.Finished)
+            {
+                if (_sim.Finished)
+                {
+                    _armedSkillSlot = -1;
+                }
+                if (_aimIndicator.gameObject.activeSelf)
+                {
+                    _aimIndicator.gameObject.SetActive(false);
+                }
+                return;
+            }
+
+            Pointer pointer = Pointer.current;
+            if (pointer == null)
+            {
+                return;
+            }
+            Vector2 screenPosition = pointer.position.ReadValue();
+            if (!TryGetGroundPoint(screenPosition, out Vector3 groundPoint))
+            {
+                _aimIndicator.gameObject.SetActive(false);
+                return;
+            }
+
+            SkillDefinition skill = _skillDefinitions[_armedSkillSlot];
+            _aimIndicator.gameObject.SetActive(true);
+            _aimIndicator.position = groundPoint + Vector3.up * AimDiscY;
+            _aimIndicator.localScale = new Vector3(skill.Radius * 2f, DiscThickness, skill.Radius * 2f);
+            Color aimColor = _skillColors[_armedSkillSlot];
+            aimColor.a = AimAlpha;
+            SetDiscColor(_aimRenderer, aimColor);
+
+            if (pointer.press.wasPressedThisFrame && !IsPointerOverUi()
+                && _sim.TryCastSkill(_armedSkillSlot, SimViewMapper.ToSim(groundPoint)))
+            {
+                SpawnCastFlash(_armedSkillSlot, groundPoint, skill.Radius);
+                _armedSkillSlot = -1;
+                _aimIndicator.gameObject.SetActive(false);
+            }
+        }
+
+        /// <summary>화면 좌표 → 바닥 평면(y=0) 교점. 카메라가 지평선 위를 가리키면 실패.</summary>
+        private bool TryGetGroundPoint(Vector2 screenPosition, out Vector3 groundPoint)
+        {
+            Ray ray = worldCamera.ScreenPointToRay(screenPosition);
+            if (ray.direction.y > -1e-4f)
+            {
+                groundPoint = default;
+                return false;
+            }
+            float t = -ray.origin.y / ray.direction.y;
+            groundPoint = ray.origin + ray.direction * t;
+            return true;
+        }
+
+        private static bool IsPointerOverUi()
+        {
+            return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+        }
+
+        /// <summary>조준/장판/플래시 디스크를 런타임 생성 — 프리팹·씬 오브젝트 추가 없이 뷰 전용.</summary>
+        private void CreateSkillFxObjects()
+        {
+            _aimIndicator = CreateDisc("SkillAimIndicator", out _aimRenderer);
+
+            _zoneDiscs = new Transform[config.MaxSkillZones];
+            _zoneRenderers = new Renderer[config.MaxSkillZones];
+            for (int z = 0; z < _zoneDiscs.Length; z++)
+            {
+                _zoneDiscs[z] = CreateDisc("SkillZoneDisc", out _zoneRenderers[z]);
+            }
+
+            _flashTransforms = new Transform[MaxFlashFx];
+            _flashRenderers = new Renderer[MaxFlashFx];
+            _flashRemainings = new float[MaxFlashFx];
+            for (int f = 0; f < MaxFlashFx; f++)
+            {
+                _flashTransforms[f] = CreateDisc("SkillCastFlash", out _flashRenderers[f]);
+            }
+        }
+
+        private void ResetSkillFxViews()
+        {
+            _aimIndicator.gameObject.SetActive(false);
+            for (int z = 0; z < _zoneDiscs.Length; z++)
+            {
+                _zoneDiscs[z].gameObject.SetActive(false);
+            }
+            _zoneShownCount = 0;
+            for (int f = 0; f < MaxFlashFx; f++)
+            {
+                _flashRemainings[f] = 0f;
+                _flashTransforms[f].gameObject.SetActive(false);
+            }
+        }
+
+        /// <summary>시뮬 장판 상태를 디스크로 동기화. 마지막 1초 구간은 알파 페이드.</summary>
+        private void SyncZoneViews()
+        {
+            int activeCount = _sim.ZoneCount;
+            for (int z = 0; z < activeCount; z++)
+            {
+                BattleSimulation.SkillZoneState state = _sim.GetZoneState(z);
+                Transform disc = _zoneDiscs[z];
+                if (!disc.gameObject.activeSelf)
+                {
+                    disc.gameObject.SetActive(true);
+                }
+                disc.position = SimViewMapper.ToWorld(state.Position) + Vector3.up * ZoneDiscY;
+                disc.localScale = new Vector3(state.Radius * 2f, DiscThickness, state.Radius * 2f);
+
+                Color color = _skillColors[state.SkillSlot];
+                color.a = ZoneAlpha * Mathf.Clamp01(state.RemainingSeconds / ZoneFadeSeconds);
+                SetDiscColor(_zoneRenderers[z], color);
+            }
+            for (int z = activeCount; z < _zoneShownCount; z++)
+            {
+                _zoneDiscs[z].gameObject.SetActive(false);
+            }
+            _zoneShownCount = activeCount;
+        }
+
+        /// <summary>시전 피드백 플래시 — 짧게 밝아졌다 사라지는 디스크 (뷰 전용, 순환 사용).</summary>
+        private void SpawnCastFlash(int slot, Vector3 groundPoint, float radius)
+        {
+            int f = _nextFlashIndex;
+            _nextFlashIndex = (_nextFlashIndex + 1) % MaxFlashFx;
+            _flashRemainings[f] = FlashDuration;
+            Transform flash = _flashTransforms[f];
+            flash.gameObject.SetActive(true);
+            flash.position = groundPoint + Vector3.up * (ZoneDiscY + 0.02f);
+            flash.localScale = new Vector3(radius * 2f, DiscThickness, radius * 2f);
+            Color color = _skillColors[slot];
+            color.a = FlashAlpha;
+            SetDiscColor(_flashRenderers[f], color);
+        }
+
+        private void UpdateFlashFx(float deltaTime)
+        {
+            for (int f = 0; f < MaxFlashFx; f++)
+            {
+                if (_flashRemainings[f] <= 0f)
+                {
+                    continue;
+                }
+                _flashRemainings[f] -= deltaTime;
+                if (_flashRemainings[f] <= 0f)
+                {
+                    _flashTransforms[f].gameObject.SetActive(false);
+                    continue;
+                }
+                // 색은 시전 시점에 설정됨 — 여기서는 알파만 감쇠
+                _flashRenderers[f].GetPropertyBlock(_propertyBlock);
+                Color color = _propertyBlock.GetColor(BaseColorId);
+                color.a = FlashAlpha * (_flashRemainings[f] / FlashDuration);
+                _propertyBlock.SetColor(BaseColorId, color);
+                _flashRenderers[f].SetPropertyBlock(_propertyBlock);
+            }
+        }
+
+        private Transform CreateDisc(string discName, out Renderer renderer)
+        {
+            var disc = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            disc.name = discName;
+            Destroy(disc.GetComponent<Collider>());
+            renderer = disc.GetComponent<Renderer>();
+            renderer.sharedMaterial = _stealthMaterial; // 공유 투명 재질 + 프로퍼티 블록 색
+            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            disc.transform.SetParent(transform, false);
+            disc.SetActive(false);
+            return disc.transform;
+        }
+
+        private void SetDiscColor(Renderer renderer, Color color)
+        {
+            _propertyBlock.SetColor(BaseColorId, color);
+            renderer.SetPropertyBlock(_propertyBlock);
         }
 
         private void OnDestroy()
