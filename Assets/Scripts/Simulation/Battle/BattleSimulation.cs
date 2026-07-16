@@ -53,6 +53,10 @@ namespace NHN.Simulation.Battle
                 {
                     case TargetPriority.RangedRole:
                         return _sim._isRangedUnit[unitIndex];
+                    case TargetPriority.Poisoned:
+                        return _sim._statusEffects.IsActive(unitIndex, StatusEffectType.Poison);
+                    case TargetPriority.Marked:
+                        return _sim._statusEffects.IsActive(unitIndex, StatusEffectType.Mark);
                     default:
                         return true;
                 }
@@ -81,6 +85,24 @@ namespace NHN.Simulation.Battle
         private readonly float[] _critPending;
         private readonly int[] _queryBuffer;
 
+        /// <summary>상태이상 공용 시스템 — 기절/중독/화상/빙결/표식 전부 이 하나가 처리 (불변조건 5).</summary>
+        private readonly StatusEffectSystem _statusEffects;
+
+        // 플레이어 스킬 (A군 시전 전제) — 쿨다운을 시뮬이 소유해 헤드리스 밸런싱에서도 동일 규칙.
+        // 시전은 큐에 쌓였다가 다음 틱 시작에 실행된다 (틱 정렬 명령: 결정론·리플레이 전제).
+        private readonly SkillDefinition[] _playerSkills;
+        private readonly float[] _skillCooldowns;
+        private readonly bool[] _skillCastQueued;
+        private readonly Vector2[] _skillCastPositions;
+
+        // 스킬 장판 (고정 배열, swap-remove)
+        private readonly SkillDefinition[] _zoneSkills;
+        private readonly int[] _zoneSkillSlots;
+        private readonly Vector2[] _zonePositions;
+        private readonly float[] _zoneRemainings;
+        private readonly byte[] _zoneTargetTeams;
+        private int _zoneCount;
+
         // 투사체 (고정 배열, swap-remove)
         private readonly Vector2[] _projLaunchPos;
         private readonly Vector2[] _projImpactPos;
@@ -100,7 +122,9 @@ namespace NHN.Simulation.Battle
         private bool _finished;
         private BattleResult _result;
 
-        public BattleSimulation(in BattleConfig config, ArmyDefinition armyA, ArmyDefinition armyB, int seed)
+        public BattleSimulation(
+            in BattleConfig config, ArmyDefinition armyA, ArmyDefinition armyB, int seed,
+            SkillDefinition[] playerSkills = null)
         {
             _config = config;
             _random = new Random(seed);
@@ -133,6 +157,19 @@ namespace NHN.Simulation.Battle
             _projDamage = new float[config.MaxProjectiles];
             _projTeam = new byte[config.MaxProjectiles];
             _projArcHeight = new float[config.MaxProjectiles];
+
+            _statusEffects = new StatusEffectSystem(totalUnits);
+
+            _playerSkills = playerSkills ?? Array.Empty<SkillDefinition>();
+            _skillCooldowns = new float[_playerSkills.Length];
+            _skillCastQueued = new bool[_playerSkills.Length];
+            _skillCastPositions = new Vector2[_playerSkills.Length];
+
+            _zoneSkills = new SkillDefinition[config.MaxSkillZones];
+            _zoneSkillSlots = new int[config.MaxSkillZones];
+            _zonePositions = new Vector2[config.MaxSkillZones];
+            _zoneRemainings = new float[config.MaxSkillZones];
+            _zoneTargetTeams = new byte[config.MaxSkillZones];
 
             _roles = BuildRoleTable(armyA, armyB);
 
@@ -176,6 +213,62 @@ namespace NHN.Simulation.Battle
         public bool IsStealthed(int index) => _stealthRemaining[index] > 0f;
 
         public float GetHp(int index) => _hps[index];
+
+        public bool HasStatus(int index, StatusEffectType type) => _statusEffects.IsActive(index, type);
+
+        /// <summary>현재 타겟 유닛 인덱스 (없으면 -1) — 테스트·디버그용.</summary>
+        public int GetTargetIndex(int index) => _targets[index];
+
+        public int SkillCount => _playerSkills.Length;
+
+        public SkillDefinition GetSkill(int slot) => _playerSkills[slot];
+
+        public float GetSkillCooldownRemaining(int slot) => _skillCooldowns[slot];
+
+        /// <summary>
+        /// 스킬 시전 예약 — 다음 틱 시작에 실행된다 (틱 정렬 명령: 시뮬 결정론·리플레이의 전제).
+        /// 쿨다운 중이거나 같은 슬롯이 이미 예약돼 있으면 거부.
+        /// </summary>
+        public bool TryCastSkill(int slot, Vector2 position)
+        {
+            if (_finished || slot < 0 || slot >= _playerSkills.Length)
+            {
+                return false;
+            }
+            if (_skillCooldowns[slot] > 0f || _skillCastQueued[slot])
+            {
+                return false;
+            }
+            _skillCastQueued[slot] = true;
+            _skillCastPositions[slot] = ClampToArena(position);
+            return true;
+        }
+
+        public int ZoneCount => _zoneCount;
+
+        /// <summary>뷰 장판 표현용 스냅샷.</summary>
+        public readonly struct SkillZoneState
+        {
+            public readonly Vector2 Position;
+            public readonly float Radius;
+            public readonly float RemainingSeconds;
+            /// <summary>이 장판을 만든 스킬 슬롯 — 뷰가 스킬 색을 조회하는 키.</summary>
+            public readonly int SkillSlot;
+
+            public SkillZoneState(Vector2 position, float radius, float remainingSeconds, int skillSlot)
+            {
+                Position = position;
+                Radius = radius;
+                RemainingSeconds = remainingSeconds;
+                SkillSlot = skillSlot;
+            }
+        }
+
+        public SkillZoneState GetZoneState(int index)
+        {
+            return new SkillZoneState(
+                _zonePositions[index], _zoneSkills[index].Radius, _zoneRemainings[index], _zoneSkillSlots[index]);
+        }
 
         public byte GetTeam(int index) => _teams[index];
 
@@ -244,6 +337,33 @@ namespace NHN.Simulation.Battle
                 }
             }
 
+            // 0.5) 플레이어 스킬: 예약된 시전 실행 → 쿨다운 감소 → 장판 유지(상태 재부여)
+            for (int s = 0; s < _playerSkills.Length; s++)
+            {
+                if (_skillCastQueued[s])
+                {
+                    _skillCastQueued[s] = false;
+                    ExecuteSkillCast(s);
+                }
+                if (_skillCooldowns[s] > 0f)
+                {
+                    _skillCooldowns[s] -= dt;
+                }
+            }
+            for (int z = 0; z < _zoneCount;)
+            {
+                ApplySkillArea(_zoneSkills[z], _zonePositions[z], _zoneTargetTeams[z], damage: 0f);
+                _zoneRemainings[z] -= dt;
+                if (_zoneRemainings[z] <= 0f)
+                {
+                    RemoveZoneAt(z);
+                }
+                else
+                {
+                    z++;
+                }
+            }
+
             // 1) 재탐색: 타겟 무효(사망/은신)는 즉시 재선택, 주기 도래 시엔 교전 유지 규칙 적용
             for (int i = 0; i < _unitCount; i++)
             {
@@ -276,6 +396,11 @@ namespace NHN.Simulation.Battle
                 if (_attackCooldowns[i] > 0f)
                 {
                     _attackCooldowns[i] -= dt;
+                }
+
+                if (_statusEffects.IsActive(i, StatusEffectType.Stun))
+                {
+                    continue; // 기절: 행동 정지 — 이동·공격 불가, 쿨다운 회복만 진행
                 }
 
                 int target = _targets[i];
@@ -324,6 +449,9 @@ namespace NHN.Simulation.Battle
                     p++;
                 }
             }
+
+            // 3.5) 상태이상 틱: 지속시간 감쇠 + 도트 데미지 누적 — 데미지 적용(4번)보다 먼저
+            _statusEffects.Tick(dt, _unitCount, _alives, _pendingDamage);
 
             // 4) 누적 데미지 적용 + 사망 처리 (동시 공격의 순서 이점 제거)
             for (int i = 0; i < _unitCount; i++)
@@ -404,6 +532,15 @@ namespace NHN.Simulation.Battle
             float damage = role.AttackDamage * _critPending[attacker];
             _critPending[attacker] = 1f;
 
+            // 콤보 처형 기믹: 공격 대상이 상태이상 보유 시 데미지 배율 — 롤 무관 데이터 평가 (사냥꾼 등)
+            GimmickDefinition gimmick = role.Gimmick;
+            if (gimmick.Trigger == GimmickTrigger.TargetHasStatus
+                && gimmick.Effect == GimmickEffect.DamageMultiplier
+                && _statusEffects.HasAnyActive(target))
+            {
+                damage *= gimmick.EffectParamA;
+            }
+
             if (!role.IsRanged)
             {
                 _pendingDamage[target] += damage;
@@ -440,6 +577,66 @@ namespace NHN.Simulation.Battle
             {
                 _critPending[unitIndex] = gimmick.EffectParamA;
             }
+        }
+
+        /// <summary>예약된 스킬 시전 실행: 즉발 데미지·상태이상 1회 적용 + 장판이면 장판 등록.</summary>
+        private void ExecuteSkillCast(int slot)
+        {
+            SkillDefinition skill = _playerSkills[slot];
+            _skillCooldowns[slot] = skill.Cooldown;
+            Vector2 position = _skillCastPositions[slot];
+            const byte targetTeam = TeamB; // 플레이어 = A군 전제 (기획 §8) — 스킬은 적군에 작용
+
+            ApplySkillArea(skill, position, targetTeam, skill.Damage);
+
+            if (skill.ZoneDuration > 0f && _zoneCount < _config.MaxSkillZones)
+            {
+                int z = _zoneCount++;
+                _zoneSkills[z] = skill;
+                _zoneSkillSlots[z] = slot;
+                _zonePositions[z] = position;
+                _zoneRemainings[z] = skill.ZoneDuration;
+                _zoneTargetTeams[z] = targetTeam;
+            }
+        }
+
+        /// <summary>스킬 범위 효과 공용 경로 (즉발 시전·장판 틱 공용): 범위 내 대상 팀에 데미지/상태이상 부여.</summary>
+        private void ApplySkillArea(SkillDefinition skill, Vector2 position, byte targetTeam, float damage)
+        {
+            float queryRadius = skill.Radius + _maxUnitRadius;
+            int hitCount = _grid.QueryCircle(position, queryRadius, _queryBuffer);
+            for (int k = 0; k < hitCount; k++)
+            {
+                int u = _queryBuffer[k];
+                if (!_alives[u] || _teams[u] != targetTeam)
+                {
+                    continue;
+                }
+                float hitDistance = skill.Radius + _roles[_roleIndices[u]].UnitRadius;
+                if (Vector2.DistanceSquared(position, _positions[u]) > hitDistance * hitDistance)
+                {
+                    continue;
+                }
+                if (damage > 0f)
+                {
+                    _pendingDamage[u] += damage;
+                }
+                if (skill.StatusDuration > 0f)
+                {
+                    _statusEffects.Apply(u, skill.AppliesStatus, skill.StatusDuration, skill.StatusMagnitude);
+                }
+            }
+        }
+
+        private void RemoveZoneAt(int z)
+        {
+            int last = --_zoneCount;
+            _zoneSkills[z] = _zoneSkills[last];
+            _zoneSkillSlots[z] = _zoneSkillSlots[last];
+            _zonePositions[z] = _zonePositions[last];
+            _zoneRemainings[z] = _zoneRemainings[last];
+            _zoneTargetTeams[z] = _zoneTargetTeams[last];
+            _zoneSkills[last] = null;
         }
 
         private void ApplyProjectileImpact(int p)
@@ -527,6 +724,10 @@ namespace NHN.Simulation.Battle
             {
                 case TargetPriority.RangedRole:
                     return _isRangedUnit[targetIndex];
+                case TargetPriority.Poisoned:
+                    return _statusEffects.IsActive(targetIndex, StatusEffectType.Poison);
+                case TargetPriority.Marked:
+                    return _statusEffects.IsActive(targetIndex, StatusEffectType.Mark);
                 default:
                     return true;
             }

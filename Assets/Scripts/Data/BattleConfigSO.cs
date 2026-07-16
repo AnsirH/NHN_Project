@@ -11,6 +11,7 @@ namespace NHN.Data
         [SerializeField] private int ticksPerSecond = 30;
         [SerializeField] private int maxUnits = 600;
         [SerializeField] private int maxProjectiles = 1024;
+        [SerializeField] private int maxSkillZones = 16;
         [SerializeField] private int seed = 20260715;
 
         [Header("아레나 (시뮬 평면, 월드 x/z)")]
@@ -34,7 +35,7 @@ namespace NHN.Data
             return new BattleConfig(
                 ticksPerSecond, arenaHalfWidth, arenaHalfHeight,
                 retargetInterval, projectileImpactRadius, maxBattleSeconds,
-                maxUnits, maxProjectiles, frontLineOffsetX);
+                maxUnits, maxProjectiles, maxSkillZones, frontLineOffsetX);
         }
     }
 }

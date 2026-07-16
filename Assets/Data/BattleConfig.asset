@@ -15,6 +15,7 @@ MonoBehaviour:
   ticksPerSecond: 30
   maxUnits: 600
   maxProjectiles: 1024
+  maxSkillZones: 16
   seed: 20260715
   arenaHalfWidth: 30
   arenaHalfHeight: 20
