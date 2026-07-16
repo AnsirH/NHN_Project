@@ -297,7 +297,12 @@ namespace NHN.Simulation.Battle
                 {
                     // ApproachTarget과 StealthDash 모두 타겟 접근 — StealthDash의 차이(은신)는 상태로 처리.
                     // 이동 궤적이 다른 새 패턴은 여기서 케이스 추가.
-                    _positions[i] = ClampToArena(_positions[i] + toTarget * (role.MoveSpeed * dt / centerDistance));
+                    float speed = role.MoveSpeed;
+                    if (_stealthRemaining[i] > 0f && role.MoveParamB > 0f)
+                    {
+                        speed *= role.MoveParamB; // StealthDash: 은신 중 이속 배율 (돌진 가속)
+                    }
+                    _positions[i] = ClampToArena(_positions[i] + toTarget * (speed * dt / centerDistance));
                 }
             }
 
@@ -331,21 +336,25 @@ namespace NHN.Simulation.Battle
                 }
             }
 
-            // 5) 겹침 분리 (이동 후 위치 기준 재구축, 생존·비은신 유닛만 — 은신 유닛은 전열을 통과해 돌진)
+            // 5) 겹침 분리 (이동 후 위치 기준 재구축, 생존 유닛만).
+            //    쌍 중 한쪽만 은신이면 스킵 — 은신 유닛이 전열을 '통과'해 돌진하기 위한 규칙.
+            //    은신 유닛끼리는 분리를 유지한다: 꺼두면 같은 타겟으로 돌진하는 은신 블롭이 한 점에
+            //    완전히 겹쳐 스플래시 한 발을 전원이 공유하는 동시 몰살이 난다 (헤드리스 실측으로 확인).
             _grid.Rebuild(_positions, _unitCount);
             for (int i = 0; i < _unitCount; i++)
             {
-                if (!_alives[i] || _stealthRemaining[i] > 0f)
+                if (!_alives[i])
                 {
                     continue;
                 }
+                bool stealthedI = _stealthRemaining[i] > 0f;
                 RoleDefinition role = _roles[_roleIndices[i]];
                 float queryRadius = role.UnitRadius + _maxUnitRadius;
                 int neighborCount = _grid.QueryCircle(_positions[i], queryRadius, _queryBuffer);
                 for (int k = 0; k < neighborCount; k++)
                 {
                     int j = _queryBuffer[k];
-                    if (j <= i || !_alives[j] || _stealthRemaining[j] > 0f)
+                    if (j <= i || !_alives[j] || stealthedI != (_stealthRemaining[j] > 0f))
                     {
                         continue;
                     }
@@ -430,6 +439,8 @@ namespace NHN.Simulation.Battle
 
         private void ApplyProjectileImpact(int p)
         {
+            // 의도된 규칙: 은신 유닛도 스플래시(유탄)에는 맞는다 — 은신은 '인지'를 숨기는 것이지
+            // 떨어지는 화살(물리)을 통과시키지 않는다. 단 피격으로 은신이 해제되지는 않는다.
             byte enemyTeam = _projTeam[p] == TeamA ? TeamB : TeamA;
             float queryRadius = _config.ProjectileImpactRadius + _maxUnitRadius;
             int hitCount = _grid.QueryCircle(_projImpactPos[p], queryRadius, _queryBuffer);

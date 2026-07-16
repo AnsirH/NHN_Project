@@ -22,7 +22,8 @@ MonoBehaviour:
   priorities:
   - 0
   movePattern: 1
-  moveParamA: 5
+  moveParamA: 7
+  moveParamB: 1.5
   projectileSpeed: 0
   projectileArcHeight: 2
   gimmickTrigger: 4
