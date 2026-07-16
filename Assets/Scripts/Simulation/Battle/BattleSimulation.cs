@@ -244,7 +244,7 @@ namespace NHN.Simulation.Battle
                 }
             }
 
-            // 1) 재탐색: 주기 도래 또는 타겟 무효(사망/은신) 시
+            // 1) 재탐색: 타겟 무효(사망/은신)는 즉시 재선택, 주기 도래 시엔 교전 유지 규칙 적용
             for (int i = 0; i < _unitCount; i++)
             {
                 if (!_alives[i])
@@ -253,9 +253,14 @@ namespace NHN.Simulation.Battle
                 }
                 int target = _targets[i];
                 bool targetInvalid = target == NoTarget || !_alives[target] || _stealthRemaining[target] > 0f;
-                if (targetInvalid || _time >= _nextRetargetTimes[i])
+                if (targetInvalid)
                 {
                     _targets[i] = SelectTarget(i);
+                    _nextRetargetTimes[i] = _time + _config.RetargetInterval;
+                }
+                else if (_time >= _nextRetargetTimes[i])
+                {
+                    _targets[i] = ReevaluateTarget(i, target);
                     _nextRetargetTimes[i] = _time + _config.RetargetInterval;
                 }
             }
@@ -469,6 +474,62 @@ namespace NHN.Simulation.Battle
             _projDamage[p] = _projDamage[last];
             _projTeam[p] = _projTeam[last];
             _projArcHeight[p] = _projArcHeight[last];
+        }
+
+        /// <summary>
+        /// 주기 재탐색의 타겟 유지 규칙: 교전 중(사거리 내)인 타겟은 사망·은신·사거리 이탈 전까지 바꾸지 않는다.
+        /// 단 우선순위 목록에서 현재 타겟보다 앞서는 후보가 나타나면 교체한다 (셋업-페이오프 콤보의 전제 —
+        /// 예: 사냥꾼은 교전 중이어도 중독 대상이 생기면 갈아탄다). 교전 전(추격 중)이면 최신 평가로 다시 고른다.
+        /// </summary>
+        private int ReevaluateTarget(int unitIndex, int currentTarget)
+        {
+            RoleDefinition role = _roles[_roleIndices[unitIndex]];
+            byte enemyTeam = _teams[unitIndex] == TeamA ? TeamB : TeamA;
+
+            TargetPriority[] priorities = role.Priorities;
+            int currentRank = PriorityRank(currentTarget, priorities);
+            for (int p = 0; p < currentRank; p++)
+            {
+                int candidate = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: true, priorities[p]), role.PositionFilter);
+                if (candidate != NoTarget)
+                {
+                    return candidate;
+                }
+            }
+
+            RoleDefinition targetRole = _roles[_roleIndices[currentTarget]];
+            float centerDistance = Vector2.Distance(_positions[unitIndex], _positions[currentTarget]);
+            if (centerDistance - role.UnitRadius - targetRole.UnitRadius <= role.AttackRange)
+            {
+                return currentTarget;
+            }
+
+            return SelectTarget(unitIndex);
+        }
+
+        /// <summary>현재 타겟이 만족하는 가장 앞선 우선순위 인덱스. 아무것도 만족하지 못하면 priorities.Length.</summary>
+        private int PriorityRank(int targetIndex, TargetPriority[] priorities)
+        {
+            for (int p = 0; p < priorities.Length; p++)
+            {
+                if (SatisfiesPriority(targetIndex, priorities[p]))
+                {
+                    return p;
+                }
+            }
+            return priorities.Length;
+        }
+
+        /// <summary>AliveEnemyFilter의 우선순위 switch와 짝을 이룬다 — 새 우선순위는 두 곳 모두에 케이스 추가.</summary>
+        private bool SatisfiesPriority(int targetIndex, TargetPriority priority)
+        {
+            switch (priority)
+            {
+                case TargetPriority.RangedRole:
+                    return _isRangedUnit[targetIndex];
+                default:
+                    return true;
+            }
         }
 
         /// <summary>타겟팅 2단계: ① 위치 필터 → ② 우선순위 목록 순서로 후보를 좁힌다. 실패 시 우선순위 없이 재시도.</summary>
