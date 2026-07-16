@@ -26,6 +26,8 @@ namespace NHN.Data
 
         [Header("이동 패턴")]
         [SerializeField] private MovePattern movePattern = MovePattern.ApproachTarget;
+        [Tooltip("이동 패턴 파라미터 A — StealthDash: 은신 지속시간(초)")]
+        [SerializeField] private float moveParamA;
 
         [Header("투사체 (속도 0 = 근접)")]
         [SerializeField] private float projectileSpeed;
@@ -54,7 +56,7 @@ namespace NHN.Data
                 maxHp, attackDamage, attackInterval, attackRange,
                 moveSpeed, unitRadius,
                 projectileSpeed, projectileArcHeight,
-                positionFilter, priorities.ToArray(), movePattern,
+                positionFilter, priorities.ToArray(), movePattern, moveParamA,
                 new GimmickDefinition(
                     gimmickTrigger, triggerParamA, triggerParamB,
                     gimmickEffect, effectParamA, effectParamB));

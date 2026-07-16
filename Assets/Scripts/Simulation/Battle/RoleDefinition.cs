@@ -44,6 +44,8 @@ namespace NHN.Simulation.Battle
         public readonly PositionFilter PositionFilter;
         public readonly TargetPriority[] Priorities;
         public readonly MovePattern MovePattern;
+        /// <summary>이동 패턴 파라미터 A — 의미는 패턴별 (StealthDash: 은신 지속시간 초).</summary>
+        public readonly float MoveParamA;
         public readonly GimmickDefinition Gimmick;
 
         public bool IsRanged => ProjectileSpeed > 0f;
@@ -53,7 +55,7 @@ namespace NHN.Simulation.Battle
             float maxHp, float attackDamage, float attackInterval, float attackRange,
             float moveSpeed, float unitRadius,
             float projectileSpeed, float projectileArcHeight,
-            PositionFilter positionFilter, TargetPriority[] priorities, MovePattern movePattern,
+            PositionFilter positionFilter, TargetPriority[] priorities, MovePattern movePattern, float moveParamA,
             GimmickDefinition gimmick)
         {
             RoleName = roleName;
@@ -68,6 +70,7 @@ namespace NHN.Simulation.Battle
             PositionFilter = positionFilter;
             Priorities = priorities ?? System.Array.Empty<TargetPriority>();
             MovePattern = movePattern;
+            MoveParamA = moveParamA;
             Gimmick = gimmick;
         }
     }

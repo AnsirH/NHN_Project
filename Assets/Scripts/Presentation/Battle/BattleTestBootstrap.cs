@@ -18,6 +18,9 @@ namespace NHN.Presentation.Battle
         /// <summary>투사체 발사 높이(유닛 몸통) — 뷰 표현 상수.</summary>
         private const float ProjectileLaunchHeight = 1f;
 
+        /// <summary>은신 유닛 표시 알파 — 뷰 표현 상수.</summary>
+        private const float StealthAlpha = 0.35f;
+
         [Serializable]
         private struct SquadSetup
         {
@@ -42,6 +45,11 @@ namespace NHN.Presentation.Battle
         private GameObject[] _unitObjects;
         private Transform[] _unitTransforms;
         private bool[] _unitVisible;
+        private Renderer[] _unitRenderers;
+        private Color[] _unitColors;
+        private bool[] _unitStealthShown;
+        private Material _baseMaterial;
+        private Material _stealthMaterial;
         private GameObject[] _projObjects;
         private Transform[] _projTransforms;
         private int _projVisibleCount;
@@ -50,6 +58,11 @@ namespace NHN.Presentation.Battle
         private MaterialPropertyBlock _propertyBlock;
 
         private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
+        private static readonly int SurfaceId = Shader.PropertyToID("_Surface");
+        private static readonly int BlendId = Shader.PropertyToID("_Blend");
+        private static readonly int SrcBlendId = Shader.PropertyToID("_SrcBlend");
+        private static readonly int DstBlendId = Shader.PropertyToID("_DstBlend");
+        private static readonly int ZWriteId = Shader.PropertyToID("_ZWrite");
 
         private void Awake()
         {
@@ -64,8 +77,14 @@ namespace NHN.Presentation.Battle
             _unitObjects = new GameObject[maxUnits];
             _unitTransforms = new Transform[maxUnits];
             _unitVisible = new bool[maxUnits];
+            _unitRenderers = new Renderer[maxUnits];
+            _unitColors = new Color[maxUnits];
+            _unitStealthShown = new bool[maxUnits];
             _projObjects = new GameObject[config.MaxUnits];
             _projTransforms = new Transform[config.MaxUnits];
+
+            _baseMaterial = unitPrefab.GetComponentInChildren<Renderer>().sharedMaterial;
+            _stealthMaterial = CreateStealthMaterial(_baseMaterial);
 
             hud.Initialize(this);
             StartBattle();
@@ -136,11 +155,48 @@ namespace NHN.Presentation.Battle
                     _unitPool.Release(_unitObjects[i]);
                     _unitObjects[i] = null;
                     _unitTransforms[i] = null;
+                    _unitRenderers[i] = null;
                     _unitVisible[i] = false;
                     continue;
                 }
+
+                bool stealthed = _sim.IsStealthed(i);
+                if (stealthed != _unitStealthShown[i])
+                {
+                    ApplyStealthVisual(i, stealthed);
+                }
+
                 _unitTransforms[i].localPosition = SimViewMapper.ToWorld(_sim.GetInterpolatedPosition(i, alpha));
             }
+        }
+
+        /// <summary>은신 표시 전환: 반투명 재질 스왑 + 롤 색 알파 조정. 상태 변화 시에만 호출된다.</summary>
+        private void ApplyStealthVisual(int unitIndex, bool stealthed)
+        {
+            _unitStealthShown[unitIndex] = stealthed;
+            Renderer renderer = _unitRenderers[unitIndex];
+            renderer.sharedMaterial = stealthed ? _stealthMaterial : _baseMaterial;
+
+            Color color = _unitColors[unitIndex];
+            color.a = stealthed ? StealthAlpha : 1f;
+            _propertyBlock.SetColor(BaseColorId, color);
+            renderer.SetPropertyBlock(_propertyBlock);
+        }
+
+        /// <summary>기본 재질의 투명(URP Lit Transparent) 변형을 런타임에 1개 생성 — 은신 유닛이 공유한다.</summary>
+        private static Material CreateStealthMaterial(Material source)
+        {
+            var material = new Material(source);
+            material.SetFloat(SurfaceId, 1f); // 1 = Transparent
+            material.SetFloat(BlendId, 0f);   // 0 = Alpha
+            material.SetOverrideTag("RenderType", "Transparent");
+            material.SetFloat(SrcBlendId, (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            material.SetFloat(DstBlendId, (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            material.SetFloat(ZWriteId, 0f);
+            material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+            material.SetShaderPassEnabled("DepthOnly", false);
+            return material;
         }
 
         private void SyncProjectileViews(float alpha)
@@ -193,9 +249,10 @@ namespace NHN.Presentation.Battle
                     _unitVisible[unitIndex] = true;
 
                     // 초기화 시점 1회 조회 — Update에서는 캐시만 사용.
-                    var renderer = unit.GetComponentInChildren<Renderer>();
-                    _propertyBlock.SetColor(BaseColorId, color);
-                    renderer.SetPropertyBlock(_propertyBlock);
+                    _unitRenderers[unitIndex] = unit.GetComponentInChildren<Renderer>();
+                    _unitColors[unitIndex] = color;
+                    // 재질·색을 함께 리셋 — 풀 재사용 시 이전 은신 재질이 남지 않도록 항상 호출.
+                    ApplyStealthVisual(unitIndex, _sim.IsStealthed(unitIndex));
 
                     unit.transform.localScale = Vector3.one * scale;
                     unit.transform.localPosition = SimViewMapper.ToWorld(_sim.GetPosition(unitIndex));
@@ -217,6 +274,7 @@ namespace NHN.Presentation.Battle
                     _unitPool.Release(_unitObjects[i]);
                     _unitObjects[i] = null;
                     _unitTransforms[i] = null;
+                    _unitRenderers[i] = null;
                     _unitVisible[i] = false;
                 }
             }
@@ -227,6 +285,14 @@ namespace NHN.Presentation.Battle
                 _projTransforms[p] = null;
             }
             _projVisibleCount = 0;
+        }
+
+        private void OnDestroy()
+        {
+            if (_stealthMaterial != null)
+            {
+                Destroy(_stealthMaterial);
+            }
         }
 
         private ArmyDefinition BuildArmy(SquadSetup[] setups)

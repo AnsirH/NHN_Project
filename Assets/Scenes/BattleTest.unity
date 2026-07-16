@@ -858,6 +858,9 @@ MonoBehaviour:
   - role: {fileID: 11400000, guid: bb0033d66abb649409b4061e3eba26ad, type: 2}
     count: 20
     anchor: {x: 0, y: 0}
+  - role: {fileID: 11400000, guid: 3a7c1f92d4e8b4740a1c55b9e2f01c3d, type: 2}
+    count: 10
+    anchor: {x: 4, y: 0}
   armyB:
   - role: {fileID: 11400000, guid: add2da02bd93a734284633e23af1852e, type: 2}
     count: 20

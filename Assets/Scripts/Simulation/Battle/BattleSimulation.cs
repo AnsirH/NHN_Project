@@ -15,33 +15,47 @@ namespace NHN.Simulation.Battle
         private const byte TeamA = 0;
         private const byte TeamB = 1;
 
-        /// <summary>생존한 적군만 수락. requireRanged가 켜지면 원거리 롤로 후보를 좁힌다 (TargetPriority.RangedRole).</summary>
+        /// <summary>
+        /// 생존·비은신 적군만 수락. priority가 지정되면 해당 우선순위(TargetPriority)로 후보를 좁힌다.
+        /// 새 우선순위는 Accept의 switch에 케이스 추가로 확장한다 (4단계: 중독·표식 등 상태이상 우선).
+        /// </summary>
         private readonly struct AliveEnemyFilter : IUnitFilter
         {
-            private readonly bool[] _alives;
-            private readonly byte[] _teams;
-            private readonly bool[] _isRanged;
+            private readonly BattleSimulation _sim;
             private readonly byte _targetTeam;
             private readonly int _excludeIndex;
-            private readonly bool _requireRanged;
+            private readonly bool _hasPriority;
+            private readonly TargetPriority _priority;
 
-            public AliveEnemyFilter(bool[] alives, byte[] teams, bool[] isRanged, byte targetTeam, int excludeIndex, bool requireRanged)
+            public AliveEnemyFilter(BattleSimulation sim, byte targetTeam, int excludeIndex, bool hasPriority, TargetPriority priority)
             {
-                _alives = alives;
-                _teams = teams;
-                _isRanged = isRanged;
+                _sim = sim;
                 _targetTeam = targetTeam;
                 _excludeIndex = excludeIndex;
-                _requireRanged = requireRanged;
+                _hasPriority = hasPriority;
+                _priority = priority;
             }
 
             public bool Accept(int unitIndex)
             {
-                if (unitIndex == _excludeIndex || !_alives[unitIndex] || _teams[unitIndex] != _targetTeam)
+                if (unitIndex == _excludeIndex
+                    || !_sim._alives[unitIndex]
+                    || _sim._teams[unitIndex] != _targetTeam
+                    || _sim._stealthRemaining[unitIndex] > 0f)
                 {
                     return false;
                 }
-                return !_requireRanged || _isRanged[unitIndex];
+                if (!_hasPriority)
+                {
+                    return true;
+                }
+                switch (_priority)
+                {
+                    case TargetPriority.RangedRole:
+                        return _sim._isRangedUnit[unitIndex];
+                    default:
+                        return true;
+                }
             }
         }
 
@@ -61,6 +75,10 @@ namespace NHN.Simulation.Battle
         private readonly int[] _targets;
         private readonly float[] _nextRetargetTimes;
         private readonly float[] _attackCooldowns;
+        /// <summary>남은 은신 시간(초). 0 이하 = 비은신. 은신 중엔 피타겟·충돌 분리 제외.</summary>
+        private readonly float[] _stealthRemaining;
+        /// <summary>다음 공격 데미지 배율 (기본 1). NextAttackCrit 기믹이 무장하면 배율로 설정, 공격 시 소비.</summary>
+        private readonly float[] _critPending;
         private readonly int[] _queryBuffer;
 
         // 투사체 (고정 배열, swap-remove)
@@ -104,6 +122,8 @@ namespace NHN.Simulation.Battle
             _targets = new int[totalUnits];
             _nextRetargetTimes = new float[totalUnits];
             _attackCooldowns = new float[totalUnits];
+            _stealthRemaining = new float[totalUnits];
+            _critPending = new float[totalUnits];
             _queryBuffer = new int[totalUnits];
 
             _projLaunchPos = new Vector2[config.MaxProjectiles];
@@ -152,6 +172,10 @@ namespace NHN.Simulation.Battle
         public int ProjectileCount => _projectileCount;
 
         public bool IsAlive(int index) => _alives[index];
+
+        public bool IsStealthed(int index) => _stealthRemaining[index] > 0f;
+
+        public float GetHp(int index) => _hps[index];
 
         public byte GetTeam(int index) => _teams[index];
 
@@ -207,7 +231,20 @@ namespace NHN.Simulation.Battle
             Array.Copy(_positions, _prevPositions, _unitCount);
             _grid.Rebuild(_positions, _unitCount);
 
-            // 1) 재탐색: 주기 도래 또는 타겟 사망 시
+            // 0) 은신 타이머 — 시간 만료로 해제 (StealthBreak 기믹 무장)
+            for (int i = 0; i < _unitCount; i++)
+            {
+                if (_alives[i] && _stealthRemaining[i] > 0f)
+                {
+                    _stealthRemaining[i] -= dt;
+                    if (_stealthRemaining[i] <= 0f)
+                    {
+                        BreakStealth(i);
+                    }
+                }
+            }
+
+            // 1) 재탐색: 주기 도래 또는 타겟 무효(사망/은신) 시
             for (int i = 0; i < _unitCount; i++)
             {
                 if (!_alives[i])
@@ -215,7 +252,7 @@ namespace NHN.Simulation.Battle
                     continue;
                 }
                 int target = _targets[i];
-                bool targetInvalid = target == NoTarget || !_alives[target];
+                bool targetInvalid = target == NoTarget || !_alives[target] || _stealthRemaining[target] > 0f;
                 if (targetInvalid || _time >= _nextRetargetTimes[i])
                 {
                     _targets[i] = SelectTarget(i);
@@ -237,7 +274,7 @@ namespace NHN.Simulation.Battle
                 }
 
                 int target = _targets[i];
-                if (target == NoTarget || !_alives[target])
+                if (target == NoTarget || !_alives[target] || _stealthRemaining[target] > 0f)
                 {
                     continue;
                 }
@@ -258,7 +295,8 @@ namespace NHN.Simulation.Battle
                 }
                 else if (centerDistance > 1e-5f)
                 {
-                    // MovePattern.ApproachTarget — 새 패턴은 여기서 케이스 추가
+                    // ApproachTarget과 StealthDash 모두 타겟 접근 — StealthDash의 차이(은신)는 상태로 처리.
+                    // 이동 궤적이 다른 새 패턴은 여기서 케이스 추가.
                     _positions[i] = ClampToArena(_positions[i] + toTarget * (role.MoveSpeed * dt / centerDistance));
                 }
             }
@@ -293,11 +331,11 @@ namespace NHN.Simulation.Battle
                 }
             }
 
-            // 5) 겹침 분리 (이동 후 위치 기준 재구축, 생존 유닛만)
+            // 5) 겹침 분리 (이동 후 위치 기준 재구축, 생존·비은신 유닛만 — 은신 유닛은 전열을 통과해 돌진)
             _grid.Rebuild(_positions, _unitCount);
             for (int i = 0; i < _unitCount; i++)
             {
-                if (!_alives[i])
+                if (!_alives[i] || _stealthRemaining[i] > 0f)
                 {
                     continue;
                 }
@@ -307,7 +345,7 @@ namespace NHN.Simulation.Battle
                 for (int k = 0; k < neighborCount; k++)
                 {
                     int j = _queryBuffer[k];
-                    if (j <= i || !_alives[j])
+                    if (j <= i || !_alives[j] || _stealthRemaining[j] > 0f)
                     {
                         continue;
                     }
@@ -343,16 +381,25 @@ namespace NHN.Simulation.Battle
 
         private void Attack(int attacker, int target, RoleDefinition role, float centerDistance)
         {
+            if (_stealthRemaining[attacker] > 0f)
+            {
+                // 첫 공격으로 은신 해제 — 이 공격이 "은신 해제 첫 타"가 되어 무장된 치명타를 소비한다.
+                BreakStealth(attacker);
+            }
+
+            float damage = role.AttackDamage * _critPending[attacker];
+            _critPending[attacker] = 1f;
+
             if (!role.IsRanged)
             {
-                _pendingDamage[target] += role.AttackDamage;
+                _pendingDamage[target] += damage;
                 return;
             }
 
             if (_projectileCount >= _config.MaxProjectiles)
             {
                 // 투사체 버퍼 상한 도달 시 즉시 착탄으로 대체 — 결정론 유지를 위한 예외 경로.
-                _pendingDamage[target] += role.AttackDamage;
+                _pendingDamage[target] += damage;
                 return;
             }
 
@@ -362,9 +409,23 @@ namespace NHN.Simulation.Battle
             _projLaunchTime[p] = _time;
             float flightTime = MathF.Max(centerDistance / role.ProjectileSpeed, _config.TickDeltaTime);
             _projImpactTime[p] = _time + flightTime;
-            _projDamage[p] = role.AttackDamage;
+            _projDamage[p] = damage;
             _projTeam[p] = _teams[attacker];
             _projArcHeight[p] = role.ProjectileArcHeight;
+        }
+
+        /// <summary>
+        /// 은신 해제 공통 경로 (시간 만료·첫 공격 공용). StealthBreak 트리거 기믹이 있으면 효과를 무장한다 —
+        /// 롤 무관 데이터 평가이므로 이 기믹을 가진 어떤 롤이든 동작한다.
+        /// </summary>
+        private void BreakStealth(int unitIndex)
+        {
+            _stealthRemaining[unitIndex] = 0f;
+            GimmickDefinition gimmick = _roles[_roleIndices[unitIndex]].Gimmick;
+            if (gimmick.Trigger == GimmickTrigger.StealthBreak && gimmick.Effect == GimmickEffect.NextAttackCrit)
+            {
+                _critPending[unitIndex] = gimmick.EffectParamA;
+            }
         }
 
         private void ApplyProjectileImpact(int p)
@@ -408,16 +469,14 @@ namespace NHN.Simulation.Battle
             TargetPriority[] priorities = role.Priorities;
             for (int p = 0; p < priorities.Length; p++)
             {
-                // 현재 케이스는 RangedRole 하나 — 우선순위 추가 시 여기서 필터 조합 확장
-                bool requireRanged = priorities[p] == TargetPriority.RangedRole;
-                int candidate = FindByPositionFilter(unitIndex, new AliveEnemyFilter(_alives, _teams, _isRangedUnit, enemyTeam, unitIndex, requireRanged), role.PositionFilter);
+                int candidate = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: true, priorities[p]), role.PositionFilter);
                 if (candidate != NoTarget)
                 {
                     return candidate;
                 }
             }
 
-            return FindByPositionFilter(unitIndex, new AliveEnemyFilter(_alives, _teams, _isRangedUnit, enemyTeam, unitIndex, requireRanged: false), role.PositionFilter);
+            return FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default), role.PositionFilter);
         }
 
         private int FindByPositionFilter(int unitIndex, in AliveEnemyFilter filter, PositionFilter positionFilter)
@@ -515,6 +574,8 @@ namespace NHN.Simulation.Battle
                     _isRangedUnit[i] = role.IsRanged;
                     _targets[i] = NoTarget;
                     _attackCooldowns[i] = 0f;
+                    _stealthRemaining[i] = role.MovePattern == MovePattern.StealthDash ? role.MoveParamA : 0f;
+                    _critPending[i] = 1f;
                     _teamAliveCounts[team]++;
                 }
             }
