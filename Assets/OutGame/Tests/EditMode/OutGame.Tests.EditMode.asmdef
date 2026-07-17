@@ -4,7 +4,8 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "OutGame.Logic"
+        "OutGame.Logic",
+        "OutGame.ScriptableObjects"
     ],
     "includePlatforms": [
         "Editor"

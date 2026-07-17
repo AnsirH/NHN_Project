@@ -1,0 +1,79 @@
+using NUnit.Framework;
+using OutGame.Logic.Armies;
+using OutGame.ScriptableObjects;
+using UnityEngine;
+
+namespace OutGame.Tests.EditMode
+{
+    /// <summary>
+    /// SO 에셋 → 순수 로직 데이터(ToData) 변환 검증. 인스펙터에서 채운 값이
+    /// OutGame.Logic 계층에 그대로 전달되는지 확인한다.
+    /// </summary>
+    public class ScriptableObjectDataTests
+    {
+        [Test]
+        public void ArmyDefinition_ToData_MapsAllFields()
+        {
+            var so = ScriptableObject.CreateInstance<ArmyDefinition>();
+            try
+            {
+                var data = so.ToData();
+                Assert.AreEqual("army_basic", data.id);
+                Assert.AreEqual(30, data.baseSoldierCount);
+                Assert.AreEqual(10f, data.generalPower);
+            }
+            finally
+            {
+                Object.DestroyImmediate(so);
+            }
+        }
+
+        [Test]
+        public void BattleFieldConfig_ToData_Defaults3x3()
+        {
+            var so = ScriptableObject.CreateInstance<BattleFieldConfig>();
+            try
+            {
+                var data = so.ToData();
+                Assert.AreEqual(3, data.rows);
+                Assert.AreEqual(3, data.columns);
+                Assert.AreEqual(9, data.GenerateSlots().Count);
+            }
+            finally
+            {
+                Object.DestroyImmediate(so);
+            }
+        }
+
+        [Test]
+        public void BattlePowerConfigAsset_ToData_DefaultsMatchSpec()
+        {
+            var so = ScriptableObject.CreateInstance<BattlePowerConfigAsset>();
+            try
+            {
+                var data = so.ToData();
+                Assert.AreEqual(1.0f, data.WeightOf(ArmyClass.None));
+                Assert.AreEqual(1.2f, data.WeightOf(ArmyClass.Archer));
+                Assert.AreEqual(1.5f, data.WeightOf(ArmyClass.Cavalry));
+            }
+            finally
+            {
+                Object.DestroyImmediate(so);
+            }
+        }
+
+        [Test]
+        public void RunConfigAsset_ToData_WithoutStartingArmy_Throws()
+        {
+            var so = ScriptableObject.CreateInstance<RunConfigAsset>();
+            try
+            {
+                Assert.Throws<System.InvalidOperationException>(() => so.ToData());
+            }
+            finally
+            {
+                Object.DestroyImmediate(so);
+            }
+        }
+    }
+}

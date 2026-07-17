@@ -1,11 +1,8 @@
 {
-    "name": "OutGame",
-    "rootNamespace": "OutGame",
+    "name": "OutGame.ScriptableObjects",
+    "rootNamespace": "OutGame.ScriptableObjects",
     "references": [
-        "OutGame.Logic",
-        "OutGame.ScriptableObjects",
-        "UnityEngine.UI",
-        "Unity.InputSystem"
+        "OutGame.Logic"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
