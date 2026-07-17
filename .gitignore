@@ -119,8 +119,12 @@ CLAUDE.local.md
 # CodeGraph 인덱스
 /.codegraph/
 
-# 기획 문서 (개인 관리)
-/Docs/
+# 기획 문서 — 기획서·작업 계획만 공유, 나머지(조사/히스토리/참고 이미지)는 개인 관리
+/Docs/*
+!/Docs/NHN-Project/
+/Docs/NHN-Project/*
+!/Docs/NHN-Project/초기 기획.md
+!/Docs/NHN-Project/상세 기획.md
 
 # Unity 테스트 자동화 산출물 (unity-test-runner 스킬)
 /test-results*.xml
