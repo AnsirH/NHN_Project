@@ -3,8 +3,13 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using OutGame.Logic.Maps;
+using OutGame.Logic.Runs;
+using OutGame.ScriptableObjects;
 using OutGame.UI;
+using OutGame.UI.Deployment;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.TestTools;
 
 namespace OutGame.Tests.PlayMode
@@ -64,6 +69,63 @@ namespace OutGame.Tests.PlayMode
             finally
             {
                 Object.Destroy(canvasGo);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator Capture_ArmyDeploymentPanel_EmptyAndWithInventoryOpen()
+        {
+            if (Application.isBatchMode)
+            {
+                Assert.Ignore("batchmode에서는 렌더 프레임이 없어 캡처 불가 — 에디터 열림 상태에서만 실행");
+                yield break;
+            }
+
+            var canvasGo = new GameObject("CaptureCanvas", typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler));
+            var eventSystemGo = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
+            try
+            {
+                var canvas = canvasGo.GetComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                var scaler = canvasGo.GetComponent<UnityEngine.UI.CanvasScaler>();
+                scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                scaler.referenceResolution = new Vector2(1920f, 1080f);
+                scaler.matchWidthOrHeight = 0.5f;
+
+                GameObject prefab = Resources.Load<GameObject>("OutGame/ArmyDeploymentPanel");
+                Assert.IsNotNull(prefab, "ArmyDeploymentPanel 프리팹 없음 — SceneSetupM3UI.Run() 실행 필요");
+                var panel = Object.Instantiate(prefab, canvasGo.transform).GetComponent<ArmyDeploymentPanel>();
+
+                var armyDef = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
+                var bowDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Bow");
+
+                MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
+                RunState run = RunStateFactory.Create(map, new RunConfig { startingArmyCount = 3, startingArmyDefId = "army_basic" });
+                run.ownedItemIds.Add("item_bow");
+
+                panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default", new[] { armyDef }, new[] { bowDef });
+
+                yield return CaptureToFile("ArmyDeploymentPanel_01_initial.png");
+
+                // 첫 부대를 첫 슬롯에 배치한 상태도 확인 (전투력 갱신, 카드 재배치 확인용)
+                var slotView = panel.GetComponentsInChildren<DeploySlotView>().First();
+                var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+                typeof(ArmyDeploymentPanel)
+                    .GetMethod("OnArmyDroppedOnSlot", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                    .Invoke(panel, new object[] { cardView.ArmyInstanceId, slotView.SlotId });
+
+                yield return CaptureToFile("ArmyDeploymentPanel_02_deployed.png");
+
+                // 인벤토리 팝업 오픈 상태
+                Transform centerColumn = panel.transform.Find("MainRow/CenterColumn");
+                centerColumn.Find("ItemButton").GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
+
+                yield return CaptureToFile("ArmyDeploymentPanel_03_inventory_open.png");
+            }
+            finally
+            {
+                Object.Destroy(canvasGo);
+                Object.Destroy(eventSystemGo);
             }
         }
 

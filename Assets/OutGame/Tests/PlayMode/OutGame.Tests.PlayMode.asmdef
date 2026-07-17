@@ -5,7 +5,9 @@
         "UnityEngine.TestRunner",
         "OutGame",
         "OutGame.Logic",
-        "UnityEngine.UI"
+        "OutGame.ScriptableObjects",
+        "UnityEngine.UI",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

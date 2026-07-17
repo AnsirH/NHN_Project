@@ -1,0 +1,94 @@
+using System;
+using OutGame.Logic.Armies;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+namespace OutGame.UI.Deployment
+{
+    /// <summary>
+    /// 군대 카드 — 목록/슬롯 어디에서든 표시되는 동일 인스턴스 (§5.7).
+    /// 드래그 소스(자기 자신을 슬롯/목록으로 이동)이면서 동시에 아이템 드롭 타깃이다.
+    /// </summary>
+    public class ArmyCardView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+    {
+        [SerializeField] private Image portrait;
+        [SerializeField] private Text nameLabel;
+        [SerializeField] private Text classBadge;
+        [SerializeField] private CanvasGroup canvasGroup;
+
+        private Canvas rootCanvas;
+        private Transform dragOriginParent;
+        private int dragOriginSiblingIndex;
+
+        public string ArmyInstanceId { get; private set; }
+
+        /// <summary>드래그가 끝났을 때 항상 발행 — 패널이 드롭 성공 여부와 무관하게 레이아웃을 재계산한다.</summary>
+        public event Action<ArmyCardView> DragEnded;
+
+        /// <summary>아이템 카드가 이 군대 카드 위에 드롭됐을 때 발행.</summary>
+        public event Action<ArmyCardView, string> ItemDropped;
+
+        public void Initialize(string armyInstanceId)
+        {
+            if (string.IsNullOrEmpty(armyInstanceId))
+                throw new ArgumentException("armyInstanceId가 비어 있습니다.", nameof(armyInstanceId));
+            if (portrait == null || nameLabel == null || classBadge == null || canvasGroup == null)
+                throw new InvalidOperationException("ArmyCardView 프리팹의 필드가 배선되지 않았습니다.");
+
+            ArmyInstanceId = armyInstanceId;
+        }
+
+        public void SetDisplay(string displayName, string classLabel, Sprite portraitSprite)
+        {
+            nameLabel.text = displayName;
+            classBadge.text = classLabel;
+            classBadge.gameObject.SetActive(!string.IsNullOrEmpty(classLabel));
+            if (portraitSprite != null) portrait.sprite = portraitSprite;
+        }
+
+        private void Awake()
+        {
+            rootCanvas = GetComponentInParent<Canvas>();
+        }
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            dragOriginParent = transform.parent;
+            dragOriginSiblingIndex = transform.GetSiblingIndex();
+
+            transform.SetParent(rootCanvas.transform, worldPositionStays: true);
+            transform.SetAsLastSibling();
+            canvasGroup.blocksRaycasts = false; // 드롭 타깃이 포인터 이벤트를 받도록
+            canvasGroup.alpha = 0.85f;
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            transform.position = eventData.position;
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            canvasGroup.blocksRaycasts = true;
+            canvasGroup.alpha = 1f;
+
+            // 유효한 드롭 타깃이 처리했다면 패널이 재배치할 것 — 처리 안 됐으면 원래 자리로 복귀
+            if (transform.parent == rootCanvas.transform)
+            {
+                transform.SetParent(dragOriginParent, worldPositionStays: false);
+                transform.SetSiblingIndex(dragOriginSiblingIndex);
+            }
+
+            DragEnded?.Invoke(this);
+        }
+
+        public void OnDrop(PointerEventData eventData)
+        {
+            if (eventData.pointerDrag == null || !eventData.pointerDrag.TryGetComponent(out ItemCardView item))
+                return;
+
+            ItemDropped?.Invoke(this, item.ItemId);
+        }
+    }
+}
