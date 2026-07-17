@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -20, y: -20}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &946077093480532227
 CanvasRenderer:
@@ -90,16 +90,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
   m_Padding:
-    m_Left: 12
-    m_Right: 12
-    m_Top: 10
-    m_Bottom: 10
+    m_Left: 14
+    m_Right: 14
+    m_Top: 12
+    m_Bottom: 12
   m_ChildAlignment: 0
-  m_Spacing: 6
+  m_Spacing: 8
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
@@ -315,11 +315,14 @@ MonoBehaviour:
   lineLayer: {fileID: 6515538010438006454}
   nodeLayer: {fileID: 6624262314065843575}
   legendContainer: {fileID: 1948560122366234208}
+  nodePrefab: {fileID: 6531475048109445329, guid: 21d6e435942ed41429442553a4acac1a, type: 3}
+  linePrefab: {fileID: 3906316057971497779, guid: 5ddb1647514c4614baac335687ef1f53, type: 3}
+  legendEntryPrefab: {fileID: 8385848584101767403, guid: 956e5ef58a5d5124c8e83e6b52fdb6f7, type: 3}
   visuals: {fileID: 11400000, guid: ff4c50f1726e1194c9bd731c3ee3c4c0, type: 2}
-  nodeSize: 64
   unitScale: 110
   contentPadding: 90
-  lineThickness: 4
+  lineDimColor: {r: 1, g: 1, b: 1, a: 0.18}
+  lineTraveledColor: {r: 1, g: 0.85, b: 0.2, a: 0.85}
 --- !u!1 &6999943859062230341
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,17 +6,27 @@ using UnityEngine.UI;
 namespace OutGame.UI
 {
     /// <summary>
-    /// 방 노드 1개의 뷰. RoomMapPanel이 런타임에 코드로 생성한다 (별도 프리팹 없음 —
-    /// 노드 수가 맵마다 달라 동적 생성이 자연스럽고, 아트 교체 시 이 클래스만 수정).
+    /// 방 노드 1개의 뷰 — 프리팹(RoomNodeView.prefab)으로 제작.
+    /// 크기·이미지·자식 구조·상태 색은 프리팹 인스펙터에서 수정하고,
+    /// 코드는 데이터 주입(Initialize)과 상태 전환(SetState)만 담당한다.
     /// </summary>
     public class RoomNodeView : MonoBehaviour
     {
         public enum NodeState { Locked, Selectable, Current, Visited }
 
+        [Header("프리팹 배선")]
         [SerializeField] private Button button;
         [SerializeField] private Image background;
         [SerializeField] private Outline outline;
         [SerializeField] private Text label;
+
+        [Header("상태 표현 (인스펙터 튜닝)")]
+        [SerializeField, Range(0f, 1f)] private float visitedDarken = 0.45f;
+        [SerializeField, Range(0f, 1f)] private float lockedDarken = 0.65f;
+        [SerializeField] private Color selectableOutlineColor = Color.white;
+        [SerializeField] private Color currentOutlineColor = new Color(1f, 0.85f, 0.2f);
+        [SerializeField, Range(0f, 1f)] private float visitedLabelAlpha = 0.55f;
+        [SerializeField, Range(0f, 1f)] private float lockedLabelAlpha = 0.35f;
 
         private Color baseColor;
 
@@ -27,55 +37,25 @@ namespace OutGame.UI
         /// <summary>Selectable 상태의 노드가 클릭됐을 때만 발행된다.</summary>
         public event Action<RoomNodeView> Clicked;
 
-        public static RoomNodeView Create(Transform parent, MapNode node, RoomTypeVisualSet visuals, float size)
+        public void Initialize(MapNode node, RoomTypeVisualSet visuals)
         {
             if (node == null) throw new ArgumentNullException(nameof(node));
             if (visuals == null) throw new ArgumentNullException(nameof(visuals));
+            if (button == null || background == null || outline == null || label == null)
+                throw new InvalidOperationException(
+                    "RoomNodeView 프리팹의 button/background/outline/label이 배선되지 않았습니다");
 
-            var go = new GameObject($"Node_{node.id}", typeof(RectTransform));
-            go.transform.SetParent(parent, false);
-            var rect = (RectTransform)go.transform;
-            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(size, size);
-
-            var view = go.AddComponent<RoomNodeView>();
-
-            view.background = go.AddComponent<Image>();
-            RoomTypeVisualSet.Entry entry = visuals.Get(node.roomType);
-            if (entry != null && entry.icon != null)
-                view.background.sprite = entry.icon;
-
-            view.outline = go.AddComponent<Outline>();
-            view.outline.effectDistance = new Vector2(3f, 3f);
-            view.outline.enabled = false;
-
-            view.button = go.AddComponent<Button>();
-            view.button.targetGraphic = view.background;
-
-            var labelGo = new GameObject("Label", typeof(RectTransform));
-            labelGo.transform.SetParent(go.transform, false);
-            var labelRect = (RectTransform)labelGo.transform;
-            labelRect.anchorMin = labelRect.anchorMax = new Vector2(0.5f, 0f);
-            labelRect.pivot = new Vector2(0.5f, 1f);
-            labelRect.anchoredPosition = new Vector2(0f, -4f);
-            labelRect.sizeDelta = new Vector2(size * 2f, 24f);
-
-            view.label = labelGo.AddComponent<Text>();
-            view.label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            view.label.fontSize = 16;
-            view.label.alignment = TextAnchor.UpperCenter;
-            view.label.raycastTarget = false;
-
-            view.Initialize(node, visuals);
-            return view;
-        }
-
-        private void Initialize(MapNode node, RoomTypeVisualSet visuals)
-        {
             Node = node;
             baseColor = visuals.GetColor(node.roomType);
+
+            RoomTypeVisualSet.Entry entry = visuals.Get(node.roomType);
+            if (entry != null && entry.icon != null)
+                background.sprite = entry.icon;
+
             label.text = visuals.GetName(node.roomType);
+            gameObject.name = $"Node_{node.id}";
+
+            button.onClick.RemoveListener(OnButtonClicked);
             button.onClick.AddListener(OnButtonClicked);
             SetState(NodeState.Locked);
         }
@@ -94,28 +74,28 @@ namespace OutGame.UI
                 case NodeState.Selectable:
                     background.color = baseColor;
                     outline.enabled = true;
-                    outline.effectColor = Color.white;
+                    outline.effectColor = selectableOutlineColor;
                     button.interactable = true;
                     label.color = Color.white;
                     break;
                 case NodeState.Current:
                     background.color = baseColor;
                     outline.enabled = true;
-                    outline.effectColor = new Color(1f, 0.85f, 0.2f);
+                    outline.effectColor = currentOutlineColor;
                     button.interactable = false;
-                    label.color = new Color(1f, 0.85f, 0.2f);
+                    label.color = currentOutlineColor;
                     break;
                 case NodeState.Visited:
-                    background.color = Color.Lerp(baseColor, Color.black, 0.45f);
+                    background.color = Color.Lerp(baseColor, Color.black, visitedDarken);
                     outline.enabled = false;
                     button.interactable = false;
-                    label.color = new Color(1f, 1f, 1f, 0.55f);
+                    label.color = new Color(1f, 1f, 1f, visitedLabelAlpha);
                     break;
                 default: // Locked
-                    background.color = Color.Lerp(baseColor, Color.black, 0.65f);
+                    background.color = Color.Lerp(baseColor, Color.black, lockedDarken);
                     outline.enabled = false;
                     button.interactable = false;
-                    label.color = new Color(1f, 1f, 1f, 0.35f);
+                    label.color = new Color(1f, 1f, 1f, lockedLabelAlpha);
                     break;
             }
         }

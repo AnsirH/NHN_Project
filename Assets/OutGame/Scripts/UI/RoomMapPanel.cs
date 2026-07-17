@@ -11,6 +11,9 @@ namespace OutGame.UI
     /// 방 그래프 UI (상세 기획 §5.3). 씬 독립 프리팹 — 어떤 Canvas 아래든 붙여서 사용.
     /// 사용법: Open(MapState) → 노드 선택 시 RoomSelected 발행 → 방 처리 후 Refresh() 호출.
     /// 방문 확정(MapProgress.Visit)은 이 패널의 책임이 아니다 (플로우 쪽 결정).
+    ///
+    /// 비주얼(노드/연결선/범례의 크기·이미지·색)은 주입된 프리팹의 인스펙터에서 수정한다.
+    /// 코드는 데이터 기반 배치(개수·위치·상태)만 담당.
     /// </summary>
     public class RoomMapPanel : MonoBehaviour
     {
@@ -21,15 +24,17 @@ namespace OutGame.UI
         [SerializeField] private RectTransform nodeLayer;
         [SerializeField] private RectTransform legendContainer;
 
+        [Header("요소 프리팹 (비주얼은 각 프리팹에서 수정)")]
+        [SerializeField] private RoomNodeView nodePrefab;
+        [SerializeField] private Image linePrefab;
+        [SerializeField] private LegendEntry legendEntryPrefab;
+
         [Header("표시 설정")]
         [SerializeField] private RoomTypeVisualSet visuals;
-        [SerializeField] private float nodeSize = 64f;
         [SerializeField] private float unitScale = 110f;   // MapNode.posX/posY(논리 단위) → 픽셀
         [SerializeField] private float contentPadding = 90f;
-        [SerializeField] private float lineThickness = 4f;
-
-        private static readonly Color LineDimColor = new Color(1f, 1f, 1f, 0.18f);
-        private static readonly Color LineTraveledColor = new Color(1f, 0.85f, 0.2f, 0.85f);
+        [SerializeField] private Color lineDimColor = new Color(1f, 1f, 1f, 0.18f);
+        [SerializeField] private Color lineTraveledColor = new Color(1f, 0.85f, 0.2f, 0.85f);
 
         private readonly List<RoomNodeView> nodeViews = new List<RoomNodeView>();
         private readonly List<(Image image, GridPoint from, GridPoint to)> lines
@@ -58,6 +63,9 @@ namespace OutGame.UI
             if (content == null || lineLayer == null || nodeLayer == null)
                 throw new InvalidOperationException(
                     "RoomMapPanel의 content/lineLayer/nodeLayer가 배선되지 않았습니다 — 프리팹 구성(SceneSetupM2) 확인");
+            if (nodePrefab == null || linePrefab == null || legendEntryPrefab == null)
+                throw new InvalidOperationException(
+                    "RoomMapPanel의 nodePrefab/linePrefab/legendEntryPrefab이 배선되지 않았습니다");
             if (visuals == null)
                 throw new InvalidOperationException(
                     "RoomMapPanel.visuals(RoomTypeVisualSet)가 할당되지 않았습니다");
@@ -90,7 +98,7 @@ namespace OutGame.UI
             }
 
             foreach ((Image image, GridPoint from, GridPoint to) in lines)
-                image.color = IsTraveledEdge(from, to) ? LineTraveledColor : LineDimColor;
+                image.color = IsTraveledEdge(from, to) ? lineTraveledColor : lineDimColor;
         }
 
         private bool IsTraveledEdge(GridPoint from, GridPoint to)
@@ -123,6 +131,7 @@ namespace OutGame.UI
                 contentPadding + (node.posY - minY) * unitScale);
 
             Dictionary<GridPoint, Vector2> positions = Map.nodes.ToDictionary(n => n.point, ToContentPos);
+            float nodeSize = ((RectTransform)nodePrefab.transform).sizeDelta.x;
 
             foreach (MapNode node in Map.nodes)
             {
@@ -131,13 +140,14 @@ namespace OutGame.UI
                     if (!positions.TryGetValue(dest, out Vector2 destPos))
                         throw new ArgumentException(
                             $"손상된 맵 데이터 — {node.point}의 연결 대상 {dest} 노드가 없습니다");
-                    CreateLine(positions[node.point], destPos, node.point, dest);
+                    CreateLine(positions[node.point], destPos, node.point, dest, nodeSize);
                 }
             }
 
             foreach (MapNode node in Map.nodes)
             {
-                RoomNodeView view = RoomNodeView.Create(nodeLayer, node, visuals, nodeSize);
+                RoomNodeView view = Instantiate(nodePrefab, nodeLayer);
+                view.Initialize(node, visuals);
                 ((RectTransform)view.transform).anchoredPosition = positions[node.point];
                 view.Clicked += OnNodeClicked;
                 nodeViews.Add(view);
@@ -172,61 +182,32 @@ namespace OutGame.UI
                     Destroy(legendContainer.GetChild(i).gameObject);
         }
 
-        private void CreateLine(Vector2 from, Vector2 to, GridPoint fromPoint, GridPoint toPoint)
+        private void CreateLine(Vector2 from, Vector2 to, GridPoint fromPoint, GridPoint toPoint, float nodeSize)
         {
-            var go = new GameObject($"Line_{fromPoint}_{toPoint}", typeof(RectTransform));
-            go.transform.SetParent(lineLayer, false);
+            Image image = Instantiate(linePrefab, lineLayer);
+            image.gameObject.name = $"Line_{fromPoint}_{toPoint}";
+            image.color = lineDimColor;
 
             Vector2 delta = to - from;
             float length = Mathf.Max(0f, delta.magnitude - nodeSize); // 노드에 겹치지 않게 축소
 
-            var rect = (RectTransform)go.transform;
-            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0f);
-            rect.pivot = new Vector2(0f, 0.5f);
-            rect.sizeDelta = new Vector2(length, lineThickness);
+            var rect = (RectTransform)image.transform;
+            rect.sizeDelta = new Vector2(length, rect.sizeDelta.y); // 두께는 프리팹 값 유지
             rect.anchoredPosition = from + delta.normalized * (nodeSize / 2f);
             rect.localRotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg);
-
-            var image = go.AddComponent<Image>();
-            image.color = LineDimColor;
-            image.raycastTarget = false;
 
             lines.Add((image, fromPoint, toPoint));
         }
 
         private void BuildLegend()
         {
-            if (legendContainer == null || visuals == null) return;
+            if (legendContainer == null) return;
 
             foreach (RoomTypeVisualSet.Entry entry in visuals.Entries)
             {
-                var row = new GameObject($"Legend_{entry.roomType}", typeof(RectTransform));
-                row.transform.SetParent(legendContainer, false);
-                var layout = row.AddComponent<HorizontalLayoutGroup>();
-                layout.childAlignment = TextAnchor.MiddleLeft;
-                layout.spacing = 8f;
-                layout.childForceExpandWidth = false;
-                layout.childForceExpandHeight = false;
-
-                var swatchGo = new GameObject("Swatch", typeof(RectTransform));
-                swatchGo.transform.SetParent(row.transform, false);
-                var swatchLayout = swatchGo.AddComponent<LayoutElement>();
-                swatchLayout.preferredWidth = swatchLayout.preferredHeight = 18f;
-                var swatch = swatchGo.AddComponent<Image>();
-                swatch.color = entry.color;
-                if (entry.icon != null) swatch.sprite = entry.icon;
-                swatch.raycastTarget = false;
-
-                var textGo = new GameObject("Name", typeof(RectTransform));
-                textGo.transform.SetParent(row.transform, false);
-                var text = textGo.AddComponent<Text>();
-                text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-                text.fontSize = 18;
-                text.text = visuals.GetName(entry.roomType);
-                text.raycastTarget = false;
-                var textLayout = textGo.AddComponent<LayoutElement>();
-                textLayout.preferredWidth = 80f;
-                textLayout.preferredHeight = 22f;
+                LegendEntry row = Instantiate(legendEntryPrefab, legendContainer);
+                row.gameObject.name = $"Legend_{entry.roomType}";
+                row.Setup(entry, visuals.GetName(entry.roomType));
             }
         }
 

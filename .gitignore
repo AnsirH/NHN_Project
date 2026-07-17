@@ -126,6 +126,9 @@ CLAUDE.local.md
 !/Docs/OutGame/초기 기획.md
 !/Docs/OutGame/상세 기획.md
 
+# UI 스크린샷 캡처 (시각 검증 루프 — 개인 도구)
+/ui-captures/
+
 # Unity 테스트 자동화 산출물 (unity-test-runner 스킬)
 /test-results*.xml
 /unity-test.log
