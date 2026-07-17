@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3eda88389304aa349998e53b7807ff9a, type: 3}
+  m_Name: RoomTypeVisuals
+  m_EditorClassIdentifier: OutGame::OutGame.UI.RoomTypeVisualSet
+  entries:
+  - roomType: 0
+    displayName: "\uC804\uD22C"
+    color: {r: 0.78, g: 0.31, b: 0.3, a: 1}
+    icon: {fileID: 0}
+  - roomType: 1
+    displayName: "\uC774\uBCA4\uD2B8"
+    color: {r: 0.56, g: 0.42, b: 0.78, a: 1}
+    icon: {fileID: 0}
+  - roomType: 2
+    displayName: "\uD734\uC2DD"
+    color: {r: 0.3, g: 0.69, b: 0.41, a: 1}
+    icon: {fileID: 0}
+  - roomType: 3
+    displayName: "\uBCF4\uC2A4"
+    color: {r: 0.9, g: 0.71, b: 0.13, a: 1}
+    icon: {fileID: 0}

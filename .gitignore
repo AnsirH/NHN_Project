@@ -131,7 +131,7 @@ CLAUDE.local.md
 /unity-test.log
 /setup.log
 /test-trigger*.flag
-/test-status.flag
+/test-status*.flag
 /setup-trigger.flag
 
 # Claude 자동화 브리지 (에디터 전용 — 개인 환경)
