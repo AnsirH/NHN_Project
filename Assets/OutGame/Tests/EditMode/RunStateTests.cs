@@ -58,12 +58,15 @@ namespace OutGame.Tests.EditMode
             original.ownedItemIds.Add("item_bow");
             original.armies[0].Bind("item_saddle");
             original.armies[1].AddBonusSoldiers(6);
+            original.visitedEventIds.Add("evt_recruit_deserters");
+            original.visitedEventIds.Add("evt_old_armory");
             MapProgress.Visit(original.mapState, MapProgress.GetSelectableNodes(original.mapState)[0].point);
 
             RunState restored = RunState.FromJson(original.ToJson());
 
             Assert.AreEqual(original.gold, restored.gold);
             Assert.AreEqual(original.ownedItemIds, restored.ownedItemIds);
+            Assert.AreEqual(original.visitedEventIds, restored.visitedEventIds);
             Assert.AreEqual(original.armies.Count, restored.armies.Count);
             for (int i = 0; i < original.armies.Count; i++)
             {

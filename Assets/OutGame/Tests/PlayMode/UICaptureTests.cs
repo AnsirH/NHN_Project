@@ -129,6 +129,64 @@ namespace OutGame.Tests.PlayMode
             }
         }
 
+        [UnityTest]
+        public IEnumerator Capture_EventAndRestPanels()
+        {
+            if (Application.isBatchMode)
+            {
+                Assert.Ignore("batchmode에서는 렌더 프레임이 없어 캡처 불가 — 에디터 열림 상태에서만 실행");
+                yield break;
+            }
+
+            var canvasGo = new GameObject("CaptureCanvas", typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler));
+            try
+            {
+                var canvas = canvasGo.GetComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                var scaler = canvasGo.GetComponent<UnityEngine.UI.CanvasScaler>();
+                scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                scaler.referenceResolution = new Vector2(1920f, 1080f);
+                scaler.matchWidthOrHeight = 0.5f;
+
+                MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
+                RunState run = RunStateFactory.Create(map, new RunConfig { startingArmyCount = 2, startingArmyDefId = "army_basic" });
+
+                // EventPanel — 초기 상태 + 선택 후 결과 상태
+                var eventPrefab = Resources.Load<GameObject>("OutGame/EventPanel");
+                var eventDef = Resources.Load<EventDefinition>("OutGame/Data/Events/EventDefinition_Deserters");
+                var eventPanel = Object.Instantiate(eventPrefab, canvasGo.transform).GetComponent<EventPanel>();
+                eventPanel.Open(eventDef, run);
+                yield return CaptureToFile("EventPanel_01_initial.png");
+
+                var choiceButton = eventPanel.GetComponentsInChildren<UnityEngine.UI.Button>()
+                    .First(b => b.transform.parent.name == "ChoiceContainer");
+                choiceButton.onClick.Invoke();
+                yield return CaptureToFile("EventPanel_02_result.png");
+                Object.Destroy(eventPanel.gameObject);
+                yield return null;
+
+                // RestPanel — 초기 상태 + 선택 후 결과 상태
+                // 참고: EventPanel/RestPanel은 65% 반투명 딤 배경을 쓰는데, 격리된 캡처 테스트에서는
+                // 그 뒤에 실제로 렌더링되는 게 없어 에디터 Game 뷰의 이전 프레임 잔상이 비쳐 보일 수 있다
+                // (unity-screenshot-capture 스킬 참조). 실제 게임에서는 항상 불투명한 RoomMapPanel 위에
+                // 뜨므로 발생하지 않는다 — 격리 캡처 환경의 한계일 뿐 컴포넌트 결함이 아님 (검증 완료).
+                var restPrefab = Resources.Load<GameObject>("OutGame/RestPanel");
+                var armyDef = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
+                var restPanel = Object.Instantiate(restPrefab, canvasGo.transform).GetComponent<RestPanel>();
+                restPanel.Open(run, new System.Collections.Generic.Dictionary<string, ArmyDefinition> { ["army_basic"] = armyDef });
+                yield return CaptureToFile("RestPanel_01_initial.png");
+
+                var optionButton = restPanel.GetComponentsInChildren<UnityEngine.UI.Button>()
+                    .First(b => b.transform.parent.name == "ArmyListContainer");
+                optionButton.onClick.Invoke();
+                yield return CaptureToFile("RestPanel_02_result.png");
+            }
+            finally
+            {
+                Object.Destroy(canvasGo);
+            }
+        }
+
         private static IEnumerator CaptureToFile(string fileName)
         {
             yield return new WaitForEndOfFrame(); // 렌더 완료 시점에 백버퍼 캡처

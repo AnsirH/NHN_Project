@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7893b1a0715f4c44498cf519e61fe537, type: 3}
+  m_Name: EventDefinition_Deserters
+  m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.EventDefinition
+  eventId: evt_recruit_deserters
+  illustration: {fileID: 0}
+  bodyText: "\uC232\uAE38\uC5D0\uC11C \uC9C0\uCE5C \uBCD1\uC0AC \uBB34\uB9AC\uB97C
+    \uB9CC\uB0AC\uB2E4. \uC18C\uC18D \uC5C6\uC774 \uB5A0\uB3CC\uB358 \uC774\uB4E4\uC774
+    \uB2F9\uC2E0\uC758 \uAE43\uBC1C \uC544\uB798 \uC11C\uAE38 \uCCAD\uD55C\uB2E4."
+  choices:
+  - choiceText: "\uBC1B\uC544\uB4E4\uC778\uB2E4"
+    rewards:
+    - type: 1
+      armyDef: {fileID: 11400000, guid: d2907a18afdaa7f4c8708b09ce2d47eb, type: 2}
+      itemDef: {fileID: 0}
+      goldAmount: 0
+    resultText: "\uD0C8\uC601\uBCD1\uB4E4\uC774 \uC0C8\uB85C\uC6B4 \uBD80\uB300\uB85C
+      \uD3B8\uC131\uB418\uC5C8\uB2E4."
+  - choiceText: "\uC2DD\uB7C9\uB9CC \uB098\uB220\uC900\uB2E4"
+    rewards:
+    - type: 3
+      armyDef: {fileID: 0}
+      itemDef: {fileID: 0}
+      goldAmount: 15
+    resultText: "\uADF8\uB4E4\uC740 \uACE0\uB9D9\uB2E4\uB294 \uB9D0\uACFC \uD568\uAED8
+      \uBA87 \uAC1C\uC758 \uC740\uD654\uB97C \uAC74\uB124\uACE0 \uB5A0\uB0AC\uB2E4."

@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7893b1a0715f4c44498cf519e61fe537, type: 3}
+  m_Name: EventDefinition_BattlefieldRemains
+  m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.EventDefinition
+  eventId: evt_battlefield_remains
+  illustration: {fileID: 0}
+  bodyText: "\uC9C0\uB09C \uC804\uD22C\uC758 \uD754\uC801\uC774 \uB0A8\uC740 \uB4E4\uD310.
+    \uBD80\uC11C\uC9C4 \uB9C8\uCC28 \uC0AC\uC774\uB85C \uC544\uC9C1 \uC4F8\uB9CC\uD55C
+    \uC7A5\uBE44\uAC00 \uBCF4\uC778\uB2E4."
+  choices:
+  - choiceText: "\uD65C\uC744 \uC218\uC2B5\uD55C\uB2E4"
+    rewards:
+    - type: 2
+      armyDef: {fileID: 0}
+      itemDef: {fileID: 11400000, guid: 69f7fb86cb054f14bb8ff5bbb6981409, type: 2}
+      goldAmount: 0
+    resultText: "\uBD80\uB7EC\uC9C0\uC9C0 \uC54A\uC740 \uD65C \uD558\uB098\uB97C
+      \uC218\uC2B5\uD588\uB2E4."
+  - choiceText: "\uC548\uC7A5\uC744 \uC218\uC2B5\uD55C\uB2E4"
+    rewards:
+    - type: 2
+      armyDef: {fileID: 0}
+      itemDef: {fileID: 11400000, guid: 7826c60f1b89e5647ae53fdef7d9afcc, type: 2}
+      goldAmount: 0
+    resultText: "\uB9D0 \uC5C6\uB294 \uC548\uC7A5 \uD558\uB098\uAC00 \uB0A8\uC544
+      \uC788\uC5C8\uB2E4."

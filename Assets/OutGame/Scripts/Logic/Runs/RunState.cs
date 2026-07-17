@@ -16,6 +16,7 @@ namespace OutGame.Logic.Runs
         public List<ArmyInstance> armies = new List<ArmyInstance>();
         public List<string> ownedItemIds = new List<string>();
         public int gold; // §4-20: 획득만 1차 구현
+        public List<string> visitedEventIds = new List<string>(); // 동일 런 내 이벤트 중복 방지 (§5.4)
 
         public ArmyInstance GetArmy(string instanceId) =>
             armies.FirstOrDefault(a => a.instanceId == instanceId);
@@ -38,7 +39,8 @@ namespace OutGame.Logic.Runs
             }
 
             if (state == null || state.mapState == null || state.mapState.nodes == null
-                || state.mapState.nodes.Count == 0 || state.armies == null || state.ownedItemIds == null)
+                || state.mapState.nodes.Count == 0 || state.armies == null || state.ownedItemIds == null
+                || state.visitedEventIds == null)
                 throw new ArgumentException("RunState JSON에 필수 데이터가 없습니다.", nameof(json));
 
             return state;
