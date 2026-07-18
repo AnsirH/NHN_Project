@@ -38,7 +38,7 @@ namespace OutGame.UI
         public void ShowRunClear()
         {
             titleText.text = "런 클리어!";
-            bodyText.text = "보스 방 도달 — 결과 화면은 M5에서 구현";
+            bodyText.text = "보스를 물리쳤습니다. 메인 메뉴로 돌아갑니다.";
             gameObject.SetActive(true);
         }
 

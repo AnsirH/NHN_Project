@@ -2,6 +2,7 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
+using OutGame.Flow;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
@@ -184,6 +185,54 @@ namespace OutGame.Tests.PlayMode
             finally
             {
                 Object.Destroy(canvasGo);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator Capture_MainMenuAndMapSelectScreens()
+        {
+            if (Application.isBatchMode)
+            {
+                Assert.Ignore("batchmode에서는 렌더 프레임이 없어 캡처 불가 — 에디터 열림 상태에서만 실행");
+                yield break;
+            }
+
+            var canvasGo = new GameObject("CaptureCanvas", typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler));
+            string tempSavePath = Path.Combine(Path.GetTempPath(), $"capture_save_{System.Guid.NewGuid():N}.json");
+            try
+            {
+                var canvas = canvasGo.GetComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                var scaler = canvasGo.GetComponent<UnityEngine.UI.CanvasScaler>();
+                scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                scaler.referenceResolution = new Vector2(1920f, 1080f);
+                scaler.matchWidthOrHeight = 0.5f;
+
+                var mainMenuPrefab = Resources.Load<GameObject>("OutGame/MainMenuScreen");
+                Assert.IsNotNull(mainMenuPrefab, "MainMenuScreen 프리팹 없음 — SceneSetupM5UI.Run() 실행 필요");
+                var mainMenu = Object.Instantiate(mainMenuPrefab, canvasGo.transform).GetComponent<MainMenuController>();
+                mainMenu.SetSavePath(tempSavePath); // 저장 없음 → 이어하기 비활성 상태
+                yield return CaptureToFile("MainMenu_01_no_save.png");
+
+                MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
+                RunState run = RunStateFactory.Create(map, new RunConfig());
+                RunSaveService.Save(run, tempSavePath);
+                mainMenu.SetSavePath(tempSavePath); // 저장 있음 → 이어하기 활성 상태
+                yield return CaptureToFile("MainMenu_02_with_save.png");
+
+                Object.Destroy(mainMenu.gameObject);
+                yield return null;
+
+                var mapSelectPrefab = Resources.Load<GameObject>("OutGame/MapSelectScreen");
+                Assert.IsNotNull(mapSelectPrefab, "MapSelectScreen 프리팹 없음 — SceneSetupM5UI.Run() 실행 필요");
+                Object.Instantiate(mapSelectPrefab, canvasGo.transform);
+                yield return null; // Start()에서 MapDefinition 목록을 스폰할 시간
+                yield return CaptureToFile("MapSelect_01_initial.png");
+            }
+            finally
+            {
+                Object.Destroy(canvasGo);
+                if (File.Exists(tempSavePath)) File.Delete(tempSavePath);
             }
         }
 

@@ -27,6 +27,23 @@ namespace OutGame.Logic.Maps
         public float nodesApartDistance = 1f;       // 같은 층 노드 가로 간격
         public float positionRandomization = 0.3f;  // 0 = 정렬, 1 = 최대 흐트러짐
 
+        /// <summary>필드 단위 얕은 복사 — 호출자가 반환값을 변형해도 원본(에셋 등)에 영향이 없도록 한다.</summary>
+        public MapGenerationConfig Clone() => new MapGenerationConfig
+        {
+            mapName = mapName,
+            floorCount = floorCount,
+            gridWidth = gridWidth,
+            pathCount = pathCount,
+            startingNodeCount = startingNodeCount,
+            preBossNodeCount = preBossNodeCount,
+            battleWeight = battleWeight,
+            eventWeight = eventWeight,
+            restWeight = restWeight,
+            layerDistance = layerDistance,
+            nodesApartDistance = nodesApartDistance,
+            positionRandomization = positionRandomization,
+        };
+
         public void Validate()
         {
             if (floorCount < 4)

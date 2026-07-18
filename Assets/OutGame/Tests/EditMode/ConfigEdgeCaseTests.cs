@@ -18,6 +18,19 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
+        public void Clone_ReturnsIndependentCopyWithSameValues()
+        {
+            var original = new MapGenerationConfig { floorCount = 7, gridWidth = 3, mapName = "테스트맵" };
+
+            MapGenerationConfig clone = original.Clone();
+            clone.floorCount = 99;
+
+            Assert.AreEqual(7, original.floorCount, "clone 변형이 원본에 영향을 주면 안 됨");
+            Assert.AreEqual(3, clone.gridWidth);
+            Assert.AreEqual("테스트맵", clone.mapName);
+        }
+
+        [Test]
         public void Validate_PathCountBelowOne_Throws()
         {
             var config = new MapGenerationConfig { pathCount = 0 };

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using OutGame.Logic.Events;
 using OutGame.Logic.Maps;
@@ -7,6 +8,7 @@ using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
 using OutGame.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace OutGame.Flow
 {
@@ -23,18 +25,26 @@ namespace OutGame.Flow
         [SerializeField] private RoomTypeVisualSet visuals;
         [SerializeField] private RunConfigAsset runConfig;
 
-        [Header("개발용 맵 생성 설정")]
+        [Header("개발용 맵 생성 설정 — MapSelect 없이 씬을 단독 실행할 때만 사용 (§5.2)")]
         [SerializeField] private int seed = 42;
         [SerializeField] private bool randomizeSeed;
+
+        /// <summary>테스트/툴링에서 실제 씬 전환 없이 호출을 가로챌 수 있게 하는 훅.</summary>
+        public Action<string> LoadSceneAction = SceneManager.LoadScene;
 
         private RunState run;
         private System.Random rng;
         private List<EventData> eventDataPool;
         private Dictionary<string, EventDefinition> eventDefsById;
         private Dictionary<string, ArmyDefinition> armyDefsById;
+        private string savePath;
+        private bool runEnded;
 
         private void Start()
         {
+            // 이후 검증에서 예외가 나더라도 PendingRun이 stale 상태로 남지 않도록 가장 먼저 소비한다.
+            RunState pendingRun = RunSessionContext.ConsumePendingRun();
+
             if (visuals == null)
                 visuals = Resources.Load<RoomTypeVisualSet>("OutGame/RoomTypeVisuals"); // 배선 누락 대비 폴백
             if (runConfig == null)
@@ -54,11 +64,16 @@ namespace OutGame.Flow
             armyDefsById = Resources.LoadAll<ArmyDefinition>("OutGame/Data")
                 .ToDictionary(a => a.ToData().id);
 
-            int usedSeed = randomizeSeed ? Environment.TickCount : seed;
-            rng = new System.Random(usedSeed);
-
-            MapState map = new MapGenerator(new MapGenerationConfig(), usedSeed).Generate();
-            run = RunStateFactory.Create(map, runConfig.ToData());
+            savePath = RunSaveService.DefaultPath;
+            run = pendingRun;
+            if (run == null)
+            {
+                // MainMenu/MapSelect를 거치지 않고 이 씬을 단독 실행했을 때의 개발용 폴백
+                int usedSeed = randomizeSeed ? Environment.TickCount : seed;
+                MapState map = new MapGenerator(new MapGenerationConfig(), usedSeed).Generate();
+                run = RunStateFactory.Create(map, runConfig.ToData());
+            }
+            rng = new System.Random(Environment.TickCount);
 
             mapPanel.RoomSelected += OnRoomSelected;
             roomPanel.Completed += OnRoomCompleted;
@@ -84,10 +99,14 @@ namespace OutGame.Flow
 
             if (MapProgress.HasVisitedBoss(run.mapState))
             {
+                runEnded = true;
+                RunSaveService.DeleteSave(savePath); // 런 종료 — 이어하기 대상에서 제외 (§5.1)
                 roomPanel.ShowRunClear();
                 return;
             }
 
+            // 저장은 방 결과(보상 적용 등)까지 반영된 뒤 OnRoomCompleted에서 한 번만 수행한다.
+            // 여기서 먼저 저장하면 "방문함"만 기록되고 보상은 누락된 상태로 저장될 위험이 있다.
             switch (node.roomType)
             {
                 case RoomType.Event:
@@ -113,7 +132,34 @@ namespace OutGame.Flow
 
         private void OnRoomCompleted()
         {
+            if (runEnded)
+            {
+                LoadSceneAction(SceneNames.MainMenu); // 런 클리어 화면의 [완료] → 메인 메뉴 복귀
+                return;
+            }
+
             mapPanel.Refresh();
+            SaveProgress();
+        }
+
+        /// <summary>
+        /// 방 진행 상황을 즉시 저장한다. 클라우드 동기화 잠금 등으로 인한 일시적 저장 실패가
+        /// 게임 진행 자체를 막지 않도록 예외를 흡수하고 경고만 남긴다.
+        /// </summary>
+        private void SaveProgress()
+        {
+            try
+            {
+                RunSaveService.Save(run, savePath);
+            }
+            catch (IOException e)
+            {
+                Debug.LogWarning($"[InGameFlowController] 진행 저장 실패 — {e.Message}");
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Debug.LogWarning($"[InGameFlowController] 진행 저장 실패 — {e.Message}");
+            }
         }
     }
 }

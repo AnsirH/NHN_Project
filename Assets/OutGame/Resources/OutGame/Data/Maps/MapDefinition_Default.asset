@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f02f7aac0df24df44b14d47dc726d8e4, type: 3}
+  m_Name: MapDefinition_Default
+  m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.MapDefinition
+  mapId: map_default
+  displayName: "\uBD81\uBD80 \uC804\uC120"
+  thumbnail: {fileID: 0}
+  difficultyLabel: "\uBCF4\uD1B5"
+  generationConfig:
+    mapName: Map01
+    floorCount: 10
+    gridWidth: 5
+    pathCount: 5
+    startingNodeCount:
+      min: 2
+      max: 3
+    preBossNodeCount:
+      min: 2
+      max: 3
+    battleWeight: 55
+    eventWeight: 30
+    restWeight: 15
+    layerDistance: 2
+    nodesApartDistance: 1
+    positionRandomization: 0.3
