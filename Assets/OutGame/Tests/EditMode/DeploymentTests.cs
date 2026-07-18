@@ -167,6 +167,12 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
+        public void SlotCount_ReflectsGeneratedSlots()
+        {
+            Assert.AreEqual(9, deployment.SlotCount, "기본 3×3 배치판 = 9슬롯");
+        }
+
+        [Test]
         public void CanStartBattle_RequiresAtLeastOneArmy()
         {
             Assert.IsFalse(deployment.CanStartBattle, "빈 배치로는 전투 시작 불가 (§5.7)");

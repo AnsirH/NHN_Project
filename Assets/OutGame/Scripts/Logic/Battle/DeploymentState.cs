@@ -29,6 +29,7 @@ namespace OutGame.Logic.Battle
 
         public int DeployedCount => slotToArmy.Count;
         public bool CanStartBattle => DeployedCount > 0;
+        public int SlotCount => validSlotIds.Count;
 
         public string GetArmyAt(int slotId) =>
             slotToArmy.TryGetValue(slotId, out string armyId) ? armyId : null;

@@ -13,6 +13,7 @@ namespace OutGame.ScriptableObjects
         [SerializeField, Min(1)] private int startingArmyCount = 3;
         [SerializeField, Min(0)] private int startingGold = 0;
         [SerializeField, Min(0)] private int battleVictoryGold = 20; // §4-20/§9: 초안값
+        [SerializeField, Min(1)] private int maxArmyCount = 9; // §4-7: BattleFieldConfig 슬롯 수와 일치해야 함
 
         public RunConfig ToData()
         {
@@ -20,13 +21,25 @@ namespace OutGame.ScriptableObjects
                 throw new System.InvalidOperationException(
                     $"{name}: startingArmy(ArmyDefinition)가 배정되지 않았습니다.");
 
-            return new RunConfig
+            var data = new RunConfig
             {
                 startingArmyDefId = startingArmy.ToData().id,
                 startingArmyCount = startingArmyCount,
                 startingGold = startingGold,
                 battleVictoryGold = battleVictoryGold,
+                maxArmyCount = maxArmyCount,
             };
+
+            try
+            {
+                data.Validate();
+            }
+            catch (System.ArgumentException e)
+            {
+                throw new System.InvalidOperationException($"{name}: 설정값이 유효하지 않습니다 — {e.Message}", e);
+            }
+
+            return data;
         }
     }
 }

@@ -42,12 +42,21 @@ namespace OutGame.ScriptableObjects
             public List<RewardEntry> rewards = new List<RewardEntry>();
             public string resultText;
 
-            public EventChoiceData ToData() => new EventChoiceData
+            public EventChoiceData ToData()
             {
-                choiceText = choiceText,
-                rewards = rewards.Select(r => r.ToData()).ToList(),
-                resultText = resultText,
-            };
+                List<RewardGrant> rewardData = rewards.Select(r => r.ToData()).ToList();
+                // §4-7: 군대 보상이 여러 개면 상한 스킵 메시지가 몇 개나 실패했는지 구분 못 함 — 1개로 제한
+                if (rewardData.Count(r => r.type == RewardType.Army) > 1)
+                    throw new InvalidOperationException(
+                        $"선택지 '{choiceText}': 군대 보상은 선택지당 1개까지만 허용됩니다 (§4-7).");
+
+                return new EventChoiceData
+                {
+                    choiceText = choiceText,
+                    rewards = rewardData,
+                    resultText = resultText,
+                };
+            }
         }
 
         [Serializable]

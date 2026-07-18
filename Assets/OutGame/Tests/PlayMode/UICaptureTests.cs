@@ -82,6 +82,9 @@ namespace OutGame.Tests.PlayMode
                 yield break;
             }
 
+            // 직전 테스트가 Object.Destroy()로 남긴 캔버스가 이번 프레임 끝에 정리되도록 한 프레임 양보
+            yield return null;
+
             var canvasGo = new GameObject("CaptureCanvas", typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler));
             var eventSystemGo = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
             try
@@ -156,7 +159,7 @@ namespace OutGame.Tests.PlayMode
                 var eventPrefab = Resources.Load<GameObject>("OutGame/EventPanel");
                 var eventDef = Resources.Load<EventDefinition>("OutGame/Data/Events/EventDefinition_Deserters");
                 var eventPanel = Object.Instantiate(eventPrefab, canvasGo.transform).GetComponent<EventPanel>();
-                eventPanel.Open(eventDef, run);
+                eventPanel.Open(eventDef, run, maxArmyCountValue: 9);
                 yield return CaptureToFile("EventPanel_01_initial.png");
 
                 var choiceButton = eventPanel.GetComponentsInChildren<UnityEngine.UI.Button>()

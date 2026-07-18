@@ -16,6 +16,8 @@ namespace OutGame.Tests.PlayMode
     /// </summary>
     public class EventPanelPlayTests
     {
+        private const int DefaultMaxArmyCount = 9;
+
         private GameObject canvasGo;
         private EventPanel panel;
         private RunState run;
@@ -44,7 +46,7 @@ namespace OutGame.Tests.PlayMode
         [UnityTest]
         public IEnumerator Open_SpawnsButtonPerChoice()
         {
-            panel.Open(deserters, run);
+            panel.Open(deserters, run, DefaultMaxArmyCount);
             yield return null;
 
             var buttons = panel.GetComponentsInChildren<Button>()
@@ -55,7 +57,7 @@ namespace OutGame.Tests.PlayMode
         [UnityTest]
         public IEnumerator SelectChoice_AppliesRewardAndShowsResult()
         {
-            panel.Open(deserters, run);
+            panel.Open(deserters, run, DefaultMaxArmyCount);
             yield return null;
 
             int armiesBefore = run.armies.Count;
@@ -75,9 +77,29 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator SelectChoice_ArmyRewardAtCap_ShowsFailureMessageAndDoesNotAddArmy()
+        {
+            // 탈영병 이벤트 첫 선택지는 군대 획득 — 상한을 현재 보유 수(1)로 맞춰 즉시 꽉 찬 상태를 재현
+            panel.Open(deserters, run, maxArmyCountValue: run.armies.Count);
+            yield return null;
+
+            int armiesBefore = run.armies.Count;
+            var firstChoiceButton = panel.GetComponentsInChildren<Button>()
+                .First(b => b.transform.parent.name == "ChoiceContainer");
+            firstChoiceButton.onClick.Invoke();
+            yield return null;
+
+            Assert.AreEqual(armiesBefore, run.armies.Count, "상한에 도달했으면 군대가 추가되면 안 됨");
+
+            Text resultText = panel.transform.Find("Window/ResultText").GetComponent<Text>();
+            Assert.IsTrue(resultText.gameObject.activeSelf);
+            StringAssert.Contains("가득 차", resultText.text);
+        }
+
+        [UnityTest]
         public IEnumerator Continue_FiresCompletedAndHidesPanel()
         {
-            panel.Open(deserters, run);
+            panel.Open(deserters, run, DefaultMaxArmyCount);
             yield return null;
 
             panel.GetComponentsInChildren<Button>().First(b => b.transform.parent.name == "ChoiceContainer").onClick.Invoke();
@@ -99,7 +121,7 @@ namespace OutGame.Tests.PlayMode
             // 이벤트 자체는 EventSelector가 아니라 플로우가 마킹하므로, 여기선 EventPanel이
             // run 상태를 직접 건드리지 않는다는 것만 확인 (선택 전엔 visitedEventIds 불변)
             Assert.IsEmpty(run.visitedEventIds);
-            panel.Open(deserters, run);
+            panel.Open(deserters, run, DefaultMaxArmyCount);
             yield return null;
             Assert.IsEmpty(run.visitedEventIds, "방문 기록은 플로우 컨트롤러 책임 — 패널이 직접 추가하지 않음");
         }

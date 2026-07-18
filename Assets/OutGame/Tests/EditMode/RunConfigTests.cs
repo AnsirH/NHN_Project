@@ -26,5 +26,26 @@ namespace OutGame.Tests.EditMode
             var config = new RunConfig { battleVictoryGold = 0 };
             Assert.DoesNotThrow(() => config.Validate());
         }
+
+        [Test]
+        public void Validate_MaxArmyCountBelowOne_Throws()
+        {
+            var config = new RunConfig { maxArmyCount = 0 };
+            Assert.Throws<ArgumentException>(() => config.Validate());
+        }
+
+        [Test]
+        public void Validate_StartingArmyCountExceedsMaxArmyCount_Throws()
+        {
+            var config = new RunConfig { startingArmyCount = 5, maxArmyCount = 3 };
+            Assert.Throws<ArgumentException>(() => config.Validate());
+        }
+
+        [Test]
+        public void Validate_StartingArmyCountEqualsMaxArmyCount_DoesNotThrow()
+        {
+            var config = new RunConfig { startingArmyCount = 3, maxArmyCount = 3 };
+            Assert.DoesNotThrow(() => config.Validate());
+        }
     }
 }

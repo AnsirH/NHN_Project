@@ -18,16 +18,16 @@ namespace OutGame.UI.Deployment
     /// 군대 배치 UI (상세 기획 §5.7 — 핵심 산출물). 씬 독립 프리팹.
     /// 사용법: Open(...) → 배치 편집(드래그 앤 드롭) → [전투 시작] → OnConfirmed(BattleSetupData).
     ///
-    /// 레이아웃(2026-07-18 결정 — §5.7 목록+슬롯 구조와 UI 기획 이미지의 좌/우 진영 구조를 합성):
-    /// 좌측 "플레이어 진영" 컬럼 = 보유 군대 목록(상단, 스크롤) + 배치 슬롯 그리드(하단).
+    /// 레이아웃(2026-07-18 개정 — Mini Warriors 참고 이미지 재확인 후 로스터 목록 제거):
+    /// 군대 보유 상한 = 배치 슬롯 수(§4-7)이므로 보유 군대는 항상 전부 슬롯에 들어간다.
+    /// Open() 시점에 슬롯 ID 오름차순으로 자동 배치되며, 별도 "보유 군대" 목록/드롭존은 없다.
+    /// 드래그 앤 드롭은 슬롯 간 이동/스왑(진형 변경)만 지원 — DeploymentState.Place가 이미 처리.
     /// 우측 "적 진영"은 슬롯 그리드만 표시(적 구성은 RoomEncounterTable 미결 — 자리만 예약).
     /// 중앙 축: 적 버프 표시(1차 "없음") → [전투 시작] → [아이템] → [프리셋](비활성).
     /// </summary>
     public class ArmyDeploymentPanel : MonoBehaviour
     {
         [Header("구조 참조")]
-        [SerializeField] private RectTransform rosterContainer;
-        [SerializeField] private RosterDropZone rosterDropZone;
         [SerializeField] private RectTransform allySlotContainer;
         [SerializeField] private RectTransform enemySlotContainer;
         [SerializeField] private Text allyPowerLabel;
@@ -87,9 +87,14 @@ namespace OutGame.UI.Deployment
             foreach (ItemDefinition def in itemDefs) itemDefsById[def.ToData().id] = def;
 
             deployment = new DeploymentState(fieldConfig.ToData().GenerateSlots());
+            if (run.armies.Count > deployment.SlotCount)
+                throw new InvalidOperationException(
+                    $"보유 군대({run.armies.Count})가 배치 슬롯 수({deployment.SlotCount})를 초과했습니다 — " +
+                    "RunConfig.maxArmyCount와 BattleFieldConfig 슬롯 수가 어긋나 있습니다 (§4-7).");
 
             BuildSlots();
             BuildCards();
+            AutoPlaceArmies();
             RefreshLayout();
 
             enemyBuffLabel.text = "없음"; // §4-21: 1차는 표시 영역만
@@ -103,7 +108,7 @@ namespace OutGame.UI.Deployment
 
         private void ValidateWiring()
         {
-            if (rosterContainer == null || rosterDropZone == null || allySlotContainer == null
+            if (allySlotContainer == null
                 || enemySlotContainer == null || allyPowerLabel == null || enemyPowerLabel == null
                 || enemyBuffLabel == null || startBattleButton == null || itemButton == null || presetButton == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 구조 참조가 배선되지 않았습니다.");
@@ -117,14 +122,12 @@ namespace OutGame.UI.Deployment
 
         private void Awake()
         {
-            rosterDropZone.ArmyReturned += OnArmyReturned;
             startBattleButton.onClick.AddListener(OnStartBattleClicked);
             itemButton.onClick.AddListener(OnItemButtonClicked);
         }
 
         private void OnDestroy()
         {
-            rosterDropZone.ArmyReturned -= OnArmyReturned;
             startBattleButton.onClick.RemoveListener(OnStartBattleClicked);
             itemButton.onClick.RemoveListener(OnItemButtonClicked);
         }
@@ -158,14 +161,23 @@ namespace OutGame.UI.Deployment
                 if (view != null) Destroy(view.gameObject);
             cardsByArmyId.Clear();
 
+            // 임시 부모(패널 루트) — AutoPlaceArmies() 직후 RefreshLayout()이 슬롯 CardContainer로 재배치한다.
             foreach (ArmyInstance army in run.armies)
             {
-                ArmyCardView card = Instantiate(armyCardPrefab, rosterContainer);
+                ArmyCardView card = Instantiate(armyCardPrefab, transform);
                 card.Initialize(army.instanceId);
                 card.DragEnded += OnCardDragEnded;
                 card.ItemDropped += OnItemDroppedOnCard;
                 cardsByArmyId[army.instanceId] = card;
             }
+        }
+
+        /// <summary>보유 군대 전원을 슬롯 ID 오름차순으로 자동 배치한다 (§4-7 — 상한=슬롯 수라 항상 전부 들어간다).</summary>
+        private void AutoPlaceArmies()
+        {
+            List<int> slotIds = allySlotViewsById.Keys.OrderBy(id => id).ToList();
+            for (int i = 0; i < run.armies.Count; i++)
+                deployment.Place(run.armies[i].instanceId, slotIds[i]);
         }
 
         // ── 이벤트 처리 ──────────────────────────────────────────────
@@ -179,12 +191,6 @@ namespace OutGame.UI.Deployment
         {
             deployment.Place(armyInstanceId, slotId);
             RefreshLayout();
-        }
-
-        private void OnArmyReturned(string armyInstanceId)
-        {
-            deployment.Remove(armyInstanceId);
-            RefreshLayout(); // 로스터 드롭존은 카드 드래그의 대상이 아니라 OnCardDragEnded 체인 밖에 있음
         }
 
         private void OnCardDragEnded(ArmyCardView view)
@@ -250,9 +256,10 @@ namespace OutGame.UI.Deployment
                 if (army == null) continue; // 부대가 런에서 사라진 경우(미래 기능 대비) — 카드만 남기고 스킵
 
                 int? slotId = deployment.GetSlotOf(kv.Key);
-                Transform target = slotId.HasValue && allySlotViewsById.TryGetValue(slotId.Value, out DeploySlotView slotView)
-                    ? slotView.CardContainer
-                    : rosterContainer;
+                if (!slotId.HasValue || !allySlotViewsById.TryGetValue(slotId.Value, out DeploySlotView slotView))
+                    throw new InvalidOperationException(
+                        $"부대 {kv.Key}가 어떤 슬롯에도 배치되지 않았습니다 — 자동 배치 로직 확인 필요 (§4-7: 상한=슬롯 수).");
+                Transform target = slotView.CardContainer;
 
                 if (kv.Value.transform.parent != target)
                     kv.Value.transform.SetParent(target, worldPositionStays: false);

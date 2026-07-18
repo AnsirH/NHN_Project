@@ -136,7 +136,7 @@ namespace OutGame.Flow
             if (!run.visitedEventIds.Contains(selected.id))
                 run.visitedEventIds.Add(selected.id); // 소진 후 재추첨된 반복 항목은 중복 기록하지 않음
 
-            eventPanel.Open(eventDefsById[selected.id], run);
+            eventPanel.Open(eventDefsById[selected.id], run, runConfig.ToData().maxArmyCount);
         }
 
         private void OpenBattleRoom(MapNode node)

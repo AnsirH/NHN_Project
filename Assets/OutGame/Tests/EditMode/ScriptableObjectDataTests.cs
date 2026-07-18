@@ -89,12 +89,40 @@ namespace OutGame.Tests.EditMode
 
                 var data = runConfigSo.ToData();
                 Assert.AreEqual(20, data.battleVictoryGold, "§9 초안값 — 밸런스 튜닝 전까지 20");
+                Assert.AreEqual(9, data.maxArmyCount, "§4-7 — BattleFieldConfig 기본 3×3과 일치하는 기본값");
             }
             finally
             {
                 Object.DestroyImmediate(armySo);
                 Object.DestroyImmediate(runConfigSo);
             }
+        }
+
+        [Test]
+        public void RunConfigAsset_ToData_MaxArmyCountBelowStartingArmyCount_Throws()
+        {
+            var armySo = ScriptableObject.CreateInstance<ArmyDefinition>();
+            var runConfigSo = ScriptableObject.CreateInstance<RunConfigAsset>();
+            try
+            {
+                SetField(runConfigSo, "startingArmy", armySo);
+                SetField(runConfigSo, "startingArmyCount", 5);
+                SetField(runConfigSo, "maxArmyCount", 3);
+
+                Assert.Throws<System.InvalidOperationException>(() => runConfigSo.ToData());
+            }
+            finally
+            {
+                Object.DestroyImmediate(armySo);
+                Object.DestroyImmediate(runConfigSo);
+            }
+        }
+
+        private static void SetField(RunConfigAsset target, string fieldName, object value)
+        {
+            var field = typeof(RunConfigAsset).GetField(fieldName,
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            field.SetValue(target, value);
         }
     }
 }

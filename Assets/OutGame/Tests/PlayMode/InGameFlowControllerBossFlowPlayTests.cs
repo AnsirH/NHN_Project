@@ -85,12 +85,7 @@ namespace OutGame.Tests.PlayMode
             var battlePanel = GetField<DummyBattlePanel>(flow, "battlePanel");
             var roomPanel = GetField<DummyRoomPanel>(flow, "roomPanel");
 
-            var cardView = deploymentPanel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
-            var slotView = deploymentPanel.GetComponentsInChildren<DeploySlotView>().First();
-            typeof(ArmyDeploymentPanel)
-                .GetMethod("OnArmyDroppedOnSlot", Priv)
-                .Invoke(deploymentPanel, new object[] { cardView.ArmyInstanceId, slotView.SlotId });
-
+            // 군대 보유 상한 = 배치 슬롯 수(§4-7)라 Open() 시점에 이미 전원 자동 배치돼 있다.
             var startButton = deploymentPanel.GetComponentsInChildren<Button>(true).First(b => b.name == "StartBattleButton");
             startButton.onClick.Invoke();
             yield return null;

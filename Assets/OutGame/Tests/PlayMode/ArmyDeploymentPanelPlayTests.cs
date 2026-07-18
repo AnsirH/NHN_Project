@@ -15,6 +15,7 @@ namespace OutGame.Tests.PlayMode
 {
     /// <summary>
     /// ArmyDeploymentPanel 프리팹 스모크 테스트 — 프리팹은 SceneSetupM3UI.Run()으로 생성돼 있어야 한다.
+    /// 군대 보유 상한 = 배치 슬롯 수(§4-7)이므로 Open() 시점에 보유 군대 전원이 자동 배치된다.
     /// </summary>
     public class ArmyDeploymentPanelPlayTests
     {
@@ -87,13 +88,45 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Open_StartBattleButtonDisabledWhenEmpty()
+        public IEnumerator Open_AutoPlacesAllArmiesIntoSlots()
         {
             OpenPanel();
             yield return null;
 
+            var cards = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
+            Assert.AreEqual(run.armies.Count, cards.Length);
+            foreach (var card in cards)
+                Assert.IsNotNull(card.GetComponentInParent<DeploySlotView>(), "자동 배치 후 모든 카드는 슬롯 안에 있어야 함 (§4-7)");
+
             Button startButton = panel.transform.Find("MainRow/CenterColumn/StartBattleButton").GetComponent<Button>();
-            Assert.IsFalse(startButton.interactable, "빈 배치로는 전투 시작 불가 (§5.7)");
+            Assert.IsTrue(startButton.interactable, "전원 자동 배치되므로 Open() 직후 바로 전투 시작 가능해야 함");
+        }
+
+        [Test]
+        public void Open_WithNoArmies_StartBattleButtonDisabled()
+        {
+            MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
+            var emptyRun = new RunState { mapState = map };
+
+            panel.Open(emptyRun, "room_2_0", RoomType.NormalBattle, "enc_default",
+                new[] { armyDef }, new[] { bowDef, saddleDef });
+
+            Button startButton = panel.transform.Find("MainRow/CenterColumn/StartBattleButton").GetComponent<Button>();
+            Assert.IsFalse(startButton.interactable, "군대가 하나도 없으면 전투 시작 불가 (§5.7)");
+        }
+
+        [Test]
+        public void Open_ArmyCountExceedsSlotCount_Throws()
+        {
+            // RunConfig 자체 검증(startingArmyCount<=maxArmyCount)은 통과시키되, 실제 배치판(3×3=9)보다
+            // 많은 군대를 보유하게 만들어 config 불일치(§4-7) 방어 로직을 검증한다.
+            MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
+            RunState overCapRun = RunStateFactory.Create(map,
+                new RunConfig { startingArmyCount = 10, maxArmyCount = 10, startingArmyDefId = "army_basic" });
+
+            Assert.Throws<System.InvalidOperationException>(() =>
+                panel.Open(overCapRun, "room_2_0", RoomType.NormalBattle, "enc_default",
+                    new[] { armyDef }, new[] { bowDef, saddleDef }));
         }
 
         [UnityTest]
@@ -102,27 +135,38 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var slotView = panel.GetComponentsInChildren<DeploySlotView>().First();
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
-
-            // 드래그 앤 드롭 시뮬레이션 없이, 배치 API를 직접 통해 계약을 검증
-            // (uGUI 실제 드래그 시뮬레이션은 EventSystem raycast 의존이 커서 별도 통합 테스트로 분리)
-            typeof(ArmyDeploymentPanel)
-                .GetMethod("OnArmyDroppedOnSlot", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                .Invoke(panel, new object[] { cardView.ArmyInstanceId, slotView.SlotId });
-            yield return null;
-
             Logic.Battle.BattleSetupData received = null;
             panel.Confirmed += setup => received = setup;
 
             Button startButton = panel.transform.Find("MainRow/CenterColumn/StartBattleButton").GetComponent<Button>();
-            Assert.IsTrue(startButton.interactable);
+            Assert.IsTrue(startButton.interactable, "자동 배치되므로 Open() 직후 바로 전투 시작 가능해야 함");
             startButton.onClick.Invoke();
 
             Assert.IsNotNull(received);
             Assert.AreEqual("room_2_0", received.roomId);
-            Assert.AreEqual(1, received.armies.Count);
-            Assert.AreEqual(cardView.ArmyInstanceId, received.armies[0].armyInstanceId);
+            Assert.AreEqual(run.armies.Count, received.armies.Count, "보유 군대 전원이 자동 배치되어 전투에 참여해야 함");
+        }
+
+        [UnityTest]
+        public IEnumerator SwapArmiesBetweenSlots_ReassignsBothCorrectly()
+        {
+            OpenPanel();
+            yield return null;
+
+            var slots = panel.GetComponentsInChildren<DeploySlotView>().OrderBy(s => s.SlotId).ToList();
+            var firstCard = slots[0].CardContainer.GetComponentInChildren<ArmyCardView>();
+            var secondCard = slots[1].CardContainer.GetComponentInChildren<ArmyCardView>();
+            Assert.IsNotNull(firstCard);
+            Assert.IsNotNull(secondCard);
+
+            // 첫 슬롯의 카드를 두 번째 슬롯 위로 드래그 — DeploymentState.Place가 스왑을 처리 (§5.7)
+            typeof(ArmyDeploymentPanel)
+                .GetMethod("OnArmyDroppedOnSlot", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .Invoke(panel, new object[] { firstCard.ArmyInstanceId, slots[1].SlotId });
+            yield return null;
+
+            Assert.AreSame(firstCard, slots[1].CardContainer.GetComponentInChildren<ArmyCardView>());
+            Assert.AreSame(secondCard, slots[0].CardContainer.GetComponentInChildren<ArmyCardView>());
         }
 
         [UnityTest]
@@ -133,30 +177,6 @@ namespace OutGame.Tests.PlayMode
 
             Button presetButton = panel.transform.Find("MainRow/CenterColumn/PresetButton").GetComponent<Button>();
             Assert.IsFalse(presetButton.interactable, "프리셋은 §4-17에 따라 항상 비활성");
-        }
-
-        [UnityTest]
-        public IEnumerator ReturnToRoster_VacatesSlotAndUpdatesPower()
-        {
-            OpenPanel();
-            yield return null;
-
-            var slotView = panel.GetComponentsInChildren<DeploySlotView>().First();
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
-            typeof(ArmyDeploymentPanel)
-                .GetMethod("OnArmyDroppedOnSlot", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                .Invoke(panel, new object[] { cardView.ArmyInstanceId, slotView.SlotId });
-            yield return null;
-
-            typeof(ArmyDeploymentPanel)
-                .GetMethod("OnArmyReturned", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                .Invoke(panel, new object[] { cardView.ArmyInstanceId });
-            yield return null;
-
-            Text allyPower = panel.transform.Find("MainRow/AllyColumn/PowerLabel").GetComponent<Text>();
-            Assert.AreEqual("전투력: 0", allyPower.text, "배치 해제 후 전투력이 0으로 복귀해야 함");
-            Button startButton = panel.transform.Find("MainRow/CenterColumn/StartBattleButton").GetComponent<Button>();
-            Assert.IsFalse(startButton.interactable);
         }
 
         [UnityTest]

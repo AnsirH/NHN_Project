@@ -22,6 +22,7 @@ namespace OutGame.UI
 
         private readonly List<Button> spawnedChoiceButtons = new List<Button>();
         private RunState run;
+        private int maxArmyCount;
 
         /// <summary>선택 완료 후 [계속] 클릭 시 발행 — 플로우가 맵 복귀를 처리한다.</summary>
         public event Action Completed;
@@ -38,12 +39,13 @@ namespace OutGame.UI
 
         private void OnDestroy() => continueButton.onClick.RemoveListener(OnContinueClicked);
 
-        public void Open(EventDefinition definition, RunState runState)
+        public void Open(EventDefinition definition, RunState runState, int maxArmyCountValue)
         {
             if (definition == null) throw new ArgumentNullException(nameof(definition));
             if (runState == null) throw new ArgumentNullException(nameof(runState));
 
             run = runState;
+            maxArmyCount = maxArmyCountValue;
             EventData data = definition.ToData(); // 콘텐츠 결함(선택지 부족 등)은 여기서 즉시 드러남
 
             illustrationImage.gameObject.SetActive(definition.Illustration != null);
@@ -68,12 +70,14 @@ namespace OutGame.UI
 
         private void OnChoiceSelected(EventChoiceData choice)
         {
-            EventRewardApplier.Apply(run, choice.rewards);
+            var skipped = EventRewardApplier.Apply(run, choice.rewards, maxArmyCount);
 
             foreach (Button button in spawnedChoiceButtons)
                 if (button != null) button.gameObject.SetActive(false);
 
             resultText.text = choice.resultText;
+            if (skipped.Count > 0)
+                resultText.text += "\n(군대 슬롯이 가득 차 있어 일부 보상을 받지 못했습니다.)"; // §4-7
             resultText.gameObject.SetActive(true);
             continueButton.gameObject.SetActive(true);
         }
