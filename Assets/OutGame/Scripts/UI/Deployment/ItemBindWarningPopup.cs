@@ -59,6 +59,7 @@ namespace OutGame.UI.Deployment
             messageLabel.text = $"'{itemName}'을(를) '{armyName}'에 부여합니다.\n" +
                                  "이 아이템은 부대에 귀속되며 되돌릴 수 없습니다.";
             suppressToggle.isOn = false;
+            transform.SetAsLastSibling(); // 인벤토리 팝업이 이미 열려 있어도 항상 그 위에 떠야 함 (버그 수정)
             gameObject.SetActive(true);
         }
 

@@ -95,5 +95,13 @@ namespace OutGame.Tests.EditMode
                 () => ItemEquipService.ResolveClass(run.armies[0], Items),
                 "데이터 무결성 — 정의 없는 아이템은 조기에 드러나야 함");
         }
+
+        [Test]
+        public void ClassDisplayName_MapsToKorean()
+        {
+            Assert.AreEqual("", ItemEquipService.ClassDisplayName(ArmyClass.None));
+            Assert.AreEqual("궁수", ItemEquipService.ClassDisplayName(ArmyClass.Archer));
+            Assert.AreEqual("기마", ItemEquipService.ClassDisplayName(ArmyClass.Cavalry));
+        }
     }
 }

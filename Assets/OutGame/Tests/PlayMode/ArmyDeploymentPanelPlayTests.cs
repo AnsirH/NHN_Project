@@ -276,6 +276,49 @@ namespace OutGame.Tests.PlayMode
 
             Assert.IsTrue(run.GetArmy(cardView.ArmyInstanceId).HasItem, "아이템이 부여됐어야 함");
             Assert.IsFalse(run.ownedItemIds.Contains("item_bow"), "귀속된 아이템은 보유 목록에서 제거");
+
+            // 병과가 생기면 이름 자체가 바뀌어야 한다 (§2 용어: 기본 군대 + 활 = 궁수 군대) — 뱃지에 영문
+            // enum 이름("Archer")만 뜨고 이름이 그대로면 아이템을 또 부여할 수 있는 것처럼 보이는 회귀 버그.
+            Text nameLabel = cardView.transform.Find("NameLabel").GetComponent<Text>();
+            Text classBadge = cardView.transform.Find("ClassBadge").GetComponent<Text>();
+            Assert.AreEqual("궁수 군대", nameLabel.text);
+            Assert.AreEqual("궁수", classBadge.text);
+        }
+
+        [UnityTest]
+        public IEnumerator Open_InventoryPopupDimDoesNotBlockRaycasts()
+        {
+            // 인벤토리 팝업은 모달이 아니다 — 아이템을 팝업 밖 부대 카드로 드래그해서 부여해야 하므로
+            // 전체 화면 dim이 raycastTarget=true면 드롭이 배경 카드에 닿지 않는다 (2026-07-19 버그 수정).
+            OpenPanel();
+            yield return null;
+
+            var inventoryPopup = panel.GetComponentInChildren<InventoryPopup>(includeInactive: true);
+            var dim = inventoryPopup.GetComponent<Image>();
+            Assert.IsFalse(dim.raycastTarget, "인벤토리 팝업의 dim 배경은 뒤쪽 카드로의 드롭을 막으면 안 됨");
+        }
+
+        [UnityTest]
+        public IEnumerator ItemDrop_WithoutSuppression_ShowsWarningPopupAboveInventoryPopup()
+        {
+            // 인벤토리 팝업이 열려 있는 상태에서 귀속 확인 팝업이 그보다 뒤(먼저 자식) 순서면 가려서 안 보인다
+            // (2026-07-19 버그 수정 회귀 테스트).
+            run.ownedItemIds.Add("item_bow");
+            OpenPanel();
+            yield return null;
+
+            var inventoryPopup = panel.GetComponentInChildren<InventoryPopup>(includeInactive: true);
+            var bindWarningPopup = panel.GetComponentInChildren<ItemBindWarningPopup>(includeInactive: true);
+
+            panel.transform.Find("MainRow/CenterColumn/ItemButton").GetComponent<Button>().onClick.Invoke();
+            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            DropItemOnCard(cardView, "item_bow");
+            yield return null;
+            yield return null;
+
+            Assert.IsTrue(bindWarningPopup.IsShowing, "억제 플래그가 꺼져 있으면 확인 팝업이 떠야 함");
+            Assert.Greater(bindWarningPopup.transform.GetSiblingIndex(), inventoryPopup.transform.GetSiblingIndex(),
+                "경고 팝업은 항상 인벤토리 팝업보다 위(나중 형제)에 있어야 함");
         }
 
         [UnityTest]
