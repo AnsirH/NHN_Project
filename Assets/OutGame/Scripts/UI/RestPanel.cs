@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using OutGame.Logic.Items;
 using OutGame.Logic.Rest;
 using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
@@ -20,6 +22,7 @@ namespace OutGame.UI
 
         private readonly List<Button> spawnedOptions = new List<Button>();
         private RunState run;
+        private Dictionary<string, ItemData> itemDataById;
 
         public event Action Completed;
 
@@ -34,12 +37,17 @@ namespace OutGame.UI
 
         private void OnDestroy() => continueButton.onClick.RemoveListener(OnContinueClicked);
 
-        public void Open(RunState runState, IReadOnlyDictionary<string, ArmyDefinition> armyDefsById)
+        public void Open(
+            RunState runState,
+            IReadOnlyDictionary<string, ArmyDefinition> armyDefsById,
+            IReadOnlyDictionary<string, ItemDefinition> itemDefsById)
         {
             if (runState == null) throw new ArgumentNullException(nameof(runState));
             if (armyDefsById == null) throw new ArgumentNullException(nameof(armyDefsById));
+            if (itemDefsById == null) throw new ArgumentNullException(nameof(itemDefsById));
 
             run = runState;
+            itemDataById = itemDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
             resultText.gameObject.SetActive(false);
             continueButton.gameObject.SetActive(false);
             ClearOptions();
@@ -53,9 +61,12 @@ namespace OutGame.UI
                 }
 
                 var data = def.ToData();
+                // 병과가 생기면 이름이 바뀐다(§2 용어: 기본 군대 + 활 = 궁수 군대) — 배치 UI와 동일한
+                // 로직을 타야 한다. 각자 계산하면 한쪽만 반영되는 버그가 생긴다(2026-07-19 실제 발생).
+                string displayName = ItemEquipService.ResolveDisplayName(army, data.displayName, itemDataById);
                 Button option = Instantiate(armyOptionPrefab, armyListContainer);
                 option.GetComponentInChildren<Text>().text =
-                    $"{data.displayName} ({data.baseSoldierCount + army.bonusSoldierCount}명)";
+                    $"{displayName} ({data.baseSoldierCount + army.bonusSoldierCount}명)";
                 option.onClick.AddListener(() => OnArmySelected(army, def));
                 spawnedOptions.Add(option);
             }
@@ -76,11 +87,12 @@ namespace OutGame.UI
         {
             var data = def.ToData();
             int added = RestService.Reinforce(army, data);
+            string displayName = ItemEquipService.ResolveDisplayName(army, data.displayName, itemDataById);
 
             foreach (Button option in spawnedOptions)
                 if (option != null) option.gameObject.SetActive(false);
 
-            resultText.text = $"{data.displayName} 부대에 {added}명이 증원되었습니다.";
+            resultText.text = $"{displayName} 부대에 {added}명이 증원되었습니다.";
             resultText.gameObject.SetActive(true);
             continueButton.gameObject.SetActive(true);
         }

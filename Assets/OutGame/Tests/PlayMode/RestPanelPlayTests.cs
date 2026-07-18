@@ -21,6 +21,7 @@ namespace OutGame.Tests.PlayMode
         private RestPanel panel;
         private RunState run;
         private Dictionary<string, ArmyDefinition> armyDefsById;
+        private Dictionary<string, ItemDefinition> itemDefsById;
 
         [SetUp]
         public void SetUp()
@@ -36,6 +37,10 @@ namespace OutGame.Tests.PlayMode
             Assert.IsNotNull(armyDef);
             armyDefsById = new Dictionary<string, ArmyDefinition> { ["army_basic"] = armyDef };
 
+            var bowDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Bow");
+            Assert.IsNotNull(bowDef);
+            itemDefsById = new Dictionary<string, ItemDefinition> { ["item_bow"] = bowDef };
+
             MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
             run = RunStateFactory.Create(map, new RunConfig { startingArmyCount = 2, startingArmyDefId = "army_basic" });
         }
@@ -46,7 +51,7 @@ namespace OutGame.Tests.PlayMode
         [UnityTest]
         public IEnumerator Open_SpawnsOptionPerArmy()
         {
-            panel.Open(run, armyDefsById);
+            panel.Open(run, armyDefsById, itemDefsById);
             yield return null;
 
             var buttons = panel.GetComponentsInChildren<Button>()
@@ -57,7 +62,7 @@ namespace OutGame.Tests.PlayMode
         [UnityTest]
         public IEnumerator Open_ContinueButtonAndResultText_StartInactive()
         {
-            panel.Open(run, armyDefsById);
+            panel.Open(run, armyDefsById, itemDefsById);
             yield return null;
 
             Button continueButton = panel.transform.Find("Window/ContinueButton").GetComponent<Button>();
@@ -68,9 +73,26 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Open_ArmyWithEquippedItem_ShowsClassAwareName()
+        {
+            // 배치 UI와 동일하게 병과 반영 이름이 나와야 한다 (§2 용어) — 각자 계산해서 한쪽만 반영됐던
+            // 회귀 버그 재발 방지 (2026-07-19).
+            run.ownedItemIds.Add("item_bow");
+            OutGame.Logic.Items.ItemEquipService.Equip(run, run.armies[0].instanceId, "item_bow");
+
+            panel.Open(run, armyDefsById, itemDefsById);
+            yield return null;
+
+            var optionLabel = panel.GetComponentsInChildren<Button>()
+                .First(b => b.transform.parent.name == "ArmyListContainer")
+                .GetComponentInChildren<Text>();
+            StringAssert.StartsWith("궁수 군대", optionLabel.text);
+        }
+
+        [UnityTest]
         public IEnumerator SelectArmy_ReinforcesBy20PercentOfBase()
         {
-            panel.Open(run, armyDefsById);
+            panel.Open(run, armyDefsById, itemDefsById);
             yield return null;
 
             string targetId = run.armies[0].instanceId;
@@ -92,7 +114,7 @@ namespace OutGame.Tests.PlayMode
         [UnityTest]
         public IEnumerator Continue_FiresCompletedAndHidesPanel()
         {
-            panel.Open(run, armyDefsById);
+            panel.Open(run, armyDefsById, itemDefsById);
             yield return null;
 
             panel.GetComponentsInChildren<Button>().First(b => b.transform.parent.name == "ArmyListContainer").onClick.Invoke();

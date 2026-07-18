@@ -277,12 +277,12 @@ namespace OutGame.Tests.PlayMode
             Assert.IsTrue(run.GetArmy(cardView.ArmyInstanceId).HasItem, "아이템이 부여됐어야 함");
             Assert.IsFalse(run.ownedItemIds.Contains("item_bow"), "귀속된 아이템은 보유 목록에서 제거");
 
-            // 병과가 생기면 이름 자체가 바뀌어야 한다 (§2 용어: 기본 군대 + 활 = 궁수 군대) — 뱃지에 영문
-            // enum 이름("Archer")만 뜨고 이름이 그대로면 아이템을 또 부여할 수 있는 것처럼 보이는 회귀 버그.
+            // 병과가 생기면 이름 자체가 바뀌어야 한다 (§2 용어: 기본 군대 + 활 = 궁수 군대). 이름이 이미
+            // 병과를 나타내므로 뱃지는 따로 표시하지 않는다 (2026-07-19 사용자 피드백 — 뱃지 중복 표시 제거).
             Text nameLabel = cardView.transform.Find("NameLabel").GetComponent<Text>();
             Text classBadge = cardView.transform.Find("ClassBadge").GetComponent<Text>();
             Assert.AreEqual("궁수 군대", nameLabel.text);
-            Assert.AreEqual("궁수", classBadge.text);
+            Assert.IsFalse(classBadge.gameObject.activeSelf, "이름이 병과를 나타내므로 뱃지는 비활성 상태여야 함");
         }
 
         [UnityTest]

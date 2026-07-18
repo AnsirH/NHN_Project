@@ -293,15 +293,13 @@ namespace OutGame.UI.Deployment
                     ((RectTransform)kv.Value.transform).anchoredPosition = Vector2.zero;
                 }
 
-                ArmyClass armyClass = ItemEquipService.ResolveClass(army, itemDataById);
-                string classLabel = ItemEquipService.ClassDisplayName(armyClass);
                 armyDefsById.TryGetValue(army.armyDefId, out ArmyDefinition def);
                 Sprite portrait = def != null ? def.Portrait : null;
                 string baseDisplayName = def != null ? def.ToData().displayName : army.armyDefId;
-                // 병과가 생기면 이름 자체가 바뀐다 (§2 용어: 기본 군대 + 활 = 궁수 군대) — 뱃지만으로는
-                // 아이템이 이미 부여됐다는 게 잘 드러나지 않아 "또 부여 가능해 보인다"는 혼동이 있었다.
-                string displayName = armyClass == ArmyClass.None ? baseDisplayName : $"{classLabel} 군대";
-                kv.Value.SetDisplay(displayName, classLabel, portrait);
+                string displayName = ItemEquipService.ResolveDisplayName(army, baseDisplayName, itemDataById);
+                // 이름 자체가 병과를 나타내므로(§2 용어: 기본 군대 + 활 = 궁수 군대) 뱃지는 더 이상
+                // 따로 표시하지 않는다 — 이름 아래 중복 표시는 "또 부여 가능해 보인다"는 혼동만 줬다.
+                kv.Value.SetDisplay(displayName, "", portrait);
             }
 
             startBattleButton.interactable = deployment.CanStartBattle;

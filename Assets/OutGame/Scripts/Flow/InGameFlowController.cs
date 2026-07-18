@@ -122,7 +122,7 @@ namespace OutGame.Flow
                     OpenEventRoom();
                     break;
                 case RoomType.Rest:
-                    restPanel.Open(run, armyDefsById);
+                    restPanel.Open(run, armyDefsById, itemDefsById);
                     break;
                 default:
                     OpenBattleRoom(node);

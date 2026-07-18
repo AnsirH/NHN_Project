@@ -176,7 +176,10 @@ namespace OutGame.Tests.PlayMode
                 var restPrefab = Resources.Load<GameObject>("OutGame/RestPanel");
                 var armyDef = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
                 var restPanel = Object.Instantiate(restPrefab, canvasGo.transform).GetComponent<RestPanel>();
-                restPanel.Open(run, new System.Collections.Generic.Dictionary<string, ArmyDefinition> { ["army_basic"] = armyDef });
+                restPanel.Open(
+                    run,
+                    new System.Collections.Generic.Dictionary<string, ArmyDefinition> { ["army_basic"] = armyDef },
+                    new System.Collections.Generic.Dictionary<string, ItemDefinition>());
                 yield return CaptureToFile("RestPanel_01_initial.png");
 
                 var optionButton = restPanel.GetComponentsInChildren<UnityEngine.UI.Button>()
