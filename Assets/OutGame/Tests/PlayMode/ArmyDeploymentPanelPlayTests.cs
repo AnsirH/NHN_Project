@@ -303,6 +303,31 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator ItemDrop_OnSlotMarginAroundCard_EquipsSameAsDirectCardDrop()
+        {
+            // 4×7 확장(cellSize 190x130 > 카드 140x88, §5.7) 이후 카드 주위에 빈 여백이 생겨, 그 여백에
+            // 드롭하면 DeploySlotView가 이벤트를 받되 처리 안 하고 무시하던 회귀 버그 — 카드로 위임돼야 함.
+            PlayerPrefs.SetInt(ItemBindWarningPopup.SuppressPrefKey, 1);
+            run.ownedItemIds.Add("item_bow");
+            OpenPanel();
+            yield return null;
+
+            var slots = panel.GetComponentsInChildren<DeploySlotView>().OrderBy(s => s.SlotId).ToList();
+            var occupantCard = slots[0].CardContainer.GetComponentInChildren<ArmyCardView>();
+
+            panel.transform.Find("MainRow/CenterColumn/ItemButton").GetComponent<Button>().onClick.Invoke();
+            var itemCard = panel.GetComponentsInChildren<ItemCardView>(includeInactive: true).First();
+
+            // 카드가 아니라 슬롯 자체(여백 포함 전체 영역)에 드롭된 상황을 재현 — DeploySlotView.OnDrop 직접 호출.
+            var eventData = new PointerEventData(eventSystemGo.GetComponent<EventSystem>()) { pointerDrag = itemCard.gameObject };
+            slots[0].OnDrop(eventData);
+            yield return null; // HandleItemDropNextFrame의 1프레임 지연
+            yield return null;
+
+            Assert.IsTrue(run.GetArmy(occupantCard.ArmyInstanceId).HasItem, "슬롯 여백에 드롭해도 카드에 드롭한 것과 동일하게 장착돼야 함");
+        }
+
+        [UnityTest]
         public IEnumerator ItemDrop_UnownedItem_IsIgnored()
         {
             OpenPanel();

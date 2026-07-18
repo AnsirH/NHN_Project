@@ -19,6 +19,9 @@ namespace OutGame.UI.Deployment
         /// <summary>군대 카드가 이 슬롯에 드롭됐을 때 발행 (armyInstanceId, slotId).</summary>
         public event Action<string, int> ArmyDropped;
 
+        /// <summary>아이템이 카드 밖 슬롯 여백에 드롭됐을 때, 슬롯에 배치된 카드로 위임 발행 (아래 참고).</summary>
+        public event Action<ArmyCardView, string> ItemDroppedOnOccupant;
+
         public void Initialize(int slotId)
         {
             if (background == null || cardContainer == null)
@@ -29,10 +32,21 @@ namespace OutGame.UI.Deployment
 
         public void OnDrop(PointerEventData eventData)
         {
-            if (eventData.pointerDrag == null || !eventData.pointerDrag.TryGetComponent(out ArmyCardView card))
-                return;
+            if (eventData.pointerDrag == null) return;
 
-            ArmyDropped?.Invoke(card.ArmyInstanceId, SlotId);
+            if (eventData.pointerDrag.TryGetComponent(out ArmyCardView card))
+            {
+                ArmyDropped?.Invoke(card.ArmyInstanceId, SlotId);
+                return;
+            }
+
+            // 슬롯 칸(cellSize)이 카드 고정 크기보다 커서(4×7 확장, §5.7) 카드 주위에 빈 여백이 생긴다 —
+            // 그 여백에 아이템을 드롭해도 카드에 드롭한 것과 동일하게 처리해야 한다.
+            if (eventData.pointerDrag.TryGetComponent(out ItemCardView item))
+            {
+                ArmyCardView occupant = cardContainer.GetComponentInChildren<ArmyCardView>();
+                if (occupant != null) ItemDroppedOnOccupant?.Invoke(occupant, item.ItemId);
+            }
         }
     }
 }

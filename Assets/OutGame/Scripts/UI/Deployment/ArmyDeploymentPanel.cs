@@ -147,6 +147,7 @@ namespace OutGame.UI.Deployment
                 DeploySlotView view = Instantiate(allySlotPrefab, allySlotContainer);
                 view.Initialize(slot.slotId);
                 view.ArmyDropped += OnArmyDroppedOnSlot;
+                view.ItemDroppedOnOccupant += OnItemDroppedOnCard;
                 allySlotViewsById[slot.slotId] = view;
             }
 
