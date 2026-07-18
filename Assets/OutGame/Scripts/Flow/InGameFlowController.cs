@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using OutGame.Logic.Battle;
 using OutGame.Logic.Events;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
 using OutGame.UI;
+using OutGame.UI.Deployment;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,14 +16,16 @@ namespace OutGame.Flow
 {
     /// <summary>
     /// 인게임 방 진행 루프: 맵 생성 → 방 그래프 표시 → 노드 선택 → 방문 확정 → 방 타입별 패널 → 복귀.
-    /// 전투/보스 방은 아직 더미 패널(M6에서 배치 UI+더미 전투 브릿지로 대체 예정, §8).
+    /// 전투/보스 방은 ArmyDeploymentPanel → BattleBridge(M6부터 더미 구현) → 결과 처리로 이어진다.
     /// </summary>
     public class InGameFlowController : MonoBehaviour
     {
         [SerializeField] private RoomMapPanel mapPanel;
-        [SerializeField] private DummyRoomPanel roomPanel; // 보스 클리어 표시 + 전투 방 임시 자리 (M6까지)
+        [SerializeField] private DummyRoomPanel roomPanel; // 런 종료(클리어/패배) 화면
         [SerializeField] private EventPanel eventPanel;
         [SerializeField] private RestPanel restPanel;
+        [SerializeField] private ArmyDeploymentPanel deploymentPanel;
+        [SerializeField] private DummyBattlePanel battlePanel; // BattleBridge.Implementation의 M6 더미 구현
         [SerializeField] private RoomTypeVisualSet visuals;
         [SerializeField] private RunConfigAsset runConfig;
 
@@ -37,8 +41,10 @@ namespace OutGame.Flow
         private List<EventData> eventDataPool;
         private Dictionary<string, EventDefinition> eventDefsById;
         private Dictionary<string, ArmyDefinition> armyDefsById;
+        private Dictionary<string, ItemDefinition> itemDefsById;
         private string savePath;
         private bool runEnded;
+        private RoomType currentBattleRoomType;
 
         private void Start()
         {
@@ -51,9 +57,9 @@ namespace OutGame.Flow
                 runConfig = Resources.Load<RunConfigAsset>("OutGame/Data/RunConfig_Default");
 
             if (mapPanel == null || roomPanel == null || eventPanel == null || restPanel == null
-                || visuals == null || runConfig == null)
+                || deploymentPanel == null || battlePanel == null || visuals == null || runConfig == null)
                 throw new InvalidOperationException(
-                    "InGameFlowController의 필수 참조가 배선되지 않았습니다 — 씬 구성(SceneSetupM2/M4) 확인");
+                    "InGameFlowController의 필수 참조가 배선되지 않았습니다 — 씬 구성(SceneSetupM2/M4/M6) 확인");
 
             List<EventDefinition> eventPool = Resources.LoadAll<EventDefinition>("OutGame/Data/Events").ToList();
             if (eventPool.Count == 0)
@@ -63,6 +69,8 @@ namespace OutGame.Flow
 
             armyDefsById = Resources.LoadAll<ArmyDefinition>("OutGame/Data")
                 .ToDictionary(a => a.ToData().id);
+            itemDefsById = Resources.LoadAll<ItemDefinition>("OutGame/Data")
+                .ToDictionary(i => i.ToData().id);
 
             savePath = RunSaveService.DefaultPath;
             run = pendingRun;
@@ -75,10 +83,15 @@ namespace OutGame.Flow
             }
             rng = new System.Random(Environment.TickCount);
 
+            // BattleBridge.Implementation은 씬이 로드될 때마다 재등록해야 한다 — Domain Reload가
+            // 꺼져 있어도 파괴된 오브젝트의 클로저를 가리키지 않도록 (BattleBridge.cs 참조).
+            BattleBridge.Implementation = battlePanel.Open;
+
             mapPanel.RoomSelected += OnRoomSelected;
             roomPanel.Completed += OnRoomCompleted;
             eventPanel.Completed += OnRoomCompleted;
             restPanel.Completed += OnRoomCompleted;
+            deploymentPanel.Confirmed += OnBattleSetupConfirmed;
 
             roomPanel.Hide();
             mapPanel.Open(run.mapState);
@@ -90,6 +103,7 @@ namespace OutGame.Flow
             if (roomPanel != null) roomPanel.Completed -= OnRoomCompleted;
             if (eventPanel != null) eventPanel.Completed -= OnRoomCompleted;
             if (restPanel != null) restPanel.Completed -= OnRoomCompleted;
+            if (deploymentPanel != null) deploymentPanel.Confirmed -= OnBattleSetupConfirmed;
         }
 
         private void OnRoomSelected(MapNode node)
@@ -97,13 +111,8 @@ namespace OutGame.Flow
             MapProgress.Visit(run.mapState, node.point);
             mapPanel.Refresh();
 
-            if (MapProgress.HasVisitedBoss(run.mapState))
-            {
-                runEnded = true;
-                RunSaveService.DeleteSave(savePath); // 런 종료 — 이어하기 대상에서 제외 (§5.1)
-                roomPanel.ShowRunClear();
-                return;
-            }
+            // 주의: MapProgress.HasVisitedBoss는 보스 "방문" 여부이지 "승리" 여부가 아니다.
+            // 런 클리어는 보스 전투에서 승리했을 때만 성립하므로(OnBattleResult), 여기서 미리 판정하지 않는다.
 
             // 저장은 방 결과(보상 적용 등)까지 반영된 뒤 OnRoomCompleted에서 한 번만 수행한다.
             // 여기서 먼저 저장하면 "방문함"만 기록되고 보상은 누락된 상태로 저장될 위험이 있다.
@@ -116,7 +125,7 @@ namespace OutGame.Flow
                     restPanel.Open(run, armyDefsById);
                     break;
                 default:
-                    roomPanel.Show(node, visuals); // 전투 방 — 배치 UI 연결은 M6 (§8)
+                    OpenBattleRoom(node);
                     break;
             }
         }
@@ -130,11 +139,50 @@ namespace OutGame.Flow
             eventPanel.Open(eventDefsById[selected.id], run);
         }
 
+        private void OpenBattleRoom(MapNode node)
+        {
+            // RoomEncounterTable 협의 전 임시 키(§9) — 적 구성이 정의되면 노드별 실제 값으로 대체
+            string encounterId = $"enc_{node.roomType}";
+            deploymentPanel.Open(run, node.id, node.roomType, encounterId,
+                armyDefsById.Values.ToList(), itemDefsById.Values.ToList());
+        }
+
+        private void OnBattleSetupConfirmed(BattleSetupData setup)
+        {
+            currentBattleRoomType = setup.roomType;
+            deploymentPanel.Close();
+            BattleBridge.StartBattle(setup, OnBattleResult);
+        }
+
+        private void OnBattleResult(BattleResultData result)
+        {
+            if (!result.victory)
+            {
+                runEnded = true;
+                RunSaveService.DeleteSave(savePath); // 패배 — 런 종료 (§4-14)
+                roomPanel.ShowDefeat();
+                return;
+            }
+
+            BattleRewardApplier.ApplyVictoryReward(run, runConfig.ToData().battleVictoryGold); // §4-20/§9: 초안값
+
+            if (currentBattleRoomType == RoomType.Boss)
+            {
+                // 보스 "방문"이 아니라 "승리"가 런 클리어 조건이다 (MapProgress.HasVisitedBoss와 혼동 주의).
+                runEnded = true;
+                RunSaveService.DeleteSave(savePath); // 런 종료 — 이어하기 대상에서 제외 (§5.1)
+                roomPanel.ShowRunClear();
+                return;
+            }
+
+            OnRoomCompleted();
+        }
+
         private void OnRoomCompleted()
         {
             if (runEnded)
             {
-                LoadSceneAction(SceneNames.MainMenu); // 런 클리어 화면의 [완료] → 메인 메뉴 복귀
+                LoadSceneAction(SceneNames.MainMenu); // 런 종료 화면의 [완료] → 메인 메뉴 복귀
                 return;
             }
 

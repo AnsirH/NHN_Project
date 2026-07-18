@@ -11,6 +11,7 @@ namespace OutGame.Logic.Runs
         public string startingArmyDefId = "army_basic";
         public int startingArmyCount = 3;
         public int startingGold = 0;
+        public int battleVictoryGold = 20; // §4-20/§9: 전투 승리 시 재화 획득 — 수치는 밸런스 튜닝 전 초안
 
         public void Validate()
         {
@@ -20,6 +21,8 @@ namespace OutGame.Logic.Runs
                 throw new ArgumentException($"startingArmyCount는 1 이상이어야 합니다. 현재: {startingArmyCount}");
             if (startingGold < 0)
                 throw new ArgumentException($"startingGold는 0 이상이어야 합니다. 현재: {startingGold}");
+            if (battleVictoryGold < 0)
+                throw new ArgumentException($"battleVictoryGold는 0 이상이어야 합니다. 현재: {battleVictoryGold}");
         }
     }
 }

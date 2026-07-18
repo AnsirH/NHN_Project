@@ -12,6 +12,7 @@ namespace OutGame.ScriptableObjects
         [SerializeField] private ArmyDefinition startingArmy;
         [SerializeField, Min(1)] private int startingArmyCount = 3;
         [SerializeField, Min(0)] private int startingGold = 0;
+        [SerializeField, Min(0)] private int battleVictoryGold = 20; // §4-20/§9: 초안값
 
         public RunConfig ToData()
         {
@@ -24,6 +25,7 @@ namespace OutGame.ScriptableObjects
                 startingArmyDefId = startingArmy.ToData().id,
                 startingArmyCount = startingArmyCount,
                 startingGold = startingGold,
+                battleVictoryGold = battleVictoryGold,
             };
         }
     }

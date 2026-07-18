@@ -75,5 +75,26 @@ namespace OutGame.Tests.EditMode
                 Object.DestroyImmediate(so);
             }
         }
+
+        [Test]
+        public void RunConfigAsset_ToData_MapsBattleVictoryGoldDefault()
+        {
+            var armySo = ScriptableObject.CreateInstance<ArmyDefinition>();
+            var runConfigSo = ScriptableObject.CreateInstance<RunConfigAsset>();
+            try
+            {
+                var field = typeof(RunConfigAsset).GetField("startingArmy",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                field.SetValue(runConfigSo, armySo);
+
+                var data = runConfigSo.ToData();
+                Assert.AreEqual(20, data.battleVictoryGold, "§9 초안값 — 밸런스 튜닝 전까지 20");
+            }
+            finally
+            {
+                Object.DestroyImmediate(armySo);
+                Object.DestroyImmediate(runConfigSo);
+            }
+        }
     }
 }

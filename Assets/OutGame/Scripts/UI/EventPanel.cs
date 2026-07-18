@@ -63,6 +63,7 @@ namespace OutGame.UI
             }
 
             gameObject.SetActive(true);
+            PanelTransitions.FadeIn(gameObject);
         }
 
         private void OnChoiceSelected(EventChoiceData choice)

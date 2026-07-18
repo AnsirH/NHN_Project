@@ -8,6 +8,7 @@ using OutGame.Logic.Items;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
+using OutGame.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -95,6 +96,7 @@ namespace OutGame.UI.Deployment
             presetButton.interactable = false; // §4-17
 
             gameObject.SetActive(true);
+            PanelTransitions.FadeIn(gameObject);
         }
 
         public void Close() => gameObject.SetActive(false);
