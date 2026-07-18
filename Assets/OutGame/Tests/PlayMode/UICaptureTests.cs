@@ -41,6 +41,8 @@ namespace OutGame.Tests.PlayMode
                 yield break;
             }
 
+            yield return SettleGameView(); // 이전 테스트 클래스가 남긴 캔버스 잔상 제거
+
             var canvasGo = new GameObject("CaptureCanvas", typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler));
             try
             {
@@ -82,8 +84,7 @@ namespace OutGame.Tests.PlayMode
                 yield break;
             }
 
-            // 직전 테스트가 Object.Destroy()로 남긴 캔버스가 이번 프레임 끝에 정리되도록 한 프레임 양보
-            yield return null;
+            yield return SettleGameView(); // 직전 테스트가 남긴 캔버스 잔상 제거
 
             var canvasGo = new GameObject("CaptureCanvas", typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler));
             var eventSystemGo = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
@@ -142,6 +143,8 @@ namespace OutGame.Tests.PlayMode
                 yield break;
             }
 
+            yield return SettleGameView(); // 직전 테스트가 남긴 캔버스 잔상 제거
+
             var canvasGo = new GameObject("CaptureCanvas", typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler));
             try
             {
@@ -170,10 +173,6 @@ namespace OutGame.Tests.PlayMode
                 yield return null;
 
                 // RestPanel — 초기 상태 + 선택 후 결과 상태
-                // 참고: EventPanel/RestPanel은 65% 반투명 딤 배경을 쓰는데, 격리된 캡처 테스트에서는
-                // 그 뒤에 실제로 렌더링되는 게 없어 에디터 Game 뷰의 이전 프레임 잔상이 비쳐 보일 수 있다
-                // (unity-screenshot-capture 스킬 참조). 실제 게임에서는 항상 불투명한 RoomMapPanel 위에
-                // 뜨므로 발생하지 않는다 — 격리 캡처 환경의 한계일 뿐 컴포넌트 결함이 아님 (검증 완료).
                 var restPrefab = Resources.Load<GameObject>("OutGame/RestPanel");
                 var armyDef = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
                 var restPanel = Object.Instantiate(restPrefab, canvasGo.transform).GetComponent<RestPanel>();
@@ -199,6 +198,8 @@ namespace OutGame.Tests.PlayMode
                 Assert.Ignore("batchmode에서는 렌더 프레임이 없어 캡처 불가 — 에디터 열림 상태에서만 실행");
                 yield break;
             }
+
+            yield return SettleGameView(); // 직전 테스트가 남긴 캔버스 잔상 제거
 
             var canvasGo = new GameObject("CaptureCanvas", typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler));
             string tempSavePath = Path.Combine(Path.GetTempPath(), $"capture_save_{System.Guid.NewGuid():N}.json");
@@ -239,9 +240,25 @@ namespace OutGame.Tests.PlayMode
             }
         }
 
+        /// <summary>
+        /// 진단 결과(2026-07-19): 캡처가 "너무 빨라서"가 아니라 직전 캡처(또는 이전 테스트가 파괴한
+        /// 캔버스)의 프레임을 그대로 반환하는 지연이 있었다 — Game 뷰 리페인트를 명시적으로 강제하고
+        /// 여러 프레임을 흘려보내야 실제 최신 프레임을 가져온다. 새 캔버스 생성 전(이전 테스트 잔상 제거)과
+        /// 캡처 직전(방금 만든 콘텐츠 반영) 양쪽에서 호출한다.
+        /// </summary>
+        private static IEnumerator SettleGameView()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                ForceRepaintGameView();
+                yield return new WaitForSecondsRealtime(0.05f);
+                yield return new WaitForEndOfFrame();
+            }
+        }
+
         private static IEnumerator CaptureToFile(string fileName)
         {
-            yield return new WaitForEndOfFrame(); // 렌더 완료 시점에 백버퍼 캡처
+            yield return SettleGameView();
 
             Texture2D texture = ScreenCapture.CaptureScreenshotAsTexture();
             try
@@ -254,5 +271,17 @@ namespace OutGame.Tests.PlayMode
                 Object.Destroy(texture);
             }
         }
+
+#if UNITY_EDITOR
+        private static void ForceRepaintGameView()
+        {
+            var gameViewType = System.Type.GetType("UnityEditor.GameView,UnityEditor");
+            if (gameViewType == null) return;
+            var window = UnityEditor.EditorWindow.GetWindow(gameViewType, false, null, false);
+            window?.Repaint();
+        }
+#else
+        private static void ForceRepaintGameView() { }
+#endif
     }
 }
