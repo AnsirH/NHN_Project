@@ -13,9 +13,9 @@ namespace OutGame.Logic.Runs
         public int startingGold = 0;
         public int battleVictoryGold = 20; // §4-20/§9: 전투 승리 시 재화 획득 — 수치는 밸런스 튜닝 전 초안
 
-        // §4-7(2026-07-18 개정): 군대 보유 상한 = 배치 슬롯 수. BattleFieldConfig 기본(3×3=9)과
+        // §4-7(2026-07-19 개정): 군대 보유 상한 = 배치 슬롯 수. BattleFieldConfig 기본(4×7=28)과
         // 일치해야 하지만 서로 다른 에셋이라 자동 동기화되지 않는다 — 슬롯 수를 바꾸면 같이 조정할 것.
-        public int maxArmyCount = 9;
+        public int maxArmyCount = 28;
 
         public void Validate()
         {

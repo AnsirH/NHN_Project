@@ -89,7 +89,7 @@ namespace OutGame.Tests.EditMode
 
                 var data = runConfigSo.ToData();
                 Assert.AreEqual(20, data.battleVictoryGold, "§9 초안값 — 밸런스 튜닝 전까지 20");
-                Assert.AreEqual(9, data.maxArmyCount, "§4-7 — BattleFieldConfig 기본 3×3과 일치하는 기본값");
+                Assert.AreEqual(28, data.maxArmyCount, "§4-7 — BattleFieldConfig 기본 4×7과 일치하는 기본값");
             }
             finally
             {

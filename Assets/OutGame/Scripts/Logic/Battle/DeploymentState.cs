@@ -31,6 +31,13 @@ namespace OutGame.Logic.Battle
         public bool CanStartBattle => DeployedCount > 0;
         public int SlotCount => validSlotIds.Count;
 
+        /// <summary>현재 배치 전체(armyInstanceId → slotId) — 영속화(§5.7)용 읽기 전용 뷰.</summary>
+        public IReadOnlyDictionary<string, int> Placements => armyToSlot;
+
+        /// <summary>이 배치판(현재 BattleFieldConfig 기준)에 존재하는 슬롯인지 — 저장된 배치 복원 시
+        /// slotId가 그리드 크기 변경 전 저장분일 수 있어 방어적으로 검증해야 한다 (§5.7).</summary>
+        public bool IsValidSlot(int slotId) => validSlotIds.Contains(slotId);
+
         public string GetArmyAt(int slotId) =>
             slotToArmy.TryGetValue(slotId, out string armyId) ? armyId : null;
 

@@ -94,7 +94,7 @@ namespace OutGame.UI.Deployment
 
             BuildSlots();
             BuildCards();
-            AutoPlaceArmies();
+            RestoreOrAutoPlaceArmies();
             RefreshLayout();
 
             enemyBuffLabel.text = "없음"; // §4-21: 1차는 표시 영역만
@@ -161,7 +161,7 @@ namespace OutGame.UI.Deployment
                 if (view != null) Destroy(view.gameObject);
             cardsByArmyId.Clear();
 
-            // 임시 부모(패널 루트) — AutoPlaceArmies() 직후 RefreshLayout()이 슬롯 CardContainer로 재배치한다.
+            // 임시 부모(패널 루트) — RestoreOrAutoPlaceArmies() 직후 RefreshLayout()이 슬롯 CardContainer로 재배치한다.
             foreach (ArmyInstance army in run.armies)
             {
                 ArmyCardView card = Instantiate(armyCardPrefab, transform);
@@ -172,12 +172,34 @@ namespace OutGame.UI.Deployment
             }
         }
 
-        /// <summary>보유 군대 전원을 슬롯 ID 오름차순으로 자동 배치한다 (§4-7 — 상한=슬롯 수라 항상 전부 들어간다).</summary>
-        private void AutoPlaceArmies()
+        /// <summary>
+        /// run.deployment에 저장된 배치를 먼저 복원하고, 아직 슬롯이 없는 부대(최초 방문 시 전부 해당,
+        /// 또는 방문 사이 이벤트로 새로 얻은 부대)만 남는 슬롯에 순서대로 자동 배치한다 (§5.7 2026-07-19 개정
+        /// — 배치는 방을 넘어가도 유지되어야 하며, 매번 새로 자동 배치하면 안 된다).
+        /// </summary>
+        private void RestoreOrAutoPlaceArmies()
         {
-            List<int> slotIds = allySlotViewsById.Keys.OrderBy(id => id).ToList();
-            for (int i = 0; i < run.armies.Count; i++)
-                deployment.Place(run.armies[i].instanceId, slotIds[i]);
+            foreach (ArmySlotAssignment saved in run.deployment)
+                // 방어적: 저장된 부대가 더 이상 없거나, BattleFieldConfig가 그 사이 바뀌어(§4-7) 저장된
+                // slotId가 더 이상 존재하지 않으면 건너뜀 — 아래 자동 배치 루프가 남는 슬롯에 채워준다.
+                if (run.GetArmy(saved.armyInstanceId) != null && deployment.IsValidSlot(saved.slotId))
+                    deployment.Place(saved.armyInstanceId, saved.slotId);
+
+            List<int> freeSlotIds = allySlotViewsById.Keys
+                .Where(id => deployment.GetArmyAt(id) == null)
+                .OrderBy(id => id)
+                .ToList();
+
+            int freeIndex = 0;
+            foreach (ArmyInstance army in run.armies)
+            {
+                if (deployment.GetSlotOf(army.instanceId).HasValue) continue; // 이미 복원됨
+                if (freeIndex >= freeSlotIds.Count)
+                    throw new InvalidOperationException(
+                        "배치 슬롯이 부족합니다 — RunConfig.maxArmyCount와 BattleFieldConfig 슬롯 수 확인 필요 (§4-7).");
+                deployment.Place(army.instanceId, freeSlotIds[freeIndex]);
+                freeIndex++;
+            }
         }
 
         // ── 이벤트 처리 ──────────────────────────────────────────────
@@ -262,7 +284,13 @@ namespace OutGame.UI.Deployment
                 Transform target = slotView.CardContainer;
 
                 if (kv.Value.transform.parent != target)
+                {
                     kv.Value.transform.SetParent(target, worldPositionStays: false);
+                    // worldPositionStays:false는 로컬 위치 값을 그대로 유지한다 — 드래그 중이던 카드는
+                    // 그 값이 "루트 캔버스 기준 마우스 좌표"라 슬롯 컨테이너 스케일과 안 맞아 화면 밖으로
+                    // 튕겨나간다. 명시적으로 리셋해야 슬롯 중앙에 정확히 들어온다 (버그 수정).
+                    ((RectTransform)kv.Value.transform).anchoredPosition = Vector2.zero;
+                }
 
                 ArmyClass armyClass = ItemEquipService.ResolveClass(army, itemDataById);
                 string classLabel = armyClass == ArmyClass.None ? "" : armyClass.ToString();
@@ -274,6 +302,18 @@ namespace OutGame.UI.Deployment
 
             startBattleButton.interactable = deployment.CanStartBattle;
             UpdatePowerLabels(armyDataById, itemDataById);
+            SyncDeploymentToRunState();
+        }
+
+        /// <summary>
+        /// 현재 배치를 run.deployment에 다시 쓴다 — 방을 넘어가도 유지되어야 하므로(§5.7) 여기서 매번
+        /// 동기화한다. Place() 이후엔 항상 RefreshLayout이 호출되므로 별도 훅이 필요 없다.
+        /// </summary>
+        private void SyncDeploymentToRunState()
+        {
+            run.deployment.Clear();
+            foreach (KeyValuePair<string, int> placement in deployment.Placements)
+                run.deployment.Add(new ArmySlotAssignment { armyInstanceId = placement.Key, slotId = placement.Value });
         }
 
         private void UpdatePowerLabels(

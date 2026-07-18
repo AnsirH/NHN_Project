@@ -60,6 +60,8 @@ namespace OutGame.Tests.EditMode
             original.armies[1].AddBonusSoldiers(6);
             original.visitedEventIds.Add("evt_recruit_deserters");
             original.visitedEventIds.Add("evt_old_armory");
+            original.deployment.Add(new ArmySlotAssignment { armyInstanceId = original.armies[0].instanceId, slotId = 4 });
+            original.deployment.Add(new ArmySlotAssignment { armyInstanceId = original.armies[1].instanceId, slotId = 0 });
             MapProgress.Visit(original.mapState, MapProgress.GetSelectableNodes(original.mapState)[0].point);
 
             RunState restored = RunState.FromJson(original.ToJson());
@@ -67,6 +69,12 @@ namespace OutGame.Tests.EditMode
             Assert.AreEqual(original.gold, restored.gold);
             Assert.AreEqual(original.ownedItemIds, restored.ownedItemIds);
             Assert.AreEqual(original.visitedEventIds, restored.visitedEventIds);
+            Assert.AreEqual(original.deployment.Count, restored.deployment.Count);
+            for (int i = 0; i < original.deployment.Count; i++)
+            {
+                Assert.AreEqual(original.deployment[i].armyInstanceId, restored.deployment[i].armyInstanceId);
+                Assert.AreEqual(original.deployment[i].slotId, restored.deployment[i].slotId);
+            }
             Assert.AreEqual(original.armies.Count, restored.armies.Count);
             for (int i = 0; i < original.armies.Count; i++)
             {

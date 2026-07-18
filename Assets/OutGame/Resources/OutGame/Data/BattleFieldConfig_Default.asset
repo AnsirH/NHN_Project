@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5508e57ea03d3f44b7ef367d6ed7d10, type: 3}
   m_Name: BattleFieldConfig_Default
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.BattleFieldConfig
-  rows: 3
-  columns: 3
+  rows: 7
+  columns: 4

@@ -78,6 +78,10 @@ namespace OutGame.UI.Deployment
             {
                 transform.SetParent(dragOriginParent, worldPositionStays: false);
                 transform.SetSiblingIndex(dragOriginSiblingIndex);
+                // worldPositionStays:false는 로컬 위치 "값"을 그대로 유지한다 — 그런데 그 값은 방금까지
+                // OnDrag가 덮어쓴 "루트 캔버스 기준 마우스 좌표"라 원래 부모 스케일과 전혀 안 맞는다.
+                // 명시적으로 리셋해야 카드가 원위치 중앙에 정확히 되돌아온다 (버그 수정).
+                ((RectTransform)transform).anchoredPosition = Vector2.zero;
             }
 
             DragEnded?.Invoke(this);

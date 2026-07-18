@@ -64,6 +64,9 @@ namespace OutGame.UI.Deployment
             {
                 transform.SetParent(dragOriginParent, worldPositionStays: false);
                 transform.SetSiblingIndex(dragOriginSiblingIndex);
+                // ArmyCardView.OnEndDrag와 동일한 버그 — worldPositionStays:false는 드래그 중이던
+                // "루트 캔버스 기준 마우스 좌표" 값을 그대로 유지해 원래 부모 스케일과 어긋난다.
+                ((RectTransform)transform).anchoredPosition = Vector2.zero;
             }
         }
     }

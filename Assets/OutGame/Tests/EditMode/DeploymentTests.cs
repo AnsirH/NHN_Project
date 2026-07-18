@@ -173,6 +173,30 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
+        public void IsValidSlot_InRangeAndOutOfRange()
+        {
+            Assert.IsTrue(deployment.IsValidSlot(0));
+            Assert.IsTrue(deployment.IsValidSlot(8));
+            Assert.IsFalse(deployment.IsValidSlot(9), "3×3 배치판은 슬롯 0~8만 존재");
+            Assert.IsFalse(deployment.IsValidSlot(-1));
+        }
+
+        [Test]
+        public void Placements_ReflectsCurrentAssignments()
+        {
+            string armyA = run.armies[0].instanceId;
+            string armyB = run.armies[1].instanceId;
+            deployment.Place(armyA, 0);
+            deployment.Place(armyB, 4);
+
+            Dictionary<string, int> placements = deployment.Placements.ToDictionary(kv => kv.Key, kv => kv.Value);
+
+            Assert.AreEqual(2, placements.Count);
+            Assert.AreEqual(0, placements[armyA]);
+            Assert.AreEqual(4, placements[armyB]);
+        }
+
+        [Test]
         public void CanStartBattle_RequiresAtLeastOneArmy()
         {
             Assert.IsFalse(deployment.CanStartBattle, "빈 배치로는 전투 시작 불가 (§5.7)");

@@ -118,11 +118,11 @@ namespace OutGame.Tests.PlayMode
         [Test]
         public void Open_ArmyCountExceedsSlotCount_Throws()
         {
-            // RunConfig 자체 검증(startingArmyCount<=maxArmyCount)은 통과시키되, 실제 배치판(3×3=9)보다
+            // RunConfig 자체 검증(startingArmyCount<=maxArmyCount)은 통과시키되, 실제 배치판(4×7=28)보다
             // 많은 군대를 보유하게 만들어 config 불일치(§4-7) 방어 로직을 검증한다.
             MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
             RunState overCapRun = RunStateFactory.Create(map,
-                new RunConfig { startingArmyCount = 10, maxArmyCount = 10, startingArmyDefId = "army_basic" });
+                new RunConfig { startingArmyCount = 30, maxArmyCount = 30, startingArmyDefId = "army_basic" });
 
             Assert.Throws<System.InvalidOperationException>(() =>
                 panel.Open(overCapRun, "room_2_0", RoomType.NormalBattle, "enc_default",
@@ -167,6 +167,87 @@ namespace OutGame.Tests.PlayMode
 
             Assert.AreSame(firstCard, slots[1].CardContainer.GetComponentInChildren<ArmyCardView>());
             Assert.AreSame(secondCard, slots[0].CardContainer.GetComponentInChildren<ArmyCardView>());
+        }
+
+        [UnityTest]
+        public IEnumerator SwapArmiesBetweenSlots_ResetsAnchoredPositionToZero()
+        {
+            // 드래그 위치 버그(§5.7 2026-07-19) 회귀 테스트 — 재부모화 후 좌표가 리셋되지 않으면
+            // 카드가 캔버스 밖으로 튕겨나간다.
+            OpenPanel();
+            yield return null;
+
+            var slots = panel.GetComponentsInChildren<DeploySlotView>().OrderBy(s => s.SlotId).ToList();
+            var firstCard = slots[0].CardContainer.GetComponentInChildren<ArmyCardView>();
+
+            typeof(ArmyDeploymentPanel)
+                .GetMethod("OnArmyDroppedOnSlot", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .Invoke(panel, new object[] { firstCard.ArmyInstanceId, slots[1].SlotId });
+            yield return null;
+
+            Assert.AreEqual(Vector2.zero, ((RectTransform)firstCard.transform).anchoredPosition,
+                "재부모화 후 카드는 슬롯 중앙(0,0)에 있어야 함");
+        }
+
+        [UnityTest]
+        public IEnumerator Open_WithSameRun_RestoresPreviousDeployment()
+        {
+            // 배치 영속화(§5.7 2026-07-19) 검증 — 방을 넘어가도(Close→Open) 직접 옮긴 진형이 유지돼야 한다.
+            OpenPanel();
+            yield return null;
+
+            var slots = panel.GetComponentsInChildren<DeploySlotView>().OrderBy(s => s.SlotId).ToList();
+            string firstArmyId = slots[0].CardContainer.GetComponentInChildren<ArmyCardView>().ArmyInstanceId;
+            string secondArmyId = slots[1].CardContainer.GetComponentInChildren<ArmyCardView>().ArmyInstanceId;
+
+            typeof(ArmyDeploymentPanel)
+                .GetMethod("OnArmyDroppedOnSlot", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .Invoke(panel, new object[] { firstArmyId, slots[1].SlotId });
+            yield return null;
+
+            panel.Close();
+            OpenPanel(); // 같은 run으로 재오픈 — 매번 자동 배치가 아니라 이전 배치를 복원해야 함
+            yield return null;
+
+            var reopenedSlots = panel.GetComponentsInChildren<DeploySlotView>().OrderBy(s => s.SlotId).ToList();
+            Assert.AreEqual(secondArmyId, reopenedSlots[0].CardContainer.GetComponentInChildren<ArmyCardView>().ArmyInstanceId);
+            Assert.AreEqual(firstArmyId, reopenedSlots[1].CardContainer.GetComponentInChildren<ArmyCardView>().ArmyInstanceId);
+        }
+
+        [UnityTest]
+        public IEnumerator Open_WithStaleSlotIdInSavedDeployment_FallsBackToAutoPlace()
+        {
+            // BattleFieldConfig가 이 세이브 이후 더 작게 바뀌는 등, 저장된 slotId가 현재 배치판에
+            // 더 이상 존재하지 않는 경우를 시뮬레이션 (§4-7 방어 로직 회귀 테스트 — 크래시 대신
+            // 자동 배치로 대체돼야 함).
+            run.deployment.Add(new ArmySlotAssignment { armyInstanceId = run.armies[0].instanceId, slotId = 9999 });
+
+            Assert.DoesNotThrow(() => OpenPanel());
+            yield return null;
+
+            var cards = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
+            foreach (var card in cards)
+                Assert.IsNotNull(card.GetComponentInParent<DeploySlotView>(), "유효하지 않은 저장 슬롯도 자동 배치로 대체돼야 함");
+        }
+
+        [UnityTest]
+        public IEnumerator Open_WithNewlyAcquiredArmy_AutoPlacesIntoFreeSlot()
+        {
+            // 저장된 배치에 없는 새 부대(예: 이벤트로 획득 후 재오픈)는 남는 슬롯에 자동 배치돼야 한다 (§5.7).
+            OpenPanel();
+            yield return null;
+            panel.Close();
+
+            var newArmy = new ArmyInstance { instanceId = "army_new_extra", armyDefId = "army_basic" };
+            run.armies.Add(newArmy);
+
+            OpenPanel();
+            yield return null;
+
+            Assert.IsTrue(run.deployment.Any(a => a.armyInstanceId == newArmy.instanceId),
+                "새로 얻은 부대는 남는 슬롯에 자동 배치되어 run.deployment에 반영돼야 함");
+            var cards = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
+            Assert.IsTrue(cards.Any(c => c.ArmyInstanceId == newArmy.instanceId));
         }
 
         [UnityTest]

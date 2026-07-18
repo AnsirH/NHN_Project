@@ -15,3 +15,5 @@ MonoBehaviour:
   startingArmy: {fileID: 11400000, guid: d2907a18afdaa7f4c8708b09ce2d47eb, type: 2}
   startingArmyCount: 3
   startingGold: 0
+  battleVictoryGold: 20
+  maxArmyCount: 28
