@@ -21,7 +21,6 @@ namespace OutGame.UI.Deployment
         [SerializeField] private Text currencyLabel;
 
         [SerializeField] private Image generalPortraitImage;
-        [SerializeField] private Text generalNameLabel;
         [SerializeField] private Text generalPreviewNameLabel;
         [SerializeField] private Text expLabel;
         [SerializeField] private Text generalHealthLabel;
@@ -41,7 +40,7 @@ namespace OutGame.UI.Deployment
         private void Awake()
         {
             if (closeButton == null || currencyLabel == null
-                || generalPortraitImage == null || generalNameLabel == null || generalPreviewNameLabel == null
+                || generalPortraitImage == null || generalPreviewNameLabel == null
                 || expLabel == null
                 || generalHealthLabel == null || generalAttackLabel == null || generalDefenseLabel == null
                 || generalCritRateLabel == null || generalMoveSpeedLabel == null
@@ -74,8 +73,9 @@ namespace OutGame.UI.Deployment
             currencyLabel.text = $"재화: {gold}";
 
             generalPortraitImage.sprite = armyDef.GeneralPortrait;
-            generalNameLabel.text = data.generalName;
-            // 병사 프리뷰(soldierCountLabel)와 대응 — 프리뷰 아이콘 아래에도 이름을 표시(2026-07-19 사용자 요청).
+            // 병사 프리뷰(soldierCountLabel)와 대응 — 프리뷰 아이콘 아래에 이름을 표시(2026-07-19 사용자
+            // 요청). 큰 초상화 박스(GeneralPortrait)는 삭제돼 이 프리뷰 아이콘이 초상화 스프라이트도
+            // 겸한다(2026-07-19).
             generalPreviewNameLabel.text = data.generalName;
             // 장군 경험치/성장 규칙은 미결(§5.5/§9) — 표시 영역만 확보, 실제 값은 절대 계산하지 않는다.
             expLabel.text = "경험치: -";
