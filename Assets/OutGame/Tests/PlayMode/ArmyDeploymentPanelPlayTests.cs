@@ -451,6 +451,41 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Click_OnArmyCard_StatIconsAreSquare()
+        {
+            // 2026-07-19 사용자 피드백: 스탯 아이콘은 정사각형이어야 함.
+            OpenPanel();
+            yield return null;
+
+            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            RectTransform generalIcon = (RectTransform)infoPopup.transform.Find(
+                "Window/BodyRow/GeneralColumn/GeneralStatsGrid/TopRow/Health/Icon");
+            RectTransform armyIcon = (RectTransform)infoPopup.transform.Find(
+                "Window/BodyRow/ArmyColumn/ArmyStatsGrid/Row/Health/Icon");
+            Assert.AreEqual(generalIcon.sizeDelta.x, generalIcon.sizeDelta.y, "장군 스탯 아이콘은 정사각형이어야 함");
+            Assert.AreEqual(armyIcon.sizeDelta.x, armyIcon.sizeDelta.y, "군대 스탯 아이콘은 정사각형이어야 함");
+        }
+
+        [UnityTest]
+        public IEnumerator Click_OnArmyCard_ShowsClassOnlyMeta()
+        {
+            // 2026-07-19 사용자 피드백: 병과가 곧 장착 아이템을 의미하므로 병사 수·장착 아이템 텍스트는
+            // 없애고 병과만 표시한다.
+            OpenPanel();
+            yield return null;
+
+            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            Text metaLabel = infoPopup.transform.Find("Window/BodyRow/ArmyColumn/ArmyMeta/Label").GetComponent<Text>();
+            Assert.AreEqual("병과: 없음", metaLabel.text);
+        }
+
+        [UnityTest]
         public IEnumerator Click_OnArmyCard_ShowsArmyDescription()
         {
             OpenPanel();

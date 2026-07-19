@@ -69,7 +69,6 @@ namespace OutGame.UI.Deployment
             ArmyData data = armyDef.ToData();
             ArmyClass armyClass = ItemEquipService.ResolveClass(army, itemDataById);
             string classLabel = ItemEquipService.ClassDisplayName(armyClass);
-            ItemData equipped = ItemEquipService.ResolveItem(army, itemDataById);
             string displayName = ItemEquipService.ResolveDisplayName(army, data.displayName, itemDataById);
 
             currencyLabel.text = $"재화: {gold}";
@@ -87,10 +86,9 @@ namespace OutGame.UI.Deployment
             armyPortraitImage.sprite = armyDef.Portrait;
             armyNameLabel.text = displayName;
             armyDescriptionLabel.text = string.IsNullOrWhiteSpace(data.description) ? "-" : data.description;
-            int soldierCount = data.baseSoldierCount + army.bonusSoldierCount;
+            // 병과가 곧 장착 아이템을 의미하므로(2026-07-19 사용자 피드백) 병과만 표시한다.
             string classText = armyClass == ArmyClass.None ? "없음" : classLabel;
-            string itemText = equipped == null ? "없음" : equipped.displayName;
-            armyMetaLabel.text = $"병사 수: {soldierCount}명\n병과: {classText}\n장착 아이템: {itemText}";
+            armyMetaLabel.text = $"병과: {classText}";
             armySoldierHealthLabel.text = $"{data.soldierHealth:0}";
             armySoldierAttackLabel.text = $"{data.soldierAttack:0}";
             armySoldierDefenseLabel.text = $"{data.soldierDefense:0}";
