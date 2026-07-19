@@ -453,8 +453,7 @@ namespace OutGame.Tests.PlayMode
         [UnityTest]
         public IEnumerator Click_OnArmyCard_ShowsGeneralPreviewIcon()
         {
-            // 2026-07-19 사용자 피드백: 병사 프리뷰와 대응되는 장군 프리뷰 아이콘 — 장군은 1명뿐이라
-            // 아래에 텍스트는 없이 정사각형 아이콘만 있어야 한다.
+            // 2026-07-19 사용자 피드백: 병사 프리뷰와 대응되는 장군 프리뷰 아이콘 — 정사각형이어야 한다.
             OpenPanel();
             yield return null;
 
@@ -466,8 +465,23 @@ namespace OutGame.Tests.PlayMode
                 "Window/BodyRow/GeneralColumn/GeneralPreview/Icon");
             Assert.IsNotNull(generalPreviewIcon, "장군 프리뷰 아이콘이 있어야 함");
             Assert.AreEqual(generalPreviewIcon.sizeDelta.x, generalPreviewIcon.sizeDelta.y, "장군 프리뷰 아이콘은 정사각형이어야 함");
-            Assert.AreEqual(1, infoPopup.transform.Find("Window/BodyRow/GeneralColumn/GeneralPreview").childCount,
-                "장군 프리뷰에는 아이콘 외 다른 요소(텍스트)가 없어야 함");
+        }
+
+        [UnityTest]
+        public IEnumerator Click_OnArmyCard_ShowsGeneralNameUnderPreviewIcon()
+        {
+            // 2026-07-19 사용자 요청: 병사 프리뷰(아이콘+병사 수)와 마찬가지로 장군 프리뷰 아이콘
+            // 아래에도 장군 이름을 표시한다.
+            OpenPanel();
+            yield return null;
+
+            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            Text previewNameLabel = infoPopup.transform
+                .Find("Window/BodyRow/GeneralColumn/GeneralPreview/GeneralPreviewNameLabel").GetComponent<Text>();
+            Assert.AreEqual("이름 없는 장군", previewNameLabel.text);
         }
 
         [UnityTest]
