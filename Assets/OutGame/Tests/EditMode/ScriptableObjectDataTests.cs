@@ -21,6 +21,34 @@ namespace OutGame.Tests.EditMode
                 Assert.AreEqual("army_basic", data.id);
                 Assert.AreEqual(30, data.baseSoldierCount);
                 Assert.AreEqual(10f, data.generalPower);
+                Assert.AreEqual(100f, data.generalHealth);
+                Assert.AreEqual(10f, data.generalAttack);
+                Assert.AreEqual(5f, data.generalDefense);
+                Assert.AreEqual(5f, data.generalCritRate);
+                Assert.AreEqual(100f, data.generalMoveSpeed);
+                Assert.AreEqual(50f, data.soldierHealth);
+                Assert.AreEqual(5f, data.soldierAttack);
+                Assert.AreEqual(2f, data.soldierDefense);
+            }
+            finally
+            {
+                Object.DestroyImmediate(so);
+            }
+        }
+
+        [Test]
+        public void ArmyDefinition_ToData_WithCritRateAboveHundred_Throws()
+        {
+            // OnValidate()는 인스펙터 변경 시에만 발동하므로 리플렉션으로 직접 대입해 우회 —
+            // ToData()가 ArmyData.Validate()를 실제로 호출하는지(코드 리뷰 HIGH 수정) 검증한다.
+            var so = ScriptableObject.CreateInstance<ArmyDefinition>();
+            try
+            {
+                var field = typeof(ArmyDefinition).GetField("generalCritRate",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                field.SetValue(so, 150f);
+
+                Assert.Throws<System.InvalidOperationException>(() => so.ToData());
             }
             finally
             {

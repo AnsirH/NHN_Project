@@ -411,6 +411,60 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Click_OnArmyCard_ShowsGeneralStatGridIconValues()
+        {
+            // 군대 정보.png(2026-07-19): 장군 스탯은 상단 체력·공격력·방어력 / 하단 치명타·이동속도
+            // 아이콘+수치 그리드로 표시돼야 한다(텍스트 한 줄 "전투력 보정: X" 아님).
+            OpenPanel();
+            yield return null;
+
+            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            const string gridPath = "Window/BodyRow/GeneralColumn/GeneralStatsGrid/";
+            Assert.AreEqual("100", infoPopup.transform.Find(gridPath + "TopRow/Health/Value").GetComponent<Text>().text);
+            Assert.AreEqual("10", infoPopup.transform.Find(gridPath + "TopRow/Attack/Value").GetComponent<Text>().text);
+            Assert.AreEqual("5", infoPopup.transform.Find(gridPath + "TopRow/Defense/Value").GetComponent<Text>().text);
+            Assert.AreEqual("5%", infoPopup.transform.Find(gridPath + "BottomRow/CritRate/Value").GetComponent<Text>().text);
+            Assert.AreEqual("100", infoPopup.transform.Find(gridPath + "BottomRow/MoveSpeed/Value").GetComponent<Text>().text);
+        }
+
+        [UnityTest]
+        public IEnumerator Click_OnArmyCard_ShowsArmyStatGridWithoutCritOrSpeed()
+        {
+            // 병사는 치명타·이동속도를 장군에게서 물려받으므로 군대 쪽 그리드엔 체력·공격력·방어력 3개만
+            // 있어야 한다(§5.7 참고 이미지).
+            OpenPanel();
+            yield return null;
+
+            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            const string gridPath = "Window/BodyRow/ArmyColumn/ArmyStatsGrid/Row/";
+            Assert.AreEqual("50", infoPopup.transform.Find(gridPath + "Health/Value").GetComponent<Text>().text);
+            Assert.AreEqual("5", infoPopup.transform.Find(gridPath + "Attack/Value").GetComponent<Text>().text);
+            Assert.AreEqual("2", infoPopup.transform.Find(gridPath + "Defense/Value").GetComponent<Text>().text);
+            Assert.IsNull(infoPopup.transform.Find(gridPath + "CritRate"), "군대 스탯 그리드엔 치명타 칸이 없어야 함");
+            Assert.IsNull(infoPopup.transform.Find(gridPath + "MoveSpeed"), "군대 스탯 그리드엔 이동속도 칸이 없어야 함");
+        }
+
+        [UnityTest]
+        public IEnumerator Click_OnArmyCard_ShowsArmyDescription()
+        {
+            OpenPanel();
+            yield return null;
+
+            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            Text descriptionLabel = infoPopup.transform.Find("Window/BodyRow/ArmyColumn/ArmyDescription/Label").GetComponent<Text>();
+            Assert.AreEqual("-", descriptionLabel.text, "설명이 비어 있으면 플레이스홀더 '-'를 보여줘야 함");
+        }
+
+        [UnityTest]
         public IEnumerator Click_OnArmyCard_ShowsPlaceholderExpText()
         {
             // 장군 경험치/성장은 미결(§5.5/§9) — 실제 값이 아니라 항상 고정 플레이스홀더여야 한다.
