@@ -112,12 +112,16 @@ namespace OutGame.Tests.PlayMode
 
                 yield return CaptureToFile("ArmyDeploymentPanel_01_initial.png");
 
-                // 첫 부대를 첫 슬롯에 배치한 상태도 확인 (전투력 갱신, 카드 재배치 확인용)
-                var slotView = panel.GetComponentsInChildren<DeploySlotView>().First();
+                // 카드 재배치 상태도 확인(전투력 갱신, 카드 이동 확인용) — 보유 군대 수=슬롯 수라
+                // Open() 시점에 이미 전원 자동 배치돼 있으므로, 첫 카드를 "이미 있는 자리"로 다시
+                // 놓으면 아무 변화도 없는 캡처가 된다(2026-07-19 발견 — list-captures.sh로 01/02가
+                // 해시까지 완전히 동일함을 확인). 실제로 다른 슬롯으로 옮겨야 화면이 바뀐다.
                 var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+                var emptySlot = panel.GetComponentsInChildren<DeploySlotView>()
+                    .First(s => s.CardContainer.GetComponentInChildren<ArmyCardView>() == null);
                 typeof(ArmyDeploymentPanel)
                     .GetMethod("OnArmyDroppedOnSlot", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                    .Invoke(panel, new object[] { cardView.ArmyInstanceId, slotView.SlotId });
+                    .Invoke(panel, new object[] { cardView.ArmyInstanceId, emptySlot.SlotId });
 
                 yield return CaptureToFile("ArmyDeploymentPanel_02_deployed.png");
 
