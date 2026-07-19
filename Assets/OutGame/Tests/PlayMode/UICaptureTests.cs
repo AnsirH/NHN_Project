@@ -126,6 +126,12 @@ namespace OutGame.Tests.PlayMode
                 centerColumn.Find("ItemButton").GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
 
                 yield return CaptureToFile("ArmyDeploymentPanel_03_inventory_open.png");
+
+                // 군대 정보 팝업 오픈 상태 (인벤토리 팝업 닫고 확인)
+                panel.GetComponentInChildren<InventoryPopup>(includeInactive: true).Hide();
+                cardView.OnPointerClick(new PointerEventData(EventSystem.current));
+
+                yield return CaptureToFile("ArmyDeploymentPanel_04_army_info.png");
             }
             finally
             {

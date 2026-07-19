@@ -10,7 +10,8 @@ namespace OutGame.UI.Deployment
     /// 군대 카드 — 목록/슬롯 어디에서든 표시되는 동일 인스턴스 (§5.7).
     /// 드래그 소스(자기 자신을 슬롯/목록으로 이동)이면서 동시에 아이템 드롭 타깃이다.
     /// </summary>
-    public class ArmyCardView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+    public class ArmyCardView : MonoBehaviour,
+        IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler
     {
         [SerializeField] private Image portrait;
         [SerializeField] private Text nameLabel;
@@ -28,6 +29,9 @@ namespace OutGame.UI.Deployment
 
         /// <summary>아이템 카드가 이 군대 카드 위에 드롭됐을 때 발행.</summary>
         public event Action<ArmyCardView, string> ItemDropped;
+
+        /// <summary>드래그 없이 카드를 클릭했을 때 발행 — 군대 정보 팝업(§5.7)을 연다.</summary>
+        public event Action<ArmyCardView> Clicked;
 
         public void Initialize(string armyInstanceId)
         {
@@ -94,5 +98,9 @@ namespace OutGame.UI.Deployment
 
             ItemDropped?.Invoke(this, item.ItemId);
         }
+
+        // uGUI는 드래그 임계값을 넘으면 eventData.dragging=true로 클릭을 자동 억제한다 — 드래그 핸들러와
+        // 별도 가드 없이 공존 가능.
+        public void OnPointerClick(PointerEventData eventData) => Clicked?.Invoke(this);
     }
 }

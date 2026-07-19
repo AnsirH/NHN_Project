@@ -286,16 +286,16 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Open_InventoryPopupDimDoesNotBlockRaycasts()
+        public IEnumerator Open_InventoryPopupHasNoDimBackground()
         {
             // 인벤토리 팝업은 모달이 아니다 — 아이템을 팝업 밖 부대 카드로 드래그해서 부여해야 하므로
-            // 전체 화면 dim이 raycastTarget=true면 드롭이 배경 카드에 닿지 않는다 (2026-07-19 버그 수정).
+            // dim 자체가 없어야 한다(2026-07-19 사용자 피드백 — raycastTarget=false만으로는 배경이
+            // 여전히 어둡게 보였음. Image 컴포넌트 자체를 제거).
             OpenPanel();
             yield return null;
 
             var inventoryPopup = panel.GetComponentInChildren<InventoryPopup>(includeInactive: true);
-            var dim = inventoryPopup.GetComponent<Image>();
-            Assert.IsFalse(dim.raycastTarget, "인벤토리 팝업의 dim 배경은 뒤쪽 카드로의 드롭을 막으면 안 됨");
+            Assert.IsNull(inventoryPopup.GetComponent<Image>(), "인벤토리 팝업 루트에는 dim Image가 없어야 함");
         }
 
         [UnityTest]
@@ -382,6 +382,87 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             Assert.IsFalse(run.GetArmy(cardView.ArmyInstanceId).HasItem);
+        }
+
+        // ── 군대 정보 팝업 (§5.7) ────────────────────────────────────
+
+        [UnityTest]
+        public IEnumerator Click_OnArmyCard_OpensArmyInfoPopupWithResolvedData()
+        {
+            // 아이템 부여 후 클릭하면 배치 UI와 동일하게 병과 반영 이름("궁수 군대")이 나와야 한다 —
+            // 각자 계산하지 않고 ItemEquipService.ResolveDisplayName을 재사용해야 함.
+            PlayerPrefs.SetInt(ItemBindWarningPopup.SuppressPrefKey, 1);
+            run.ownedItemIds.Add("item_bow");
+            OpenPanel();
+            yield return null;
+
+            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            DropItemOnCard(cardView, "item_bow");
+            yield return null;
+            yield return null;
+
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            Assert.IsTrue(infoPopup.gameObject.activeSelf, "카드 클릭 시 군대 정보 팝업이 열려야 함");
+
+            Text armyNameLabel = infoPopup.transform.Find("Window/BodyRow/ArmyColumn/ArmyInfo/ArmyNameLabel").GetComponent<Text>();
+            Assert.AreEqual("궁수 군대", armyNameLabel.text);
+        }
+
+        [UnityTest]
+        public IEnumerator Click_OnArmyCard_ShowsPlaceholderExpText()
+        {
+            // 장군 경험치/성장은 미결(§5.5/§9) — 실제 값이 아니라 항상 고정 플레이스홀더여야 한다.
+            OpenPanel();
+            yield return null;
+
+            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            Text expLabel = infoPopup.transform.Find("Window/BodyRow/GeneralColumn/ExpBand/ExpLabel").GetComponent<Text>();
+            Assert.AreEqual("경험치: -", expLabel.text);
+        }
+
+        [UnityTest]
+        public IEnumerator ArmyInfoPopup_HasNoDimBackground()
+        {
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            Assert.IsNull(infoPopup.GetComponent<Image>(), "군대 정보 팝업 루트에는 dim Image가 없어야 함");
+            yield break;
+        }
+
+        [UnityTest]
+        public IEnumerator ArmyInfoPopup_CloseButton_HidesPopup()
+        {
+            OpenPanel();
+            yield return null;
+
+            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            Assert.IsTrue(infoPopup.gameObject.activeSelf);
+
+            infoPopup.transform.Find("Window/CloseButton").GetComponent<Button>().onClick.Invoke();
+
+            Assert.IsFalse(infoPopup.gameObject.activeSelf);
+        }
+
+        [UnityTest]
+        public IEnumerator ArmyInfoPopup_ShowsCurrentGold()
+        {
+            run.gold = 42;
+            OpenPanel();
+            yield return null;
+
+            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            Text currencyLabel = infoPopup.transform.Find("Window/CurrencyLabel").GetComponent<Text>();
+            Assert.AreEqual("재화: 42", currencyLabel.text);
         }
     }
 }

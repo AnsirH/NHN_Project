@@ -45,6 +45,7 @@ namespace OutGame.UI.Deployment
         [Header("팝업")]
         [SerializeField] private ItemBindWarningPopup bindWarningPopup;
         [SerializeField] private InventoryPopup inventoryPopup;
+        [SerializeField] private ArmyInfoPopup armyInfoPopup;
 
         [Header("설정")]
         [SerializeField] private BattleFieldConfig fieldConfig;
@@ -114,7 +115,7 @@ namespace OutGame.UI.Deployment
                 throw new InvalidOperationException("ArmyDeploymentPanel의 구조 참조가 배선되지 않았습니다.");
             if (armyCardPrefab == null || allySlotPrefab == null || enemySlotPrefab == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 요소 프리팹이 배선되지 않았습니다.");
-            if (bindWarningPopup == null || inventoryPopup == null)
+            if (bindWarningPopup == null || inventoryPopup == null || armyInfoPopup == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 팝업이 배선되지 않았습니다.");
             if (fieldConfig == null || powerConfig == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 config 에셋이 배선되지 않았습니다.");
@@ -169,6 +170,7 @@ namespace OutGame.UI.Deployment
                 card.Initialize(army.instanceId);
                 card.DragEnded += OnCardDragEnded;
                 card.ItemDropped += OnItemDroppedOnCard;
+                card.Clicked += OnCardClicked;
                 cardsByArmyId[army.instanceId] = card;
             }
         }
@@ -254,6 +256,19 @@ namespace OutGame.UI.Deployment
         }
 
         private void OnItemButtonClicked() => inventoryPopup.Show(run.ownedItemIds, itemDefsById);
+
+        private void OnCardClicked(ArmyCardView card)
+        {
+            ArmyInstance army = run.GetArmy(card.ArmyInstanceId);
+            if (army == null) return; // 방어적 — 카드는 항상 살아있는 부대에만 존재해야 함
+            if (!armyDefsById.TryGetValue(army.armyDefId, out ArmyDefinition def))
+            {
+                Debug.LogWarning($"[ArmyDeploymentPanel] armyDefId '{army.armyDefId}'에 대한 ArmyDefinition을 찾을 수 없어 정보 팝업을 열지 못했습니다.");
+                return;
+            }
+
+            armyInfoPopup.Open(army, def, ToDataDict(itemDefsById), run.gold);
+        }
 
         private void OnStartBattleClicked()
         {
