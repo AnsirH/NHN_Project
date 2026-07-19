@@ -451,6 +451,26 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Click_OnArmyCard_ShowsGeneralPreviewIcon()
+        {
+            // 2026-07-19 사용자 피드백: 병사 프리뷰와 대응되는 장군 프리뷰 아이콘 — 장군은 1명뿐이라
+            // 아래에 텍스트는 없이 정사각형 아이콘만 있어야 한다.
+            OpenPanel();
+            yield return null;
+
+            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            RectTransform generalPreviewIcon = (RectTransform)infoPopup.transform.Find(
+                "Window/BodyRow/GeneralColumn/GeneralPreview/Icon");
+            Assert.IsNotNull(generalPreviewIcon, "장군 프리뷰 아이콘이 있어야 함");
+            Assert.AreEqual(generalPreviewIcon.sizeDelta.x, generalPreviewIcon.sizeDelta.y, "장군 프리뷰 아이콘은 정사각형이어야 함");
+            Assert.AreEqual(1, infoPopup.transform.Find("Window/BodyRow/GeneralColumn/GeneralPreview").childCount,
+                "장군 프리뷰에는 아이콘 외 다른 요소(텍스트)가 없어야 함");
+        }
+
+        [UnityTest]
         public IEnumerator Click_OnArmyCard_StatIconsAreSquare()
         {
             // 2026-07-19 사용자 피드백: 스탯 아이콘은 정사각형이어야 함.
