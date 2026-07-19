@@ -31,8 +31,8 @@ namespace OutGame.UI.Deployment
 
         [SerializeField] private Image armyPortraitImage;
         [SerializeField] private Text armyNameLabel;
+        [SerializeField] private Text soldierCountLabel;
         [SerializeField] private Text armyDescriptionLabel;
-        [SerializeField] private Text armyMetaLabel;
         [SerializeField] private Text armySoldierHealthLabel;
         [SerializeField] private Text armySoldierAttackLabel;
         [SerializeField] private Text armySoldierDefenseLabel;
@@ -43,8 +43,8 @@ namespace OutGame.UI.Deployment
                 || generalPortraitImage == null || generalNameLabel == null || expLabel == null
                 || generalHealthLabel == null || generalAttackLabel == null || generalDefenseLabel == null
                 || generalCritRateLabel == null || generalMoveSpeedLabel == null
-                || armyPortraitImage == null || armyNameLabel == null || armyDescriptionLabel == null
-                || armyMetaLabel == null
+                || armyPortraitImage == null || armyNameLabel == null || soldierCountLabel == null
+                || armyDescriptionLabel == null
                 || armySoldierHealthLabel == null || armySoldierAttackLabel == null || armySoldierDefenseLabel == null)
                 throw new InvalidOperationException("ArmyInfoPopup 프리팹의 필드가 배선되지 않았습니다.");
 
@@ -67,8 +67,6 @@ namespace OutGame.UI.Deployment
             if (itemDataById == null) throw new ArgumentNullException(nameof(itemDataById));
 
             ArmyData data = armyDef.ToData();
-            ArmyClass armyClass = ItemEquipService.ResolveClass(army, itemDataById);
-            string classLabel = ItemEquipService.ClassDisplayName(armyClass);
             string displayName = ItemEquipService.ResolveDisplayName(army, data.displayName, itemDataById);
 
             currencyLabel.text = $"재화: {gold}";
@@ -85,10 +83,9 @@ namespace OutGame.UI.Deployment
 
             armyPortraitImage.sprite = armyDef.Portrait;
             armyNameLabel.text = displayName;
+            int soldierCount = data.baseSoldierCount + army.bonusSoldierCount;
+            soldierCountLabel.text = $"{soldierCount}명";
             armyDescriptionLabel.text = string.IsNullOrWhiteSpace(data.description) ? "-" : data.description;
-            // 병과가 곧 장착 아이템을 의미하므로(2026-07-19 사용자 피드백) 병과만 표시한다.
-            string classText = armyClass == ArmyClass.None ? "없음" : classLabel;
-            armyMetaLabel.text = $"병과: {classText}";
             armySoldierHealthLabel.text = $"{data.soldierHealth:0}";
             armySoldierAttackLabel.text = $"{data.soldierAttack:0}";
             armySoldierDefenseLabel.text = $"{data.soldierDefense:0}";

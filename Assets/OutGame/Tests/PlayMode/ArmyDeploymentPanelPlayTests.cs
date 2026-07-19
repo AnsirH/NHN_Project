@@ -470,10 +470,10 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Click_OnArmyCard_ShowsClassOnlyMeta()
+        public IEnumerator Click_OnArmyCard_ShowsSoldierCountUnderPreviewIcon()
         {
-            // 2026-07-19 사용자 피드백: 병과가 곧 장착 아이템을 의미하므로 병사 수·장착 아이템 텍스트는
-            // 없애고 병과만 표시한다.
+            // 2026-07-19 사용자 피드백: army meta 패널(병과 텍스트) 삭제, 대신 병사 프리뷰 아이콘 아래
+            // 병사 수를 표시한다 — 참고 이미지의 "Lv 30/50" 자리.
             OpenPanel();
             yield return null;
 
@@ -481,8 +481,11 @@ namespace OutGame.Tests.PlayMode
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
-            Text metaLabel = infoPopup.transform.Find("Window/BodyRow/ArmyColumn/ArmyMeta/Label").GetComponent<Text>();
-            Assert.AreEqual("병과: 없음", metaLabel.text);
+            Assert.IsNull(infoPopup.transform.Find("Window/BodyRow/ArmyColumn/ArmyMeta"), "army meta 패널은 삭제돼야 함");
+
+            Text soldierCountLabel = infoPopup.transform
+                .Find("Window/BodyRow/ArmyColumn/SoldierPreview/SoldierCountLabel").GetComponent<Text>();
+            Assert.AreEqual("30명", soldierCountLabel.text);
         }
 
         [UnityTest]
