@@ -41,3 +41,19 @@
 ### 검증 방법
 - MCP for Unity로 컴파일 에러 0 확인 → EditMode 테스트 14/14 통과 확인 (아래 명령 재현 가능)
 - 아키텍처 자가 검증: 장군 1명 추가 = GeneralData 에셋 1개 (GeneralDataAsset_DrivesSimulation_WithoutCodeChanges 테스트로 강제)
+
+---
+
+## 2026-07-23 — 5.5단계: 아웃게임(feature/outgame) 연동 선행 준비
+
+- **도구**: Claude Code (Fable 5) — outGame 브랜치를 머지 없이 git으로 조사(BattleBridge 계약 분석) 후 인게임 쪽 연결면 구현
+- **결정**: 병과 키는 인게임 어휘(롤 4종 에셋 이름) 기준, outGame ArmyClass enum 매핑은 머지 시 커넥터 한 곳에서 조정
+
+### AI 산출물
+- 계약 대응 DTO: BattleRequest/BattleOutcome (outGame BattleSetupData/BattleResultData와 1:1)
+- BattleCatalog(SO): 문자열 키→에셋 해석 + 정규화 슬롯(0~1)→anchor 변환, 미등록 키 노멀 폴백
+- EncounterTable(SO): encounterId→적 구성 (encounter_basic/boss + 폴백) — 계약상 인게임 책임
+- BattleTestBootstrap.RunBattle(request, onFinished): 연동 진입점 — 결과 콜백 1회 보장, Restart 중복 보고 방지
+- 커넥터 템플릿 + 활성화 절차/협의 목록 문서: Assets/Docs/Integration/
+- Normal 롤 에셋 (기획 §5 — 장군 없는 분대 = 노멀 병사)
+- 검증 테스트 4종 (카탈로그 해석/슬롯 변환/테이블 폴백/요청→전투→결과 왕복)

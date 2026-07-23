@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NHN.Data;
 using NHN.Infra;
 using NHN.Simulation.Battle;
@@ -80,6 +81,10 @@ namespace NHN.Presentation.Battle
         [Tooltip("조준 레이캐스트용 카메라 — 미지정 시 Camera.main")]
         [SerializeField] private Camera worldCamera;
 
+        [Header("아웃게임 연동 선행 준비 (RunBattle 경로 — BattleBridge 커넥터가 사용)")]
+        [SerializeField] private BattleCatalog catalog;
+        [SerializeField] private EncounterTable encounterTable;
+
         private BattleSimulation _sim;
         private GameObjectPool _unitPool;
         private GameObjectPool _projectilePool;
@@ -114,6 +119,13 @@ namespace NHN.Presentation.Battle
         private bool _resultShown;
         private MaterialPropertyBlock _propertyBlock;
 
+        // 아웃게임 연동(RunBattle) 상태 — 요청이 있으면 Restart도 같은 요청을 재실행한다 (콜백은 1회만).
+        private BattleRequest _activeRequest;
+        private Action<BattleOutcome> _onFinished;
+        private readonly List<string> _playerSquadIds = new List<string>();
+        private readonly List<BattleRequestBuilder.SquadAssets> _viewSquadsA = new List<BattleRequestBuilder.SquadAssets>();
+        private readonly List<BattleRequestBuilder.SquadAssets> _viewSquadsB = new List<BattleRequestBuilder.SquadAssets>();
+
         private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         private static readonly int SurfaceId = Shader.PropertyToID("_Surface");
         private static readonly int BlendId = Shader.PropertyToID("_Blend");
@@ -128,7 +140,9 @@ namespace NHN.Presentation.Battle
 
             _propertyBlock = new MaterialPropertyBlock();
 
-            int maxUnits = TotalUnits(armyA) + TotalUnits(armyB);
+            // 상한(config.MaxUnits) 기준 프리웜 — 인스펙터 구성뿐 아니라 런타임 RunBattle 요청(아웃게임 연동)도
+            // 재할당 없이 수용하기 위함 (풀은 초과 시 예외로 즉시 드러난다).
+            int maxUnits = config.MaxUnits;
             _unitPool = new GameObjectPool(unitPrefab, unitContainer, maxUnits);
             _projectilePool = new GameObjectPool(projectilePrefab, projectileContainer, config.MaxUnits);
             _unitObjects = new GameObject[maxUnits];
@@ -166,12 +180,57 @@ namespace NHN.Presentation.Battle
             StartBattle();
         }
 
-        /// <summary>HUD Restart 버튼에서도 호출된다.</summary>
+        /// <summary>HUD Restart 버튼에서도 호출된다 — 연동 요청이 있으면 같은 요청을 재실행한다 (결과 콜백은 1회만).</summary>
         public void StartBattle()
         {
-            ReleaseAllViews();
+            if (_activeRequest != null)
+            {
+                StartRequestBattle(_activeRequest, onFinished: null);
+                return;
+            }
 
-            _sim = new BattleSimulation(config.ToConfig(), BuildArmy(armyA), BuildArmy(armyB), config.Seed, _skillDefinitions);
+            _viewSquadsA.Clear();
+            _viewSquadsB.Clear();
+            AppendViewSquads(armyA, _viewSquadsA);
+            AppendViewSquads(armyB, _viewSquadsB);
+            BeginBattle(new BattleSimulation(
+                config.ToConfig(), BuildArmy(armyA), BuildArmy(armyB), config.Seed, _skillDefinitions));
+        }
+
+        /// <summary>
+        /// 아웃게임 연동 진입점 (선행 준비): 요청 → 카탈로그/적 구성 해석 → 전투 실행 → 종료 시 결과 콜백 1회.
+        /// 머지 후 BattleBridge 커넥터(Assets/Docs/Integration 템플릿)가 이 메서드만 호출하면 된다.
+        /// </summary>
+        public void RunBattle(BattleRequest request, Action<BattleOutcome> onFinished)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+            if (catalog == null || encounterTable == null)
+            {
+                throw new InvalidOperationException(
+                    "BattleTestBootstrap의 catalog/encounterTable이 배선되지 않았습니다 — 연동 경로 사용 불가");
+            }
+            _activeRequest = request;
+            StartRequestBattle(request, onFinished);
+        }
+
+        private void StartRequestBattle(BattleRequest request, Action<BattleOutcome> onFinished)
+        {
+            _onFinished = onFinished;
+            _playerSquadIds.Clear();
+            _viewSquadsA.Clear();
+            _viewSquadsB.Clear();
+            ArmyDefinition playerArmy = BattleRequestBuilder.BuildPlayerArmy(request, catalog, _viewSquadsA, _playerSquadIds);
+            ArmyDefinition enemyArmy = BattleRequestBuilder.BuildEnemyArmy(request.encounterId, encounterTable, catalog, _viewSquadsB);
+            BeginBattle(new BattleSimulation(config.ToConfig(), playerArmy, enemyArmy, request.seed, _skillDefinitions));
+        }
+
+        private void BeginBattle(BattleSimulation sim)
+        {
+            ReleaseAllViews();
+            _sim = sim;
             _accumulator = 0f;
             _resultShown = false;
             _armedSkillSlot = -1;
@@ -180,8 +239,40 @@ namespace NHN.Presentation.Battle
 
             // 유닛 인덱스는 (A군 분대 순서 → B군 분대 순서) — ArmyDefinition의 계약과 동일하게 순회한다.
             int unitIndex = 0;
-            SpawnSquadViews(armyA, isTeamB: false, ref unitIndex);
-            SpawnSquadViews(armyB, isTeamB: true, ref unitIndex);
+            SpawnArmyViews(_viewSquadsA, isTeamB: false, ref unitIndex);
+            SpawnArmyViews(_viewSquadsB, isTeamB: true, ref unitIndex);
+        }
+
+        private static void AppendViewSquads(SquadSetup[] setups, List<BattleRequestBuilder.SquadAssets> target)
+        {
+            for (int s = 0; s < setups.Length; s++)
+            {
+                target.Add(new BattleRequestBuilder.SquadAssets(setups[s].role, setups[s].general, setups[s].count));
+            }
+        }
+
+        /// <summary>연동 경로 스모크 테스트 — 플레이 중 컴포넌트 컨텍스트 메뉴에서 실행 (머지 전 개발용).</summary>
+        [ContextMenu("연동 경로 테스트: RunBattle(encounter_basic)")]
+        private void RunBridgePathSample()
+        {
+            var request = new BattleRequest { encounterId = "encounter_basic", seed = config.Seed };
+            request.playerSquads.Add(new SquadRequest
+            {
+                squadId = "sample-1", roleId = "Warrior", generalId = "WarriorGeneral",
+                soldierCount = 20, slotX = 1f, slotY = 0.5f,
+            });
+            request.playerSquads.Add(new SquadRequest
+            {
+                squadId = "sample-2", roleId = "Hunter", generalId = "HunterGeneral",
+                soldierCount = 8, slotX = 0.4f, slotY = 0.5f,
+            });
+            request.playerSquads.Add(new SquadRequest
+            {
+                squadId = "sample-3", soldierCount = 15, slotX = 0.8f, slotY = 0.2f, // roleId 없음 = 노멀 분대
+            });
+            RunBattle(request, outcome => Debug.Log(
+                $"[연동 스모크] victory={outcome.Victory}, 생존: " +
+                string.Join(", ", outcome.Survivals.ConvertAll(sv => $"{sv.SquadId}={sv.SurvivedSoldierCount}"))));
         }
 
         private void Update()
@@ -221,6 +312,14 @@ namespace NHN.Presentation.Battle
                     : result.Winner == 1 ? "B군 승리"
                     : "무승부";
                 hud.ShowResult($"{winner}  (생존 A:{result.SurvivorsTeamA}  B:{result.SurvivorsTeamB})");
+
+                if (_onFinished != null)
+                {
+                    // 콜백은 1회 — Restart로 같은 요청을 재실행해도 아웃게임에 결과가 중복 보고되지 않는다.
+                    Action<BattleOutcome> callback = _onFinished;
+                    _onFinished = null;
+                    callback(BattleRequestBuilder.BuildOutcome(_sim, _playerSquadIds));
+                }
             }
         }
 
@@ -378,29 +477,30 @@ namespace NHN.Presentation.Battle
             }
         }
 
-        private void SpawnSquadViews(SquadSetup[] setups, bool isTeamB, ref int unitIndex)
+        private void SpawnArmyViews(List<BattleRequestBuilder.SquadAssets> squads, bool isTeamB, ref int unitIndex)
         {
-            for (int s = 0; s < setups.Length; s++)
+            for (int s = 0; s < squads.Count; s++)
             {
-                Color color = setups[s].role.RoleColor;
+                BattleRequestBuilder.SquadAssets squad = squads[s];
+                Color color = squad.Role.RoleColor;
                 if (isTeamB)
                 {
                     // 같은 롤이 양 진영에 있을 때를 위한 팀 구분 톤 다운.
                     color = Color.Lerp(color, Color.black, 0.35f);
                 }
-                float scale = setups[s].role.UnitRadius / 0.5f; // 프리팹 캡슐 기본 반경 0.5 기준
+                float scale = squad.Role.UnitRadius / 0.5f; // 프리팹 캡슐 기본 반경 0.5 기준
 
-                for (int k = 0; k < setups[s].count; k++)
+                for (int k = 0; k < squad.Count; k++)
                 {
                     SpawnUnitView(unitIndex++, color, scale);
                 }
 
-                if (setups[s].general != null)
+                if (squad.General != null)
                 {
                     // 장군 뷰: 크기 배율 + 금색 혼합 — 병사와 즉시 구분 (기획 §4).
                     // 시뮬의 분대 내 유닛 순서(병사 → 장군)와 일치해야 한다 (ArmyDefinition 계약).
                     Color generalColor = Color.Lerp(color, GeneralHighlight, 0.5f);
-                    SpawnUnitView(unitIndex++, generalColor, setups[s].general.UnitRadius / 0.5f);
+                    SpawnUnitView(unitIndex++, generalColor, squad.General.UnitRadius / 0.5f);
                 }
             }
         }
@@ -675,18 +775,5 @@ namespace NHN.Presentation.Battle
             return new ArmyDefinition(squads);
         }
 
-        private static int TotalUnits(SquadSetup[] setups)
-        {
-            int total = 0;
-            for (int s = 0; s < setups.Length; s++)
-            {
-                total += setups[s].count;
-                if (setups[s].general != null)
-                {
-                    total++;
-                }
-            }
-            return total;
-        }
     }
 }

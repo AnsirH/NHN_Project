@@ -1,0 +1,93 @@
+// ⚠ 커넥터 템플릿 (컴파일 제외: .cs.txt) — feature/outgame 머지 후 활성화한다. 절차는 INTEGRATION.md 참고.
+// 역할: outGame BattleBridge.Implementation ↔ 인게임 전투(BattleTestBootstrap.RunBattle) 어댑터.
+// 이 파일 1개 활성화 + 씬 배선 외에는 양쪽 코드를 손댈 필요가 없도록 설계돼 있다 (계약 §7.3 준수).
+using System;
+using NHN.Data;
+using NHN.Presentation.Battle;
+using OutGame.Logic.Armies;
+using OutGame.Logic.Battle;
+using UnityEngine;
+
+namespace NHN.Integration
+{
+    /// <summary>
+    /// InGameFlowController가 있는 씬(또는 전투 씬)에 배치하고 battleRunner를 배선한다.
+    /// 계약 주석대로 씬 로드마다 재등록 — OnEnable에서 Implementation을 덮어쓴다.
+    /// </summary>
+    public sealed class BattleBridgeConnector : MonoBehaviour
+    {
+        [SerializeField] private BattleTestBootstrap battleRunner;
+
+        private void OnEnable()
+        {
+            BattleBridge.Implementation = Run;
+        }
+
+        private void Run(BattleSetupData setup, Action<BattleResultData> onResult)
+        {
+            var request = new BattleRequest
+            {
+                encounterId = setup.encounterId,
+                seed = StableSeed(setup.roomId), // 방마다 결정론적 시드 — 같은 방 재도전은 같은 전개
+            };
+            foreach (DeployedArmy army in setup.armies)
+            {
+                request.playerSquads.Add(new SquadRequest
+                {
+                    squadId = army.armyInstanceId,
+                    roleId = MapClassToRoleId(army.armyClass),
+                    generalId = army.generalSkillId, // 키 규약(협의 ②): generalSkillId = GeneralData 에셋 이름
+                    soldierCount = army.soldierCount,
+                    slotX = army.slotX,
+                    slotY = army.slotY,
+                });
+            }
+
+            battleRunner.RunBattle(request, outcome =>
+            {
+                var result = new BattleResultData { roomId = setup.roomId, victory = outcome.Victory };
+                foreach (SquadSurvival survival in outcome.Survivals)
+                {
+                    result.survivals.Add(new ArmySurvival
+                    {
+                        armyInstanceId = survival.SquadId,
+                        survivedSoldierCount = survival.SurvivedSoldierCount,
+                    });
+                }
+                onResult(result);
+            });
+        }
+
+        /// <summary>협의 ①: outGame ArmyClass ↔ 인게임 롤 4종 매핑 — enum 합의 후 이 표만 수정하면 된다.</summary>
+        private static string MapClassToRoleId(ArmyClass armyClass)
+        {
+            switch (armyClass)
+            {
+                case ArmyClass.Archer: return "Archer";
+                // 합의 후 추가 예시:
+                // case ArmyClass.Warrior: return "Warrior";
+                // case ArmyClass.Assassin: return "Assassin";
+                // case ArmyClass.Hunter: return "Hunter";
+                default: return null; // None/미합의 병과 → 노멀 병사 (BattleCatalog 폴백)
+            }
+        }
+
+        /// <summary>프로세스 간 안정적인 문자열 해시 — string.GetHashCode는 런타임마다 달라질 수 있다.</summary>
+        private static int StableSeed(string roomId)
+        {
+            if (string.IsNullOrEmpty(roomId))
+            {
+                return 0;
+            }
+            unchecked
+            {
+                int hash = 23;
+                foreach (char c in roomId)
+                {
+                    hash = hash * 31 + c;
+                }
+                return hash;
+            }
+        }
+    }
+}

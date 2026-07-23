@@ -1298,6 +1298,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f18a26fa89ea68142b0b64dc5113a29a, type: 2}
   - {fileID: 11400000, guid: 6ed9c6d263f13214792fc220c901bf3c, type: 2}
   worldCamera: {fileID: 919660237}
+  catalog: {fileID: 11400000, guid: f2a8e15b9c6d2478ef0a4b31c57d96e2, type: 2}
+  encounterTable: {fileID: 11400000, guid: a3b9f26c0d7e3589fa1b5c42d68ea7f3, type: 2}
 --- !u!4 &1080555523
 Transform:
   m_ObjectHideFlags: 0

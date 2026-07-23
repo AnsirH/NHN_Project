@@ -280,6 +280,20 @@ namespace NHN.Simulation.Battle
 
         public float GetSquadCharge(int squadIndex) => _squadCharges[squadIndex];
 
+        /// <summary>분대의 생존 병사 수 (장군 제외) — 전투 결과 집계·밸런싱 파이프라인용 (아웃게임 계약 survivals).</summary>
+        public int CountSquadSurvivors(int squadIndex)
+        {
+            int count = 0;
+            for (int i = 0; i < _unitCount; i++)
+            {
+                if (_alives[i] && _squadIndices[i] == squadIndex && !_isLeaderUnit[i])
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
         public int GetSquadActivationCount(int squadIndex) => _squadActivationCounts[squadIndex];
 
         /// <summary>마지막 액티브 발동 시각(초). 발동 이력 없으면 음수 — 뷰 슬로모/발광 연출 트리거용.</summary>
