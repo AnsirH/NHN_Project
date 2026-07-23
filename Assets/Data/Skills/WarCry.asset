@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b2d9c41f8a3e4d4b9f06c2a51d83e7f, type: 3}
+  m_Name: WarCry
+  m_EditorClassIdentifier: NHN.Data::NHN.Data.SkillData
+  cooldown: 15
+  radius: 4
+  damage: 0
+  appliesStatus: 6
+  statusDuration: 5
+  statusMagnitude: 1.25
+  zoneDuration: 0
+  targetsAllies: 1
+  skillColor: {r: 1, g: 0.6, b: 0.2, a: 1}

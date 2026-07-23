@@ -5,8 +5,9 @@ using UnityEngine;
 namespace NHN.Data
 {
     /// <summary>
-    /// 롤 1종의 단일 정의 (기획 §9). 롤 추가 = 이 에셋 1개 생성, 코드 수정 0줄.
+    /// 롤 1종의 단일 정의 (기획 §10). 롤 추가 = 이 에셋 1개 생성, 코드 수정 0줄.
     /// 시뮬에는 ToDefinition()으로 순수 RoleDefinition만 넘긴다.
+    /// v4: 병사 트리거 기믹 필드 제거 — 롤 개성 = 이동 패턴 + 타겟팅 + 스탯 (기획 §7).
     /// </summary>
     [CreateAssetMenu(fileName = "Role", menuName = "NHN/Role")]
     public sealed class RoleData : ScriptableObject
@@ -36,15 +37,7 @@ namespace NHN.Data
         [Tooltip("포물선 정점 높이 — 뷰 표현 전용")]
         [SerializeField] private float projectileArcHeight = 2f;
 
-        [Header("트리거 기믹 (조건 + 효과, 실행은 이후 단계)")]
-        [SerializeField] private GimmickTrigger gimmickTrigger = GimmickTrigger.None;
-        [SerializeField] private float triggerParamA;
-        [SerializeField] private float triggerParamB;
-        [SerializeField] private GimmickEffect gimmickEffect = GimmickEffect.None;
-        [SerializeField] private float effectParamA;
-        [SerializeField] private float effectParamB;
-
-        [Header("뷰 (가독성 1:1:1:1 — 롤:실루엣:기믹:색)")]
+        [Header("뷰 (가독성 1:1:1 — 롤:실루엣:색)")]
         [SerializeField] private Color roleColor = Color.white;
 
         public Color RoleColor => roleColor;
@@ -58,10 +51,7 @@ namespace NHN.Data
                 maxHp, attackDamage, attackInterval, attackRange,
                 moveSpeed, unitRadius,
                 projectileSpeed, projectileArcHeight,
-                positionFilter, priorities.ToArray(), movePattern, moveParamA, moveParamB,
-                new GimmickDefinition(
-                    gimmickTrigger, triggerParamA, triggerParamB,
-                    gimmickEffect, effectParamA, effectParamB));
+                positionFilter, priorities.ToArray(), movePattern, moveParamA, moveParamB);
         }
     }
 }

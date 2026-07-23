@@ -35,14 +35,25 @@ namespace NHN.Presentation.Battle
         private const float FlashDuration = 0.4f;
         private const float FlashAlpha = 0.55f;
 
-        // 상태이상 유닛 틴트 — 가독성: 기절=노랑, 중독=초록, 화상=주황 (마스크 비트 순).
+        // 상태이상 유닛 틴트 — 가독성: 기절=노랑, 중독=초록, 화상=주황,
+        // 표식=마젠타, 공버프=주황금(발광 표시 필수 — v4 §9), 회복=연녹, 방진=청은 (마스크 비트 순).
         private const float StatusTintStrength = 0.55f;
         private const byte StunMask = 1;
         private const byte PoisonMask = 2;
         private const byte BurnMask = 4;
+        private const byte MarkMask = 8;
+        private const byte AttackUpMask = 16;
+        private const byte HealMask = 32;
+        private const byte ResistMask = 64;
         private static readonly Color StunTint = new Color(1f, 0.92f, 0.3f);
         private static readonly Color PoisonTint = new Color(0.2f, 0.9f, 0.2f);
         private static readonly Color BurnTint = new Color(1f, 0.45f, 0.1f);
+        private static readonly Color MarkTint = new Color(0.9f, 0.25f, 0.8f);
+        private static readonly Color AttackUpTint = new Color(1f, 0.68f, 0.1f);
+        private static readonly Color HealTint = new Color(0.5f, 1f, 0.6f);
+        private static readonly Color ResistTint = new Color(0.55f, 0.75f, 1f);
+        /// <summary>장군 하이라이트 — 롤 색에 금색 혼합으로 병사와 즉시 구분 (기획 §4).</summary>
+        private static readonly Color GeneralHighlight = new Color(1f, 0.85f, 0.25f);
 
         [Serializable]
         private struct SquadSetup
@@ -51,6 +62,8 @@ namespace NHN.Presentation.Battle
             public int count;
             [Tooltip("x=전선으로부터 깊이(+뒤), y=측면 오프셋")]
             public Vector2 anchor;
+            [Tooltip("분대 리더(장군) — 비우면 노멀/무장군 분대 (v4 §5)")]
+            public GeneralData general;
         }
 
         [SerializeField] private BattleConfigSO config;
@@ -145,7 +158,7 @@ namespace NHN.Presentation.Battle
             }
             CreateSkillFxObjects();
 
-            hud.Initialize(this);
+            hud.Initialize(this, _skillDefinitions);
             for (int s = 0; s < skillCount; s++)
             {
                 hud.SetSkillColor(s, _skillColors[s]);
@@ -255,6 +268,22 @@ namespace NHN.Presentation.Battle
             {
                 mask |= BurnMask;
             }
+            if (_sim.HasStatus(unitIndex, StatusEffectType.Mark))
+            {
+                mask |= MarkMask;
+            }
+            if (_sim.HasStatus(unitIndex, StatusEffectType.AttackUp))
+            {
+                mask |= AttackUpMask;
+            }
+            if (_sim.HasStatus(unitIndex, StatusEffectType.HealOverTime))
+            {
+                mask |= HealMask;
+            }
+            if (_sim.HasStatus(unitIndex, StatusEffectType.DamageResist))
+            {
+                mask |= ResistMask;
+            }
             return mask;
         }
 
@@ -281,6 +310,22 @@ namespace NHN.Presentation.Battle
             if ((statusMask & BurnMask) != 0)
             {
                 color = Color.Lerp(color, BurnTint, StatusTintStrength);
+            }
+            if ((statusMask & MarkMask) != 0)
+            {
+                color = Color.Lerp(color, MarkTint, StatusTintStrength);
+            }
+            if ((statusMask & AttackUpMask) != 0)
+            {
+                color = Color.Lerp(color, AttackUpTint, StatusTintStrength);
+            }
+            if ((statusMask & HealMask) != 0)
+            {
+                color = Color.Lerp(color, HealTint, StatusTintStrength);
+            }
+            if ((statusMask & ResistMask) != 0)
+            {
+                color = Color.Lerp(color, ResistTint, StatusTintStrength);
             }
             color.a = stealthed ? StealthAlpha : 1f;
             _propertyBlock.SetColor(BaseColorId, color);
@@ -347,22 +392,34 @@ namespace NHN.Presentation.Battle
 
                 for (int k = 0; k < setups[s].count; k++)
                 {
-                    GameObject unit = _unitPool.Get();
-                    _unitObjects[unitIndex] = unit;
-                    _unitTransforms[unitIndex] = unit.transform;
-                    _unitVisible[unitIndex] = true;
+                    SpawnUnitView(unitIndex++, color, scale);
+                }
 
-                    // 초기화 시점 1회 조회 — Update에서는 캐시만 사용.
-                    _unitRenderers[unitIndex] = unit.GetComponentInChildren<Renderer>();
-                    _unitColors[unitIndex] = color;
-                    // 재질·색을 함께 리셋 — 풀 재사용 시 이전 은신 재질/틴트가 남지 않도록 항상 호출.
-                    ApplyUnitVisual(unitIndex, _sim.IsStealthed(unitIndex), ComputeStatusMask(unitIndex));
-
-                    unit.transform.localScale = Vector3.one * scale;
-                    unit.transform.localPosition = SimViewMapper.ToWorld(_sim.GetPosition(unitIndex));
-                    unitIndex++;
+                if (setups[s].general != null)
+                {
+                    // 장군 뷰: 크기 배율 + 금색 혼합 — 병사와 즉시 구분 (기획 §4).
+                    // 시뮬의 분대 내 유닛 순서(병사 → 장군)와 일치해야 한다 (ArmyDefinition 계약).
+                    Color generalColor = Color.Lerp(color, GeneralHighlight, 0.5f);
+                    SpawnUnitView(unitIndex++, generalColor, setups[s].general.UnitRadius / 0.5f);
                 }
             }
+        }
+
+        private void SpawnUnitView(int unitIndex, Color color, float scale)
+        {
+            GameObject unit = _unitPool.Get();
+            _unitObjects[unitIndex] = unit;
+            _unitTransforms[unitIndex] = unit.transform;
+            _unitVisible[unitIndex] = true;
+
+            // 초기화 시점 1회 조회 — Update에서는 캐시만 사용.
+            _unitRenderers[unitIndex] = unit.GetComponentInChildren<Renderer>();
+            _unitColors[unitIndex] = color;
+            // 재질·색을 함께 리셋 — 풀 재사용 시 이전 은신 재질/틴트가 남지 않도록 항상 호출.
+            ApplyUnitVisual(unitIndex, _sim.IsStealthed(unitIndex), ComputeStatusMask(unitIndex));
+
+            unit.transform.localScale = Vector3.one * scale;
+            unit.transform.localPosition = SimViewMapper.ToWorld(_sim.GetPosition(unitIndex));
         }
 
         private void ReleaseAllViews()
@@ -612,7 +669,8 @@ namespace NHN.Presentation.Battle
                 squads[s] = new SquadDefinition(
                     setups[s].role.ToDefinition(),
                     setups[s].count,
-                    new System.Numerics.Vector2(setups[s].anchor.x, setups[s].anchor.y));
+                    new System.Numerics.Vector2(setups[s].anchor.x, setups[s].anchor.y),
+                    setups[s].general != null ? setups[s].general.ToDefinition() : null);
             }
             return new ArmyDefinition(squads);
         }
@@ -623,6 +681,10 @@ namespace NHN.Presentation.Battle
             for (int s = 0; s < setups.Length; s++)
             {
                 total += setups[s].count;
+                if (setups[s].general != null)
+                {
+                    total++;
+                }
             }
             return total;
         }

@@ -123,9 +123,12 @@ namespace NHN.Simulation.Tests
             Assert.AreEqual(first.SurvivorsTeamB, second.SurvivorsTeamB);
         }
 
-        /// <summary>은신 규칙 검증 (1v1): 은신 중 무피해 + 은신 해제 첫 타에 치명타 배율 적용.</summary>
+        /// <summary>
+        /// 은신 규칙 검증 (1v1): 은신 중 무피해 + 첫 타는 배율 없는 기본 공격력.
+        /// v4: 병사 트리거 기믹 폐지 — 은신 해제 치명타는 장군 액티브(그림자 습격)로 이관됐다 (기획 §7).
+        /// </summary>
         [Test]
-        public void Assassin_IsUntargetableWhileStealthed_And_FirstHitCrits()
+        public void Assassin_IsUntargetableWhileStealthed_And_FirstHitIsPlain()
         {
             RoleData assassinData = LoadRole(AssassinPath);
             RoleData archerData = LoadRole(ArcherPath);
@@ -134,9 +137,6 @@ namespace NHN.Simulation.Tests
 
             Assert.AreEqual(MovePattern.StealthDash, assassin.MovePattern, "암살자는 StealthDash 이동 패턴이어야 한다");
             Assert.Greater(assassin.MoveParamA, 0f, "은신 지속시간이 데이터로 정의되어야 한다");
-            Assert.AreEqual(GimmickTrigger.StealthBreak, assassin.Gimmick.Trigger);
-            Assert.AreEqual(GimmickEffect.NextAttackCrit, assassin.Gimmick.Effect);
-            Assert.Greater(assassin.Gimmick.EffectParamA, 1f, "치명타 배율은 1보다 커야 한다");
 
             var sim = CreateBattle(assassinData, 1, archerData, 1, seed: 3);
             const int AssassinIndex = 0; // A군 먼저 스폰
@@ -144,7 +144,6 @@ namespace NHN.Simulation.Tests
 
             Assert.IsTrue(sim.IsStealthed(AssassinIndex), "StealthDash 롤은 스폰 시 은신 상태여야 한다");
 
-            float expectedFirstHit = assassin.AttackDamage * assassin.Gimmick.EffectParamA;
             bool firstHitObserved = false;
             int safetyTicks = 1_000_000;
             while (!sim.Finished && safetyTicks-- > 0)
@@ -156,12 +155,12 @@ namespace NHN.Simulation.Tests
                     Assert.AreEqual(assassin.MaxHp, sim.GetHp(AssassinIndex), "은신 중에는 피해를 받지 않아야 한다");
                 }
 
-                // 궁수의 첫 피해 = 은신 해제 첫 타 → 치명타 배율 검증 (1v1이라 다른 피해원 없음)
+                // 궁수의 첫 피해 = 암살자 첫 타 → 기믹 삭제 후에는 기본 공격력이어야 한다 (1v1이라 다른 피해원 없음)
                 if (!firstHitObserved && sim.GetHp(ArcherIndex) < archer.MaxHp)
                 {
                     firstHitObserved = true;
-                    Assert.AreEqual(archer.MaxHp - expectedFirstHit, sim.GetHp(ArcherIndex), 1e-3f,
-                        "은신 해제 첫 타에는 치명타 배율이 적용되어야 한다");
+                    Assert.AreEqual(archer.MaxHp - assassin.AttackDamage, sim.GetHp(ArcherIndex), 1e-3f,
+                        "병사 기믹 폐지 후 첫 타는 배율 없는 기본 공격력이어야 한다 (v4)");
                 }
             }
 
@@ -268,48 +267,8 @@ namespace NHN.Simulation.Tests
                 "사냥꾼은 중독 대상이 나타나면 그쪽으로 갈아타야 한다 (Poisoned 우선순위)");
         }
 
-        /// <summary>사냥꾼 콤보 처형: 상태이상 대상에게 공격력 × 배율 (독구름 → 사냥꾼 콤보의 수치 검증).</summary>
-        [Test]
-        public void Hunter_DealsBonusDamageToStatusTarget()
-        {
-            RoleData hunter = LoadRole(HunterPath);
-            RoleDefinition hunterDef = hunter.ToDefinition();
-            RoleData warrior = LoadRole(WarriorPath);
-            SkillDefinition poisonCloud = LoadSkill(PoisonCloudPath).ToDefinition();
-
-            Assert.AreEqual(GimmickTrigger.TargetHasStatus, hunterDef.Gimmick.Trigger);
-            Assert.AreEqual(GimmickEffect.DamageMultiplier, hunterDef.Gimmick.Effect);
-            Assert.Greater(hunterDef.Gimmick.EffectParamA, 1f, "콤보 배율은 1보다 커야 한다");
-
-            var sim = CreateBattle(hunter, 1, warrior, 1, seed: 5, new[] { poisonCloud });
-            const int WarriorIndex = 1;
-
-            Assert.IsTrue(sim.TryCastSkill(0, sim.GetPosition(WarriorIndex)));
-
-            // 도트(틱당 소량)와 구분되는 첫 큰 피해 = 사냥꾼 화살 착탄 틱
-            float previousHp = warrior.ToDefinition().MaxHp;
-            bool bonusHitObserved = false;
-            int safetyTicks = 1_000_000;
-            while (!sim.Finished && safetyTicks-- > 0)
-            {
-                sim.Tick();
-                float hp = sim.GetHp(WarriorIndex);
-                float drop = previousHp - hp;
-                if (drop > 5f)
-                {
-                    Assert.IsTrue(sim.HasStatus(WarriorIndex, StatusEffectType.Poison),
-                        "착탄 시점에 대상이 중독 상태여야 콤보 검증이 유효하다");
-                    float expected = hunterDef.AttackDamage * hunterDef.Gimmick.EffectParamA
-                                     + poisonCloud.StatusMagnitude * sim.TickDeltaTime;
-                    Assert.AreEqual(expected, drop, 0.05f,
-                        "상태이상 대상 첫 타 = 공격력 × 배율 (+해당 틱 도트)이어야 한다");
-                    bonusHitObserved = true;
-                    break;
-                }
-                previousHp = hp;
-            }
-            Assert.IsTrue(bonusHitObserved, "사냥꾼의 첫 타가 중독 대상에게 발생해야 한다");
-        }
+        // v4: Hunter_DealsBonusDamageToStatusTarget 삭제 — 병사 트리거 기믹(상태이상 추가 데미지) 폐지.
+        // 사냥꾼의 콤보는 타겟팅(중독·표식 우선, 위 테스트)과 장군 액티브(사냥 선포 표식)로 표현된다.
 
         /// <summary>
         /// 화상 = 3종째 상태이상이 데이터+enum 수준임을 증명: 시뮬에 Burn 전용 코드 없이
@@ -350,6 +309,77 @@ namespace NHN.Simulation.Tests
             var sim = CreateBattle(warrior, 5, warrior, 5, seed: 9, new[] { burnSkill });
             Assert.IsTrue(sim.TryCastSkill(0, sim.GetPosition(5)));
             return RunToEnd(sim);
+        }
+
+        /// <summary>
+        /// v4 §9: 힐 장판/전투 함성의 긍정 효과가 StatusEffectSystem 공용 경로로 동작함을 검증 —
+        /// 회복(HealOverTime) 수치·최대 HP 클램프 + 공격력 버프(AttackUp)의 아군 대상(TargetsAllies) 적용.
+        /// </summary>
+        [Test]
+        public void PositiveEffects_HealAndAttackUp_WorkViaStatusSystem()
+        {
+            RoleData warriorData = LoadRole(WarriorPath);
+            RoleDefinition warrior = warriorData.ToDefinition();
+
+            // 대상을 깊은 후방에 배치해 검증 구간 동안 교전이 없도록 한다.
+            var damageSkill = new SkillDefinition(
+                "DamageTest", cooldown: 1f, radius: 1f, damage: 25f,
+                StatusEffectType.Stun, statusDuration: 0f, statusMagnitude: 0f, zoneDuration: 0f);
+            // 회복 수치 검증용 — 적군 대상으로 부여해도 상태 시스템 경로는 동일하다 (아군 대상 검증은 아래 함성에서).
+            var healSkill = new SkillDefinition(
+                "HealTest", cooldown: 1f, radius: 1f, damage: 0f,
+                StatusEffectType.HealOverTime, statusDuration: 2f, statusMagnitude: 10f, zoneDuration: 0f);
+            var warCry = new SkillDefinition(
+                "WarCryTest", cooldown: 1f, radius: 2f, damage: 0f,
+                StatusEffectType.AttackUp, statusDuration: 3f, statusMagnitude: 1.25f, zoneDuration: 0f,
+                targetsAllies: true);
+
+            var armyA = new ArmyDefinition(new[]
+            {
+                new SquadDefinition(warrior, 1, new System.Numerics.Vector2(12f, 0f)),
+            });
+            var armyB = new ArmyDefinition(new[]
+            {
+                new SquadDefinition(warrior, 1, new System.Numerics.Vector2(12f, 0f)),
+            });
+            var sim = new BattleSimulation(
+                LoadConfig().ToConfig(), armyA, armyB, seed: 13,
+                new[] { damageSkill, healSkill, warCry });
+            const int AllyIndex = 0;
+            const int EnemyIndex = 1;
+
+            // 1) 전투 함성: 아군 대상(TargetsAllies) — A 유닛에만 AttackUp이 붙고 유효 공격력이 배율만큼 오른다.
+            Assert.IsTrue(sim.TryCastSkill(2, sim.GetPosition(AllyIndex)));
+            sim.Tick();
+            Assert.IsTrue(sim.HasStatus(AllyIndex, StatusEffectType.AttackUp), "전투 함성은 아군에게 적용되어야 한다");
+            Assert.IsFalse(sim.HasStatus(EnemyIndex, StatusEffectType.AttackUp), "아군 대상 스킬이 적군에 붙으면 안 된다");
+            Assert.AreEqual(warrior.AttackDamage * 1.25f, sim.GetEffectiveAttackDamage(AllyIndex), 1e-3f,
+                "AttackUp 세기 = 공격력 배율이어야 한다");
+
+            // 2) 데미지 → 힐: 25 피해 후 초당 10 × 2초 회복 = 최종 -5
+            Assert.IsTrue(sim.TryCastSkill(0, sim.GetPosition(EnemyIndex)));
+            sim.Tick();
+            Assert.AreEqual(warrior.MaxHp - 25f, sim.GetHp(EnemyIndex), 1e-3f);
+            Assert.IsTrue(sim.TryCastSkill(1, sim.GetPosition(EnemyIndex)));
+            int healTicks = (int)(2.5f / sim.TickDeltaTime);
+            for (int t = 0; t < healTicks; t++)
+            {
+                sim.Tick();
+            }
+            Assert.AreEqual(warrior.MaxHp - 5f, sim.GetHp(EnemyIndex), 0.5f,
+                "회복 총량 = 초당 세기 × 지속시간이어야 한다");
+
+            // 3) 재시전 → 최대 HP 클램프 (초과 회복 금지)
+            Assert.IsTrue(sim.TryCastSkill(1, sim.GetPosition(EnemyIndex)));
+            for (int t = 0; t < healTicks; t++)
+            {
+                sim.Tick();
+            }
+            Assert.AreEqual(warrior.MaxHp, sim.GetHp(EnemyIndex), 1e-3f, "회복은 최대 HP에서 클램프되어야 한다");
+
+            // 4) 함성 버프는 지속시간이 끝나면 소멸 — 유효 공격력 원복
+            Assert.IsFalse(sim.HasStatus(AllyIndex, StatusEffectType.AttackUp), "AttackUp은 지속시간 후 해제되어야 한다");
+            Assert.AreEqual(warrior.AttackDamage, sim.GetEffectiveAttackDamage(AllyIndex), 1e-3f);
         }
     }
 }

@@ -13,6 +13,9 @@ namespace NHN.Presentation.Battle
     {
         private static readonly Color CooldownColor = new Color(0.45f, 0.45f, 0.45f);
 
+        /// <summary>클론 버튼 배치 간격 대체값 — 씬 버튼이 1개뿐일 때만 사용 (뷰 표현 상수).</summary>
+        private static readonly Vector2 FallbackButtonStep = new Vector2(140f, 0f);
+
         [SerializeField] private TMP_Text resultText;
         [SerializeField] private Button[] skillButtons;
         [SerializeField] private TMP_Text[] skillLabels;
@@ -25,9 +28,10 @@ namespace NHN.Presentation.Battle
         /// <summary>표시 중인 쿨다운(0.1초 단위) 캐시 — 값이 바뀐 프레임에만 텍스트를 재할당한다.</summary>
         private int[] _shownCooldownTenths;
 
-        public void Initialize(BattleTestBootstrap bootstrap)
+        public void Initialize(BattleTestBootstrap bootstrap, SkillDefinition[] skills)
         {
             _bootstrap = bootstrap;
+            EnsureButtonCount(skills);
             _buttonGraphics = new Graphic[skillButtons.Length];
             _skillColors = new Color[skillButtons.Length];
             _readyLabels = new string[skillButtons.Length];
@@ -39,6 +43,51 @@ namespace NHN.Presentation.Battle
                 _readyLabels[s] = skillLabels[s].text;
                 _shownCooldownTenths[s] = int.MinValue;
             }
+        }
+
+        /// <summary>
+        /// 씬 버튼(기본 2개)보다 스킬이 많으면 첫 버튼을 복제해 슬롯을 확장한다 —
+        /// 스킬 추가 = 데이터 1개 원칙을 씬 수정 없이 유지 (v4 §9: 4종 대응).
+        /// 초기화 1회 경로라 Instantiate/클로저 허용 (전투 중 할당 아님).
+        /// </summary>
+        private void EnsureButtonCount(SkillDefinition[] skills)
+        {
+            if (skills.Length <= skillButtons.Length)
+            {
+                return;
+            }
+            var buttons = new Button[skills.Length];
+            var labels = new TMP_Text[skills.Length];
+            for (int s = 0; s < skillButtons.Length; s++)
+            {
+                buttons[s] = skillButtons[s];
+                labels[s] = skillLabels[s];
+            }
+
+            var firstRect = (RectTransform)skillButtons[0].transform;
+            Vector2 step = skillButtons.Length >= 2
+                ? ((RectTransform)skillButtons[1].transform).anchoredPosition - firstRect.anchoredPosition
+                : FallbackButtonStep;
+            // 클론은 원본 줄 위로 쌓는다 — 화면 가장자리 밖으로 밀려나지 않게 (하단 바가 우측 정렬이어도 안전).
+            Vector2 rowOffset = new Vector2(0f, firstRect.sizeDelta.y * 1.15f);
+            int originalCount = skillButtons.Length;
+            for (int s = originalCount; s < skills.Length; s++)
+            {
+                int column = (s - originalCount) % Mathf.Max(originalCount, 1);
+                int row = 1 + (s - originalCount) / Mathf.Max(originalCount, 1);
+                Button clone = Instantiate(skillButtons[0], skillButtons[0].transform.parent);
+                clone.name = $"SkillButton{s}";
+                ((RectTransform)clone.transform).anchoredPosition =
+                    firstRect.anchoredPosition + step * column + rowOffset * row;
+                clone.onClick = new Button.ButtonClickedEvent(); // 원본이 물고 온 씬 리스너(슬롯 0 고정) 제거
+                int slot = s;
+                clone.onClick.AddListener(() => OnSkillButton(slot));
+                buttons[s] = clone;
+                labels[s] = clone.GetComponentInChildren<TMP_Text>();
+                labels[s].text = skills[s].SkillName;
+            }
+            skillButtons = buttons;
+            skillLabels = labels;
         }
 
         /// <summary>슬롯별 스킬 색 — 버튼 색 = 이펙트 색 (가독성 1:1 대응).</summary>

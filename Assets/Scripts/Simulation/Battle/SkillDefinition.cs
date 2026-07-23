@@ -17,13 +17,15 @@ namespace NHN.Simulation.Battle
         public readonly float StatusDuration;
         /// <summary>상태이상 세기 — 도트: 초당 데미지.</summary>
         public readonly float StatusMagnitude;
-        /// <summary>0 이하 = 즉발. 양수 = 장판 지속시간 — 지속 동안 매 틱 범위 내 적에게 상태이상 재부여.</summary>
+        /// <summary>0 이하 = 즉발. 양수 = 장판 지속시간 — 지속 동안 매 틱 범위 내 대상에게 상태이상 재부여.</summary>
         public readonly float ZoneDuration;
+        /// <summary>true = 아군 대상 (힐 장판/전투 함성 — v4 §9). false = 적군 대상.</summary>
+        public readonly bool TargetsAllies;
 
         public SkillDefinition(
             string skillName, float cooldown, float radius, float damage,
             StatusEffectType appliesStatus, float statusDuration, float statusMagnitude,
-            float zoneDuration)
+            float zoneDuration, bool targetsAllies = false)
         {
             SkillName = skillName;
             Cooldown = cooldown;
@@ -33,6 +35,7 @@ namespace NHN.Simulation.Battle
             StatusDuration = statusDuration;
             StatusMagnitude = statusMagnitude;
             ZoneDuration = zoneDuration;
+            TargetsAllies = targetsAllies;
         }
     }
 }

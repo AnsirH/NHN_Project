@@ -23,8 +23,12 @@ namespace NHN.Data
         [SerializeField] private float statusMagnitude;
 
         [Header("장판 (0 = 즉발)")]
-        [Tooltip("지속 동안 매 틱 범위 내 적에게 상태이상 재부여")]
+        [Tooltip("지속 동안 매 틱 범위 내 대상에게 상태이상 재부여")]
         [SerializeField] private float zoneDuration;
+
+        [Header("대상 (v4 §9 — 힐 장판/전투 함성은 아군 대상)")]
+        [Tooltip("true = 아군에게 적용 (HealOverTime/AttackUp 등 긍정 효과), false = 적군에게 적용")]
+        [SerializeField] private bool targetsAllies;
 
         [Header("뷰 (스킬 색 = 이펙트/조준 표시 색)")]
         [SerializeField] private Color skillColor = Color.white;
@@ -36,7 +40,7 @@ namespace NHN.Data
             return new SkillDefinition(
                 name, cooldown, radius, damage,
                 appliesStatus, statusDuration, statusMagnitude,
-                zoneDuration);
+                zoneDuration, targetsAllies);
         }
     }
 }
