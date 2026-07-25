@@ -26,11 +26,11 @@ MonoBehaviour:
       goldAmount: 0
     resultText: "\uBD80\uB7EC\uC9C0\uC9C0 \uC54A\uC740 \uD65C \uD558\uB098\uB97C
       \uC218\uC2B5\uD588\uB2E4."
-  - choiceText: "\uC548\uC7A5\uC744 \uC218\uC2B5\uD55C\uB2E4"
+  - choiceText: "\uBC29\uD328\uB97C \uC218\uC2B5\uD55C\uB2E4"
     rewards:
     - type: 2
       armyDef: {fileID: 0}
-      itemDef: {fileID: 11400000, guid: 7826c60f1b89e5647ae53fdef7d9afcc, type: 2}
+      itemDef: {fileID: 11400000, guid: 61d51b3066726404b810295714b8b94d, type: 2}
       goldAmount: 0
-    resultText: "\uB9D0 \uC5C6\uB294 \uC548\uC7A5 \uD558\uB098\uAC00 \uB0A8\uC544
-      \uC788\uC5C8\uB2E4."
+    resultText: "\uC774\uAC00 \uB098\uAC00\uC9C0 \uC54A\uC740 \uBC29\uD328 \uD558\uB098\uAC00
+      \uB0A8\uC544 \uC788\uC5C8\uB2E4."

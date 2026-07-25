@@ -54,11 +54,11 @@ namespace OutGame.Logic.Items
             return item?.armyClass ?? ArmyClass.None;
         }
 
-        /// <summary>병과의 한국어 표시명 (§2 용어: 활→궁수, 안장→기마). None이면 빈 문자열.</summary>
+        /// <summary>병과의 한국어 표시명 (§2 용어: 활→궁수, 방패→방패병). None이면 빈 문자열.</summary>
         public static string ClassDisplayName(ArmyClass armyClass) => armyClass switch
         {
             ArmyClass.Archer => "궁수",
-            ArmyClass.Cavalry => "기마",
+            ArmyClass.Shieldman => "방패병",
             _ => "",
         };
 

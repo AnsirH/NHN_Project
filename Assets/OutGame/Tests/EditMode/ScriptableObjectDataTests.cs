@@ -82,7 +82,7 @@ namespace OutGame.Tests.EditMode
                 var data = so.ToData();
                 Assert.AreEqual(1.0f, data.WeightOf(ArmyClass.None));
                 Assert.AreEqual(1.2f, data.WeightOf(ArmyClass.Archer));
-                Assert.AreEqual(1.5f, data.WeightOf(ArmyClass.Cavalry));
+                Assert.AreEqual(1.5f, data.WeightOf(ArmyClass.Shieldman));
             }
             finally
             {

@@ -11,13 +11,13 @@ namespace OutGame.ScriptableObjects
     {
         [SerializeField, Min(0f)] private float baseWeight = 1.0f;
         [SerializeField, Min(0f)] private float archerWeight = 1.2f;
-        [SerializeField, Min(0f)] private float cavalryWeight = 1.5f;
+        [SerializeField, Min(0f)] private float shieldmanWeight = 1.5f;
 
         public BattlePowerConfig ToData() => new BattlePowerConfig
         {
             baseWeight = baseWeight,
             archerWeight = archerWeight,
-            cavalryWeight = cavalryWeight,
+            shieldmanWeight = shieldmanWeight,
         };
     }
 }

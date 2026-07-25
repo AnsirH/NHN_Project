@@ -56,7 +56,7 @@ namespace OutGame.Tests.EditMode
         {
             RunState original = RunStateFactory.Create(NewMap(), new RunConfig { startingGold = 50 });
             original.ownedItemIds.Add("item_bow");
-            original.armies[0].Bind("item_saddle");
+            original.armies[0].Bind("item_shield");
             original.armies[1].AddBonusSoldiers(6);
             original.visitedEventIds.Add("evt_recruit_deserters");
             original.visitedEventIds.Add("evt_old_armory");

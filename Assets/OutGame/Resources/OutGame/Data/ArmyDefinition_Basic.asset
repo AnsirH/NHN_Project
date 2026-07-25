@@ -19,3 +19,12 @@ MonoBehaviour:
   generalName: "\uC774\uB984 \uC5C6\uB294 \uC7A5\uAD70"
   generalPortrait: {fileID: 0}
   generalPower: 10
+  generalHealth: 100
+  generalAttack: 10
+  generalDefense: 5
+  generalCritRate: 5
+  generalMoveSpeed: 100
+  description: 
+  soldierHealth: 50
+  soldierAttack: 5
+  soldierDefense: 2

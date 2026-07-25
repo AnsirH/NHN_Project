@@ -25,7 +25,7 @@ namespace OutGame.Tests.PlayMode
         private RunState run;
         private ArmyDefinition armyDef;
         private ItemDefinition bowDef;
-        private ItemDefinition saddleDef;
+        private ItemDefinition shieldDef;
 
         [SetUp]
         public void SetUp()
@@ -45,10 +45,10 @@ namespace OutGame.Tests.PlayMode
 
             armyDef = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
             bowDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Bow");
-            saddleDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Saddle");
+            shieldDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Shield");
             Assert.IsNotNull(armyDef);
             Assert.IsNotNull(bowDef);
-            Assert.IsNotNull(saddleDef);
+            Assert.IsNotNull(shieldDef);
 
             MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
             run = RunStateFactory.Create(map, new RunConfig { startingArmyCount = 3, startingArmyDefId = "army_basic" });
@@ -65,7 +65,7 @@ namespace OutGame.Tests.PlayMode
         private void OpenPanel()
         {
             panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default",
-                new[] { armyDef }, new[] { bowDef, saddleDef });
+                new[] { armyDef }, new[] { bowDef, shieldDef });
         }
 
         // OnItemDroppedOnCard는 처리를 한 프레임 늦추므로(코드 리뷰 CRITICAL 수정 — 드래그 종료 처리와의
@@ -109,7 +109,7 @@ namespace OutGame.Tests.PlayMode
             var emptyRun = new RunState { mapState = map };
 
             panel.Open(emptyRun, "room_2_0", RoomType.NormalBattle, "enc_default",
-                new[] { armyDef }, new[] { bowDef, saddleDef });
+                new[] { armyDef }, new[] { bowDef, shieldDef });
 
             Button startButton = panel.transform.Find("MainRow/CenterColumn/StartBattleButton").GetComponent<Button>();
             Assert.IsFalse(startButton.interactable, "군대가 하나도 없으면 전투 시작 불가 (§5.7)");
@@ -126,7 +126,7 @@ namespace OutGame.Tests.PlayMode
 
             Assert.Throws<System.InvalidOperationException>(() =>
                 panel.Open(overCapRun, "room_2_0", RoomType.NormalBattle, "enc_default",
-                    new[] { armyDef }, new[] { bowDef, saddleDef }));
+                    new[] { armyDef }, new[] { bowDef, shieldDef }));
         }
 
         [UnityTest]
@@ -326,7 +326,7 @@ namespace OutGame.Tests.PlayMode
         {
             PlayerPrefs.SetInt(ItemBindWarningPopup.SuppressPrefKey, 1);
             run.ownedItemIds.Add("item_bow");
-            run.ownedItemIds.Add("item_saddle");
+            run.ownedItemIds.Add("item_shield");
             OpenPanel();
             yield return null;
 
@@ -337,12 +337,12 @@ namespace OutGame.Tests.PlayMode
             Assert.IsTrue(run.GetArmy(cardView.ArmyInstanceId).HasItem, "선행 조건: 활이 부여돼 있어야 함");
 
             // 이미 아이템이 귀속된 부대에 다른 아이템을 드롭 — 교체 불가이므로 무시돼야 함 (§4-6)
-            DropItemOnCard(cardView, "item_saddle");
+            DropItemOnCard(cardView, "item_shield");
             yield return null;
             yield return null;
 
             Assert.AreEqual("item_bow", run.GetArmy(cardView.ArmyInstanceId).EquippedItemId, "귀속은 교체되면 안 됨");
-            Assert.IsTrue(run.ownedItemIds.Contains("item_saddle"), "거부된 드롭은 보유 목록을 소모하면 안 됨");
+            Assert.IsTrue(run.ownedItemIds.Contains("item_shield"), "거부된 드롭은 보유 목록을 소모하면 안 됨");
         }
 
         [UnityTest]
@@ -377,7 +377,7 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
-            DropItemOnCard(cardView, "item_saddle"); // ownedItemIds에 없음
+            DropItemOnCard(cardView, "item_shield"); // ownedItemIds에 없음
             yield return null;
             yield return null;
 

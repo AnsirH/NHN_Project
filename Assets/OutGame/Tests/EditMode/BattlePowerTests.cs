@@ -41,10 +41,10 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
-        public void Calculate_ArcherAndCavalry_UseClassWeights()
+        public void Calculate_ArcherAndShieldman_UseClassWeights()
         {
             // (30 × 1.2 + 10) + (30 × 1.5 + 10) = 46 + 55 = 101
-            var armies = new List<DeployedArmy> { Deployed(ArmyClass.Archer, 30), Deployed(ArmyClass.Cavalry, 30) };
+            var armies = new List<DeployedArmy> { Deployed(ArmyClass.Archer, 30), Deployed(ArmyClass.Shieldman, 30) };
             float power = BattlePowerCalculator.Calculate(armies, new BattlePowerConfig(), Defs);
             Assert.AreEqual(101f, power, 1e-3f);
         }
@@ -52,7 +52,7 @@ namespace OutGame.Tests.EditMode
         [Test]
         public void Calculate_CustomWeights_AreRespected()
         {
-            var config = new BattlePowerConfig { baseWeight = 2f, archerWeight = 3f, cavalryWeight = 4f };
+            var config = new BattlePowerConfig { baseWeight = 2f, archerWeight = 3f, shieldmanWeight = 4f };
             // 10 × 3 + 10 = 40
             float power = BattlePowerCalculator.Calculate(
                 new List<DeployedArmy> { Deployed(ArmyClass.Archer, 10) }, config, Defs);
@@ -83,6 +83,8 @@ namespace OutGame.Tests.EditMode
         public void WeightOf_ReservedClass_Throws()
         {
             Assert.Throws<System.ArgumentException>(() => new BattlePowerConfig().WeightOf(ArmyClass.Spearman));
+            Assert.Throws<System.ArgumentException>(() => new BattlePowerConfig().WeightOf(ArmyClass.Cavalry),
+                "Cavalry는 2026-07-19부로 미사용 예약으로 격하됨 (§4-25)");
         }
     }
 }

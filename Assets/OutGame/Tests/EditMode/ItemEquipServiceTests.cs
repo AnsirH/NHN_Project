@@ -18,7 +18,7 @@ namespace OutGame.Tests.EditMode
         private static readonly Dictionary<string, ItemData> Items = new Dictionary<string, ItemData>
         {
             ["item_bow"] = new ItemData { id = "item_bow", displayName = "활", armyClass = ArmyClass.Archer, generalSkillId = "skill_volley" },
-            ["item_saddle"] = new ItemData { id = "item_saddle", displayName = "안장", armyClass = ArmyClass.Cavalry, generalSkillId = "skill_charge" },
+            ["item_shield"] = new ItemData { id = "item_shield", displayName = "방패", armyClass = ArmyClass.Shieldman, generalSkillId = "skill_taunt" },
         };
 
         [SetUp]
@@ -46,14 +46,14 @@ namespace OutGame.Tests.EditMode
         {
             string armyId = run.armies[0].instanceId;
             ItemEquipService.Equip(run, armyId, "item_bow");
-            run.ownedItemIds.Add("item_saddle");
+            run.ownedItemIds.Add("item_shield");
 
-            Assert.IsFalse(ItemEquipService.CanEquip(run, armyId, "item_saddle"));
+            Assert.IsFalse(ItemEquipService.CanEquip(run, armyId, "item_shield"));
             Assert.Throws<InvalidOperationException>(
-                () => ItemEquipService.Equip(run, armyId, "item_saddle"),
+                () => ItemEquipService.Equip(run, armyId, "item_shield"),
                 "부대당 1개 — 교체 불가 (§4-6)");
             Assert.AreEqual("item_bow", run.armies[0].EquippedItemId, "기존 귀속이 유지돼야 함");
-            Assert.IsTrue(run.ownedItemIds.Contains("item_saddle"), "실패 시 보유 목록 변화 없음");
+            Assert.IsTrue(run.ownedItemIds.Contains("item_shield"), "실패 시 보유 목록 변화 없음");
         }
 
         [Test]
@@ -61,9 +61,9 @@ namespace OutGame.Tests.EditMode
         {
             string armyId = run.armies[0].instanceId;
 
-            Assert.IsFalse(ItemEquipService.CanEquip(run, armyId, "item_saddle"));
+            Assert.IsFalse(ItemEquipService.CanEquip(run, armyId, "item_shield"));
             Assert.Throws<InvalidOperationException>(
-                () => ItemEquipService.Equip(run, armyId, "item_saddle"));
+                () => ItemEquipService.Equip(run, armyId, "item_shield"));
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace OutGame.Tests.EditMode
         {
             Assert.AreEqual("", ItemEquipService.ClassDisplayName(ArmyClass.None));
             Assert.AreEqual("궁수", ItemEquipService.ClassDisplayName(ArmyClass.Archer));
-            Assert.AreEqual("기마", ItemEquipService.ClassDisplayName(ArmyClass.Cavalry));
+            Assert.AreEqual("방패병", ItemEquipService.ClassDisplayName(ArmyClass.Shieldman));
         }
     }
 }

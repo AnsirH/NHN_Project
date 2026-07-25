@@ -100,11 +100,11 @@ namespace OutGame.Tests.EditMode
             EventRewardApplier.Apply(run, new List<RewardGrant>
             {
                 new RewardGrant { type = RewardType.Gold, goldAmount = 30 },
-                new RewardGrant { type = RewardType.Item, itemId = "item_saddle" },
+                new RewardGrant { type = RewardType.Item, itemId = "item_shield" },
             }, DefaultMaxArmyCount);
 
             Assert.AreEqual(30, run.gold);
-            Assert.Contains("item_saddle", run.ownedItemIds);
+            Assert.Contains("item_shield", run.ownedItemIds);
         }
 
         [Test]

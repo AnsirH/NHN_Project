@@ -12,7 +12,7 @@ namespace OutGame.Logic.Battle
     {
         public float baseWeight = 1.0f;
         public float archerWeight = 1.2f;
-        public float cavalryWeight = 1.5f;
+        public float shieldmanWeight = 1.5f;
 
         public float WeightOf(ArmyClass armyClass)
         {
@@ -20,9 +20,9 @@ namespace OutGame.Logic.Battle
             {
                 case ArmyClass.None: return baseWeight;
                 case ArmyClass.Archer: return archerWeight;
-                case ArmyClass.Cavalry: return cavalryWeight;
+                case ArmyClass.Shieldman: return shieldmanWeight;
                 default:
-                    // Spearman/Shieldman 등 예약 병과 — 계수 미정 상태로 조용히 baseWeight를
+                    // Cavalry/Spearman 등 예약 병과 — 계수 미정 상태로 조용히 baseWeight를
                     // 쓰면 활성화 버그를 못 알아챈다 (§4-23 확장 시 반드시 계수 추가 필요).
                     throw new ArgumentException(
                         $"{armyClass} 병과의 전투력 계수가 아직 정의되지 않았습니다 — BattlePowerConfig 확장 필요");
