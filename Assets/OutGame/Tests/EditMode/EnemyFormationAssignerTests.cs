@@ -8,8 +8,9 @@ using OutGame.Logic.Battle;
 namespace OutGame.Tests.EditMode
 {
     /// <summary>
-    /// 적 진영 병과별 앞열/뒷열 배치 검증 (2026-07-19 사용자 요청) — 근접(방패병)은 앞열,
-    /// 원거리(궁수)는 뒷열에 군집돼야 한다.
+    /// 적 진영 병과별 구역 배치 검증 (2026-07-26 사용자 확정) — 근접(방패병)은 전방 절반 열을
+    /// 1→2 순으로, 원거리(궁수)는 후방 절반 열을 3→4 순으로, 기본(병과 없음)은 구역 제한 없이
+    /// 최전방부터 전체 열을 쓴다. 서로 다른 병과는 상대 구역을 절대 넘어오지 않는다.
     /// </summary>
     public class EnemyFormationAssignerTests
     {
@@ -36,16 +37,38 @@ namespace OutGame.Tests.EditMode
             var composition = new List<EnemyArmy> { Enemy(ArmyClass.Shieldman) };
             var result = EnemyFormationAssigner.Assign(composition, Grid(columns: 4, rows: 7), columns: 4);
 
-            Assert.AreEqual(0, result[0].slot.slotId % 4, "방패병은 가장 앞열(열 인덱스 0)에 배치돼야 함");
+            Assert.AreEqual(0, result[0].slot.slotId % 4, "방패병은 전방 구역의 첫 열(0)부터 채워야 함");
         }
 
         [Test]
-        public void Assign_Archer_GoesToRearmostColumn()
+        public void Assign_Archer_GoesToFrontOfRearZone()
         {
+            // 2026-07-26: 궁수 시작 열이 기존 4열(맨 뒤)에서 3열(후방 구역의 앞쪽)로 변경됐다.
             var composition = new List<EnemyArmy> { Enemy(ArmyClass.Archer) };
             var result = EnemyFormationAssigner.Assign(composition, Grid(columns: 4, rows: 7), columns: 4);
 
-            Assert.AreEqual(3, result[0].slot.slotId % 4, "궁수는 가장 뒷열(마지막 열)에 배치돼야 함");
+            Assert.AreEqual(2, result[0].slot.slotId % 4, "궁수는 후방 구역(3,4열)의 앞쪽인 3열(인덱스 2)부터 채워야 함");
+        }
+
+        [Test]
+        public void Assign_None_StartsAtFrontmostColumn()
+        {
+            var composition = new List<EnemyArmy> { Enemy(ArmyClass.None) };
+            var result = EnemyFormationAssigner.Assign(composition, Grid(columns: 4, rows: 7), columns: 4);
+
+            Assert.AreEqual(0, result[0].slot.slotId % 4, "기본 병과는 무조건 최전방 열(0)부터 채워야 함");
+        }
+
+        [Test]
+        public void Assign_None_SpreadsAcrossAllColumnsWhenNeeded()
+        {
+            // 열당 1칸(rows=1)이라 기본 병과 4명은 반드시 4개 열 전부를 하나씩 써야 한다 — 근접/원거리
+            // 처럼 구역 제한이 없다는 걸 확인.
+            var composition = Enumerable.Repeat(ArmyClass.None, 4).Select(Enemy).ToList();
+            var result = EnemyFormationAssigner.Assign(composition, Grid(columns: 4, rows: 1), columns: 4);
+
+            var columnsUsed = result.Select(r => r.slot.slotId % 4).OrderBy(c => c).ToList();
+            CollectionAssert.AreEqual(new[] { 0, 1, 2, 3 }, columnsUsed);
         }
 
         [Test]
@@ -57,6 +80,38 @@ namespace OutGame.Tests.EditMode
 
             var columnsUsed = result.Select(r => r.slot.slotId % 4).OrderBy(c => c).ToList();
             CollectionAssert.AreEqual(new[] { 0, 0, 0, 1 }, columnsUsed, "앞열(0)이 가득 차면 다음 열(1)로 넘어가야 함");
+        }
+
+        [Test]
+        public void Assign_ShieldmanExceedingOwnZoneCapacity_ThrowsInsteadOfCrossingIntoArcherZone()
+        {
+            // 방패병 구역(0,1열)은 열당 1칸(rows=1)이라 총 용량 2 — 3번째 방패병은 궁수 구역(2,3열)에
+            // 빈 자리가 있어도 절대 넘어가면 안 되고 예외가 나야 한다(2026-07-26 사용자 확정: 자기
+            // 구역 밖으로는 절대 안 넘어감).
+            var composition = Enumerable.Repeat(ArmyClass.Shieldman, 3).Select(Enemy).ToList();
+
+            Assert.Throws<ArgumentException>(() =>
+                EnemyFormationAssigner.Assign(composition, Grid(columns: 4, rows: 1), columns: 4));
+        }
+
+        [Test]
+        public void Assign_NoneListedBeforeShieldman_DoesNotStarveShieldmanZone()
+        {
+            // 코드 리뷰 HIGH 지적 회귀 테스트: None은 구역 제한이 없어 방패병과 똑같이 0열부터
+            // 노리는데, 정렬이 병과 우선순위 없이 열 번호로만 매겨지면(둘 다 zone[0]=0) 생성 순서상
+            // None이 먼저 나오는 경우 방패병 전용 구역(0,1열, 열당 1칸)을 다 차지해버려 방패병이
+            // 자리를 못 찾고 예외가 난다 — 총 용량(4칸)은 충분한데도 순서 때문에 실패하면 안 된다.
+            var composition = new List<EnemyArmy>
+            {
+                Enemy(ArmyClass.None), Enemy(ArmyClass.None), Enemy(ArmyClass.Shieldman), Enemy(ArmyClass.Shieldman),
+            };
+
+            var result = EnemyFormationAssigner.Assign(composition, Grid(columns: 4, rows: 1), columns: 4);
+
+            Assert.AreEqual(4, result.Count);
+            var shieldmanColumns = result.Where(r => r.enemy.armyClass == ArmyClass.Shieldman)
+                .Select(r => r.slot.slotId % 4).OrderBy(c => c).ToList();
+            CollectionAssert.AreEqual(new[] { 0, 1 }, shieldmanColumns, "방패병은 생성 순서와 무관하게 자기 구역(0,1열)을 확보해야 함");
         }
 
         [Test]
@@ -97,7 +152,6 @@ namespace OutGame.Tests.EditMode
         [Test]
         public void Assign_SingleColumnGrid_PlacesAllRegardlessOfClass()
         {
-            // columns=1이면 columnDepth가 항상 0.5(고정)라 모든 병과가 유일한 열에 몰린다.
             var composition = new List<EnemyArmy> { Enemy(ArmyClass.Shieldman), Enemy(ArmyClass.Archer) };
             var result = EnemyFormationAssigner.Assign(composition, Grid(columns: 1, rows: 7), columns: 1);
 
@@ -106,23 +160,13 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
-        public void Assign_TiedDistanceBetweenTwoColumns_PrefersLowerColumnThenOverflows()
+        public void Assign_RowFillOrder_IsCenterOutAlternating()
         {
-            // columns=2 → columnDepth는 {0, 1}. depth 0.5(ArmyClass.None)는 두 열까지 거리가 동일(0.5)해서
-            // 동률이면 먼저 스캔되는 낮은 열 인덱스가 선택돼야 한다(예외 없이 결정적). rows=1이라 첫 유닛이
-            // 열 0을 채우면 두 번째 유닛은 남은 열 1로 넘어간다.
-            var composition = new List<EnemyArmy> { Enemy(ArmyClass.None), Enemy(ArmyClass.None) };
-            var result = EnemyFormationAssigner.Assign(composition, Grid(columns: 2, rows: 1), columns: 2);
+            // columns=1이면 slotId가 곧 행 번호라, Assign 결과 순서로 행 채우기 순서를 직접 검증할 수 있다.
+            var composition = Enumerable.Repeat(ArmyClass.None, 7).Select(Enemy).ToList();
+            var result = EnemyFormationAssigner.Assign(composition, Grid(columns: 1, rows: 7), columns: 1);
 
-            Assert.AreEqual(2, result.Count);
-            CollectionAssert.AreEqual(new[] { 0, 1 }, result.Select(r => r.slot.slotId % 2).OrderBy(c => c).ToList());
-        }
-
-        [Test]
-        public void DepthOf_OrdersClassesFrontToBack()
-        {
-            Assert.Less(EnemyFormationAssigner.DepthOf(ArmyClass.Shieldman), EnemyFormationAssigner.DepthOf(ArmyClass.None));
-            Assert.Less(EnemyFormationAssigner.DepthOf(ArmyClass.None), EnemyFormationAssigner.DepthOf(ArmyClass.Archer));
+            CollectionAssert.AreEqual(new[] { 3, 2, 4, 1, 5, 0, 6 }, result.Select(r => r.slot.slotId).ToList());
         }
     }
 }

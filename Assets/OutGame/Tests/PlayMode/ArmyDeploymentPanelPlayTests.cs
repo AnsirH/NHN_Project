@@ -94,6 +94,15 @@ namespace OutGame.Tests.PlayMode
         private ArmyCardView[] AllyCards() =>
             panel.transform.Find("MainRow/AllyColumn/SlotGrid").GetComponentsInChildren<ArmyCardView>(includeInactive: true);
 
+        // 자동 배치가 이제 slotId 오름차순이 아니라 "가운데 전방" 기준점에서부터 채워지므로
+        // (2026-07-26 사용자 확정), slotId가 가장 낮은 슬롯이 더 이상 항상 점유돼 있다는 보장이 없다 —
+        // 카드가 실제로 들어있는 슬롯만 걸러서 써야 한다.
+        private List<DeploySlotView> OccupiedAllySlotsOrdered() =>
+            panel.GetComponentsInChildren<DeploySlotView>()
+                .Where(s => s.CardContainer.GetComponentInChildren<ArmyCardView>() != null)
+                .OrderBy(s => s.SlotId)
+                .ToList();
+
         [UnityTest]
         public IEnumerator RunConfigDefaultAsset_HasArmyUpgradeCosts()
         {
@@ -146,10 +155,11 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Open_EnemySlotsShowClassLabelsOnlyForGeneratedUnits()
+        public IEnumerator Open_EnemySlotsShowClassNamesOnlyForGeneratedUnits()
         {
-            // 2026-07-26 사용자 요청: 적 진영도 아군과 동일한 ArmyCardView로 표시한다 — 빈 슬롯은
-            // 배경만 있고 카드 자체가 없어야 한다(구성 개수만큼만 카드 생성).
+            // 2026-07-26 사용자 요청: 적 진영도 아군과 동일한 ArmyCardView로 표시하되, 병사 수는
+            // 어느 진영도 표시하지 않는다(뱃지/카운트 필드 자체를 제거) — 빈 슬롯은 배경만 있고
+            // 카드 자체가 없어야 한다(구성 개수만큼만 카드 생성).
             OpenPanel();
             yield return null;
 
@@ -157,10 +167,8 @@ namespace OutGame.Tests.PlayMode
             var enemyCards = enemySlotGrid.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
             Assert.AreEqual(TestEnemyComposition.Count, enemyCards.Length, "생성된 적 구성 개수만큼만 카드가 있어야 함");
 
-            var labels = enemyCards.Select(card =>
-                $"{card.transform.Find("NameLabel").GetComponent<Text>().text}\n{card.transform.Find("ClassBadge").GetComponent<Text>().text}"
-            ).ToList();
-            CollectionAssert.AreEquivalent(new[] { "궁수\n30명", "방패병\n30명", "기본\n30명" }, labels);
+            var names = enemyCards.Select(card => card.transform.Find("NameLabel").GetComponent<Text>().text).ToList();
+            CollectionAssert.AreEquivalent(new[] { "궁수", "방패병", "기본" }, names);
         }
 
         [UnityTest]
@@ -254,7 +262,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var slots = panel.GetComponentsInChildren<DeploySlotView>().OrderBy(s => s.SlotId).ToList();
+            var slots = OccupiedAllySlotsOrdered();
             var firstCard = slots[0].CardContainer.GetComponentInChildren<ArmyCardView>();
             var secondCard = slots[1].CardContainer.GetComponentInChildren<ArmyCardView>();
             Assert.IsNotNull(firstCard);
@@ -278,7 +286,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var slots = panel.GetComponentsInChildren<DeploySlotView>().OrderBy(s => s.SlotId).ToList();
+            var slots = OccupiedAllySlotsOrdered();
             var firstCard = slots[0].CardContainer.GetComponentInChildren<ArmyCardView>();
 
             typeof(ArmyDeploymentPanel)
@@ -297,7 +305,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var slots = panel.GetComponentsInChildren<DeploySlotView>().OrderBy(s => s.SlotId).ToList();
+            var slots = OccupiedAllySlotsOrdered();
             string firstArmyId = slots[0].CardContainer.GetComponentInChildren<ArmyCardView>().ArmyInstanceId;
             string secondArmyId = slots[1].CardContainer.GetComponentInChildren<ArmyCardView>().ArmyInstanceId;
 
@@ -310,7 +318,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel(); // 같은 run으로 재오픈 — 매번 자동 배치가 아니라 이전 배치를 복원해야 함
             yield return null;
 
-            var reopenedSlots = panel.GetComponentsInChildren<DeploySlotView>().OrderBy(s => s.SlotId).ToList();
+            var reopenedSlots = OccupiedAllySlotsOrdered();
             Assert.AreEqual(secondArmyId, reopenedSlots[0].CardContainer.GetComponentInChildren<ArmyCardView>().ArmyInstanceId);
             Assert.AreEqual(firstArmyId, reopenedSlots[1].CardContainer.GetComponentInChildren<ArmyCardView>().ArmyInstanceId);
         }
@@ -379,11 +387,11 @@ namespace OutGame.Tests.PlayMode
             Assert.IsFalse(run.ownedItemIds.Contains("item_bow"), "귀속된 아이템은 보유 목록에서 제거");
 
             // 병과가 생기면 이름 자체가 바뀌어야 한다 (§2 용어: 기본 군대 + 활 = 궁수 군대). 이름이 이미
-            // 병과를 나타내므로 뱃지는 따로 표시하지 않는다 (2026-07-19 사용자 피드백 — 뱃지 중복 표시 제거).
+            // 병과를 나타내므로 별도 뱃지는 아예 존재하지 않는다(2026-07-26 사용자 확정 — 카운트/뱃지
+            // 필드 완전 제거).
             Text nameLabel = cardView.transform.Find("NameLabel").GetComponent<Text>();
-            Text classBadge = cardView.transform.Find("ClassBadge").GetComponent<Text>();
             Assert.AreEqual("궁수 군대", nameLabel.text);
-            Assert.IsFalse(classBadge.gameObject.activeSelf, "이름이 병과를 나타내므로 뱃지는 비활성 상태여야 함");
+            Assert.IsNull(cardView.transform.Find("ClassBadge"), "ClassBadge 필드는 완전히 제거돼야 함");
         }
 
         [UnityTest]
@@ -456,7 +464,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var slots = panel.GetComponentsInChildren<DeploySlotView>().OrderBy(s => s.SlotId).ToList();
+            var slots = OccupiedAllySlotsOrdered();
             var occupantCard = slots[0].CardContainer.GetComponentInChildren<ArmyCardView>();
 
             panel.transform.Find("MainRow/CenterColumn/ItemButton").GetComponent<Button>().onClick.Invoke();

@@ -15,7 +15,6 @@ namespace OutGame.UI.Deployment
     {
         [SerializeField] private Image portrait;
         [SerializeField] private Text nameLabel;
-        [SerializeField] private Text classBadge;
         [SerializeField] private CanvasGroup canvasGroup;
 
         private Canvas rootCanvas;
@@ -42,23 +41,16 @@ namespace OutGame.UI.Deployment
         {
             if (string.IsNullOrEmpty(armyInstanceId))
                 throw new ArgumentException("armyInstanceId가 비어 있습니다.", nameof(armyInstanceId));
-            if (portrait == null || nameLabel == null || classBadge == null || canvasGroup == null)
+            if (portrait == null || nameLabel == null || canvasGroup == null)
                 throw new InvalidOperationException("ArmyCardView 프리팹의 필드가 배선되지 않았습니다.");
 
             ArmyInstanceId = armyInstanceId;
             canvasGroup.blocksRaycasts = interactable;
         }
 
-        /// <summary>
-        /// badgeText는 아군 쪽에선 병과 뱃지로 쓰이지만(현재는 이름에 병과가 포함돼 항상 빈 문자열),
-        /// 적 진영(ArmyDeploymentPanel)에서는 같은 자리를 병사 수 표시로 재사용한다 — 필드 하나를
-        /// 문맥에 따라 다른 값으로 채우는 것이니 호출부에서 이 재사용을 명시적으로 인지해야 한다.
-        /// </summary>
-        public void SetDisplay(string displayName, string badgeText, Sprite portraitSprite)
+        public void SetDisplay(string displayName, Sprite portraitSprite)
         {
             nameLabel.text = displayName;
-            classBadge.text = badgeText;
-            classBadge.gameObject.SetActive(!string.IsNullOrEmpty(badgeText));
             if (portraitSprite != null) portrait.sprite = portraitSprite;
         }
 

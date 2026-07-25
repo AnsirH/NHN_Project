@@ -62,6 +62,7 @@ namespace OutGame.UI.Deployment
         private readonly Dictionary<string, AugmentDefinition> augmentDefsById = new Dictionary<string, AugmentDefinition>();
         private readonly Dictionary<int, DeploySlotView> allySlotViewsById = new Dictionary<int, DeploySlotView>();
         private readonly Dictionary<int, Transform> enemySlotCardContainersById = new Dictionary<int, Transform>();
+        private readonly List<int> allySlotPriorityOrder = new List<int>();
 
         private RunState run;
         private RunConfig runConfig;
@@ -173,6 +174,14 @@ namespace OutGame.UI.Deployment
                 allySlotViewsById[slot.slotId] = view;
             }
 
+            // 자동 배치 우선순위 — "가운데 전방"이 기본 배치 기준점이다(2026-07-26 사용자 확정).
+            // 아군은 구역 제한 없이 전방 열(마지막 열)부터 후방 쪽으로(4→3→2→1) 훑고, 각 열 안에서는
+            // 가운데 행부터 위아래로 번갈아 채운다. RestoreOrAutoPlaceArmies()가 이 순서를 사용한다.
+            List<int> columnPriority = Enumerable.Range(0, fieldData.columns).Reverse().ToList();
+            allySlotPriorityOrder.Clear();
+            allySlotPriorityOrder.AddRange(
+                SlotPriorityOrder.ByColumnPriority(slots, fieldData.columns, columnPriority).Select(s => s.slotId));
+
             // 적 진영 — 아군과 똑같은 크기의 격자를 항상 전부 만들고(§5.7 "플레이어 진영처럼"), 그 위에
             // §4-28 생성된 구성을 EnemyFormationAssigner로 배치한다. 유닛 표시는 아군과 동일한
             // ArmyCardView를 재사용한다(2026-07-26 사용자 요청 — 진영 간 UI 통일). 실제 적 AI/전투
@@ -199,7 +208,7 @@ namespace OutGame.UI.Deployment
                 // interactable=false로 드래그/클릭/아이템 드롭을 막으므로 이 값은 식별용으로만 쓰인다.
                 card.Initialize($"enemy_{slot.slotId}", interactable: false);
                 armyDefsById.TryGetValue(enemy.armyDefId, out ArmyDefinition def);
-                card.SetDisplay(EnemyClassLabel(enemy.armyClass), $"{enemy.soldierCount}명", def != null ? def.Portrait : null);
+                card.SetDisplay(EnemyClassLabel(enemy.armyClass), def != null ? def.Portrait : null);
                 ((RectTransform)card.transform).anchoredPosition = Vector2.zero;
             }
         }
@@ -227,8 +236,9 @@ namespace OutGame.UI.Deployment
 
         /// <summary>
         /// run.deployment에 저장된 배치를 먼저 복원하고, 아직 슬롯이 없는 부대(최초 방문 시 전부 해당,
-        /// 또는 방문 사이 이벤트로 새로 얻은 부대)만 남는 슬롯에 순서대로 자동 배치한다 (§5.7 2026-07-19 개정
-        /// — 배치는 방을 넘어가도 유지되어야 하며, 매번 새로 자동 배치하면 안 된다).
+        /// 또는 방문 사이 이벤트로 새로 얻은 부대)만 남는 슬롯에 자동 배치한다 (§5.7 2026-07-19 개정
+        /// — 배치는 방을 넘어가도 유지되어야 하며, 매번 새로 자동 배치하면 안 된다). 자동 배치 순서는
+        /// allySlotPriorityOrder(가운데 전방 기준, 2026-07-26 사용자 확정)를 따른다.
         /// </summary>
         private void RestoreOrAutoPlaceArmies()
         {
@@ -238,9 +248,8 @@ namespace OutGame.UI.Deployment
                 if (run.GetArmy(saved.armyInstanceId) != null && deployment.IsValidSlot(saved.slotId))
                     deployment.Place(saved.armyInstanceId, saved.slotId);
 
-            List<int> freeSlotIds = allySlotViewsById.Keys
+            List<int> freeSlotIds = allySlotPriorityOrder
                 .Where(id => deployment.GetArmyAt(id) == null)
-                .OrderBy(id => id)
                 .ToList();
 
             int freeIndex = 0;
@@ -363,9 +372,9 @@ namespace OutGame.UI.Deployment
                 Sprite portrait = def != null ? def.Portrait : null;
                 string baseDisplayName = def != null ? def.ToData().displayName : army.armyDefId;
                 string displayName = ItemEquipService.ResolveDisplayName(army, baseDisplayName, itemDataById);
-                // 이름 자체가 병과를 나타내므로(§2 용어: 기본 군대 + 활 = 궁수 군대) 뱃지는 더 이상
-                // 따로 표시하지 않는다 — 이름 아래 중복 표시는 "또 부여 가능해 보인다"는 혼동만 줬다.
-                kv.Value.SetDisplay(displayName, "", portrait);
+                // 이름 자체가 병과를 나타내므로(§2 용어: 기본 군대 + 활 = 궁수 군대) 별도 뱃지/병사 수는
+                // 카드에 표시하지 않는다(2026-07-26 사용자 확정 — 진영 카드엔 군대 수 표시 안 함).
+                kv.Value.SetDisplay(displayName, portrait);
             }
 
             startBattleButton.interactable = deployment.CanStartBattle;
