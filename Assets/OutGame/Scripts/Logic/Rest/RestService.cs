@@ -6,7 +6,8 @@ using UnityEngine;
 namespace OutGame.Logic.Rest
 {
     /// <summary>
-    /// 휴식 방 증원 (§5.5 재정의): 기본 병사 수(baseSoldierCount) 기준 flat +20% 영구 누적.
+    /// 증원 방 효과 (§5.5 재정의, 2026-07-26 "휴식 방"에서 개칭): 기본 병사 수(baseSoldierCount)
+    /// 기준 flat +20% 영구 누적.
     /// 병력 손실 모델이 바뀌면 회복 기능으로 환원 가능하도록 별도 서비스로 분리.
     /// </summary>
     public static class RestService

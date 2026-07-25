@@ -64,7 +64,7 @@ namespace OutGame.Logic.Items
 
         /// <summary>
         /// 병과 반영 표시명 — 병과 없으면 baseDisplayName 그대로, 있으면 "{병과} 군대" (§2 용어:
-        /// 기본 군대 + 활 = 궁수 군대). 이름을 표시하는 화면(배치 UI, 휴식 방 등)이 전부 이 메서드로
+        /// 기본 군대 + 활 = 궁수 군대). 이름을 표시하는 화면(배치 UI, 증원 방 등)이 전부 이 메서드로
         /// 통일해야 한다 — 각자 계산하면 한쪽만 고치고 다른 쪽을 놓치기 쉽다(2026-07-19 실제로 발생).
         /// </summary>
         public static string ResolveDisplayName(

@@ -12,7 +12,7 @@ namespace OutGame.Logic.Armies
         public string id;
         public string displayName;
         public int baseSoldierCount = 30;
-        public int maxSoldierCount = 60; // §4-26(2026-07-19): 휴식 방 증원의 상한. 초안: baseSoldierCount×2
+        public int maxSoldierCount = 60; // §4-26(2026-07-19): 증원 방 효과의 상한. 초안: baseSoldierCount×2
 
         // 장군 (§5.5 — 군대당 1명 상시 존재)
         public string generalName;

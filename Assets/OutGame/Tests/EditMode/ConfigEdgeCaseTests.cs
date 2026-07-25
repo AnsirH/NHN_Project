@@ -65,7 +65,7 @@ namespace OutGame.Tests.EditMode
                     .ToList();
 
                 Assert.IsEmpty(violations,
-                    $"seed {seed}: restWeight=0인데 확률 배정 층에 휴식 방 생성됨");
+                    $"seed {seed}: restWeight=0인데 확률 배정 층에 증원 방 생성됨");
             }
         }
 

@@ -11,7 +11,8 @@ using UnityEngine.UI;
 namespace OutGame.UI
 {
     /// <summary>
-    /// 휴식 방 패널 (§5.5 재정의): 보유 군대 중 1개 선택 → 병사 수 영구 +20% 증원.
+    /// 증원 방 패널 (§5.5 재정의, 2026-07-26 "휴식 방"에서 개칭 — 실제 효과가 회복이 아니라 병사 수
+    /// 영구 증원이라 용어를 맞췄다): 보유 군대 중 1개 선택 → 병사 수 영구 +20% 증원.
     /// </summary>
     public class RestPanel : MonoBehaviour
     {

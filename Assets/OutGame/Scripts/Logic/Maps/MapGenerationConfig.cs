@@ -49,7 +49,7 @@ namespace OutGame.Logic.Maps
         public void Validate()
         {
             if (floorCount < 4)
-                throw new ArgumentException($"floorCount는 4 이상이어야 합니다 (1층 전투 + 중간 + 휴식층 + 보스층). 현재: {floorCount}");
+                throw new ArgumentException($"floorCount는 4 이상이어야 합니다 (1층 전투 + 중간 + 증원층 + 보스층). 현재: {floorCount}");
             if (gridWidth < 2)
                 throw new ArgumentException($"gridWidth는 2 이상이어야 합니다. 현재: {gridWidth}");
             if (pathCount < 1)

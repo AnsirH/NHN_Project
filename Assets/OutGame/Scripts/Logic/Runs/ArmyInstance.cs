@@ -15,7 +15,7 @@ namespace OutGame.Logic.Runs
 
         public string instanceId;
         public string armyDefId;
-        public int bonusSoldierCount;   // 휴식 방 증원 누적 (§5.5) — 음수 금지
+        public int bonusSoldierCount;   // 증원 방 보너스 누적 (§5.5) — 음수 금지
         public int upgradeLevel;        // 군대 업그레이드 단계 (§4-26), 0~MaxUpgradeLevel
 
         [SerializeField] private string equippedItemId; // 비어 있으면 기본 군대

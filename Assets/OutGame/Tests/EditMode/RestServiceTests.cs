@@ -6,7 +6,7 @@ using OutGame.Logic.Runs;
 
 namespace OutGame.Tests.EditMode
 {
-    /// <summary>휴식 방 증원 검증 (§5.5): 기본값 기준 flat +20%, 여러 번 적용 시 매번 base 기준.</summary>
+    /// <summary>증원 방 효과 검증 (§5.5): 기본값 기준 flat +20%, 여러 번 적용 시 매번 base 기준.</summary>
     public class RestServiceTests
     {
         private static ArmyData Def(int baseSoldiers) =>

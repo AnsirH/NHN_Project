@@ -6,9 +6,11 @@ namespace OutGame.Logic.Maps
 {
     /// <summary>
     /// 방 타입 배정 (상세 기획 §5.3).
-    /// 고정층: 1층=일반전투, 최상층=보스, 직전 층=휴식.
-    /// 나머지 층: 확률표(전투/이벤트/휴식) + 제약(휴식 연속 금지, 2층은 전투/이벤트,
+    /// 고정층: 1층=일반전투, 최상층=보스, 직전 층=증원.
+    /// 나머지 층: 확률표(전투/이벤트/증원) + 제약(증원 연속 금지, 2층은 전투/이벤트,
     /// 한 노드에서 갈라지는 분기의 목적지 타입 중복 금지 — 만족 불가능할 때만 완화).
+    /// 2026-07-26: RoomType.Rest 열거값/필드명은 그대로 두고 표시명·기획 용어만 "증원"으로 개칭
+    /// (실제 효과가 회복이 아니라 병사 수 영구 증원이라 원래부터 이름이 안 맞았음).
     /// </summary>
     public static class RoomTypeAssigner
     {
@@ -22,7 +24,7 @@ namespace OutGame.Logic.Maps
             Dictionary<GridPoint, MapNode> byPoint = nodes.ToDictionary(n => n.point);
             var assigned = new HashSet<GridPoint>();
 
-            // 아래층부터 배정 — 선행 노드(휴식 연속)와 먼저 배정된 형제(분기 중복)를 참조할 수 있다
+            // 아래층부터 배정 — 선행 노드(증원 연속)와 먼저 배정된 형제(분기 중복)를 참조할 수 있다
             foreach (MapNode node in nodes.OrderBy(n => n.point.y).ThenBy(n => n.point.x))
             {
                 node.roomType = PickType(node, config, byPoint, assigned, rng, topFloor);
@@ -62,17 +64,17 @@ namespace OutGame.Logic.Maps
             if (config.restWeight <= 0f) forbidden.Add(RoomType.Rest);
             if (config.augmentWeight <= 0f) forbidden.Add(RoomType.Augment);
 
-            // 2층은 전투/이벤트만 허용 (§5.3) — 휴식뿐 아니라 증강도 제외
+            // 2층은 전투/이벤트만 허용 (§5.3) — 증원뿐 아니라 증강도 제외
             if (y == 1)
             {
                 forbidden.Add(RoomType.Rest);
                 forbidden.Add(RoomType.Augment);
             }
-            // 고정 휴식층 직전 층은 휴식 금지 (연속 방지)
+            // 고정 증원층 직전 층은 증원 금지 (연속 방지)
             if (y == topFloor - 2)
                 forbidden.Add(RoomType.Rest);
 
-            // 선행 노드가 휴식이면 휴식 금지 (휴식 연속 금지)
+            // 선행 노드가 증원이면 증원 금지 (증원 연속 금지)
             foreach (GridPoint predPoint in node.incoming)
             {
                 if (byPoint.TryGetValue(predPoint, out MapNode pred) && pred.roomType == RoomType.Rest)

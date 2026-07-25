@@ -133,7 +133,7 @@ namespace OutGame.Tests.EditMode
 
                 Assert.IsNotEmpty(preBossNodes, $"seed {seed}");
                 Assert.IsTrue(preBossNodes.All(n => n.roomType == RoomType.Rest),
-                    $"seed {seed}: 보스 직전 층은 전부 휴식이어야 함");
+                    $"seed {seed}: 보스 직전 층은 전부 증원이어야 함");
             }
         }
 
@@ -162,14 +162,14 @@ namespace OutGame.Tests.EditMode
                 foreach (MapNode node in map.nodes.Where(n => n.roomType == RoomType.Rest))
                     foreach (GridPoint dest in node.outgoing)
                         Assert.AreNotEqual(RoomType.Rest, map.GetNode(dest).roomType,
-                            $"seed {seed}: 휴식 연속 {node.point} → {dest}");
+                            $"seed {seed}: 증원 연속 {node.point} → {dest}");
             }
         }
 
         [Test]
         public void Generate_TwoWayBranch_DestinationTypesDiffer()
         {
-            // 확률 배정 층(2층~휴식층 직전)으로 갈라지는 2갈래 분기는 목적지 타입이 서로 달라야 한다.
+            // 확률 배정 층(2층~증원층 직전)으로 갈라지는 2갈래 분기는 목적지 타입이 서로 달라야 한다.
             // 3갈래는 제약상 중복이 불가피할 수 있어 검증 대상에서 제외.
             int lastProbabilityFloor = DefaultConfig().floorCount - 3;
 
