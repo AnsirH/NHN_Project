@@ -131,7 +131,8 @@ namespace NHN.Simulation.Tests
                     Elite(warrior),
                     SquadPassive.AttackPercent, passiveValue: 0.25f,
                     ChargeCondition.SquadDeaths, chargeRequired: 3f,
-                    GimmickEffect.SquadDamageResist, activeParamA: 0.3f, activeParamB: 0f, activeDuration: 2.5f);
+                    GimmickEffect.SquadDamageResist, activeParamA: 0.3f, activeParamB: 0f, activeDuration: 2.5f,
+                    leadRankOffset: 1f);
 
                 var sim = new BattleSimulation(
                     config,
@@ -174,7 +175,8 @@ namespace NHN.Simulation.Tests
                 Elite(warrior),
                 SquadPassive.AttackPercent, passiveValue: 0.5f,
                 ChargeCondition.TimeElapsed, chargeRequired: 6f,
-                GimmickEffect.SquadDamageResist, activeParamA: 0.3f, activeParamB: 0f, activeDuration: 2f);
+                GimmickEffect.SquadDamageResist, activeParamA: 0.3f, activeParamB: 0f, activeDuration: 2f,
+                leadRankOffset: 1f);
 
             // A: 원거리에 홀로 (개입 방지용 깊은 후방 배치) / B: 병사 1 + 장군. 처형 스킬은 B군(적군)만 타격한다.
             // 반경 0.4: 장군 선두 리드(1랭크 = 1.25유닛)보다 판정 반경(0.4+병사 반경)이 작아 장군만 맞는다.
@@ -248,20 +250,20 @@ namespace NHN.Simulation.Tests
                 // 방진: 적을 다수(25)로 — 부대원 사망이 확실히 누적되도록.
                 ("방진(누적 사망)", warrior, 20,
                     new GeneralDefinition(Elite(warrior, hpMultiplier: 10f), SquadPassive.AttackPercent, 0.15f,
-                        ChargeCondition.SquadDeaths, 2f, GimmickEffect.SquadDamageResist, 0.3f, 0f, 2.5f),
+                        ChargeCondition.SquadDeaths, 2f, GimmickEffect.SquadDamageResist, 0.3f, 0f, 2.5f, 1f),
                     warrior, 25),
                 ("일제 사격(누적 공격)", archer, 20,
                     new GeneralDefinition(Elite(archer, hpMultiplier: 8f), SquadPassive.AttackPercent, 0.15f,
-                        ChargeCondition.SquadAttacks, 40f, GimmickEffect.SquadVolley, 2.5f, 1f, 0f),
+                        ChargeCondition.SquadAttacks, 40f, GimmickEffect.SquadVolley, 2.5f, 1f, 0f, 1f),
                     warrior, 30),
                 ("그림자 습격(누적 킬)", assassin, 12,
                     new GeneralDefinition(Elite(assassin), SquadPassive.AttackPercent, 0.15f,
-                        ChargeCondition.SquadKills, 4f, GimmickEffect.SquadRestealthCrit, 2f, 2f, 0f),
+                        ChargeCondition.SquadKills, 4f, GimmickEffect.SquadRestealthCrit, 2f, 2f, 0f, 1f),
                     archer, 20),
                 // 사냥 선포: 충전 4초 + 적 30 — 전투가 2주기(8초) 이상 지속되도록.
                 ("사냥 선포(시간 경과)", hunter, 15,
                     new GeneralDefinition(Elite(hunter, hpMultiplier: 10f), SquadPassive.AttackPercent, 0.15f,
-                        ChargeCondition.TimeElapsed, 4f, GimmickEffect.MarkStrongestEnemy, 1.5f, 0f, 6f),
+                        ChargeCondition.TimeElapsed, 4f, GimmickEffect.MarkStrongestEnemy, 1.5f, 0f, 6f, 1f),
                     warrior, 30),
             };
 

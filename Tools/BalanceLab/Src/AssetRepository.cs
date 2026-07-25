@@ -234,7 +234,8 @@ namespace BalanceLab
                 ParseEnum<GimmickEffect>(parsed, "activeEffect"),
                 parsed.GetFloat("activeParamA"),
                 parsed.GetFloat("activeParamB"),
-                parsed.GetFloat("activeDuration"));
+                parsed.GetFloat("activeDuration"),
+                RequireLeadRankOffsetInRange(parsed));
 
             // 장군 스탯도 병과별 × 레벨별 표에서 온다 (능력은 에셋, 스탯은 표 — 연결 경로와 같은 분리).
             if (!StatTable.TryClassIdFromGeneralAssetName(parsed.Name, out string generalClassId))
@@ -252,6 +253,22 @@ namespace BalanceLab
 
             _generalDefinitions[cacheKey] = general;
             return general;
+        }
+
+        /// <summary>
+        /// 리드 오프셋 범위 검증 — GeneralDefinition이 어차피 클램프하지만, 데이터가 범위를 벗어난 채
+        /// 조용히 보정되면 튜닝 루프가 "값을 바꿨는데 결과가 그대로"인 혼란에 빠진다. 여기서 즉시 드러낸다.
+        /// </summary>
+        private static float RequireLeadRankOffsetInRange(ParsedAsset asset)
+        {
+            float value = asset.GetFloat("leadRankOffset");
+            if (value < GeneralDefinition.MinLeadRankOffset || value > GeneralDefinition.MaxLeadRankOffset)
+            {
+                throw asset.Fail(
+                    $"leadRankOffset {StatTable.FormatValue(value)}가 허용 범위를 벗어난다 " +
+                    $"({GeneralDefinition.MinLeadRankOffset}~{GeneralDefinition.MaxLeadRankOffset} 랭크)");
+            }
+            return value;
         }
 
         private static void RequireLevelInRange(StatTable table, int level)

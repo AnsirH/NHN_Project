@@ -1,0 +1,5020 @@
+{
+  "scenarioName": "role_archer_vs_assassin",
+  "band": "role_matchup",
+  "verdict": {
+    "bandId": "role_matchup",
+    "minWinRate": 0.3,
+    "maxWinRate": 0.7,
+    "passed": false,
+    "detail": "\uC88C\uAD70 \uC2B9\uB960 95.5 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 30 %~70 %\uB97C \uBC97\uC5B4\uB0A8 (\uCD08\uACFC)"
+  },
+  "runs": 200,
+  "leftWins": 191,
+  "rightWins": 9,
+  "draws": 0,
+  "leftWinRate": 0.955,
+  "rightWinRate": 0.045,
+  "elapsedMs": 2740,
+  "battles": [
+    {
+      "seed": 0,
+      "winner": "left",
+      "ticks": 235,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 17,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "winner": "left",
+      "ticks": 277,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "winner": "left",
+      "ticks": 280,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "winner": "left",
+      "ticks": 228,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 5,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 6,
+      "winner": "left",
+      "ticks": 327,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 8,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 7,
+      "winner": "left",
+      "ticks": 232,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 8,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 9,
+      "winner": "right",
+      "ticks": 664,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 10,
+      "winner": "left",
+      "ticks": 237,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 11,
+      "winner": "left",
+      "ticks": 326,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 12,
+      "winner": "left",
+      "ticks": 237,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 13,
+      "winner": "left",
+      "ticks": 233,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 14,
+      "winner": "left",
+      "ticks": 228,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 15,
+      "winner": "left",
+      "ticks": 278,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 16,
+      "winner": "left",
+      "ticks": 284,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 17,
+      "winner": "right",
+      "ticks": 223,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 18,
+      "winner": "left",
+      "ticks": 234,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 19,
+      "winner": "left",
+      "ticks": 243,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 20,
+      "winner": "left",
+      "ticks": 185,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 17,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 21,
+      "winner": "left",
+      "ticks": 232,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 22,
+      "winner": "left",
+      "ticks": 328,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 8,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 23,
+      "winner": "left",
+      "ticks": 229,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 24,
+      "winner": "left",
+      "ticks": 231,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 25,
+      "winner": "left",
+      "ticks": 281,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 26,
+      "winner": "left",
+      "ticks": 228,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 27,
+      "winner": "left",
+      "ticks": 185,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 28,
+      "winner": "right",
+      "ticks": 395,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 29,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 17,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 30,
+      "winner": "left",
+      "ticks": 336,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 31,
+      "winner": "left",
+      "ticks": 181,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 32,
+      "winner": "left",
+      "ticks": 335,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 9,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 33,
+      "winner": "left",
+      "ticks": 232,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 34,
+      "winner": "left",
+      "ticks": 330,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 35,
+      "winner": "left",
+      "ticks": 231,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 36,
+      "winner": "left",
+      "ticks": 280,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 37,
+      "winner": "left",
+      "ticks": 279,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 38,
+      "winner": "left",
+      "ticks": 231,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 39,
+      "winner": "left",
+      "ticks": 284,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 40,
+      "winner": "left",
+      "ticks": 282,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 41,
+      "winner": "left",
+      "ticks": 233,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 42,
+      "winner": "left",
+      "ticks": 278,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 43,
+      "winner": "left",
+      "ticks": 331,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 9,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 44,
+      "winner": "left",
+      "ticks": 283,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 45,
+      "winner": "left",
+      "ticks": 234,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 46,
+      "winner": "left",
+      "ticks": 277,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 47,
+      "winner": "left",
+      "ticks": 328,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 48,
+      "winner": "left",
+      "ticks": 282,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 8,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 49,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 50,
+      "winner": "left",
+      "ticks": 277,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 51,
+      "winner": "left",
+      "ticks": 241,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 52,
+      "winner": "left",
+      "ticks": 189,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 53,
+      "winner": "left",
+      "ticks": 279,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 54,
+      "winner": "left",
+      "ticks": 279,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 55,
+      "winner": "left",
+      "ticks": 228,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 56,
+      "winner": "left",
+      "ticks": 329,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ]
+    },
+    {
+      "seed": 57,
+      "winner": "left",
+      "ticks": 285,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 58,
+      "winner": "left",
+      "ticks": 279,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 59,
+      "winner": "left",
+      "ticks": 236,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 60,
+      "winner": "left",
+      "ticks": 280,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 61,
+      "winner": "left",
+      "ticks": 284,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 62,
+      "winner": "left",
+      "ticks": 235,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 63,
+      "winner": "left",
+      "ticks": 426,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 3
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 64,
+      "winner": "left",
+      "ticks": 231,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 65,
+      "winner": "left",
+      "ticks": 229,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 66,
+      "winner": "left",
+      "ticks": 277,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 67,
+      "winner": "left",
+      "ticks": 282,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 68,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 17,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 69,
+      "winner": "left",
+      "ticks": 234,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 70,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 71,
+      "winner": "left",
+      "ticks": 235,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 72,
+      "winner": "left",
+      "ticks": 277,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 73,
+      "winner": "left",
+      "ticks": 283,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 74,
+      "winner": "left",
+      "ticks": 383,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ]
+    },
+    {
+      "seed": 75,
+      "winner": "left",
+      "ticks": 279,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 9,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 76,
+      "winner": "left",
+      "ticks": 280,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 77,
+      "winner": "left",
+      "ticks": 280,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 78,
+      "winner": "left",
+      "ticks": 227,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 79,
+      "winner": "left",
+      "ticks": 278,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 80,
+      "winner": "left",
+      "ticks": 332,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 81,
+      "winner": "left",
+      "ticks": 246,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 8,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ]
+    },
+    {
+      "seed": 82,
+      "winner": "left",
+      "ticks": 333,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 83,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 84,
+      "winner": "left",
+      "ticks": 228,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 85,
+      "winner": "left",
+      "ticks": 277,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 86,
+      "winner": "left",
+      "ticks": 244,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 87,
+      "winner": "left",
+      "ticks": 335,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ]
+    },
+    {
+      "seed": 88,
+      "winner": "right",
+      "ticks": 307,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 4,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 89,
+      "winner": "left",
+      "ticks": 231,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 90,
+      "winner": "left",
+      "ticks": 279,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 91,
+      "winner": "left",
+      "ticks": 281,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 92,
+      "winner": "left",
+      "ticks": 380,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 93,
+      "winner": "left",
+      "ticks": 328,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 94,
+      "winner": "left",
+      "ticks": 227,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 95,
+      "winner": "left",
+      "ticks": 235,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 96,
+      "winner": "left",
+      "ticks": 278,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 97,
+      "winner": "left",
+      "ticks": 282,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 98,
+      "winner": "left",
+      "ticks": 283,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 99,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 17,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 100,
+      "winner": "left",
+      "ticks": 329,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 101,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 102,
+      "winner": "left",
+      "ticks": 279,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 103,
+      "winner": "left",
+      "ticks": 234,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 104,
+      "winner": "left",
+      "ticks": 182,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 105,
+      "winner": "left",
+      "ticks": 274,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 106,
+      "winner": "left",
+      "ticks": 280,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 107,
+      "winner": "left",
+      "ticks": 282,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 108,
+      "winner": "left",
+      "ticks": 279,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 109,
+      "winner": "left",
+      "ticks": 278,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 17,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 110,
+      "winner": "left",
+      "ticks": 281,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 111,
+      "winner": "left",
+      "ticks": 331,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ]
+    },
+    {
+      "seed": 112,
+      "winner": "left",
+      "ticks": 282,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 113,
+      "winner": "left",
+      "ticks": 280,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 114,
+      "winner": "left",
+      "ticks": 279,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 9,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 115,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 116,
+      "winner": "left",
+      "ticks": 228,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 17,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 117,
+      "winner": "left",
+      "ticks": 376,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 118,
+      "winner": "left",
+      "ticks": 229,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 119,
+      "winner": "left",
+      "ticks": 229,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 120,
+      "winner": "left",
+      "ticks": 227,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 121,
+      "winner": "left",
+      "ticks": 236,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 122,
+      "winner": "left",
+      "ticks": 233,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 123,
+      "winner": "left",
+      "ticks": 286,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 9,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 124,
+      "winner": "left",
+      "ticks": 277,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 125,
+      "winner": "left",
+      "ticks": 231,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 17,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 126,
+      "winner": "left",
+      "ticks": 277,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 127,
+      "winner": "left",
+      "ticks": 185,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 128,
+      "winner": "left",
+      "ticks": 185,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 129,
+      "winner": "left",
+      "ticks": 231,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 130,
+      "winner": "left",
+      "ticks": 186,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 131,
+      "winner": "left",
+      "ticks": 283,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 132,
+      "winner": "right",
+      "ticks": 264,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 5,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 133,
+      "winner": "left",
+      "ticks": 231,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 134,
+      "winner": "left",
+      "ticks": 234,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 135,
+      "winner": "left",
+      "ticks": 231,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 17,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 136,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 137,
+      "winner": "left",
+      "ticks": 277,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 138,
+      "winner": "left",
+      "ticks": 237,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 139,
+      "winner": "left",
+      "ticks": 236,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 140,
+      "winner": "left",
+      "ticks": 228,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 141,
+      "winner": "left",
+      "ticks": 181,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 17,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 142,
+      "winner": "left",
+      "ticks": 278,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 143,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 144,
+      "winner": "left",
+      "ticks": 330,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 8,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 145,
+      "winner": "left",
+      "ticks": 328,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 146,
+      "winner": "left",
+      "ticks": 246,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 147,
+      "winner": "left",
+      "ticks": 235,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 148,
+      "winner": "left",
+      "ticks": 278,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 9,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 149,
+      "winner": "left",
+      "ticks": 280,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 150,
+      "winner": "left",
+      "ticks": 182,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 17,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 151,
+      "winner": "left",
+      "ticks": 233,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 152,
+      "winner": "right",
+      "ticks": 271,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 4
+        }
+      ]
+    },
+    {
+      "seed": 153,
+      "winner": "left",
+      "ticks": 429,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 4,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 154,
+      "winner": "left",
+      "ticks": 327,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 155,
+      "winner": "left",
+      "ticks": 282,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ]
+    },
+    {
+      "seed": 156,
+      "winner": "left",
+      "ticks": 279,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 157,
+      "winner": "left",
+      "ticks": 337,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 5,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ]
+    },
+    {
+      "seed": 158,
+      "winner": "right",
+      "ticks": 300,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 4,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 159,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 160,
+      "winner": "left",
+      "ticks": 232,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 161,
+      "winner": "left",
+      "ticks": 232,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 162,
+      "winner": "left",
+      "ticks": 277,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 163,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 164,
+      "winner": "left",
+      "ticks": 279,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 165,
+      "winner": "left",
+      "ticks": 281,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 9,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 166,
+      "winner": "left",
+      "ticks": 232,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 167,
+      "winner": "left",
+      "ticks": 234,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 168,
+      "winner": "left",
+      "ticks": 282,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 169,
+      "winner": "left",
+      "ticks": 279,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 170,
+      "winner": "left",
+      "ticks": 229,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 171,
+      "winner": "left",
+      "ticks": 277,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 172,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 173,
+      "winner": "left",
+      "ticks": 276,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 174,
+      "winner": "left",
+      "ticks": 329,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 175,
+      "winner": "left",
+      "ticks": 228,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 176,
+      "winner": "left",
+      "ticks": 229,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 177,
+      "winner": "left",
+      "ticks": 278,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 178,
+      "winner": "left",
+      "ticks": 281,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 179,
+      "winner": "left",
+      "ticks": 237,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 180,
+      "winner": "left",
+      "ticks": 227,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 181,
+      "winner": "left",
+      "ticks": 233,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 182,
+      "winner": "left",
+      "ticks": 281,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 183,
+      "winner": "left",
+      "ticks": 233,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 184,
+      "winner": "left",
+      "ticks": 234,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 185,
+      "winner": "left",
+      "ticks": 282,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 8,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 186,
+      "winner": "left",
+      "ticks": 282,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 9,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 187,
+      "winner": "left",
+      "ticks": 280,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 188,
+      "winner": "left",
+      "ticks": 232,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 189,
+      "winner": "right",
+      "ticks": 272,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 5,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 190,
+      "winner": "left",
+      "ticks": 234,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 191,
+      "winner": "left",
+      "ticks": 278,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ]
+    },
+    {
+      "seed": 192,
+      "winner": "left",
+      "ticks": 286,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 193,
+      "winner": "right",
+      "ticks": 267,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 194,
+      "winner": "left",
+      "ticks": 278,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 195,
+      "winner": "left",
+      "ticks": 280,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 196,
+      "winner": "left",
+      "ticks": 276,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 197,
+      "winner": "left",
+      "ticks": 380,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 198,
+      "winner": "left",
+      "ticks": 282,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 199,
+      "winner": "left",
+      "ticks": 235,
+      "leftSquads": [
+        {
+          "squadId": "Archer1",
+          "level": 0,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "level": 0,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    }
+  ]
+}

@@ -4,8 +4,26 @@
 
 ```
 cd Tools/BalanceLab
-dotnet run -- scenarios/<시나리오>.json
+dotnet run -- scenarios/all.json          # 전체 매트릭스 (14개 시나리오) + PASS/FAIL 요약
+dotnet run -- scenarios/<시나리오>.json    # 단일 시나리오
 ```
+
+종료 코드: `0` 전부 PASS / `1` 오류 / `2` 사용법 오류 / `3` 밴드 FAIL 존재 (튜닝 루프의 종료 조건).
+
+## 시나리오와 목표 밴드
+
+- `scenarios/all.json` — 세트 파일(`scenarios` 배열). 전체 매트릭스를 한 번에 돌린다.
+- `scenarios/matrix/*.json` — 장군 유/무 4종 + 미러 4종 + 롤 상성 6쌍 = 14개.
+- `armies/*.json` — 군대 정의 재사용 파일. 시나리오에서 `"left": "@../../armies/Warrior_general.json"`으로 참조한다.
+- `bands.json` — 목표 밴드. 시나리오의 `band` 태그로 규칙을 고르고 **좌군 승률**로 판정한다.
+  미등록 태그는 즉시 실패한다(오타가 조용히 "판정 없음"이 되지 않도록).
+
+| 밴드 | 목표 | 의미 |
+|---|---|---|
+| `general_vs_none` | 65~75% | 장군의 가치는 분명하되 절대적이지 않아야 한다 |
+| `mirror_general` | 45~55% | 동일 구성 매치 — 좌/우 진영의 구조적 유불리가 없어야 한다 |
+| `role_matchup` | 30~70% | 롤 상성은 있되 일방적이지 않아야 한다 |
+| `none` | 판정 없음 | 관찰·회귀 확인 전용 |
 
 - 시드 0..N-1 고정 실행 → `results/<시나리오명>.json` 생성 (판별 기록 포함 — 모든 시드는 언제나 재현 가능)
 - guid→경로 인덱스는 캐싱 없이 매 실행 재구축된다.

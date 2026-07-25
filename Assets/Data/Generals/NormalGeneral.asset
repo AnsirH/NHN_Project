@@ -29,3 +29,4 @@ MonoBehaviour:
   activeParamA: 0
   activeParamB: 0
   activeDuration: 0
+  leadRankOffset: 1

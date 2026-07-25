@@ -42,6 +42,17 @@ namespace NHN.Data
         [Tooltip("지속형 효과(방진/표식)의 지속시간 초")]
         [SerializeField] private float activeDuration;
 
+        [Header("배치")]
+        [Tooltip("분대 선두 오프셋 (랭크): +1 = 병사 최전열보다 한 줄 앞, 0 = 같은 줄, -1 = 한 줄 뒤. 범위 -1~+1로 강제된다")]
+        [Range(GeneralDefinition.MinLeadRankOffset, GeneralDefinition.MaxLeadRankOffset)]
+        [SerializeField] private float leadRankOffset = 1f;
+
+        private void OnValidate()
+        {
+            // 튜닝 루프가 "전장 밖 도피"로 수렴하지 못하도록 데이터 단계에서 범위를 강제한다.
+            leadRankOffset = GeneralDefinition.ClampLeadRankOffset(leadRankOffset);
+        }
+
         /// <summary>뷰 스케일용 — 시뮬 반경과 동일한 파생 규칙 (기반 롤 × 크기 배율).</summary>
         public float UnitRadius => baseRole.UnitRadius * sizeMultiplier;
 
@@ -76,7 +87,8 @@ namespace NHN.Data
                 hpMultiplier, damageMultiplier, sizeMultiplier,
                 passive, passiveValue,
                 chargeCondition, chargeRequired,
-                activeEffect, activeParamA, activeParamB, activeDuration);
+                activeEffect, activeParamA, activeParamB, activeDuration,
+                leadRankOffset);
             if (!HasExplicitStats)
             {
                 return derived;

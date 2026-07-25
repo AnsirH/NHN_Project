@@ -147,6 +147,48 @@ namespace NHN.Simulation.Tests
             return 0f;
         }
 
+        /// <summary>
+        /// 리드 오프셋 데이터화 (작업 2): 장군 스폰 위치가 코드 상수가 아니라 데이터로 결정되고,
+        /// 허용 범위(-1~+1 랭크)를 벗어난 값은 클램프된다 — 튜닝 루프가 전장 밖 도피로 수렴하는 것을 막는다.
+        /// </summary>
+        [Test]
+        public void LeadRankOffset_IsDataDriven_AndClamped()
+        {
+            BattleConfig config = LoadConfig();
+            RoleDefinition warrior = PassiveRole("Warrior", maxHp: 200f, defense: 0f);
+
+            float frontX = SpawnGeneralX(warrior, leadRankOffset: 1f, config);
+            float sameRankX = SpawnGeneralX(warrior, leadRankOffset: 0f, config);
+            float behindX = SpawnGeneralX(warrior, leadRankOffset: -1f, config);
+
+            // A군은 -x에 서서 +x(적진)를 향한다 → 전진할수록 x가 커진다.
+            Assert.Greater(frontX, sameRankX, "오프셋 +1은 병사 최전열보다 앞(적진 쪽)이어야 한다");
+            Assert.Greater(sameRankX, behindX, "오프셋 -1은 병사 최전열보다 뒤여야 한다");
+            Assert.AreNotEqual(frontX, behindX, "데이터 변경만으로 장군 위치가 달라져야 한다 (코드 상수 아님)");
+
+            // 범위 밖 값은 클램프 — 정의 생성 시점에 강제된다.
+            Assert.AreEqual(GeneralDefinition.MaxLeadRankOffset, GeneralDefinition.ClampLeadRankOffset(5f), 1e-3f);
+            Assert.AreEqual(GeneralDefinition.MinLeadRankOffset, GeneralDefinition.ClampLeadRankOffset(-5f), 1e-3f);
+            Assert.AreEqual(frontX, SpawnGeneralX(warrior, leadRankOffset: 99f, config), 1e-3f,
+                "범위를 넘는 오프셋은 상한(+1)으로 클램프되어야 한다");
+        }
+
+        /// <summary>주어진 리드 오프셋으로 스폰된 A군 장군의 x 좌표.</summary>
+        private static float SpawnGeneralX(RoleDefinition role, float leadRankOffset, in BattleConfig config)
+        {
+            var general = GeneralDefinition.CreateElite(
+                role, "TestGeneral", hpMultiplier: 2f, damageMultiplier: 1f, sizeMultiplier: 1f,
+                SquadPassive.None, 0f, ChargeCondition.None, 0f,
+                GimmickEffect.None, 0f, 0f, 0f, leadRankOffset);
+            var armyA = new ArmyDefinition(new[]
+            {
+                new SquadDefinition(role, 9, new System.Numerics.Vector2(0f, 0f), general),
+            });
+            var armyB = new ArmyDefinition(new[] { new SquadDefinition(role, 1, new System.Numerics.Vector2(0f, 0f)) });
+            var sim = new BattleSimulation(config, armyA, armyB, seed: 1);
+            return sim.GetPosition(sim.GetGeneralUnit(0)).X;
+        }
+
         /// <summary>회귀 방어: 방어력·치명타 0인 기존 데이터는 스탯 확장 전과 동일한 전투 결과를 낸다.</summary>
         [Test]
         public void ZeroDefenseAndCrit_PreservesExistingBattleOutcome()

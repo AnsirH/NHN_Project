@@ -1189,10 +1189,11 @@ namespace NHN.Simulation.Battle
 
                 if (squad.General != null)
                 {
-                    // 장군 스폰 위치 = 분대 선두 (기획 §5) — 병사 최전열보다 한 랭크 앞, 측면 중앙.
+                    // 장군 스폰 위치 = 분대 선두 (기획 §5), 측면 중앙.
+                    // 앞뒤 정도는 데이터(LeadRankOffset, 랭크 단위 −1~+1)가 결정한다 — 밸런싱 튜닝 대상.
                     RoleDefinition generalRole = squad.General.CombatRole;
                     int generalRoleIndex = IndexOfRole(_roles, _roles.Length, generalRole);
-                    float frontX = anchor.X + direction * (-(rows * 0.5f) - 1f) * spacing;
+                    float frontX = anchor.X + direction * (-(rows * 0.5f) - squad.General.LeadRankOffset) * spacing;
                     int generalUnit = SpawnUnit(generalRole, generalRoleIndex, team, squadIndex, new Vector2(frontX, anchor.Y), isLeader: true);
                     _squadGeneralUnits[squadIndex] = generalUnit;
                 }

@@ -24,13 +24,32 @@ namespace NHN.Simulation.Battle
         public readonly float ActiveParamB;
         /// <summary>효과 지속시간(초) — 지속형 효과(방진/표식)에서 사용.</summary>
         public readonly float ActiveDuration;
+        /// <summary>
+        /// 분대 선두 오프셋 (랭크 단위, +1 = 병사 최전열보다 한 줄 앞, 0 = 같은 줄, -1 = 한 줄 뒤).
+        /// 선두 장군은 적 최근접 타겟팅의 집중 포화를 받으므로(기획 §5) 생존성의 핵심 손잡이다 —
+        /// 밸런싱 튜닝 대상이라 코드 상수가 아닌 데이터여야 한다. 범위는 ClampLeadRankOffset로 강제한다.
+        /// </summary>
+        public readonly float LeadRankOffset;
+
+        /// <summary>리드 오프셋 허용 범위 (랭크). 튜닝 루프가 "전장 밖으로 도피"하는 해로 수렴하는 것을 막는다.</summary>
+        public const float MinLeadRankOffset = -1f;
+        public const float MaxLeadRankOffset = 1f;
+
+        public static float ClampLeadRankOffset(float value)
+        {
+            return value < MinLeadRankOffset ? MinLeadRankOffset
+                : value > MaxLeadRankOffset ? MaxLeadRankOffset
+                : value;
+        }
 
         public GeneralDefinition(
             RoleDefinition combatRole,
             SquadPassive passive, float passiveValue,
             ChargeCondition chargeCondition, float chargeRequired,
-            GimmickEffect activeEffect, float activeParamA, float activeParamB, float activeDuration)
+            GimmickEffect activeEffect, float activeParamA, float activeParamB, float activeDuration,
+            float leadRankOffset)
         {
+            LeadRankOffset = ClampLeadRankOffset(leadRankOffset);
             CombatRole = combatRole;
             Passive = passive;
             PassiveValue = passiveValue;
@@ -56,7 +75,8 @@ namespace NHN.Simulation.Battle
             float hpMultiplier, float damageMultiplier, float sizeMultiplier,
             SquadPassive passive, float passiveValue,
             ChargeCondition chargeCondition, float chargeRequired,
-            GimmickEffect activeEffect, float activeParamA, float activeParamB, float activeDuration)
+            GimmickEffect activeEffect, float activeParamA, float activeParamB, float activeDuration,
+            float leadRankOffset)
         {
             var combatRole = new RoleDefinition(
                 generalName,
@@ -78,7 +98,8 @@ namespace NHN.Simulation.Battle
             return new GeneralDefinition(
                 combatRole, passive, passiveValue,
                 chargeCondition, chargeRequired,
-                activeEffect, activeParamA, activeParamB, activeDuration);
+                activeEffect, activeParamA, activeParamB, activeDuration,
+                leadRankOffset);
         }
 
         /// <summary>
@@ -91,7 +112,8 @@ namespace NHN.Simulation.Battle
                 combatRole,
                 source.Passive, source.PassiveValue,
                 source.ChargeCondition, source.ChargeRequired,
-                source.ActiveEffect, source.ActiveParamA, source.ActiveParamB, source.ActiveDuration);
+                source.ActiveEffect, source.ActiveParamA, source.ActiveParamB, source.ActiveDuration,
+                source.LeadRankOffset);
         }
     }
 }

@@ -72,6 +72,11 @@ namespace BalanceLab
             return match.Groups[1].Value;
         }
 
+        /// <summary>
+        /// enum 리스트를 읽는다. Unity는 같은 필드를 세 가지 형태로 직렬화한다:
+        ///   ① YAML 항목 목록(- 1)  ② 빈 값 또는 []  ③ 16진 바이트 문자열("0100000002000000" = 리틀엔디안 int 1,2)
+        /// ③은 에셋을 에디터에서 재저장하면 나타나는 압축 표기다 — 셋 다 지원해야 파서가 조용히 깨지지 않는다.
+        /// </summary>
         public List<int> GetIntList(string key)
         {
             if (_lists.TryGetValue(key, out List<string> items))
@@ -87,11 +92,48 @@ namespace BalanceLab
                 }
                 return values;
             }
-            if (_scalars.TryGetValue(key, out string scalar) && scalar == "[]")
+            if (_scalars.TryGetValue(key, out string scalar))
             {
-                return new List<int>();
+                scalar = scalar.Trim();
+                if (scalar.Length == 0 || scalar == "[]")
+                {
+                    return new List<int>();
+                }
+                if (TryParseHexIntList(scalar, out List<int> hexValues))
+                {
+                    return hexValues;
+                }
+                throw Fail($"'{key}' 값 '{scalar}'을 리스트로 해석할 수 없다");
             }
             throw Fail($"필수 리스트 키 '{key}' 누락 또는 형식 불일치");
+        }
+
+        private static bool TryParseHexIntList(string text, out List<int> values)
+        {
+            values = null;
+            if (text.Length == 0 || text.Length % 8 != 0)
+            {
+                return false;
+            }
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (Uri.IsHexDigit(text[i]) == false)
+                {
+                    return false;
+                }
+            }
+
+            values = new List<int>(text.Length / 8);
+            for (int i = 0; i < text.Length; i += 8)
+            {
+                int value = 0;
+                for (int b = 3; b >= 0; b--) // 리틀엔디안: 마지막 바이트가 최상위
+                {
+                    value = (value << 8) | Convert.ToInt32(text.Substring(i + b * 2, 2), 16);
+                }
+                values.Add(value);
+            }
+            return true;
         }
 
         private string GetRequiredScalar(string key)

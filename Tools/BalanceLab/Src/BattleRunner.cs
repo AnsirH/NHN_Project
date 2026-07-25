@@ -29,6 +29,10 @@ namespace BalanceLab
     public sealed class ScenarioResult
     {
         public string scenarioName;
+        /// <summary>목표 밴드 태그 (bands.json의 id).</summary>
+        public string band;
+        /// <summary>밴드 판정 결과 — PASS/FAIL과 어긋난 수치.</summary>
+        public BandVerdict verdict;
         public int runs;
         public int leftWins;
         public int rightWins;
@@ -46,15 +50,17 @@ namespace BalanceLab
     /// </summary>
     public static class BattleRunner
     {
-        public static ScenarioResult Run(Scenario scenario, AssetRepository repository)
+        public static ScenarioResult Run(Scenario scenario, AssetRepository repository, BandTable bands)
         {
             BattleConfig config = repository.LoadBattleConfig();
             ArmyDefinition left = BuildArmy(scenario.left, repository, config);
             ArmyDefinition right = BuildArmy(scenario.right, repository, config);
+            BandRule bandRule = bands.Get(scenario.band); // 미등록 태그는 여기서 즉시 실패
 
             var result = new ScenarioResult
             {
                 scenarioName = scenario.name,
+                band = bandRule.id,
                 runs = scenario.runs,
                 battles = new List<BattleRecord>(scenario.runs),
             };
@@ -104,6 +110,7 @@ namespace BalanceLab
             result.elapsedMs = stopwatch.ElapsedMilliseconds;
             result.leftWinRate = (double)result.leftWins / scenario.runs;
             result.rightWinRate = (double)result.rightWins / scenario.runs;
+            result.verdict = BandTable.Judge(bandRule, result.leftWinRate);
             return result;
         }
 
