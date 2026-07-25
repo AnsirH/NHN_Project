@@ -77,6 +77,14 @@ namespace OutGame.Tests.PlayMode
 
             InGameFlowController flow = GameObject.Find("InGameFlow").GetComponent<InGameFlowController>();
             RunState run = GetField<RunState>(flow, "run");
+            // 이 테스트는 런 클리어 타이밍만 검증한다 — 드롭 확률이 기본값(0이 아님)이면 시드 고정이
+            // 안 되는 System.Random(Environment.TickCount) 특성상 가끔 아이템 획득 팝업이 먼저 뜨면서
+            // 런 클리어를 가로막아 이 테스트가 간헐적으로 실패할 수 있다. 0으로 고정해 결정적으로 만든다.
+            var itemDropConfig = GetField<ItemDropConfig>(flow, "itemDropConfig");
+            itemDropConfig.archerDropChance = 0f;
+            itemDropConfig.warriorDropChance = 0f;
+            itemDropConfig.hunterDropChance = 0f;
+            itemDropConfig.assassinDropChance = 0f;
 
             WalkToJustBeforeBoss(run.mapState);
             MapNode boss = MapProgress.GetSelectableNodes(run.mapState).First(n => n.roomType == RoomType.Boss);
@@ -138,6 +146,124 @@ namespace OutGame.Tests.PlayMode
             // 드롭 확률을 100%로 강제했으므로 최소 1개 이상은 반드시 늘어나야 한다.
             Assert.Greater(run.ownedItemIds.Count, ownedItemsBefore,
                 "보스 승리 후 병과 기반 아이템 드롭으로 보유 아이템이 늘어나야 함 (§4-28)");
+        }
+
+        [UnityTest]
+        public IEnumerator BossVictory_WithGuaranteedDropChance_BlocksRunClearUntilPopupClosed()
+        {
+            // 2026-07-26 사용자 요청: 아이템 획득 팝업이 뜬 동안은 다음 진행(런 클리어 화면)으로
+            // 넘어가면 안 되고, 확인을 눌러야 이어져야 한다.
+            yield return SceneManager.LoadSceneAsync(SceneNames.InGame, LoadSceneMode.Additive);
+            yield return null;
+
+            InGameFlowController flow = GameObject.Find("InGameFlow").GetComponent<InGameFlowController>();
+            RunState run = GetField<RunState>(flow, "run");
+            var itemDropConfig = GetField<ItemDropConfig>(flow, "itemDropConfig");
+            itemDropConfig.archerDropChance = 1f;
+            itemDropConfig.warriorDropChance = 1f;
+
+            WalkToJustBeforeBoss(run.mapState);
+            MapNode boss = MapProgress.GetSelectableNodes(run.mapState).First(n => n.roomType == RoomType.Boss);
+            typeof(InGameFlowController).GetMethod("OnRoomSelected", Priv).Invoke(flow, new object[] { boss });
+            yield return null;
+
+            var deploymentPanel = GetField<ArmyDeploymentPanel>(flow, "deploymentPanel");
+            var battlePanel = GetField<DummyBattlePanel>(flow, "battlePanel");
+            var roomPanel = GetField<DummyRoomPanel>(flow, "roomPanel");
+            var itemRewardPopup = GetField<ItemRewardPopup>(flow, "itemRewardPopup");
+
+            var startButton = deploymentPanel.GetComponentsInChildren<Button>(true).First(b => b.name == "StartBattleButton");
+            startButton.onClick.Invoke();
+            yield return null;
+
+            var victoryButton = battlePanel.GetComponentsInChildren<Button>(true).First(b => b.name == "VictoryButton");
+            victoryButton.onClick.Invoke();
+            yield return null;
+
+            Assert.IsTrue(itemRewardPopup.gameObject.activeSelf, "드롭이 있으면 획득 팝업이 떠야 함");
+            Assert.IsFalse(roomPanel.gameObject.activeSelf, "획득 팝업을 닫기 전까지는 런 클리어 화면이 뜨면 안 됨");
+
+            Button closeButton = itemRewardPopup.transform.Find("Window/CloseButton").GetComponent<Button>();
+            closeButton.onClick.Invoke();
+            yield return null;
+
+            Assert.IsFalse(itemRewardPopup.gameObject.activeSelf, "확인 후에는 획득 팝업이 닫혀야 함");
+            Assert.IsTrue(roomPanel.gameObject.activeSelf, "획득 팝업을 닫은 뒤에는 런 클리어 화면이 떠야 함");
+        }
+
+        [UnityTest]
+        public IEnumerator BattleVictory_WithGuaranteedDropChance_ShowsItemRewardPopupForNonBossRoom()
+        {
+            yield return SceneManager.LoadSceneAsync(SceneNames.InGame, LoadSceneMode.Additive);
+            yield return null;
+
+            InGameFlowController flow = GameObject.Find("InGameFlow").GetComponent<InGameFlowController>();
+            RunState run = GetField<RunState>(flow, "run");
+            // 마지막 티어(카운터 6 이상)로 강제 — 전 병과 등장 가능 + enemyCount=9라 전원 기본(None)으로만
+            // 나올 확률은 사실상 0에 가까워 결정적으로 취급해도 안전하다(§4-28).
+            run.powerRoomsVisited = 6;
+            var itemDropConfig = GetField<ItemDropConfig>(flow, "itemDropConfig");
+            itemDropConfig.archerDropChance = 1f;
+            itemDropConfig.warriorDropChance = 1f;
+            itemDropConfig.hunterDropChance = 1f;
+            itemDropConfig.assassinDropChance = 1f;
+
+            MapNode battleNode = MapProgress.GetSelectableNodes(run.mapState).First(n => n.roomType == RoomType.NormalBattle);
+            typeof(InGameFlowController).GetMethod("OnRoomSelected", Priv).Invoke(flow, new object[] { battleNode });
+            yield return null;
+
+            var deploymentPanel = GetField<ArmyDeploymentPanel>(flow, "deploymentPanel");
+            var battlePanel = GetField<DummyBattlePanel>(flow, "battlePanel");
+            var itemRewardPopup = GetField<ItemRewardPopup>(flow, "itemRewardPopup");
+
+            var startButton = deploymentPanel.GetComponentsInChildren<Button>(true).First(b => b.name == "StartBattleButton");
+            startButton.onClick.Invoke();
+            yield return null;
+
+            var victoryButton = battlePanel.GetComponentsInChildren<Button>(true).First(b => b.name == "VictoryButton");
+            victoryButton.onClick.Invoke();
+            yield return null;
+
+            Assert.IsTrue(itemRewardPopup.gameObject.activeSelf, "일반전투 승리 후에도 드롭이 있으면 획득 팝업이 떠야 함");
+
+            Button closeButton = itemRewardPopup.transform.Find("Window/CloseButton").GetComponent<Button>();
+            closeButton.onClick.Invoke();
+            yield return null;
+
+            Assert.IsFalse(itemRewardPopup.gameObject.activeSelf, "확인 후에는 획득 팝업이 닫혀야 함");
+        }
+
+        [UnityTest]
+        public IEnumerator BattleVictory_WithZeroDropChance_SkipsPopupEntirely()
+        {
+            yield return SceneManager.LoadSceneAsync(SceneNames.InGame, LoadSceneMode.Additive);
+            yield return null;
+
+            InGameFlowController flow = GameObject.Find("InGameFlow").GetComponent<InGameFlowController>();
+            RunState run = GetField<RunState>(flow, "run");
+            var itemDropConfig = GetField<ItemDropConfig>(flow, "itemDropConfig");
+            itemDropConfig.archerDropChance = 0f;
+            itemDropConfig.warriorDropChance = 0f;
+            itemDropConfig.hunterDropChance = 0f;
+            itemDropConfig.assassinDropChance = 0f;
+
+            MapNode battleNode = MapProgress.GetSelectableNodes(run.mapState).First(n => n.roomType == RoomType.NormalBattle);
+            typeof(InGameFlowController).GetMethod("OnRoomSelected", Priv).Invoke(flow, new object[] { battleNode });
+            yield return null;
+
+            var deploymentPanel = GetField<ArmyDeploymentPanel>(flow, "deploymentPanel");
+            var battlePanel = GetField<DummyBattlePanel>(flow, "battlePanel");
+            var itemRewardPopup = GetField<ItemRewardPopup>(flow, "itemRewardPopup");
+
+            var startButton = deploymentPanel.GetComponentsInChildren<Button>(true).First(b => b.name == "StartBattleButton");
+            startButton.onClick.Invoke();
+            yield return null;
+
+            var victoryButton = battlePanel.GetComponentsInChildren<Button>(true).First(b => b.name == "VictoryButton");
+            victoryButton.onClick.Invoke();
+            yield return null;
+
+            Assert.IsFalse(itemRewardPopup.gameObject.activeSelf, "드롭이 없으면 획득 팝업이 뜨면 안 됨");
         }
     }
 }

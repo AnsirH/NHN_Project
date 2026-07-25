@@ -34,6 +34,7 @@ namespace OutGame.UI.Deployment
         {
             Rebuild(ownedItemIds, itemDefs);
             gameObject.SetActive(true);
+            transform.SetAsLastSibling(); // 군대 정보 팝업이 열려 있어도 항상 그 위에 떠야 함(2026-07-26)
         }
 
         public void Hide() => gameObject.SetActive(false);

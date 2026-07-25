@@ -121,11 +121,31 @@ namespace OutGame.UI.Deployment
             enemyBuffLabel.text = "없음"; // §4-21: 1차는 표시 영역만
             presetButton.interactable = false; // §4-17
 
+            // 이전 방에서 팝업을 열어둔 채로 전투를 시작했을 가능성에 대비한 방어적 초기화 —
+            // Close()에서도 닫지만(2026-07-26), 그 경로를 놓치는 경우까지 이중으로 막는다.
+            // bindWarningPopup도 인벤토리/군대 정보 팝업과 동일하게 dim이 없어 같은 문제가 생길 수
+            // 있어 코드 리뷰 지적으로 함께 추가(원래 요청은 인벤토리/군대 정보 팝업만 언급했었음).
+            inventoryPopup.Hide();
+            armyInfoPopup.Hide();
+            bindWarningPopup.Hide();
+
             gameObject.SetActive(true);
             PanelTransitions.FadeIn(gameObject);
         }
 
-        public void Close() => gameObject.SetActive(false);
+        /// <summary>
+        /// 패널을 닫는다 — 전투 시작 확정 직후(InGameFlowController.OnBattleSetupConfirmed) 호출된다.
+        /// 인벤토리/군대 정보/귀속 경고 팝업은 이 패널의 자식이라 부모가 비활성화되면 화면에서는
+        /// 같이 사라지지만 각자의 activeSelf는 그대로 남아, 다음 방에서 패널이 다시 열릴 때 그대로
+        /// 재노출될 수 있다(2026-07-26 사용자 지적) — 명시적으로 닫아 이 상태가 남지 않게 한다.
+        /// </summary>
+        public void Close()
+        {
+            inventoryPopup.Hide();
+            armyInfoPopup.Hide();
+            bindWarningPopup.Hide();
+            gameObject.SetActive(false);
+        }
 
         private void ValidateWiring()
         {

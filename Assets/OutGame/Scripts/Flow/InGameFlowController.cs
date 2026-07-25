@@ -29,6 +29,7 @@ namespace OutGame.Flow
         [SerializeField] private RestPanel restPanel;
         [SerializeField] private AugmentPanel augmentPanel;
         [SerializeField] private ArmyDeploymentPanel deploymentPanel;
+        [SerializeField] private ItemRewardPopup itemRewardPopup; // 2026-07-26: 전투 승리 아이템 드롭 알림
         [SerializeField] private DummyBattlePanel battlePanel; // BattleBridge.Implementation의 M6 더미 구현
         [SerializeField] private RoomTypeVisualSet visuals;
         [SerializeField] private RunConfigAsset runConfig;
@@ -76,7 +77,7 @@ namespace OutGame.Flow
                 itemDropConfigAsset = Resources.Load<ItemDropConfigAsset>("OutGame/Data/ItemDropConfig_Default");
 
             if (mapPanel == null || roomPanel == null || eventPanel == null || restPanel == null
-                || augmentPanel == null || deploymentPanel == null || battlePanel == null
+                || augmentPanel == null || deploymentPanel == null || itemRewardPopup == null || battlePanel == null
                 || visuals == null || runConfig == null
                 || enemyCompositionConfigAsset == null || itemDropConfigAsset == null)
                 throw new InvalidOperationException(
@@ -241,7 +242,30 @@ namespace OutGame.Flow
             BattleRewardApplier.ApplyItemDrops(run, drops);
             currentEnemyComposition = null;
 
-            if (currentBattleRoomType == RoomType.Boss)
+            bool bossVictory = currentBattleRoomType == RoomType.Boss;
+
+            // 2026-07-26 사용자 요청: 드롭된 아이템을 조용히 넣기만 하지 않고 알림 팝업으로 보여준다.
+            // 보스도 아이템을 드롭할 수 있으므로 팝업 로직은 일반전투/보스 공통 경로로 처리하고,
+            // 팝업을 닫아야 그 다음(방 복귀 또는 런 클리어 화면)으로 진행되게 한다.
+            if (drops.Count > 0)
+            {
+                void OnRewardPopupClosed()
+                {
+                    itemRewardPopup.Closed -= OnRewardPopupClosed;
+                    ProceedAfterBattle(bossVictory);
+                }
+
+                itemRewardPopup.Closed += OnRewardPopupClosed;
+                itemRewardPopup.Open(drops, itemDefsById);
+                return;
+            }
+
+            ProceedAfterBattle(bossVictory);
+        }
+
+        private void ProceedAfterBattle(bool bossVictory)
+        {
+            if (bossVictory)
             {
                 // 보스 "방문"이 아니라 "승리"가 런 클리어 조건이다 (MapProgress.HasVisitedBoss와 혼동 주의).
                 runEnded = true;

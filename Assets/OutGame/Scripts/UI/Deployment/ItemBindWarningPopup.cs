@@ -73,7 +73,12 @@ namespace OutGame.UI.Deployment
             confirm?.Invoke();
         }
 
-        private void Hide()
+        /// <summary>
+        /// 팝업을 닫는다 — 취소/확인 버튼뿐 아니라 배치 패널이 전투 시작/재입장 시 강제로 닫을 때도
+        /// 호출된다(2026-07-26, InventoryPopup/ArmyInfoPopup과 동일하게 dim 없는 팝업이라 열어둔 채로
+        /// 남으면 다음 방에서 그대로 다시 보이는 문제가 있었음).
+        /// </summary>
+        public void Hide()
         {
             onConfirmed = null;
             gameObject.SetActive(false);

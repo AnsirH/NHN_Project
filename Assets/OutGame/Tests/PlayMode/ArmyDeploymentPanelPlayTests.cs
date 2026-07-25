@@ -257,6 +257,49 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Close_WhenPopupsAreOpen_HidesBothPopups()
+        {
+            // 2026-07-26 사용자 요청: 전투 시작(→ InGameFlowController가 Close() 호출) 시 두 팝업
+            // 모두 닫힌 상태가 되어야 한다.
+            OpenPanel();
+            yield return null;
+
+            var cardView = AllyCards().First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+            panel.transform.Find("MainRow/CenterColumn/ItemButton").GetComponent<Button>().onClick.Invoke();
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            var inventoryPopup = panel.GetComponentInChildren<InventoryPopup>(includeInactive: true);
+            Assert.IsTrue(infoPopup.gameObject.activeSelf, "선행 조건: 군대 정보 팝업이 열려 있어야 함");
+            Assert.IsTrue(inventoryPopup.gameObject.activeSelf, "선행 조건: 인벤토리 팝업이 열려 있어야 함");
+
+            panel.Close();
+
+            Assert.IsFalse(infoPopup.gameObject.activeSelf, "Close() 후 군대 정보 팝업은 닫혀 있어야 함");
+            Assert.IsFalse(inventoryPopup.gameObject.activeSelf, "Close() 후 인벤토리 팝업은 닫혀 있어야 함");
+        }
+
+        [UnityTest]
+        public IEnumerator Open_WithPopupsLeftActiveFromPreviousSession_ForcesThemClosed()
+        {
+            // Close() 경로를 놓치는 다른 케이스가 있더라도, 다음 방에서 Open()이 다시 호출될 때는
+            // 무조건 팝업이 닫힌 상태로 시작해야 한다(2026-07-26 사용자 요청 — 방어적 이중 처리).
+            OpenPanel();
+            yield return null;
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            var inventoryPopup = panel.GetComponentInChildren<InventoryPopup>(includeInactive: true);
+            infoPopup.gameObject.SetActive(true);
+            inventoryPopup.gameObject.SetActive(true);
+
+            OpenPanel();
+            yield return null;
+
+            Assert.IsFalse(infoPopup.gameObject.activeSelf, "재오픈 시 이전에 남아있던 군대 정보 팝업은 강제로 닫혀야 함");
+            Assert.IsFalse(inventoryPopup.gameObject.activeSelf, "재오픈 시 이전에 남아있던 인벤토리 팝업은 강제로 닫혀야 함");
+        }
+
+        [UnityTest]
         public IEnumerator SwapArmiesBetweenSlots_ReassignsBothCorrectly()
         {
             OpenPanel();
@@ -428,6 +471,29 @@ namespace OutGame.Tests.PlayMode
             Assert.IsTrue(bindWarningPopup.IsShowing, "억제 플래그가 꺼져 있으면 확인 팝업이 떠야 함");
             Assert.Greater(bindWarningPopup.transform.GetSiblingIndex(), inventoryPopup.transform.GetSiblingIndex(),
                 "경고 팝업은 항상 인벤토리 팝업보다 위(나중 형제)에 있어야 함");
+        }
+
+        [UnityTest]
+        public IEnumerator InventoryPopup_OpenedAfterArmyInfoPopup_AppearsOnTop()
+        {
+            // 2026-07-26 사용자 요청: 마지막에 연 팝업이 항상 가장 위에 보여야 한다. ArmyInfoPopup은
+            // 이미 SetAsLastSibling을 호출하므로, 그 뒤에 인벤토리 팝업을 열면 인벤토리가 더 위로
+            // 올라와야 한다(반대 순서로 열렸을 때도 성립해야 하는 대칭 케이스).
+            OpenPanel();
+            yield return null;
+
+            var cardView = AllyCards().First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            var inventoryPopup = panel.GetComponentInChildren<InventoryPopup>(includeInactive: true);
+            Assert.IsTrue(infoPopup.gameObject.activeSelf, "선행 조건: 군대 정보 팝업이 먼저 열려 있어야 함");
+
+            panel.transform.Find("MainRow/CenterColumn/ItemButton").GetComponent<Button>().onClick.Invoke();
+            yield return null;
+
+            Assert.Greater(inventoryPopup.transform.GetSiblingIndex(), infoPopup.transform.GetSiblingIndex(),
+                "나중에 연 인벤토리 팝업이 군대 정보 팝업보다 위(나중 형제)에 있어야 함");
         }
 
         [UnityTest]
@@ -697,6 +763,45 @@ namespace OutGame.Tests.PlayMode
             Button upgradeButton = infoPopup.transform
                 .Find("Window/BodyRow/GeneralColumn/UpgradeBand/UpgradeButton").GetComponent<Button>();
             Assert.IsFalse(upgradeButton.interactable, "재화 부족 시 업그레이드 버튼은 비활성이어야 함");
+        }
+
+        [UnityTest]
+        public IEnumerator ArmyInfoPopup_UpgradeButton_ShowsNextLevelCost()
+        {
+            // 2026-07-26 사용자 요청: 버튼에 다음 단계 비용이 보여야 함.
+            run.gold = 1000;
+            OpenPanel();
+            yield return null;
+
+            var cardView = AllyCards().First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            Text upgradeButtonLabel = infoPopup.transform
+                .Find("Window/BodyRow/GeneralColumn/UpgradeBand/UpgradeButton/Label").GetComponent<Text>();
+            Assert.AreEqual($"업그레이드 ({runConfig.armyUpgradeCosts[0]})", upgradeButtonLabel.text);
+        }
+
+        [UnityTest]
+        public IEnumerator ArmyInfoPopup_UpgradeButton_ShowsMaxAtMaxLevel()
+        {
+            run.gold = 100000;
+            OpenPanel();
+            yield return null;
+
+            var cardView = AllyCards().First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            Button upgradeButton = infoPopup.transform
+                .Find("Window/BodyRow/GeneralColumn/UpgradeBand/UpgradeButton").GetComponent<Button>();
+            Text upgradeButtonLabel = upgradeButton.transform.Find("Label").GetComponent<Text>();
+
+            for (int i = 0; i < ArmyInstance.MaxUpgradeLevel; i++)
+                upgradeButton.onClick.Invoke();
+
+            Assert.AreEqual("MAX", upgradeButtonLabel.text, "최대 단계에서는 비용 대신 MAX를 표시해야 함");
+            Assert.IsFalse(upgradeButton.interactable);
         }
 
         [UnityTest]

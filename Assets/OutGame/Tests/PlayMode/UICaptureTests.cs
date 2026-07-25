@@ -290,6 +290,49 @@ namespace OutGame.Tests.PlayMode
             }
         }
 
+        [UnityTest]
+        public IEnumerator Capture_ItemRewardPopup()
+        {
+            // 2026-07-26 사용자 요청: 전투 승리 아이템 획득 팝업(dim 배경 포함) 육안 확인.
+            if (Application.isBatchMode)
+            {
+                Assert.Ignore("batchmode에서는 렌더 프레임이 없어 캡처 불가 — 에디터 열림 상태에서만 실행");
+                yield break;
+            }
+
+            yield return SettleGameView();
+
+            var canvasGo = new GameObject("CaptureCanvas", typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler));
+            try
+            {
+                var canvas = canvasGo.GetComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                var scaler = canvasGo.GetComponent<UnityEngine.UI.CanvasScaler>();
+                scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                scaler.referenceResolution = new Vector2(1920f, 1080f);
+                scaler.matchWidthOrHeight = 0.5f;
+
+                var prefab = Resources.Load<GameObject>("OutGame/ItemRewardPopup");
+                Assert.IsNotNull(prefab, "ItemRewardPopup 프리팹 없음 — SceneSetupM4UI.Run() 실행 필요");
+                var popup = Object.Instantiate(prefab, canvasGo.transform).GetComponent<ItemRewardPopup>();
+
+                var bowDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Bow");
+                var shieldDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Shield");
+                var axeDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Axe");
+                var itemDefs = new System.Collections.Generic.Dictionary<string, ItemDefinition>
+                {
+                    ["item_bow"] = bowDef, ["item_shield"] = shieldDef, ["item_axe"] = axeDef,
+                };
+                popup.Open(new System.Collections.Generic.List<string> { "item_bow", "item_shield", "item_axe" }, itemDefs);
+
+                yield return CaptureToFile("ItemRewardPopup_01_initial.png");
+            }
+            finally
+            {
+                Object.Destroy(canvasGo);
+            }
+        }
+
         /// <summary>
         /// 진단 결과(2026-07-19): 캡처가 "너무 빨라서"가 아니라 직전 캡처(또는 이전 테스트가 파괴한
         /// 캔버스)의 프레임을 그대로 반환하는 지연이 있었다 — Game 뷰 리페인트를 명시적으로 강제하고

@@ -136,6 +136,16 @@ namespace OutGame.UI.Deployment
             generalPreviewNameLabel.text = data.generalName;
             upgradeLevelLabel.text = $"+{army.upgradeLevel}";
             upgradeButton.interactable = ArmyUpgradeService.CanUpgrade(army, run, runConfig);
+            // 다음 단계 비용 표시(2026-07-26 사용자 요청) — 최대 단계면 비용 자체가 없으므로 MAX 표시.
+            // 팝업이 처음 열릴 때는 아직 비활성 상태에서 Render()가 먼저 호출되는데(Open() 참고),
+            // Unity는 비활성 GameObject의 Awake()를 활성화 시점까지 미루므로 Awake()에서 캐싱해두면
+            // 첫 오픈 때 null이 된다 — Render() 안에서 그때그때 찾아 이 문제를 피한다.
+            Text upgradeButtonLabel = upgradeButton.GetComponentInChildren<Text>(includeInactive: true);
+            if (upgradeButtonLabel == null)
+                throw new InvalidOperationException("ArmyInfoPopup의 upgradeButton에 라벨 Text가 없습니다.");
+            upgradeButtonLabel.text = army.upgradeLevel >= ArmyInstance.MaxUpgradeLevel
+                ? "MAX"
+                : $"업그레이드 ({ArmyUpgradeService.NextUpgradeCost(army, runConfig)})";
             generalHealthLabel.text = $"{data.generalHealth * generalMultiplier:0}";
             generalAttackLabel.text = $"{data.generalAttack * generalMultiplier:0}";
             generalDefenseLabel.text = $"{data.generalDefense * generalMultiplier:0}";
