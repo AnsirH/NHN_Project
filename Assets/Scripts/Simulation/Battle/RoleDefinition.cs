@@ -60,5 +60,34 @@ namespace NHN.Simulation.Battle
             MoveParamA = moveParamA;
             MoveParamB = moveParamB;
         }
+
+        /// <summary>
+        /// 결합 팩토리: 인게임 속성(공격 주기·사거리·투사체·타겟팅·이동 패턴·반경)은 baseRole에서 승계하고
+        /// 외부에서 계산돼 전달된 5스탯만 갈아끼운 새 정의를 만든다 (아웃게임 연동 계약 — 스탯 계산은 아웃게임 몫).
+        ///
+        /// 새 인스턴스를 만드는 이유: RoleDefinition은 불변(readonly)이라 시뮬 도중 값이 바뀌지 않으며,
+        /// 그 덕에 같은 롤이라도 레벨이 다른 분대들이 각자의 스탯으로 한 전장에 공존할 수 있다.
+        /// .asset을 런타임에 수정하지 않으므로 에디터 에셋이 오염되지도 않는다.
+        /// 생성은 전투 초기화 시 분대당 1~2회뿐이라 틱 루프 GC 규칙과 무관하다.
+        /// </summary>
+        public static RoleDefinition WithStats(
+            RoleDefinition baseRole,
+            float maxHp, float attackDamage, float defense, float critChancePercent, float moveSpeed)
+        {
+            return new RoleDefinition(
+                baseRole.RoleName,
+                maxHp, attackDamage, defense, critChancePercent,
+                baseRole.AttackInterval,
+                baseRole.AttackRange,
+                moveSpeed,
+                baseRole.UnitRadius,
+                baseRole.ProjectileSpeed,
+                baseRole.ProjectileArcHeight,
+                baseRole.PositionFilter,
+                baseRole.Priorities,
+                baseRole.MovePattern,
+                baseRole.MoveParamA,
+                baseRole.MoveParamB);
+        }
     }
 }

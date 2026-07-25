@@ -37,15 +37,54 @@ namespace NHN.Data
                 RoleData role = catalog.ResolveRole(squadRequest.roleId);
                 GeneralData general = catalog.ResolveGeneral(squadRequest.generalId);
                 squads[s] = new SquadDefinition(
-                    role.ToDefinition(),
+                    BuildSoldierRole(role, squadRequest),
                     squadRequest.soldierCount,
                     DeploymentGrid.SlotToAnchor(
                         squadRequest.slotX, squadRequest.slotY, config.DeploymentDepth, config.DeploymentHalfWidth),
-                    general != null ? general.ToDefinition() : null);
+                    BuildGeneral(general, squadRequest));
                 viewSquadsOut?.Add(new SquadAssets(role, general, squadRequest.soldierCount));
                 squadIdsOut?.Add(squadRequest.squadId);
             }
             return new ArmyDefinition(squads);
+        }
+
+        /// <summary>
+        /// 병사 정의: 아웃게임이 스탯을 보냈으면 인게임 속성(.asset)과 결합하고, 아니면 .asset 값을 그대로 쓴다.
+        /// 전달 여부와 무관하게 공격 주기·사거리·타겟팅·이동 패턴은 언제나 인게임 소유다.
+        /// </summary>
+        private static RoleDefinition BuildSoldierRole(RoleData role, SquadRequest request)
+        {
+            RoleDefinition baseRole = role.ToDefinition();
+            if (!request.HasSoldierStats)
+            {
+                return baseRole;
+            }
+            return RoleDefinition.WithStats(
+                baseRole,
+                request.maxHp, request.attackDamage, request.defense,
+                request.critChancePercent, request.moveSpeed);
+        }
+
+        /// <summary>
+        /// 장군 정의: 능력(패시브·충전·액티브)은 에셋에서, 스탯은 전달값이 있으면 그것으로.
+        /// 같은 장군 에셋이 여러 분대에 쓰여도 분대마다 레벨이 다를 수 있어 인스턴스를 분리한다.
+        /// </summary>
+        private static GeneralDefinition BuildGeneral(GeneralData general, SquadRequest request)
+        {
+            if (general == null)
+            {
+                return null;
+            }
+            GeneralDefinition definition = general.ToDefinition();
+            if (!request.HasGeneralStats)
+            {
+                return definition;
+            }
+            RoleDefinition combatRole = RoleDefinition.WithStats(
+                definition.CombatRole,
+                request.generalMaxHp, request.generalAttackDamage, request.generalDefense,
+                request.generalCritChancePercent, request.generalMoveSpeed);
+            return GeneralDefinition.WithCombatRole(definition, combatRole);
         }
 
         public static ArmyDefinition BuildPlayerArmy(

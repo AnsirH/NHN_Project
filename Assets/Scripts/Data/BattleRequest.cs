@@ -32,6 +32,29 @@ namespace NHN.Data
         public float slotX;
         /// <summary>진영 내 정규화 0~1, 0.5 = 측면 중앙.</summary>
         public float slotY;
+
+        // ── 병사 5스탯 (아웃게임이 레벨·강화를 반영해 계산한 값, 병사 1명 기준) ──
+        // maxHp > 0 이면 다섯 값 전부가 제공된 것으로 보고 .asset 스탯 대신 사용한다 (StatsProvided).
+        // 전달이 없으면(로컬 테스트·BalanceLab 경로) .asset 값을 그대로 쓴다.
+        public float maxHp;
+        public float attackDamage;
+        public float defense;
+        /// <summary>0~100 퍼센트 (아웃게임 표기 단위와 동일).</summary>
+        public float critChancePercent;
+        public float moveSpeed;
+
+        // ── 장군 5스탯 (분대 레벨 = 장군 레벨. 병사와 별도로 전달된다) ──
+        public float generalMaxHp;
+        public float generalAttackDamage;
+        public float generalDefense;
+        public float generalCritChancePercent;
+        public float generalMoveSpeed;
+
+        /// <summary>병사 스탯이 외부에서 전달됐는지 — 체력은 0일 수 없으므로 판정 기준으로 쓴다.</summary>
+        public bool HasSoldierStats => maxHp > 0f;
+
+        /// <summary>장군 스탯이 외부에서 전달됐는지.</summary>
+        public bool HasGeneralStats => generalMaxHp > 0f;
     }
 
     /// <summary>전투 1판 결과 — outGame BattleResultData 계약과 1:1 대응 (victory + 분대별 생존).</summary>

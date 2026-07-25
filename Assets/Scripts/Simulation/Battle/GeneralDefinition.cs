@@ -80,5 +80,18 @@ namespace NHN.Simulation.Battle
                 chargeCondition, chargeRequired,
                 activeEffect, activeParamA, activeParamB, activeDuration);
         }
+
+        /// <summary>
+        /// 능력(패시브·충전·액티브)은 그대로 두고 전투 능력만 교체한 새 정의 — 아웃게임이 전달한 장군 스탯 결합용.
+        /// 같은 장군 에셋이 여러 분대에 쓰이면서 분대마다 레벨(스탯)이 다를 수 있으므로 인스턴스를 분리한다.
+        /// </summary>
+        public static GeneralDefinition WithCombatRole(GeneralDefinition source, RoleDefinition combatRole)
+        {
+            return new GeneralDefinition(
+                combatRole,
+                source.Passive, source.PassiveValue,
+                source.ChargeCondition, source.ChargeRequired,
+                source.ActiveEffect, source.ActiveParamA, source.ActiveParamB, source.ActiveDuration);
+        }
     }
 }

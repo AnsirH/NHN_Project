@@ -30,13 +30,41 @@
 4. 커넥터의 `MapClassToRoleId` 표를 enum 합의(협의 ①)대로 채운다.
 5. outGame의 DummyBattlePanel 배선 제거(또는 비활성) — Implementation을 커넥터가 덮어쓰므로 호출부 수정은 불필요.
 
+## 합의 완료 (2026-07-24 회의)
+
+- **스탯 소유권 분리**: 체력/공격력/방어력/치명타확률/이동속도 **5스탯은 아웃게임이 계산해 전달**
+  (병사 1명 기준 세트 + 장군 세트, 각각). 인게임은 공격 주기·사거리·투사체 속도/궤적·타겟팅·
+  이동 패턴·유닛 반경·장군 능력(패시브/충전/액티브)·전투 중 변동분을 소유한다.
+- **레벨 축은 하나 (0~5)**: 분대 레벨 = 장군 레벨 = 군대 강화 레벨. 병사 스탯도 이 레벨을 따른다.
+  스탯이 계산돼서 오므로 인게임은 레벨 값 자체가 필요 없다.
+- **모든 분대에 장군 1명** (빈 슬롯은 분대 자체가 없음). 병과는 **아이템**이 부여하며,
+  병과가 장군 스킬을 결정한다 → GeneralData는 4종 + 노멀 1종이면 충분하고,
+  같은 장군 에셋이 여러 분대에 동시에 쓰일 수 있다.
+- **방어력 = 감쇠 공식** `피해 × K/(K+방어력)`, **치명타 확률 = 퍼센트 정수(0~100)**, **치명타 배율 1.8**.
+  방어력은 일반 공격·스킬 즉발에 적용, 도트에는 미적용.
+- **전투 진행 = 별도 전투 씬**(additive 로드 권장 — 아웃게임 씬이 파괴되면 결과 콜백이 죽는다).
+- **아이템은 병과 부여 수단일 뿐** → 인게임은 `equippedItemId`를 사용하지 않는다.
+- **전투력 계산기는 표기 전용** → 인게임 전투 결과와 정합 작업 불필요.
+
+### 인게임 구현 상태 (5.6-A/B 완료)
+
+- 방어력·치명타 시뮬 구현 완료 (BattleConfig의 `defenseK`/`critMultiplier`가 튜닝 손잡이)
+- `SquadRequest`에 병사 5스탯 + 장군 5스탯 필드 존재. **`maxHp > 0`이면 전달값 사용**,
+  없으면 .asset 값(로컬 테스트·BalanceLab 경로) — 두 경로가 같은 코드로 처리된다.
+- 결합은 `RoleDefinition.WithStats(...)`가 담당: 인게임 속성은 .asset에서 승계, 5스탯만 교체.
+  분대마다 별도 인스턴스라 같은 장군 에셋이 레벨이 다른 여러 분대에 쓰여도 간섭이 없다.
+
 ## 협의 목록 (머지 전 팀 합의 필요)
 
-1. **ArmyClass enum ↔ 롤 4종 매핑** — outGame: `None|Archer|Cavalry(+예약)` vs 인게임 확정 롤: `Warrior|Archer|Assassin|Hunter`. 합의 방향: 인게임 롤 기준으로 enum 개정(머지 시), 커넥터 표만 수정.
-2. **generalSkillId 키 규약** — 제안: GeneralData 에셋 이름 (`WarriorGeneral`/`ArcherGeneral`/`AssassinGeneral`/`HunterGeneral`).
-3. **encounterId 키 목록** — 현재 인게임 제공: `encounter_basic`, `encounter_boss` (+미등록 시 basic 폴백). outGame RoomEncounterTable과 키 동기화.
-4. **전투 진행 방식** — 같은 씬 내 패널 전환 vs 별도 전투 씬 로드 (outGame InGameFlowController에 LoadSceneAction 훅 있음).
-5. **soldierCount 상한** — 인게임 전투 상한 = BattleConfig.maxUnits(600, 양군 합계). 증원 보정 후 총합이 넘지 않도록 합의.
+1. **ArmyClass enum ↔ 롤 4종 매핑** — 인게임 롤 기준으로 enum 개정(머지 시) 합의됨.
+   `None|Warrior|Archer|Assassin|Hunter`로 정리하고 커넥터 표만 채우면 된다.
+2. **`DeployedArmy`에 5스탯 2세트 필드 추가** (아웃게임 작업) — 병사 세트 + 장군 세트.
+   커넥터 템플릿은 `soldierMaxHp`/`generalMaxHp` 등의 이름을 가정 중이니 확정 시 맞춘다.
+3. **generalSkillId 키 규약** — 제안: GeneralData 에셋 이름
+   (`WarriorGeneral`/`ArcherGeneral`/`AssassinGeneral`/`HunterGeneral`, 아이템 미부여 시 `NormalGeneral`).
+4. **encounterId 키 목록** — 현재 인게임 제공: `encounter_basic`, `encounter_boss` (+미등록 시 basic 폴백).
+   outGame RoomEncounterTable과 키 동기화.
+5. **soldierCount 상한** — 인게임 전투 상한 = BattleConfig.maxUnits(600, 양군 + 장군 합계).
 
 ## 인게임 쪽 키 어휘 (현재 기준)
 

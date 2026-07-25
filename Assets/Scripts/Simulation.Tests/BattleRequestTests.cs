@@ -84,6 +84,134 @@ namespace NHN.Simulation.Tests
             Assert.AreEqual("encounter_basic", fallback.encounterId, "미등록 encounterId는 폴백 구성을 써야 한다");
         }
 
+        /// <summary>
+        /// 5.6-B 결합 팩토리: 아웃게임이 보낸 5스탯이 병사·장군 각각에 적용되고,
+        /// 인게임 소유 속성(공격 주기·사거리·투사체·타겟팅·이동 패턴·반경)은 .asset 값이 그대로 유지되어야 한다.
+        /// </summary>
+        [Test]
+        public void ProvidedStats_OverrideAssetStats_ButKeepInGameAttributes()
+        {
+            BattleCatalog catalog = LoadCatalog();
+            BattleConfig config = LoadConfig();
+            RoleDefinition assetRole = catalog.ResolveRole("Archer").ToDefinition();
+            GeneralDefinition assetGeneral = catalog.ResolveGeneral("ArcherGeneral").ToDefinition();
+
+            var squads = new System.Collections.Generic.List<SquadRequest>
+            {
+                new SquadRequest
+                {
+                    squadId = "lv5", roleId = "Archer", generalId = "ArcherGeneral",
+                    soldierCount = 3, slotX = 1f, slotY = 0.5f,
+                    maxHp = 675f, attackDamage = 236f, defense = 69f, critChancePercent = 20f, moveSpeed = 4.2f,
+                    generalMaxHp = 3123f, generalAttackDamage = 565f, generalDefense = 143f,
+                    generalCritChancePercent = 25f, generalMoveSpeed = 4.5f,
+                },
+            };
+
+            ArmyDefinition army = BattleRequestBuilder.BuildSquads(squads, catalog, config, null, null);
+            RoleDefinition soldier = army.Squads[0].Role;
+            GeneralDefinition general = army.Squads[0].General;
+
+            // 전달된 5스탯이 적용된다
+            Assert.AreEqual(675f, soldier.MaxHp, 1e-3f);
+            Assert.AreEqual(236f, soldier.AttackDamage, 1e-3f);
+            Assert.AreEqual(69f, soldier.Defense, 1e-3f);
+            Assert.AreEqual(20f, soldier.CritChancePercent, 1e-3f);
+            Assert.AreEqual(4.2f, soldier.MoveSpeed, 1e-3f);
+            Assert.AreEqual(3123f, general.CombatRole.MaxHp, 1e-3f, "장군 스탯은 병사와 별도로 전달된다");
+            Assert.AreEqual(565f, general.CombatRole.AttackDamage, 1e-3f);
+            Assert.AreEqual(143f, general.CombatRole.Defense, 1e-3f);
+
+            // 인게임 소유 속성은 .asset 그대로
+            Assert.AreEqual(assetRole.AttackInterval, soldier.AttackInterval, 1e-3f, "공격 주기는 인게임 소유");
+            Assert.AreEqual(assetRole.AttackRange, soldier.AttackRange, 1e-3f, "사거리는 인게임 소유");
+            Assert.AreEqual(assetRole.ProjectileSpeed, soldier.ProjectileSpeed, 1e-3f, "투사체 속도는 인게임 소유");
+            Assert.AreEqual(assetRole.UnitRadius, soldier.UnitRadius, 1e-3f, "유닛 반경은 인게임 소유");
+            Assert.AreEqual(assetRole.MovePattern, soldier.MovePattern);
+            Assert.AreEqual(assetGeneral.CombatRole.UnitRadius, general.CombatRole.UnitRadius, 1e-3f,
+                "장군 크기 배율(반경)은 연결 경로에서도 인게임 소유다");
+
+            // 장군 능력(패시브·충전·액티브)은 에셋 정의 유지
+            Assert.AreEqual(assetGeneral.Passive, general.Passive);
+            Assert.AreEqual(assetGeneral.ChargeCondition, general.ChargeCondition);
+            Assert.AreEqual(assetGeneral.ChargeRequired, general.ChargeRequired, 1e-3f);
+            Assert.AreEqual(assetGeneral.ActiveEffect, general.ActiveEffect);
+        }
+
+        /// <summary>스탯 미전달(로컬 테스트·BalanceLab 경로)이면 .asset 값을 그대로 쓴다 — 회귀 방어.</summary>
+        [Test]
+        public void OmittedStats_FallBackToAssetValues()
+        {
+            BattleCatalog catalog = LoadCatalog();
+            BattleConfig config = LoadConfig();
+            RoleDefinition assetRole = catalog.ResolveRole("Warrior").ToDefinition();
+            GeneralDefinition assetGeneral = catalog.ResolveGeneral("WarriorGeneral").ToDefinition();
+
+            var squads = new System.Collections.Generic.List<SquadRequest>
+            {
+                new SquadRequest
+                {
+                    squadId = "local", roleId = "Warrior", generalId = "WarriorGeneral",
+                    soldierCount = 5, slotX = 1f, slotY = 0.5f,
+                },
+            };
+
+            ArmyDefinition army = BattleRequestBuilder.BuildSquads(squads, catalog, config, null, null);
+            Assert.AreEqual(assetRole.MaxHp, army.Squads[0].Role.MaxHp, 1e-3f);
+            Assert.AreEqual(assetRole.AttackDamage, army.Squads[0].Role.AttackDamage, 1e-3f);
+            Assert.AreEqual(assetGeneral.CombatRole.MaxHp, army.Squads[0].General.CombatRole.MaxHp, 1e-3f,
+                "장군 스탯 미전달 시 엘리트 배율(.asset) 파생값이 유지되어야 한다");
+        }
+
+        /// <summary>
+        /// 같은 장군 에셋이 여러 분대에 쓰이되 분대마다 레벨(스탯)이 다를 수 있다 —
+        /// 결합 팩토리가 분대별 인스턴스를 만들어 서로 간섭하지 않아야 한다.
+        /// </summary>
+        [Test]
+        public void SameGeneralAsset_DifferentLevels_DoNotInterfere()
+        {
+            BattleCatalog catalog = LoadCatalog();
+            BattleConfig config = LoadConfig();
+
+            var squads = new System.Collections.Generic.List<SquadRequest>
+            {
+                new SquadRequest
+                {
+                    squadId = "lv1", roleId = "Warrior", generalId = "WarriorGeneral",
+                    soldierCount = 3, slotX = 1f, slotY = 0.3f,
+                    maxHp = 100f, attackDamage = 10f, defense = 5f, critChancePercent = 0f, moveSpeed = 3f,
+                    generalMaxHp = 500f, generalAttackDamage = 50f, generalDefense = 20f,
+                    generalCritChancePercent = 5f, generalMoveSpeed = 3f,
+                },
+                new SquadRequest
+                {
+                    squadId = "lv5", roleId = "Warrior", generalId = "WarriorGeneral",
+                    soldierCount = 3, slotX = 1f, slotY = 0.7f,
+                    maxHp = 300f, attackDamage = 30f, defense = 15f, critChancePercent = 10f, moveSpeed = 3.6f,
+                    generalMaxHp = 1500f, generalAttackDamage = 150f, generalDefense = 60f,
+                    generalCritChancePercent = 15f, generalMoveSpeed = 3.6f,
+                },
+            };
+
+            ArmyDefinition army = BattleRequestBuilder.BuildSquads(squads, catalog, config, null, null);
+            Assert.AreEqual(100f, army.Squads[0].Role.MaxHp, 1e-3f);
+            Assert.AreEqual(300f, army.Squads[1].Role.MaxHp, 1e-3f);
+            Assert.AreEqual(500f, army.Squads[0].General.CombatRole.MaxHp, 1e-3f);
+            Assert.AreEqual(1500f, army.Squads[1].General.CombatRole.MaxHp, 1e-3f);
+            Assert.AreNotSame(army.Squads[0].General, army.Squads[1].General,
+                "같은 에셋이라도 분대별로 별도 정의 인스턴스여야 한다");
+
+            // 스탯이 실제 전투에 반영되는지 (레벨 높은 분대의 장군이 더 오래 버틴다는 최소 확인)
+            var enemy = new System.Collections.Generic.List<SquadRequest>
+            {
+                new SquadRequest { squadId = "e1", roleId = "Warrior", soldierCount = 6, slotX = 1f, slotY = 0.5f },
+            };
+            var sim = new BattleSimulation(
+                config, army, BattleRequestBuilder.BuildSquads(enemy, catalog, config, null, null), seed: 31);
+            Assert.AreEqual(500f, sim.GetHp(sim.GetGeneralUnit(0)), 1e-3f, "분대 0 장군 HP = 전달값");
+            Assert.AreEqual(1500f, sim.GetHp(sim.GetGeneralUnit(1)), 1e-3f, "분대 1 장군 HP = 전달값");
+        }
+
         /// <summary>요청 → 전투 → 결과 왕복: 분대 id 보존 + 생존 수 집계 + victory 일관성 (계약 대응 핵심).</summary>
         [Test]
         public void BattleRequest_RoundTrip_ProducesContractOutcome()

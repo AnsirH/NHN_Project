@@ -32,6 +32,8 @@ namespace NHN.Integration
             };
             foreach (DeployedArmy army in setup.armies)
             {
+                // 스탯은 아웃게임이 레벨(=장군 레벨, 0~5)을 반영해 계산한 값을 병사/장군 각각 전달한다.
+                // 인게임은 공격 주기·사거리·타겟팅·이동 패턴·반경만 소유한다 (RoleDefinition.WithStats로 결합).
                 request.playerSquads.Add(new SquadRequest
                 {
                     squadId = army.armyInstanceId,
@@ -40,6 +42,20 @@ namespace NHN.Integration
                     soldierCount = army.soldierCount,
                     slotX = army.slotX,
                     slotY = army.slotY,
+
+                    // 병사 5스탯 (병사 1명 기준) — 필드명은 아웃게임 DTO 확정 시 맞춘다
+                    maxHp = army.soldierMaxHp,
+                    attackDamage = army.soldierAttackDamage,
+                    defense = army.soldierDefense,
+                    critChancePercent = army.soldierCritChancePercent,
+                    moveSpeed = army.soldierMoveSpeed,
+
+                    // 장군 5스탯
+                    generalMaxHp = army.generalMaxHp,
+                    generalAttackDamage = army.generalAttackDamage,
+                    generalDefense = army.generalDefense,
+                    generalCritChancePercent = army.generalCritChancePercent,
+                    generalMoveSpeed = army.generalMoveSpeed,
                 });
             }
 
@@ -58,7 +74,10 @@ namespace NHN.Integration
             });
         }
 
-        /// <summary>협의 ①: outGame ArmyClass ↔ 인게임 롤 4종 매핑 — enum 합의 후 이 표만 수정하면 된다.</summary>
+        /// <summary>
+        /// 협의 ①: outGame ArmyClass ↔ 인게임 롤 4종 매핑 — enum을 인게임 기준으로 개정하기로 합의했으므로
+        /// 머지 후 이 표만 채우면 된다. 병과는 아이템이 부여하며, 그 병과가 장군 스킬(generalSkillId)도 결정한다.
+        /// </summary>
         private static string MapClassToRoleId(ArmyClass armyClass)
         {
             switch (armyClass)
@@ -68,7 +87,7 @@ namespace NHN.Integration
                 // case ArmyClass.Warrior: return "Warrior";
                 // case ArmyClass.Assassin: return "Assassin";
                 // case ArmyClass.Hunter: return "Hunter";
-                default: return null; // None/미합의 병과 → 노멀 병사 (BattleCatalog 폴백)
+                default: return null; // None(아이템 미부여) → 노멀 병사 + NormalGeneral (BattleCatalog 폴백)
             }
         }
 
