@@ -7,9 +7,14 @@ using OutGame.Logic.Maps;
 namespace OutGame.Logic.Battle
 {
     /// <summary>
-    /// 적 군대 구성 자동 생성 (§4-28) — 일반전투는 층수 기반으로 개수를 산출한 뒤 가중 랜덤으로
-    /// 병과를 배정하고, 보스는 고정 구성을 그대로 반환한다. RoomTypeAssigner.WeightedPick과 동일한
-    /// 가중 랜덤 알고리즘 구조를 재사용한다. 아웃게임 내부 전용(아이템 드롭·전투력 표시용).
+    /// 적 군대 구성 자동 생성 (§4-28) — 일반전투는 난이도 커브 구간(DifficultyTier)에서 개수를
+    /// 가져온 뒤 그 구간의 병과 가중치로 가중 랜덤 배정하고, 보스는 같은 구간의 고정 구성을 그대로
+    /// 반환한다. RoomTypeAssigner.WeightedPick과 동일한 가중 랜덤 알고리즘 구조를 재사용한다.
+    /// 아웃게임 내부 전용(아이템 드롭·전투력 표시용).
+    ///
+    /// 2026-07-26 재설계: "층수"가 아니라 <paramref name="powerRoomsVisited"/>(RunState의 난이도
+    /// 커브 기준점 — 증원·증강·이벤트 방을 지난 횟수)로 구간을 고른다(§4-28, 사용자 확정). 전투방만
+    /// 연달아 나오는 런에서 플레이어 보강 없이 적만 계속 세지는 불균형을 막기 위함.
     ///
     /// 각 결과는 플레이어의 ArmyInstance와 동일한 형태(ArmyDefinition 참조 + 병과 + 병사 수)를
     /// 갖는다 — <paramref name="template"/>(현재는 army_basic 하나뿐)의 baseSoldierCount/generalPower를
@@ -18,19 +23,24 @@ namespace OutGame.Logic.Battle
     /// </summary>
     public static class EnemyCompositionGenerator
     {
-        private static readonly ArmyClass[] Classes = { ArmyClass.None, ArmyClass.Archer, ArmyClass.Warrior };
+        private static readonly ArmyClass[] Classes =
+        {
+            ArmyClass.None, ArmyClass.Archer, ArmyClass.Warrior, ArmyClass.Hunter, ArmyClass.Assassin,
+        };
 
         public static List<EnemyArmy> Generate(
-            int floor, RoomType roomType, EnemyCompositionConfig config, ArmyData template, Random rng)
+            int powerRoomsVisited, RoomType roomType, EnemyCompositionConfig config, ArmyData template, Random rng)
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
             if (template == null) throw new ArgumentNullException(nameof(template));
             if (rng == null) throw new ArgumentNullException(nameof(rng));
-            if (floor < 0) throw new ArgumentException($"floor는 0 이상이어야 합니다. 현재: {floor}");
+            if (powerRoomsVisited < 0)
+                throw new ArgumentException($"powerRoomsVisited는 0 이상이어야 합니다. 현재: {powerRoomsVisited}");
 
+            DifficultyTier tier = config.GetTierFor(powerRoomsVisited);
             List<ArmyClass> classes = roomType == RoomType.Boss
-                ? new List<ArmyClass>(config.bossComposition)
-                : GenerateNormalBattleClasses(floor, config, rng);
+                ? new List<ArmyClass>(tier.bossComposition)
+                : GenerateNormalBattleClasses(tier, rng);
 
             return classes.Select(cls =>
             {
@@ -45,23 +55,23 @@ namespace OutGame.Logic.Battle
             }).ToList();
         }
 
-        private static List<ArmyClass> GenerateNormalBattleClasses(int floor, EnemyCompositionConfig config, Random rng)
+        private static List<ArmyClass> GenerateNormalBattleClasses(DifficultyTier tier, Random rng)
         {
-            int count = Math.Min(config.maxEnemyCount, config.baseEnemyCount + floor * config.perFloorEnemyIncrement);
-            var result = new List<ArmyClass>(count);
-            for (int i = 0; i < count; i++)
-                result.Add(WeightedPick(config, rng));
+            // 가중치 합은 같은 티어 안에서 매번 동일하므로 유닛 수만큼 반복하기 전에 한 번만 계산한다.
+            float total = Classes.Sum(tier.WeightOf);
+            var result = new List<ArmyClass>(tier.enemyCount);
+            for (int i = 0; i < tier.enemyCount; i++)
+                result.Add(WeightedPick(tier, total, rng));
 
             return result;
         }
 
-        private static ArmyClass WeightedPick(EnemyCompositionConfig config, Random rng)
+        private static ArmyClass WeightedPick(DifficultyTier tier, float total, Random rng)
         {
-            float total = Classes.Sum(config.WeightOf);
             double roll = rng.NextDouble() * total;
             foreach (ArmyClass cls in Classes)
             {
-                roll -= config.WeightOf(cls);
+                roll -= tier.WeightOf(cls);
                 if (roll < 0) return cls;
             }
 

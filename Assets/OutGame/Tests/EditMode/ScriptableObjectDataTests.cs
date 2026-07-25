@@ -160,13 +160,15 @@ namespace OutGame.Tests.EditMode
         [Test]
         public void EnemyCompositionConfigAsset_ToConfig_ReturnsDefaultValues()
         {
+            // 2026-07-26 재설계: 평평한 baseEnemyCount/maxEnemyCount 대신 티어 리스트 — 기본값은
+            // 4단계(§4-28 초안)이고 첫 티어는 카운터 0부터 적용된다.
             var so = ScriptableObject.CreateInstance<EnemyCompositionConfigAsset>();
             try
             {
                 EnemyCompositionConfig data = so.ToConfig();
-                Assert.AreEqual(3, data.baseEnemyCount);
-                Assert.AreEqual(9, data.maxEnemyCount);
-                Assert.AreEqual(5, data.bossComposition.Count);
+                Assert.AreEqual(4, data.tiers.Count);
+                Assert.AreEqual(0, data.tiers[0].minCounter);
+                Assert.AreEqual(9, data.tiers[data.tiers.Count - 1].enemyCount, "마지막 티어가 maxEnemyCount 역할(9)을 해야 함");
             }
             finally
             {
@@ -181,9 +183,9 @@ namespace OutGame.Tests.EditMode
             try
             {
                 EnemyCompositionConfig data = so.ToConfig();
-                data.baseEnemyCount = 999;
+                data.tiers[0].enemyCount = 999;
 
-                Assert.AreEqual(3, so.ToConfig().baseEnemyCount, "반환값 변형이 에셋에 영향을 주면 안 됨");
+                Assert.AreNotEqual(999, so.ToConfig().tiers[0].enemyCount, "반환값 변형이 에셋에 영향을 주면 안 됨");
             }
             finally
             {
@@ -199,7 +201,10 @@ namespace OutGame.Tests.EditMode
             {
                 var field = typeof(EnemyCompositionConfigAsset).GetField("config",
                     System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                field.SetValue(so, new EnemyCompositionConfig { maxEnemyCount = 0, baseEnemyCount = 5 });
+                field.SetValue(so, new EnemyCompositionConfig
+                {
+                    tiers = new System.Collections.Generic.List<DifficultyTier>(), // 빈 tiers는 Validate 위반
+                });
 
                 Assert.Throws<System.InvalidOperationException>(() => so.ToConfig());
             }

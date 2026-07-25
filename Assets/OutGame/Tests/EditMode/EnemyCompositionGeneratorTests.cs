@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using OutGame.Logic.Armies;
@@ -8,7 +9,8 @@ using OutGame.Logic.Maps;
 namespace OutGame.Tests.EditMode
 {
     /// <summary>
-    /// 적 군대 구성 자동 생성 검증 (§4-28): 일반전투는 층별 스케일링, 보스는 고정 구성.
+    /// 적 군대 구성 자동 생성 검증 (§4-28, 2026-07-26 재설계): powerRoomsVisited(난이도 커브
+    /// 기준점)로 DifficultyTier를 골라 일반전투 개수/병과 가중치, 보스 고정 구성을 결정한다.
     /// 각 결과는 플레이어 군대와 같은 형태(ArmyDefinition 참조+병과+병사 수)를 가져야 한다.
     /// </summary>
     public class EnemyCompositionGeneratorTests
@@ -16,29 +18,47 @@ namespace OutGame.Tests.EditMode
         private static ArmyData Template(int baseSoldierCount = 30, float generalPower = 10f) =>
             new ArmyData { id = "army_basic", baseSoldierCount = baseSoldierCount, generalPower = generalPower };
 
-        [Test]
-        public void Generate_Boss_ReturnsFixedComposition()
-        {
-            var config = new EnemyCompositionConfig();
-            var result = EnemyCompositionGenerator.Generate(9, RoomType.Boss, config, Template(), new Random(1));
+        private static EnemyCompositionConfig SingleTierConfig(DifficultyTier tier) =>
+            new EnemyCompositionConfig { tiers = new List<DifficultyTier> { tier } };
 
-            CollectionAssert.AreEqual(config.bossComposition, result.Select(e => e.armyClass).ToList());
+        [Test]
+        public void Generate_Boss_ReturnsFixedCompositionOfMatchingTier()
+        {
+            var tier = new DifficultyTier
+            {
+                minCounter = 0, enemyCount = 1,
+                bossComposition = new List<ArmyClass> { ArmyClass.Warrior, ArmyClass.Archer },
+            };
+            var config = SingleTierConfig(tier);
+            var result = EnemyCompositionGenerator.Generate(0, RoomType.Boss, config, Template(), new Random(1));
+
+            CollectionAssert.AreEqual(tier.bossComposition, result.Select(e => e.armyClass).ToList());
         }
 
         [Test]
-        public void Generate_Boss_IgnoresFloor()
+        public void Generate_Boss_HigherCounter_UsesHigherTierComposition()
         {
-            var config = new EnemyCompositionConfig();
-            var atFloor0 = EnemyCompositionGenerator.Generate(0, RoomType.Boss, config, Template(), new Random(1));
-            var atFloor9 = EnemyCompositionGenerator.Generate(9, RoomType.Boss, config, Template(), new Random(1));
+            // 2026-07-26: 보스 구성도 카운터(티어)에 반응해야 한다 — 사용자 확정.
+            var config = new EnemyCompositionConfig
+            {
+                tiers = new List<DifficultyTier>
+                {
+                    new DifficultyTier { minCounter = 0, enemyCount = 1, bossComposition = new List<ArmyClass> { ArmyClass.None } },
+                    new DifficultyTier { minCounter = 5, enemyCount = 1, bossComposition = new List<ArmyClass> { ArmyClass.Assassin } },
+                },
+            };
 
-            CollectionAssert.AreEqual(atFloor0.Select(e => e.armyClass), atFloor9.Select(e => e.armyClass));
+            var early = EnemyCompositionGenerator.Generate(0, RoomType.Boss, config, Template(), new Random(1));
+            var late = EnemyCompositionGenerator.Generate(5, RoomType.Boss, config, Template(), new Random(1));
+
+            CollectionAssert.AreEqual(new[] { ArmyClass.None }, early.Select(e => e.armyClass).ToList());
+            CollectionAssert.AreEqual(new[] { ArmyClass.Assassin }, late.Select(e => e.armyClass).ToList());
         }
 
         [Test]
         public void Generate_EachEntry_InheritsTemplateStats()
         {
-            var config = new EnemyCompositionConfig { baseEnemyCount = 3, perFloorEnemyIncrement = 0, maxEnemyCount = 3 };
+            var config = SingleTierConfig(new DifficultyTier { minCounter = 0, enemyCount = 3 });
             var result = EnemyCompositionGenerator.Generate(0, RoomType.NormalBattle, config, Template(baseSoldierCount: 42), new Random(1));
 
             Assert.IsTrue(result.TrueForAll(e => e.armyDefId == "army_basic"));
@@ -46,47 +66,71 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
-        public void Generate_NormalBattle_FloorZero_UsesBaseCount()
+        public void Generate_NormalBattle_UsesMatchingTierEnemyCount()
         {
-            var config = new EnemyCompositionConfig { baseEnemyCount = 3, perFloorEnemyIncrement = 1, maxEnemyCount = 20 };
+            var config = new EnemyCompositionConfig
+            {
+                tiers = new List<DifficultyTier>
+                {
+                    new DifficultyTier { minCounter = 0, enemyCount = 3 },
+                    new DifficultyTier { minCounter = 4, enemyCount = 7 },
+                },
+            };
+
+            var lowCounter = EnemyCompositionGenerator.Generate(0, RoomType.NormalBattle, config, Template(), new Random(1));
+            var highCounter = EnemyCompositionGenerator.Generate(4, RoomType.NormalBattle, config, Template(), new Random(1));
+
+            Assert.AreEqual(3, lowCounter.Count);
+            Assert.AreEqual(7, highCounter.Count);
+        }
+
+        [Test]
+        public void Generate_CounterBelowFirstTier_ClampsToFirstTier()
+        {
+            var config = new EnemyCompositionConfig
+            {
+                tiers = new List<DifficultyTier> { new DifficultyTier { minCounter = 2, enemyCount = 5 } },
+            };
+
             var result = EnemyCompositionGenerator.Generate(0, RoomType.NormalBattle, config, Template(), new Random(1));
 
-            Assert.AreEqual(3, result.Count);
-        }
-
-        [Test]
-        public void Generate_NormalBattle_ScalesCountWithFloor()
-        {
-            var config = new EnemyCompositionConfig { baseEnemyCount = 3, perFloorEnemyIncrement = 1, maxEnemyCount = 20 };
-            var result = EnemyCompositionGenerator.Generate(4, RoomType.NormalBattle, config, Template(), new Random(1));
-
-            Assert.AreEqual(7, result.Count); // 3 + 4×1
-        }
-
-        [Test]
-        public void Generate_NormalBattle_CapsAtMaxEnemyCount()
-        {
-            var config = new EnemyCompositionConfig { baseEnemyCount = 3, perFloorEnemyIncrement = 5, maxEnemyCount = 9 };
-            var result = EnemyCompositionGenerator.Generate(9, RoomType.NormalBattle, config, Template(), new Random(1));
-
-            Assert.AreEqual(9, result.Count);
+            Assert.AreEqual(5, result.Count, "첫 구간의 minCounter보다 낮아도 첫 구간으로 클램프돼야 함");
         }
 
         [Test]
         public void Generate_ZeroClassWeights_OnlyProducesBaseClass()
         {
-            var config = new EnemyCompositionConfig
+            var config = SingleTierConfig(new DifficultyTier
             {
-                baseEnemyCount = 5, perFloorEnemyIncrement = 0, maxEnemyCount = 5,
-                baseWeight = 1f, archerWeight = 0f, warriorWeight = 0f,
-            };
+                minCounter = 0, enemyCount = 5,
+                baseWeight = 1f, archerWeight = 0f, warriorWeight = 0f, hunterWeight = 0f, assassinWeight = 0f,
+            });
             var result = EnemyCompositionGenerator.Generate(0, RoomType.NormalBattle, config, Template(), new Random(1));
 
             Assert.IsTrue(result.TrueForAll(e => e.armyClass == ArmyClass.None));
         }
 
         [Test]
-        public void Generate_NegativeFloor_Throws()
+        public void Generate_AllWeightsPositive_CanProduceEveryClass()
+        {
+            // 최종 티어(전부 해금)에서 5개 병과가 전부 나올 수 있는지 결정론적으로 확인 — 표본을
+            // 충분히 뽑아 병과별 최소 1회 이상 등장을 기대한다(시드 고정, 낮은 확률로도 실패하지
+            // 않도록 표본 수를 넉넉히 잡음).
+            var config = SingleTierConfig(new DifficultyTier
+            {
+                minCounter = 0, enemyCount = 200,
+                baseWeight = 1f, archerWeight = 1f, warriorWeight = 1f, hunterWeight = 1f, assassinWeight = 1f,
+            });
+            var result = EnemyCompositionGenerator.Generate(0, RoomType.NormalBattle, config, Template(), new Random(1));
+
+            var producedClasses = result.Select(e => e.armyClass).Distinct().ToList();
+            CollectionAssert.AreEquivalent(
+                new[] { ArmyClass.None, ArmyClass.Archer, ArmyClass.Warrior, ArmyClass.Hunter, ArmyClass.Assassin },
+                producedClasses);
+        }
+
+        [Test]
+        public void Generate_NegativeCounter_Throws()
         {
             Assert.Throws<ArgumentException>(() =>
                 EnemyCompositionGenerator.Generate(-1, RoomType.NormalBattle, new EnemyCompositionConfig(), Template(), new Random(1)));
@@ -110,29 +154,63 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
-        public void Validate_MaxBelowBase_Throws()
+        public void Validate_EmptyTiers_Throws()
         {
-            var config = new EnemyCompositionConfig { baseEnemyCount = 10, maxEnemyCount = 5 };
+            var config = new EnemyCompositionConfig { tiers = new List<DifficultyTier>() };
             Assert.Throws<ArgumentException>(() => config.Validate());
         }
 
         [Test]
-        public void Validate_EmptyBossComposition_Throws()
+        public void Validate_TiersNotStrictlyAscending_Throws()
         {
-            var config = new EnemyCompositionConfig { bossComposition = new System.Collections.Generic.List<ArmyClass>() };
+            var config = new EnemyCompositionConfig
+            {
+                tiers = new List<DifficultyTier>
+                {
+                    new DifficultyTier { minCounter = 2, enemyCount = 1 },
+                    new DifficultyTier { minCounter = 2, enemyCount = 1 },
+                },
+            };
+            Assert.Throws<ArgumentException>(() => config.Validate(), "minCounter 중복은 허용하면 안 됨");
+        }
+
+        [Test]
+        public void Validate_TierWithEmptyBossComposition_Throws()
+        {
+            var config = SingleTierConfig(new DifficultyTier { minCounter = 0, enemyCount = 1, bossComposition = new List<ArmyClass>() });
             Assert.Throws<ArgumentException>(() => config.Validate());
+        }
+
+        [Test]
+        public void GetTierFor_ExactBoundary_UsesThatTier()
+        {
+            var config = new EnemyCompositionConfig
+            {
+                tiers = new List<DifficultyTier>
+                {
+                    new DifficultyTier { minCounter = 0, enemyCount = 1 },
+                    new DifficultyTier { minCounter = 3, enemyCount = 2 },
+                    new DifficultyTier { minCounter = 6, enemyCount = 3 },
+                },
+            };
+
+            Assert.AreEqual(1, config.GetTierFor(2).enemyCount);
+            Assert.AreEqual(2, config.GetTierFor(3).enemyCount, "경계값(minCounter와 정확히 같음)은 그 구간을 써야 함");
+            Assert.AreEqual(2, config.GetTierFor(5).enemyCount);
+            Assert.AreEqual(3, config.GetTierFor(100).enemyCount, "마지막 구간을 넘어가면 마지막 구간 유지");
         }
 
         [Test]
         public void Clone_ReturnsIndependentCopy()
         {
-            var original = new EnemyCompositionConfig { baseEnemyCount = 5 };
+            var original = new EnemyCompositionConfig();
             EnemyCompositionConfig clone = original.Clone();
-            clone.baseEnemyCount = 99;
-            clone.bossComposition.Add(ArmyClass.Archer);
+            clone.tiers[0].enemyCount = 999;
+            clone.tiers[0].bossComposition.Add(ArmyClass.Archer);
 
-            Assert.AreEqual(5, original.baseEnemyCount, "clone 변형이 원본에 영향을 주면 안 됨");
-            Assert.AreNotEqual(original.bossComposition.Count, clone.bossComposition.Count, "리스트도 독립 복사돼야 함");
+            Assert.AreNotEqual(999, original.tiers[0].enemyCount, "clone 변형이 원본에 영향을 주면 안 됨");
+            Assert.AreNotEqual(original.tiers[0].bossComposition.Count, clone.tiers[0].bossComposition.Count,
+                "리스트도 독립 복사돼야 함");
         }
 
         [Test]

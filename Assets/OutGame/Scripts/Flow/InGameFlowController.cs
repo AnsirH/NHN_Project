@@ -206,8 +206,11 @@ namespace OutGame.Flow
             // §4-28: 적 구성을 미리 생성해둔다 — 순수 아웃게임 내부용(아이템 드롭·전투력 계산),
             // BattleSetupData에는 안 실음. 스탯 템플릿은 Start()에서 확정해둔 시작 군대(army_basic)를
             // 그대로 물려받는다 — ArmyDefinition이 여러 종류가 되면 이 자리를 풀(pool)에서 고르도록 확장.
+            // 2026-07-26: 난이도 기준을 "층수(node.point.y)"에서 run.powerRoomsVisited(증원·증강·
+            // 이벤트 방 통과 횟수)로 교체 — 전투방만 연달아 나오는 런에서 플레이어 보강 없이 적만
+            // 계속 세지는 불균형을 막기 위함(§4-28 재설계).
             currentEnemyComposition = EnemyCompositionGenerator.Generate(
-                node.point.y, node.roomType, enemyCompositionConfig, enemyTemplate, rng);
+                run.powerRoomsVisited, node.roomType, enemyCompositionConfig, enemyTemplate, rng);
             deploymentPanel.Open(run, node.id, node.roomType, encounterId,
                 armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), runConfig.ToData(),
                 augmentDefsById.Values.ToList(), currentEnemyComposition);

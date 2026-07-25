@@ -133,7 +133,8 @@ namespace OutGame.Tests.PlayMode
             victoryButton.onClick.Invoke();
             yield return null;
 
-            // 기본 보스 구성(EnemyCompositionConfig.bossComposition)에 궁수/전사가 포함돼 있고
+            // 기본 첫 티어 보스 구성(EnemyCompositionConfig.tiers[0].bossComposition)에 기본 병과만
+            // 있어도, 궁수/전사가 드롭 매핑에 있고 확률을 100%로 강제했으므로 상관없다 —
             // 드롭 확률을 100%로 강제했으므로 최소 1개 이상은 반드시 늘어나야 한다.
             Assert.Greater(run.ownedItemIds.Count, ownedItemsBefore,
                 "보스 승리 후 병과 기반 아이템 드롭으로 보유 아이템이 늘어나야 함 (§4-28)");
