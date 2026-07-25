@@ -26,6 +26,12 @@ namespace NHN.Data
         [Tooltip("이 시간까지 승부가 나지 않으면 무승부")]
         [SerializeField] private float maxBattleSeconds = 180f;
 
+        [Header("배치 슬롯 변환 (정규화 0~1 → anchor, DeploymentGrid)")]
+        [Tooltip("slotX 0(후방)~1(전선)이 펼쳐지는 깊이 범위")]
+        [SerializeField] private float deploymentDepth = 10f;
+        [Tooltip("slotY 0~1이 펼쳐지는 측면 절반 폭 (중앙 기준 ±)")]
+        [SerializeField] private float deploymentHalfWidth = 14f;
+
         public int Seed => seed;
 
         public int MaxUnits => maxUnits;
@@ -37,7 +43,8 @@ namespace NHN.Data
             return new BattleConfig(
                 ticksPerSecond, arenaHalfWidth, arenaHalfHeight,
                 retargetInterval, projectileImpactRadius, maxBattleSeconds,
-                maxUnits, maxProjectiles, maxSkillZones, frontLineOffsetX);
+                maxUnits, maxProjectiles, maxSkillZones, frontLineOffsetX,
+                deploymentDepth, deploymentHalfWidth);
         }
     }
 }

@@ -54,18 +54,20 @@ namespace NHN.Simulation.Tests
         [Test]
         public void SlotToAnchor_MapsNormalizedCoordinates()
         {
-            BattleCatalog catalog = LoadCatalog();
+            // 변환 수식은 DeploymentGrid(Simulation — CLI 공유), 파라미터는 BattleConfig가 단일 출처.
+            BattleConfig config = LoadConfig();
+            Assert.AreEqual(10f, config.DeploymentDepth, 1e-3f, "배치 깊이 파라미터가 BattleConfig 에셋에서 와야 한다");
+            Assert.AreEqual(14f, config.DeploymentHalfWidth, 1e-3f);
 
-            // 카탈로그 에셋 기준: deploymentDepth=10, deploymentHalfWidth=14
-            var front = catalog.SlotToAnchor(1f, 0.5f);
+            var front = DeploymentGrid.SlotToAnchor(1f, 0.5f, config.DeploymentDepth, config.DeploymentHalfWidth);
             Assert.AreEqual(0f, front.X, 1e-3f, "slotX=1은 전선(깊이 0)이어야 한다");
             Assert.AreEqual(0f, front.Y, 1e-3f, "slotY=0.5는 측면 중앙이어야 한다");
 
-            var backTop = catalog.SlotToAnchor(0f, 1f);
+            var backTop = DeploymentGrid.SlotToAnchor(0f, 1f, config.DeploymentDepth, config.DeploymentHalfWidth);
             Assert.AreEqual(10f, backTop.X, 1e-3f, "slotX=0은 최후방(깊이 최대)이어야 한다");
             Assert.AreEqual(14f, backTop.Y, 1e-3f, "slotY=1은 측면 최대여야 한다");
 
-            var backBottom = catalog.SlotToAnchor(0f, 0f);
+            var backBottom = DeploymentGrid.SlotToAnchor(0f, 0f, config.DeploymentDepth, config.DeploymentHalfWidth);
             Assert.AreEqual(-14f, backBottom.Y, 1e-3f, "slotY=0은 측면 최소여야 한다");
         }
 
@@ -100,9 +102,10 @@ namespace NHN.Simulation.Tests
                 squadId = "army-2", soldierCount = 10, slotX = 0.6f, slotY = 0.2f, // 노멀 분대 (roleId 없음)
             });
 
+            BattleConfig config = LoadConfig();
             var squadIds = new System.Collections.Generic.List<string>();
-            ArmyDefinition player = BattleRequestBuilder.BuildPlayerArmy(request, catalog, viewSquadsOut: null, squadIds);
-            ArmyDefinition enemy = BattleRequestBuilder.BuildEnemyArmy(request.encounterId, table, catalog, viewSquadsOut: null);
+            ArmyDefinition player = BattleRequestBuilder.BuildPlayerArmy(request, catalog, config, viewSquadsOut: null, squadIds);
+            ArmyDefinition enemy = BattleRequestBuilder.BuildEnemyArmy(request.encounterId, table, catalog, config, viewSquadsOut: null);
 
             Assert.AreEqual(31, player.TotalUnits, "전사 20+장군 + 노멀 10 = 31유닛이어야 한다");
             Assert.AreEqual(29, enemy.TotalUnits, "encounter_basic = 전사 15+장군 + 궁수 12+장군 = 29유닛이어야 한다");

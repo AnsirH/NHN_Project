@@ -25,20 +25,22 @@ namespace NHN.Data
             }
         }
 
-        public static ArmyDefinition BuildPlayerArmy(
-            BattleRequest request, BattleCatalog catalog,
+        /// <summary>좌/우 공용 — SquadRequest 목록으로 군대를 만든다 (BalanceLab 교차 검증도 이 경로 사용).</summary>
+        public static ArmyDefinition BuildSquads(
+            IReadOnlyList<SquadRequest> squadRequests, BattleCatalog catalog, in BattleConfig config,
             List<SquadAssets> viewSquadsOut, List<string> squadIdsOut)
         {
-            var squads = new SquadDefinition[request.playerSquads.Count];
-            for (int s = 0; s < request.playerSquads.Count; s++)
+            var squads = new SquadDefinition[squadRequests.Count];
+            for (int s = 0; s < squadRequests.Count; s++)
             {
-                SquadRequest squadRequest = request.playerSquads[s];
+                SquadRequest squadRequest = squadRequests[s];
                 RoleData role = catalog.ResolveRole(squadRequest.roleId);
                 GeneralData general = catalog.ResolveGeneral(squadRequest.generalId);
                 squads[s] = new SquadDefinition(
                     role.ToDefinition(),
                     squadRequest.soldierCount,
-                    catalog.SlotToAnchor(squadRequest.slotX, squadRequest.slotY),
+                    DeploymentGrid.SlotToAnchor(
+                        squadRequest.slotX, squadRequest.slotY, config.DeploymentDepth, config.DeploymentHalfWidth),
                     general != null ? general.ToDefinition() : null);
                 viewSquadsOut?.Add(new SquadAssets(role, general, squadRequest.soldierCount));
                 squadIdsOut?.Add(squadRequest.squadId);
@@ -46,8 +48,15 @@ namespace NHN.Data
             return new ArmyDefinition(squads);
         }
 
+        public static ArmyDefinition BuildPlayerArmy(
+            BattleRequest request, BattleCatalog catalog, in BattleConfig config,
+            List<SquadAssets> viewSquadsOut, List<string> squadIdsOut)
+        {
+            return BuildSquads(request.playerSquads, catalog, config, viewSquadsOut, squadIdsOut);
+        }
+
         public static ArmyDefinition BuildEnemyArmy(
-            string encounterId, EncounterTable table, BattleCatalog catalog,
+            string encounterId, EncounterTable table, BattleCatalog catalog, in BattleConfig config,
             List<SquadAssets> viewSquadsOut)
         {
             EncounterTable.Encounter encounter = table.GetEncounterOrFallback(encounterId);
@@ -59,7 +68,8 @@ namespace NHN.Data
                 squads[s] = new SquadDefinition(
                     role.ToDefinition(),
                     encounterSquad.count,
-                    catalog.SlotToAnchor(encounterSquad.slotX, encounterSquad.slotY),
+                    DeploymentGrid.SlotToAnchor(
+                        encounterSquad.slotX, encounterSquad.slotY, config.DeploymentDepth, config.DeploymentHalfWidth),
                     encounterSquad.general != null ? encounterSquad.general.ToDefinition() : null);
                 viewSquadsOut?.Add(new SquadAssets(role, encounterSquad.general, encounterSquad.count));
             }

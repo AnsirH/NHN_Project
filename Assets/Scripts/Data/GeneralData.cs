@@ -39,25 +39,10 @@ namespace NHN.Data
 
         public GeneralDefinition ToDefinition()
         {
-            RoleDefinition baseDefinition = baseRole.ToDefinition();
-            var combatRole = new RoleDefinition(
-                name,
-                baseDefinition.MaxHp * hpMultiplier,
-                baseDefinition.AttackDamage * damageMultiplier,
-                baseDefinition.AttackInterval,
-                baseDefinition.AttackRange,
-                baseDefinition.MoveSpeed,
-                baseDefinition.UnitRadius * sizeMultiplier,
-                baseDefinition.ProjectileSpeed,
-                baseDefinition.ProjectileArcHeight,
-                baseDefinition.PositionFilter,
-                baseDefinition.Priorities,
-                baseDefinition.MovePattern,
-                baseDefinition.MoveParamA,
-                baseDefinition.MoveParamB);
-
-            return new GeneralDefinition(
-                combatRole,
+            // 엘리트 파생 공식은 GeneralDefinition.CreateElite가 단일 출처 — BalanceLab CLI와 공유 (작업 1).
+            return GeneralDefinition.CreateElite(
+                baseRole.ToDefinition(), name,
+                hpMultiplier, damageMultiplier, sizeMultiplier,
                 passive, passiveValue,
                 chargeCondition, chargeRequired,
                 activeEffect, activeParamA, activeParamB, activeDuration);

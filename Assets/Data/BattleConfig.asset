@@ -23,3 +23,5 @@ MonoBehaviour:
   retargetInterval: 0.4
   projectileImpactRadius: 0.6
   maxBattleSeconds: 180
+  deploymentDepth: 10
+  deploymentHalfWidth: 14

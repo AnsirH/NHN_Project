@@ -105,3 +105,11 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# BalanceLab (dotnet 툴 빌드 산출물)
+[Tt]ools/**/bin/
+[Tt]ools/**/obj/
+
+# OMC 런타임 상태 (프로젝트 어디에서 생성되든 커밋 금지)
+.omc/
+**/.omc/

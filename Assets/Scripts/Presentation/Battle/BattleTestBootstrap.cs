@@ -222,9 +222,12 @@ namespace NHN.Presentation.Battle
             _playerSquadIds.Clear();
             _viewSquadsA.Clear();
             _viewSquadsB.Clear();
-            ArmyDefinition playerArmy = BattleRequestBuilder.BuildPlayerArmy(request, catalog, _viewSquadsA, _playerSquadIds);
-            ArmyDefinition enemyArmy = BattleRequestBuilder.BuildEnemyArmy(request.encounterId, encounterTable, catalog, _viewSquadsB);
-            BeginBattle(new BattleSimulation(config.ToConfig(), playerArmy, enemyArmy, request.seed, _skillDefinitions));
+            BattleConfig battleConfig = config.ToConfig();
+            ArmyDefinition playerArmy = BattleRequestBuilder.BuildPlayerArmy(
+                request, catalog, battleConfig, _viewSquadsA, _playerSquadIds);
+            ArmyDefinition enemyArmy = BattleRequestBuilder.BuildEnemyArmy(
+                request.encounterId, encounterTable, catalog, battleConfig, _viewSquadsB);
+            BeginBattle(new BattleSimulation(battleConfig, playerArmy, enemyArmy, request.seed, _skillDefinitions));
         }
 
         private void BeginBattle(BattleSimulation sim)

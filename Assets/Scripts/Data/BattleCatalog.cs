@@ -17,12 +17,6 @@ namespace NHN.Data
         [Tooltip("roleId가 비었거나 미등록일 때 사용 — 기획 §5 노멀 병사")]
         [SerializeField] private RoleData normalRole;
 
-        [Header("정규화 슬롯(0~1) → anchor 변환 (계약: 월드 좌표 변환은 인게임 책임)")]
-        [Tooltip("slotX 0(후방)~1(전선)이 펼쳐지는 깊이 범위")]
-        [SerializeField] private float deploymentDepth = 10f;
-        [Tooltip("slotY 0~1이 펼쳐지는 측면 절반 폭 (중앙 기준 ±)")]
-        [SerializeField] private float deploymentHalfWidth = 14f;
-
         public RoleData NormalRole => normalRole;
 
         public RoleData ResolveRole(string roleId)
@@ -59,12 +53,6 @@ namespace NHN.Data
             return null;
         }
 
-        /// <summary>정규화 슬롯 → SquadDefinition.Anchor (x = 전선으로부터 깊이, y = 측면 오프셋).</summary>
-        public System.Numerics.Vector2 SlotToAnchor(float slotX, float slotY)
-        {
-            return new System.Numerics.Vector2(
-                (1f - Mathf.Clamp01(slotX)) * deploymentDepth,
-                (Mathf.Clamp01(slotY) - 0.5f) * 2f * deploymentHalfWidth);
-        }
+        // 슬롯→anchor 변환은 Simulation.DeploymentGrid로 이동 (CLI와 공유, 파라미터는 BattleConfig — 작업 1).
     }
 }

@@ -41,5 +41,37 @@ namespace NHN.Simulation.Battle
             ActiveParamB = activeParamB;
             ActiveDuration = activeDuration;
         }
+
+        /// <summary>
+        /// 엘리트 파생 공식의 단일 출처 — 장군 전투 능력 = 기반 롤 × 배율 (기획 §5 롤별 장군 스탯 차등).
+        /// GeneralData.ToDefinition(Unity)과 BalanceLab CLI가 함께 이 팩토리에 위임한다 (공식 중복 금지).
+        /// </summary>
+        public static GeneralDefinition CreateElite(
+            RoleDefinition baseRole, string generalName,
+            float hpMultiplier, float damageMultiplier, float sizeMultiplier,
+            SquadPassive passive, float passiveValue,
+            ChargeCondition chargeCondition, float chargeRequired,
+            GimmickEffect activeEffect, float activeParamA, float activeParamB, float activeDuration)
+        {
+            var combatRole = new RoleDefinition(
+                generalName,
+                baseRole.MaxHp * hpMultiplier,
+                baseRole.AttackDamage * damageMultiplier,
+                baseRole.AttackInterval,
+                baseRole.AttackRange,
+                baseRole.MoveSpeed,
+                baseRole.UnitRadius * sizeMultiplier,
+                baseRole.ProjectileSpeed,
+                baseRole.ProjectileArcHeight,
+                baseRole.PositionFilter,
+                baseRole.Priorities,
+                baseRole.MovePattern,
+                baseRole.MoveParamA,
+                baseRole.MoveParamB);
+            return new GeneralDefinition(
+                combatRole, passive, passiveValue,
+                chargeCondition, chargeRequired,
+                activeEffect, activeParamA, activeParamB, activeDuration);
+        }
     }
 }

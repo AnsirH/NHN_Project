@@ -15,11 +15,16 @@ namespace NHN.Simulation.Battle
         public readonly int MaxSkillZones;
         /// <summary>각 군 전선(스폰 기준선)의 중앙으로부터의 거리.</summary>
         public readonly float FrontLineOffsetX;
+        /// <summary>정규화 슬롯 slotX 0(후방)~1(전선)이 펼쳐지는 깊이 범위 (DeploymentGrid 변환 파라미터).</summary>
+        public readonly float DeploymentDepth;
+        /// <summary>정규화 슬롯 slotY 0~1이 펼쳐지는 측면 절반 폭 (중앙 기준 ±).</summary>
+        public readonly float DeploymentHalfWidth;
 
         public BattleConfig(
             int ticksPerSecond, float arenaHalfWidth, float arenaHalfHeight,
             float retargetInterval, float projectileImpactRadius, float maxBattleSeconds,
-            int maxUnits, int maxProjectiles, int maxSkillZones, float frontLineOffsetX)
+            int maxUnits, int maxProjectiles, int maxSkillZones, float frontLineOffsetX,
+            float deploymentDepth, float deploymentHalfWidth)
         {
             TicksPerSecond = ticksPerSecond;
             ArenaHalfWidth = arenaHalfWidth;
@@ -31,6 +36,8 @@ namespace NHN.Simulation.Battle
             MaxProjectiles = maxProjectiles;
             MaxSkillZones = maxSkillZones;
             FrontLineOffsetX = frontLineOffsetX;
+            DeploymentDepth = deploymentDepth;
+            DeploymentHalfWidth = deploymentHalfWidth;
         }
 
         public float TickDeltaTime => 1f / TicksPerSecond;

@@ -21,6 +21,8 @@ MonoBehaviour:
   positionFilter: 0
   priorities: 
   movePattern: 0
+  moveParamA: 0
+  moveParamB: 1
   projectileSpeed: 0
   projectileArcHeight: 2
   gimmickTrigger: 1
