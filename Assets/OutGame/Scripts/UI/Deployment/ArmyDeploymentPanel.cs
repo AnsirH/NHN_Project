@@ -23,7 +23,8 @@ namespace OutGame.UI.Deployment
     /// 군대 보유 상한 = 배치 슬롯 수(§4-7)이므로 보유 군대는 항상 전부 슬롯에 들어간다.
     /// Open() 시점에 슬롯 ID 오름차순으로 자동 배치되며, 별도 "보유 군대" 목록/드롭존은 없다.
     /// 드래그 앤 드롭은 슬롯 간 이동/스왑(진형 변경)만 지원 — DeploymentState.Place가 이미 처리.
-    /// 우측 "적 진영"은 슬롯 그리드만 표시(적 구성은 RoomEncounterTable 미결 — 자리만 예약).
+    /// 우측 "적 진영"은 EnemyCompositionGenerator가 생성한 구성(병과+병사 수)을 표시한다(§4-28) —
+    /// 실제 적 AI/전투 시뮬레이션은 여전히 RoomEncounterTable 미결(§9), 표시·전투력·드롭 계산 전용.
     /// 중앙 축: 적 버프 표시(1차 "없음") → [전투 시작] → [아이템] → [프리셋](비활성).
     /// </summary>
     public class ArmyDeploymentPanel : MonoBehaviour
@@ -64,7 +65,7 @@ namespace OutGame.UI.Deployment
         private string roomId;
         private RoomType roomType;
         private string encounterId;
-        private IReadOnlyList<ArmyClass> enemyComposition = Array.Empty<ArmyClass>();
+        private IReadOnlyList<EnemyArmy> enemyComposition = Array.Empty<EnemyArmy>();
 
         public event Action<BattleSetupData> Confirmed;
 
@@ -77,7 +78,7 @@ namespace OutGame.UI.Deployment
             IReadOnlyList<ItemDefinition> itemDefs,
             RunConfig runConfigValue,
             IReadOnlyList<AugmentDefinition> augmentDefs,
-            IReadOnlyList<ArmyClass> enemyCompositionValue)
+            IReadOnlyList<EnemyArmy> enemyCompositionValue)
         {
             if (runState == null) throw new ArgumentNullException(nameof(runState));
             if (armyDefs == null) throw new ArgumentNullException(nameof(armyDefs));
@@ -166,14 +167,15 @@ namespace OutGame.UI.Deployment
                 allySlotViewsById[slot.slotId] = view;
             }
 
-            // 적 진영 — §4-28 생성된 구성을 그대로 시각화(전술 판단 근거, §5.7). 실제 적 스탯/AI는
-            // 여전히 RoomEncounterTable 미결(§9) — 여기서는 병과 라벨만 보여준다.
-            foreach (ArmyClass enemyClass in enemyComposition)
+            // 적 진영 — §4-28 생성된 구성을 그대로 시각화(전술 판단 근거, §5.7). 각 항목은 플레이어
+            // 군대와 같은 형태(ArmyDefinition 참조+병과+병사 수)라 병사 수도 함께 보여준다. 실제
+            // 적 AI/전투 시뮬레이션은 여전히 RoomEncounterTable 미결(§9) — 표시만 이 데이터로 한다.
+            foreach (EnemyArmy enemy in enemyComposition)
             {
                 Image slotImage = Instantiate(enemySlotPrefab, enemySlotContainer);
                 Text label = slotImage.GetComponentInChildren<Text>();
                 if (label != null)
-                    label.text = EnemyClassLabel(enemyClass);
+                    label.text = $"{EnemyClassLabel(enemy.armyClass)}\n{enemy.soldierCount}명";
                 else
                     Debug.LogWarning("[ArmyDeploymentPanel] EnemySlotPlaceholder 프리팹에 라벨(Text)이 없어 병과를 표시하지 못했습니다 — SceneSetupM3UI.Run() 재실행 필요.");
             }
@@ -370,14 +372,35 @@ namespace OutGame.UI.Deployment
                 if (!deployment.GetSlotOf(kv.Key).HasValue) continue;
 
                 ArmyInstance army = run.GetArmy(kv.Key);
-                if (army == null || !armyDataById.TryGetValue(army.armyDefId, out ArmyData def)) continue;
+                if (army == null) continue; // 부대가 런에서 사라진 경우(미래 기능 대비) — RefreshLayout과 동일 방어
+
+                if (!armyDataById.TryGetValue(army.armyDefId, out ArmyData def))
+                {
+                    Debug.LogWarning($"[ArmyDeploymentPanel] armyDefId '{army.armyDefId}'를 찾을 수 없어 전투력 계산에서 제외했습니다.");
+                    continue;
+                }
 
                 ArmyClass armyClass = ItemEquipService.ResolveClass(army, itemDataById);
                 allyPower += (def.baseSoldierCount + army.bonusSoldierCount) * power.WeightOf(armyClass) + def.generalPower;
             }
 
             allyPowerLabel.text = $"전투력: {allyPower:0}";
-            enemyPowerLabel.text = "전투력: -"; // RoomEncounterTable 미결 (§9)
+
+            // §4-28: 생성된 적 구성도 아군과 동일한 공식(Σ(병사 수 × 병과 계수) + 장군 보정, §4-22)으로
+            // 계산 — 각자 계산해서 어긋나는 걸 막기 위해 위 아군 루프와 같은 power.WeightOf()를 그대로 쓴다.
+            // (아군과 달리 bonusSoldierCount 항이 없다 — EnemyArmy는 휴식 방 증원 등 영구 성장이 없는
+            // 1회성 데이터라 설계상 그 항이 존재하지 않는다, 누락이 아님.)
+            float enemyPower = 0f;
+            foreach (EnemyArmy enemy in enemyComposition)
+            {
+                if (!armyDataById.TryGetValue(enemy.armyDefId, out ArmyData def))
+                {
+                    Debug.LogWarning($"[ArmyDeploymentPanel] 적 armyDefId '{enemy.armyDefId}'를 찾을 수 없어 전투력 계산에서 제외했습니다.");
+                    continue;
+                }
+                enemyPower += enemy.soldierCount * power.WeightOf(enemy.armyClass) + def.generalPower;
+            }
+            enemyPowerLabel.text = $"전투력: {enemyPower:0}";
         }
 
         private static Dictionary<string, ItemData> ToDataDict(Dictionary<string, ItemDefinition> defs) =>

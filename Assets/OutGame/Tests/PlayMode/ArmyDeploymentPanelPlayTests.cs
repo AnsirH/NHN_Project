@@ -1,7 +1,9 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using OutGame.Logic.Armies;
+using OutGame.Logic.Battle;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
@@ -28,7 +30,12 @@ namespace OutGame.Tests.PlayMode
         private ItemDefinition bowDef;
         private ItemDefinition shieldDef;
         private RunConfig runConfig;
-        private static readonly ArmyClass[] TestEnemyComposition = { ArmyClass.Archer, ArmyClass.Shieldman, ArmyClass.None };
+        private static readonly List<EnemyArmy> TestEnemyComposition = new List<EnemyArmy>
+        {
+            new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.Archer, soldierCount = 30 },
+            new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.Shieldman, soldierCount = 30 },
+            new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.None, soldierCount = 30 },
+        };
 
         [SetUp]
         public void SetUp()
@@ -126,7 +133,7 @@ namespace OutGame.Tests.PlayMode
 
             Transform enemySlotGrid = panel.transform.Find("MainRow/EnemyColumn/SlotGrid");
             Assert.IsNotNull(enemySlotGrid, "적 진영 슬롯 컨테이너가 있어야 함");
-            Assert.AreEqual(TestEnemyComposition.Length, enemySlotGrid.childCount,
+            Assert.AreEqual(TestEnemyComposition.Count, enemySlotGrid.childCount,
                 "§4-28: 적 진영 슬롯은 생성된 구성 개수만큼만 만들어져야 함 (아군 슬롯 격자 전체를 채우면 안 됨)");
         }
 
@@ -139,7 +146,20 @@ namespace OutGame.Tests.PlayMode
             Transform enemySlotGrid = panel.transform.Find("MainRow/EnemyColumn/SlotGrid");
             var labels = enemySlotGrid.GetComponentsInChildren<Text>().Select(t => t.text).ToList();
 
-            CollectionAssert.AreEquivalent(new[] { "궁수", "방패병", "기본" }, labels);
+            // §4-28: 각 항목은 플레이어 군대와 같은 형태(병과+병사 수)라 라벨에도 병사 수가 함께 표시된다.
+            CollectionAssert.AreEquivalent(new[] { "궁수\n30명", "방패병\n30명", "기본\n30명" }, labels);
+        }
+
+        [UnityTest]
+        public IEnumerator Open_ComputesRealEnemyPowerFromComposition()
+        {
+            // §4-28: 적도 아군과 동일한 전투력 공식(§4-22)으로 계산돼야 한다 — 더 이상 "-" 고정 아님.
+            // army_basic 기준: (30×1.2+10) + (30×1.5+10) + (30×1.0+10) = 46 + 55 + 40 = 141
+            OpenPanel();
+            yield return null;
+
+            Text enemyPowerLabel = panel.transform.Find("MainRow/EnemyColumn/PowerLabel").GetComponent<Text>();
+            Assert.AreEqual("전투력: 141", enemyPowerLabel.text);
         }
 
         [Test]

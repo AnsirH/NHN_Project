@@ -109,9 +109,14 @@ namespace OutGame.Tests.PlayMode
                 RunState run = RunStateFactory.Create(map, runConfig);
                 run.ownedItemIds.Add("item_bow");
 
+                var enemyComposition = new System.Collections.Generic.List<OutGame.Logic.Battle.EnemyArmy>
+                {
+                    new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.Archer, soldierCount = 30 },
+                    new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.Shieldman, soldierCount = 30 },
+                    new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.None, soldierCount = 30 },
+                };
                 panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default", new[] { armyDef }, new[] { bowDef },
-                    runConfig, new AugmentDefinition[0],
-                    new[] { OutGame.Logic.Armies.ArmyClass.Archer, OutGame.Logic.Armies.ArmyClass.Shieldman, OutGame.Logic.Armies.ArmyClass.None });
+                    runConfig, new AugmentDefinition[0], enemyComposition);
 
                 yield return CaptureToFile("ArmyDeploymentPanel_01_initial.png");
 

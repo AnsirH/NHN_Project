@@ -50,10 +50,11 @@ namespace OutGame.Flow
         private Dictionary<string, ItemDefinition> itemDefsById;
         private Dictionary<string, AugmentDefinition> augmentDefsById;
         private Dictionary<ArmyClass, string> itemIdByClass; // §4-28: 병과→아이템 매핑, Start()에서 한 번만 계산
+        private ArmyData enemyTemplate; // §4-28: 적 구성 스탯 템플릿, Start()에서 한 번만 확정
         private string savePath;
         private bool runEnded;
         private RoomType currentBattleRoomType;
-        private List<ArmyClass> currentEnemyComposition;
+        private List<EnemyArmy> currentEnemyComposition;
 
         // §4-28: RoomEncounterTable 협의 전 임시 대체 — 아웃게임 내부 전용(아이템 드롭 계산용),
         // §7 인터페이스(BattleSetupData)에는 노출하지 않는다. 위 Asset 필드에서 Start()에 채워진다.
@@ -103,6 +104,15 @@ namespace OutGame.Flow
                 .ToDictionary(i => i.ToData().id);
             // §4-28: 병과→아이템 매핑은 런 도중 안 바뀌므로 승리마다 다시 만들지 않고 한 번만 캐시.
             itemIdByClass = ItemEquipService.ResolveItemIdByClass(itemDefsById.Values.Select(d => d.ToData()));
+
+            // §4-28: 적 구성의 스탯 템플릿 — 매 전투방 진입마다 다시 찾지 않도록 한 번만 확정,
+            // 여기서 실패하면(다른 dict 조회들과 달리) 조용히 넘어가지 않고 바로 fail-fast.
+            string startingArmyDefId = runConfig.ToData().startingArmyDefId;
+            if (!armyDefsById.TryGetValue(startingArmyDefId, out ArmyDefinition startingArmyDef))
+                throw new InvalidOperationException(
+                    $"RunConfig.startingArmyDefId('{startingArmyDefId}')에 해당하는 ArmyDefinition을 찾을 수 없습니다 " +
+                    "— 적 구성 스탯 템플릿으로 쓸 수 없습니다.");
+            enemyTemplate = startingArmyDef.ToData();
 
             savePath = RunSaveService.DefaultPath;
             run = pendingRun;
@@ -185,9 +195,11 @@ namespace OutGame.Flow
         {
             // RoomEncounterTable 협의 전 임시 키(§9) — 적 구성이 정의되면 노드별 실제 값으로 대체
             string encounterId = $"enc_{node.roomType}";
-            // §4-28: 적 구성을 미리 생성해둔다 — 순수 아웃게임 내부용(아이템 드롭 계산), BattleSetupData에는 안 실음.
+            // §4-28: 적 구성을 미리 생성해둔다 — 순수 아웃게임 내부용(아이템 드롭·전투력 계산),
+            // BattleSetupData에는 안 실음. 스탯 템플릿은 Start()에서 확정해둔 시작 군대(army_basic)를
+            // 그대로 물려받는다 — ArmyDefinition이 여러 종류가 되면 이 자리를 풀(pool)에서 고르도록 확장.
             currentEnemyComposition = EnemyCompositionGenerator.Generate(
-                node.point.y, node.roomType, enemyCompositionConfig, rng);
+                node.point.y, node.roomType, enemyCompositionConfig, enemyTemplate, rng);
             deploymentPanel.Open(run, node.id, node.roomType, encounterId,
                 armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), runConfig.ToData(),
                 augmentDefsById.Values.ToList(), currentEnemyComposition);
@@ -213,7 +225,8 @@ namespace OutGame.Flow
             BattleRewardApplier.ApplyVictoryReward(run, runConfig.ToData().battleVictoryGold); // §4-20/§9: 초안값
 
             // §4-28: 격파한 적 병과 구성에 따라 확률적으로 아이템 드롭.
-            List<string> drops = ItemDropCalculator.RollDrops(currentEnemyComposition, itemDropConfig, itemIdByClass, rng);
+            List<ArmyClass> defeatedClasses = currentEnemyComposition.Select(e => e.armyClass).ToList();
+            List<string> drops = ItemDropCalculator.RollDrops(defeatedClasses, itemDropConfig, itemIdByClass, rng);
             BattleRewardApplier.ApplyItemDrops(run, drops);
             currentEnemyComposition = null;
 
