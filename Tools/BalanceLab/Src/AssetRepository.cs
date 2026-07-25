@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using NHN.Simulation.Balance;
 using NHN.Simulation.Battle;
 
 namespace BalanceLab
@@ -75,6 +76,80 @@ namespace BalanceLab
             if (_battleConfig == null)
             {
                 throw new InvalidDataException($"BattleConfig 에셋을 찾을 수 없다 ({dataRoot})");
+            }
+
+            SoldierStats = LoadTable(Path.Combine(dataRoot, "Csv", "soldier_stats.csv"));
+            GeneralStats = LoadTable(Path.Combine(dataRoot, "Csv", "general_stats.csv"));
+            VerifyAssetsMatchCsv();
+        }
+
+        /// <summary>병사 스탯 전개 테이블 (병과 × 레벨) — 레벨 스윕 시나리오가 사용한다.</summary>
+        public StatTable SoldierStats { get; }
+
+        /// <summary>장군 스탯 전개 테이블 (병과 × 레벨).</summary>
+        public StatTable GeneralStats { get; }
+
+        private static StatTable LoadTable(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException($"스탯 CSV를 찾을 수 없다: {path}");
+            }
+            return StatTable.Parse(File.ReadAllText(path), Path.GetFileName(path));
+        }
+
+        /// <summary>
+        /// CSV 레벨 0 행과 .asset 스탯이 일치하는지 검사한다 — "임포트 안 하고 돌린" 사고 차단.
+        /// 불일치를 방치하면 CLI가 튜닝한 수치와 게임이 쓰는 수치가 갈라져 밸런싱 전체가 가짜가 된다.
+        /// </summary>
+        private void VerifyAssetsMatchCsv()
+        {
+            var mismatches = new List<string>();
+            CompareTable(SoldierStats, _rolesByName, name => name, mismatches, isGeneral: false);
+            CompareTable(GeneralStats, _generalsByName, name => name + "General", mismatches, isGeneral: true);
+            if (mismatches.Count > 0)
+            {
+                throw new InvalidDataException(
+                    "CSV 레벨 0과 .asset 스탯이 다르다 — Unity에서 [NHN/스탯 CSV → 에셋 임포트]를 먼저 실행하라:\n  "
+                    + string.Join("\n  ", mismatches));
+            }
+        }
+
+        private void CompareTable(
+            StatTable table, Dictionary<string, ParsedAsset> assetsByName,
+            Func<string, string> assetNameOf, List<string> mismatches, bool isGeneral)
+        {
+            for (int c = 0; c < table.ClassIds.Count; c++)
+            {
+                string classId = table.ClassIds[c];
+                string assetName = assetNameOf(classId);
+                if (!assetsByName.TryGetValue(assetName, out ParsedAsset asset))
+                {
+                    mismatches.Add($"{table.SourceName}: 병과 '{classId}'의 에셋 '{assetName}'이 없다");
+                    continue;
+                }
+                StatTable.StatRow row = table.Get(classId, level: 0);
+
+                // 장군 에셋은 스탯 미지정(maxHp 0) 시 배율 파생을 쓰므로, 그 경우는 CSV 미반영으로 본다.
+                if (isGeneral && asset.GetFloat("maxHp") <= 0f)
+                {
+                    mismatches.Add($"{assetName}: 스탯이 비어 있다 (CSV 임포트 필요)");
+                    continue;
+                }
+
+                CompareField(assetName, "maxHp", asset.GetFloat("maxHp"), row.MaxHp, mismatches);
+                CompareField(assetName, "attackDamage", asset.GetFloat("attackDamage"), row.AttackDamage, mismatches);
+                CompareField(assetName, "defense", asset.GetFloat("defense"), row.Defense, mismatches);
+                CompareField(assetName, "critChancePercent", asset.GetFloat("critChancePercent"), row.CritChancePercent, mismatches);
+                CompareField(assetName, "moveSpeed", asset.GetFloat("moveSpeed"), row.MoveSpeed, mismatches);
+            }
+        }
+
+        private static void CompareField(string assetName, string field, float assetValue, float csvValue, List<string> mismatches)
+        {
+            if (Math.Abs(assetValue - csvValue) > 1e-3f)
+            {
+                mismatches.Add($"{assetName}.{field}: 에셋 {StatTable.FormatValue(assetValue)} vs CSV {StatTable.FormatValue(csvValue)}");
             }
         }
 

@@ -27,10 +27,4 @@ MonoBehaviour:
   moveParamB: 1
   projectileSpeed: 10
   projectileArcHeight: 2.5
-  gimmickTrigger: 2
-  triggerParamA: 4
-  triggerParamB: 0
-  gimmickEffect: 2
-  effectParamA: 2
-  effectParamB: 0
   roleColor: {r: 0.35, g: 0.8, b: 0.35, a: 1}

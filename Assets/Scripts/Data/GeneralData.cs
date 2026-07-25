@@ -11,12 +11,20 @@ namespace NHN.Data
     [CreateAssetMenu(fileName = "General", menuName = "NHN/General")]
     public sealed class GeneralData : ScriptableObject
     {
-        [Header("전투 능력 (기반 롤 + 엘리트 배율 — 롤별 장군 스탯 차등의 근거, 기획 §5)")]
+        [Header("전투 능력 (기반 롤 + 엘리트 배율 — 스탯 미지정 시의 파생 규칙)")]
         [SerializeField] private RoleData baseRole;
         [SerializeField] private float hpMultiplier = 3f;
         [SerializeField] private float damageMultiplier = 1.5f;
-        [Tooltip("장군 즉시 구분용 크기 배율 (기획 §4) — 시뮬 반경과 뷰 스케일에 함께 적용")]
+        [Tooltip("장군 즉시 구분용 크기 배율 (기획 §4) — 시뮬 반경과 뷰 스케일에 함께 적용. 스탯 지정과 무관하게 항상 적용")]
         [SerializeField] private float sizeMultiplier = 1.3f;
+
+        [Header("스탯 (general_stats.csv 임포트 — 레벨 0 스냅샷. maxHp 0이면 위 배율로 파생)")]
+        [SerializeField] private float maxHp;
+        [SerializeField] private float attackDamage;
+        [SerializeField] private float defense;
+        [Tooltip("0~100 퍼센트 (아웃게임 표기 단위)")]
+        [SerializeField] private float critChancePercent;
+        [SerializeField] private float moveSpeed;
 
         [Header("패시브 (부대 지속 버프 — 장군 생존 중에만, 사망 시 소멸)")]
         [SerializeField] private SquadPassive passive = SquadPassive.AttackPercent;
@@ -37,15 +45,46 @@ namespace NHN.Data
         /// <summary>뷰 스케일용 — 시뮬 반경과 동일한 파생 규칙 (기반 롤 × 크기 배율).</summary>
         public float UnitRadius => baseRole.UnitRadius * sizeMultiplier;
 
+        /// <summary>CSV 임포트로 스탯이 지정됐는지 — 체력은 0일 수 없으므로 판정 기준으로 쓴다 (SquadRequest와 같은 규약).</summary>
+        public bool HasExplicitStats => maxHp > 0f;
+
+        public float MaxHp => maxHp;
+
+        public float AttackDamage => attackDamage;
+
+        public float Defense => defense;
+
+        public float CritChancePercent => critChancePercent;
+
+        public float MoveSpeed => moveSpeed;
+
+        /// <summary>CSV 임포터가 레벨 0 스냅샷을 써넣는다 (에디터 전용 경로).</summary>
+        public void SetStats(float hp, float damage, float armor, float critPercent, float speed)
+        {
+            maxHp = hp;
+            attackDamage = damage;
+            defense = armor;
+            critChancePercent = critPercent;
+            moveSpeed = speed;
+        }
+
         public GeneralDefinition ToDefinition()
         {
             // 엘리트 파생 공식은 GeneralDefinition.CreateElite가 단일 출처 — BalanceLab CLI와 공유 (작업 1).
-            return GeneralDefinition.CreateElite(
+            GeneralDefinition derived = GeneralDefinition.CreateElite(
                 baseRole.ToDefinition(), name,
                 hpMultiplier, damageMultiplier, sizeMultiplier,
                 passive, passiveValue,
                 chargeCondition, chargeRequired,
                 activeEffect, activeParamA, activeParamB, activeDuration);
+            if (!HasExplicitStats)
+            {
+                return derived;
+            }
+            // 스탯이 지정돼 있으면 배율 파생값 대신 그 값을 쓴다 — 반경(크기 배율)은 파생값에서 승계된다.
+            return GeneralDefinition.WithCombatRole(
+                derived,
+                RoleDefinition.WithStats(derived.CombatRole, maxHp, attackDamage, defense, critChancePercent, moveSpeed));
         }
     }
 }

@@ -21,7 +21,7 @@ MonoBehaviour:
   moveSpeed: 3.2
   unitRadius: 0.5
   positionFilter: 0
-  priorities: []
+  priorities: 
   movePattern: 0
   moveParamA: 0
   moveParamB: 1

@@ -21,18 +21,10 @@ MonoBehaviour:
   moveSpeed: 3.2
   unitRadius: 0.45
   positionFilter: 0
-  priorities:
-  - 1
-  - 2
+  priorities: 0100000002000000
   movePattern: 0
   moveParamA: 0
   moveParamB: 1
   projectileSpeed: 14
   projectileArcHeight: 0.8
-  gimmickTrigger: 5
-  triggerParamA: 0
-  triggerParamB: 0
-  gimmickEffect: 5
-  effectParamA: 1.8
-  effectParamB: 0
   roleColor: {r: 1, g: 0.6, b: 0.15, a: 1}
