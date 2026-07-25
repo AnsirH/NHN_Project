@@ -54,11 +54,17 @@ namespace OutGame.Logic.Items
             return item?.armyClass ?? ArmyClass.None;
         }
 
-        /// <summary>병과의 한국어 표시명 (§2 용어: 활→궁수, 방패→방패병). None이면 빈 문자열.</summary>
+        /// <summary>
+        /// 병과의 한국어 표시명 (§2 용어: 활→궁수, 검+방패→전사, 도끼→사냥꾼, 단검→암살자).
+        /// 2026-07-26: Warrior의 표시명을 "방패병"에서 "전사"로 개칭(enum/아이템/스킬은 유지,
+        /// 브랜딩만 변경) + 사냥꾼(Hunter)·암살자(Assassin) 신규 4병과 체제. None이면 빈 문자열.
+        /// </summary>
         public static string ClassDisplayName(ArmyClass armyClass) => armyClass switch
         {
             ArmyClass.Archer => "궁수",
-            ArmyClass.Shieldman => "방패병",
+            ArmyClass.Warrior => "전사",
+            ArmyClass.Hunter => "사냥꾼",
+            ArmyClass.Assassin => "암살자",
             _ => "",
         };
 

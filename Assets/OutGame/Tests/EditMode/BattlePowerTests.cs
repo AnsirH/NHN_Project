@@ -41,18 +41,27 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
-        public void Calculate_ArcherAndShieldman_UseClassWeights()
+        public void Calculate_ArcherAndWarrior_UseClassWeights()
         {
             // (30 × 1.2 + 10) + (30 × 1.5 + 10) = 46 + 55 = 101
-            var armies = new List<DeployedArmy> { Deployed(ArmyClass.Archer, 30), Deployed(ArmyClass.Shieldman, 30) };
+            var armies = new List<DeployedArmy> { Deployed(ArmyClass.Archer, 30), Deployed(ArmyClass.Warrior, 30) };
             float power = BattlePowerCalculator.Calculate(armies, new BattlePowerConfig(), Defs);
             Assert.AreEqual(101f, power, 1e-3f);
         }
 
         [Test]
+        public void Calculate_HunterAndAssassin_UseClassWeights()
+        {
+            // 2026-07-26 4병과 확장(§4-28): (30×1.6+10) + (30×1.4+10) = 58 + 52 = 110
+            var armies = new List<DeployedArmy> { Deployed(ArmyClass.Hunter, 30), Deployed(ArmyClass.Assassin, 30) };
+            float power = BattlePowerCalculator.Calculate(armies, new BattlePowerConfig(), Defs);
+            Assert.AreEqual(110f, power, 1e-3f);
+        }
+
+        [Test]
         public void Calculate_CustomWeights_AreRespected()
         {
-            var config = new BattlePowerConfig { baseWeight = 2f, archerWeight = 3f, shieldmanWeight = 4f };
+            var config = new BattlePowerConfig { baseWeight = 2f, archerWeight = 3f, warriorWeight = 4f };
             // 10 × 3 + 10 = 40
             float power = BattlePowerCalculator.Calculate(
                 new List<DeployedArmy> { Deployed(ArmyClass.Archer, 10) }, config, Defs);

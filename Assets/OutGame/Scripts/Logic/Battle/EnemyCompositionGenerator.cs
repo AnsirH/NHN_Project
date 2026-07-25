@@ -18,7 +18,7 @@ namespace OutGame.Logic.Battle
     /// </summary>
     public static class EnemyCompositionGenerator
     {
-        private static readonly ArmyClass[] Classes = { ArmyClass.None, ArmyClass.Archer, ArmyClass.Shieldman };
+        private static readonly ArmyClass[] Classes = { ArmyClass.None, ArmyClass.Archer, ArmyClass.Warrior };
 
         public static List<EnemyArmy> Generate(
             int floor, RoomType roomType, EnemyCompositionConfig config, ArmyData template, Random rng)

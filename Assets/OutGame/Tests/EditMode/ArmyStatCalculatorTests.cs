@@ -32,10 +32,10 @@ namespace OutGame.Tests.EditMode
             };
 
             float archerResult = ArmyStatCalculator.GetStatMultiplier(Army(), ArmyClass.Archer, AugmentStat.Attack, augments);
-            float shieldmanResult = ArmyStatCalculator.GetStatMultiplier(Army(), ArmyClass.Shieldman, AugmentStat.Attack, augments);
+            float warriorResult = ArmyStatCalculator.GetStatMultiplier(Army(), ArmyClass.Warrior, AugmentStat.Attack, augments);
 
             Assert.AreEqual(1.1f, archerResult, 1e-3f);
-            Assert.AreEqual(1.1f, shieldmanResult, 1e-3f, "공통 스탯 증강은 병과 무관 전군 적용");
+            Assert.AreEqual(1.1f, warriorResult, 1e-3f, "공통 스탯 증강은 병과 무관 전군 적용");
         }
 
         [Test]
@@ -48,10 +48,10 @@ namespace OutGame.Tests.EditMode
             };
 
             float archerResult = ArmyStatCalculator.GetStatMultiplier(Army(), ArmyClass.Archer, AugmentStat.Attack, augments);
-            float shieldmanResult = ArmyStatCalculator.GetStatMultiplier(Army(), ArmyClass.Shieldman, AugmentStat.Attack, augments);
+            float warriorResult = ArmyStatCalculator.GetStatMultiplier(Army(), ArmyClass.Warrior, AugmentStat.Attack, augments);
 
             Assert.AreEqual(1.15f, archerResult, 1e-3f);
-            Assert.AreEqual(1.0f, shieldmanResult, 1e-3f, "다른 병과에는 아이템 증강이 적용되면 안 됨");
+            Assert.AreEqual(1.0f, warriorResult, 1e-3f, "다른 병과에는 아이템 증강이 적용되면 안 됨");
         }
 
         [Test]

@@ -18,12 +18,12 @@ namespace OutGame.Logic.Battle
         public int maxEnemyCount = 9;
         public float baseWeight = 1.0f;
         public float archerWeight = 1.0f;
-        public float shieldmanWeight = 1.0f;
+        public float warriorWeight = 1.0f;
 
         // 보스 — 고정 구성 (초안값)
         public List<ArmyClass> bossComposition = new List<ArmyClass>
         {
-            ArmyClass.Shieldman, ArmyClass.Shieldman, ArmyClass.Archer, ArmyClass.Archer, ArmyClass.None,
+            ArmyClass.Warrior, ArmyClass.Warrior, ArmyClass.Archer, ArmyClass.Archer, ArmyClass.None,
         };
 
         /// <summary>필드 단위 얕은 복사 — 호출자가 반환값을 변형해도 원본(에셋 등)에 영향이 없도록 한다.</summary>
@@ -34,7 +34,7 @@ namespace OutGame.Logic.Battle
             maxEnemyCount = maxEnemyCount,
             baseWeight = baseWeight,
             archerWeight = archerWeight,
-            shieldmanWeight = shieldmanWeight,
+            warriorWeight = warriorWeight,
             bossComposition = new List<ArmyClass>(bossComposition),
         };
 
@@ -47,9 +47,9 @@ namespace OutGame.Logic.Battle
             if (maxEnemyCount < baseEnemyCount)
                 throw new ArgumentException(
                     $"maxEnemyCount({maxEnemyCount})는 baseEnemyCount({baseEnemyCount}) 이상이어야 합니다.");
-            if (baseWeight <= 0f || archerWeight < 0f || shieldmanWeight < 0f)
+            if (baseWeight <= 0f || archerWeight < 0f || warriorWeight < 0f)
                 throw new ArgumentException(
-                    $"병과 가중치는 base > 0, archer/shieldman ≥ 0 이어야 합니다. 현재: {baseWeight}/{archerWeight}/{shieldmanWeight}");
+                    $"병과 가중치는 base > 0, archer/warrior ≥ 0 이어야 합니다. 현재: {baseWeight}/{archerWeight}/{warriorWeight}");
             if (bossComposition == null || bossComposition.Count == 0)
                 throw new ArgumentException("bossComposition은 비어 있을 수 없습니다.");
         }
@@ -60,7 +60,7 @@ namespace OutGame.Logic.Battle
             {
                 case ArmyClass.None: return baseWeight;
                 case ArmyClass.Archer: return archerWeight;
-                case ArmyClass.Shieldman: return shieldmanWeight;
+                case ArmyClass.Warrior: return warriorWeight;
                 default:
                     throw new ArgumentException($"{armyClass} 병과의 적 구성 가중치가 아직 정의되지 않았습니다.");
             }

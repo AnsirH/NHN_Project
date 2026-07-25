@@ -23,7 +23,7 @@ namespace OutGame.Logic.Battle
     {
         public string armyInstanceId;
         public string armyDefId;           // ArmyDefinition 키
-        public ArmyClass armyClass;        // None | Archer | Shieldman | ... (Cavalry는 미사용 예약, §4-25)
+        public ArmyClass armyClass;        // None | Archer | Warrior | ... (Cavalry는 미사용 예약, §4-25)
         public string equippedItemId;      // 없으면 null/empty
         public string generalSkillId;      // 병과 부여 시 장군 스킬 (§4-23, 없으면 null/empty)
         public int soldierCount;           // 증원 보정 반영된 최종 병사 수

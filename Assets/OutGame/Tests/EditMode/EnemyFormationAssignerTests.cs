@@ -20,21 +20,21 @@ namespace OutGame.Tests.EditMode
             new BattleFieldConfigData { columns = columns, rows = rows }.GenerateSlots();
 
         [Test]
-        public void Assign_ShieldmanAndArcher_PlacedInDifferentColumns()
+        public void Assign_WarriorAndArcher_PlacedInDifferentColumns()
         {
-            var composition = new List<EnemyArmy> { Enemy(ArmyClass.Archer), Enemy(ArmyClass.Shieldman) };
+            var composition = new List<EnemyArmy> { Enemy(ArmyClass.Archer), Enemy(ArmyClass.Warrior) };
             var result = EnemyFormationAssigner.Assign(composition, Grid(columns: 4, rows: 7), columns: 4);
 
-            int shieldmanColumn = result.First(r => r.enemy.armyClass == ArmyClass.Shieldman).slot.slotId % 4;
+            int warriorColumn = result.First(r => r.enemy.armyClass == ArmyClass.Warrior).slot.slotId % 4;
             int archerColumn = result.First(r => r.enemy.armyClass == ArmyClass.Archer).slot.slotId % 4;
 
-            Assert.Less(shieldmanColumn, archerColumn, "근접(방패병)은 원거리(궁수)보다 앞열(더 낮은 열 인덱스)이어야 함");
+            Assert.Less(warriorColumn, archerColumn, "근접(방패병)은 원거리(궁수)보다 앞열(더 낮은 열 인덱스)이어야 함");
         }
 
         [Test]
-        public void Assign_Shieldman_GoesToFrontmostColumn()
+        public void Assign_Warrior_GoesToFrontmostColumn()
         {
-            var composition = new List<EnemyArmy> { Enemy(ArmyClass.Shieldman) };
+            var composition = new List<EnemyArmy> { Enemy(ArmyClass.Warrior) };
             var result = EnemyFormationAssigner.Assign(composition, Grid(columns: 4, rows: 7), columns: 4);
 
             Assert.AreEqual(0, result[0].slot.slotId % 4, "방패병은 전방 구역의 첫 열(0)부터 채워야 함");
@@ -72,10 +72,10 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
-        public void Assign_ManyShieldmenExceedingOneColumn_OverflowsToNextFrontColumn()
+        public void Assign_ManyWarriorsExceedingOneColumn_OverflowsToNextFrontColumn()
         {
             // 열당 3칸(rows=3)인데 방패병 4명 — 앞열이 가득 차면 두 번째로 앞쪽인 열로 넘어가야 한다.
-            var composition = Enumerable.Repeat(ArmyClass.Shieldman, 4).Select(Enemy).ToList();
+            var composition = Enumerable.Repeat(ArmyClass.Warrior, 4).Select(Enemy).ToList();
             var result = EnemyFormationAssigner.Assign(composition, Grid(columns: 4, rows: 3), columns: 4);
 
             var columnsUsed = result.Select(r => r.slot.slotId % 4).OrderBy(c => c).ToList();
@@ -83,19 +83,19 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
-        public void Assign_ShieldmanExceedingOwnZoneCapacity_ThrowsInsteadOfCrossingIntoArcherZone()
+        public void Assign_WarriorExceedingOwnZoneCapacity_ThrowsInsteadOfCrossingIntoArcherZone()
         {
             // 방패병 구역(0,1열)은 열당 1칸(rows=1)이라 총 용량 2 — 3번째 방패병은 궁수 구역(2,3열)에
             // 빈 자리가 있어도 절대 넘어가면 안 되고 예외가 나야 한다(2026-07-26 사용자 확정: 자기
             // 구역 밖으로는 절대 안 넘어감).
-            var composition = Enumerable.Repeat(ArmyClass.Shieldman, 3).Select(Enemy).ToList();
+            var composition = Enumerable.Repeat(ArmyClass.Warrior, 3).Select(Enemy).ToList();
 
             Assert.Throws<ArgumentException>(() =>
                 EnemyFormationAssigner.Assign(composition, Grid(columns: 4, rows: 1), columns: 4));
         }
 
         [Test]
-        public void Assign_NoneListedBeforeShieldman_DoesNotStarveShieldmanZone()
+        public void Assign_NoneListedBeforeWarrior_DoesNotStarveWarriorZone()
         {
             // 코드 리뷰 HIGH 지적 회귀 테스트: None은 구역 제한이 없어 방패병과 똑같이 0열부터
             // 노리는데, 정렬이 병과 우선순위 없이 열 번호로만 매겨지면(둘 다 zone[0]=0) 생성 순서상
@@ -103,22 +103,22 @@ namespace OutGame.Tests.EditMode
             // 자리를 못 찾고 예외가 난다 — 총 용량(4칸)은 충분한데도 순서 때문에 실패하면 안 된다.
             var composition = new List<EnemyArmy>
             {
-                Enemy(ArmyClass.None), Enemy(ArmyClass.None), Enemy(ArmyClass.Shieldman), Enemy(ArmyClass.Shieldman),
+                Enemy(ArmyClass.None), Enemy(ArmyClass.None), Enemy(ArmyClass.Warrior), Enemy(ArmyClass.Warrior),
             };
 
             var result = EnemyFormationAssigner.Assign(composition, Grid(columns: 4, rows: 1), columns: 4);
 
             Assert.AreEqual(4, result.Count);
-            var shieldmanColumns = result.Where(r => r.enemy.armyClass == ArmyClass.Shieldman)
+            var warriorColumns = result.Where(r => r.enemy.armyClass == ArmyClass.Warrior)
                 .Select(r => r.slot.slotId % 4).OrderBy(c => c).ToList();
-            CollectionAssert.AreEqual(new[] { 0, 1 }, shieldmanColumns, "방패병은 생성 순서와 무관하게 자기 구역(0,1열)을 확보해야 함");
+            CollectionAssert.AreEqual(new[] { 0, 1 }, warriorColumns, "방패병은 생성 순서와 무관하게 자기 구역(0,1열)을 확보해야 함");
         }
 
         [Test]
         public void Assign_AllSlotsDistinct_NoTwoEnemiesShareASlot()
         {
             var composition = Enumerable.Range(0, 9)
-                .Select(i => Enemy(i % 2 == 0 ? ArmyClass.Archer : ArmyClass.Shieldman))
+                .Select(i => Enemy(i % 2 == 0 ? ArmyClass.Archer : ArmyClass.Warrior))
                 .ToList();
             var result = EnemyFormationAssigner.Assign(composition, Grid(columns: 4, rows: 7), columns: 4);
 
@@ -152,7 +152,7 @@ namespace OutGame.Tests.EditMode
         [Test]
         public void Assign_SingleColumnGrid_PlacesAllRegardlessOfClass()
         {
-            var composition = new List<EnemyArmy> { Enemy(ArmyClass.Shieldman), Enemy(ArmyClass.Archer) };
+            var composition = new List<EnemyArmy> { Enemy(ArmyClass.Warrior), Enemy(ArmyClass.Archer) };
             var result = EnemyFormationAssigner.Assign(composition, Grid(columns: 1, rows: 7), columns: 1);
 
             Assert.AreEqual(2, result.Count);

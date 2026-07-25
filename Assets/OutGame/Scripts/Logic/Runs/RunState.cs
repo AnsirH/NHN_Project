@@ -21,6 +21,10 @@ namespace OutGame.Logic.Runs
         // 선택한 증강 id 누적(중복 선택/스택 허용, §4-27) — 효과는 조회 시점에 계산(ArmyStatCalculator).
         public List<string> selectedAugmentIds = new List<string>();
 
+        // 난이도 커브 기준점(2026-07-26, §4-28 재설계) — 증원/증강/이벤트 방 통과 횟수. 전투방 승리
+        // 드롭은 확률적이라 여기 포함하지 않는다(EnemyCompositionGenerator가 이 값으로 티어를 고름).
+        public int powerRoomsVisited;
+
         // 배치 슬롯 진형 — 방을 넘어가도 유지되어야 하므로 패널 로컬이 아니라 여기 저장 (§5.7 2026-07-19 개정).
         public List<ArmySlotAssignment> deployment = new List<ArmySlotAssignment>();
 

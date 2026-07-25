@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.BattlePowerConfigAsset
   baseWeight: 1
   archerWeight: 1.2
-  shieldmanWeight: 1.5
+  warriorWeight: 1.5
+  hunterWeight: 1.6
+  assassinWeight: 1.4

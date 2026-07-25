@@ -33,7 +33,7 @@ namespace OutGame.Tests.PlayMode
         private static readonly List<EnemyArmy> TestEnemyComposition = new List<EnemyArmy>
         {
             new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.Archer, soldierCount = 30 },
-            new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.Shieldman, soldierCount = 30 },
+            new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.Warrior, soldierCount = 30 },
             new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.None, soldierCount = 30 },
         };
 
@@ -168,13 +168,13 @@ namespace OutGame.Tests.PlayMode
             Assert.AreEqual(TestEnemyComposition.Count, enemyCards.Length, "생성된 적 구성 개수만큼만 카드가 있어야 함");
 
             var names = enemyCards.Select(card => card.transform.Find("NameLabel").GetComponent<Text>().text).ToList();
-            CollectionAssert.AreEquivalent(new[] { "궁수", "방패병", "기본" }, names);
+            CollectionAssert.AreEquivalent(new[] { "궁수", "전사", "기본" }, names);
         }
 
         [UnityTest]
-        public IEnumerator Open_ShieldmanPlacedInFrontOfArcher()
+        public IEnumerator Open_WarriorPlacedInFrontOfArcher()
         {
-            // 2026-07-19 사용자 요청: 근접(방패병)은 앞열, 원거리(궁수)는 뒷열.
+            // 2026-07-19 사용자 요청: 근접(전사)은 앞열, 원거리(궁수)는 뒷열.
             OpenPanel();
             yield return null;
 
@@ -190,11 +190,11 @@ namespace OutGame.Tests.PlayMode
             }
 
             var enemyCards = enemySlotGrid.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
-            ArmyCardView shieldman = enemyCards.First(c => c.transform.Find("NameLabel").GetComponent<Text>().text == "방패병");
+            ArmyCardView warrior = enemyCards.First(c => c.transform.Find("NameLabel").GetComponent<Text>().text == "전사");
             ArmyCardView archer = enemyCards.First(c => c.transform.Find("NameLabel").GetComponent<Text>().text == "궁수");
 
-            Assert.Less(ColumnOf(shieldman), ColumnOf(archer),
-                "방패병 카드의 열 인덱스가 궁수보다 낮아야(더 앞열이어야) 함");
+            Assert.Less(ColumnOf(warrior), ColumnOf(archer),
+                "전사 카드의 열 인덱스가 궁수보다 낮아야(더 앞열이어야) 함");
         }
 
         [UnityTest]

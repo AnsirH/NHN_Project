@@ -12,14 +12,28 @@ namespace OutGame.Tests.EditMode
         private static readonly Dictionary<ArmyClass, string> ItemIdByClass = new Dictionary<ArmyClass, string>
         {
             [ArmyClass.Archer] = "item_bow",
-            [ArmyClass.Shieldman] = "item_shield",
+            [ArmyClass.Warrior] = "item_shield",
+            [ArmyClass.Hunter] = "item_axe",
+            [ArmyClass.Assassin] = "item_dagger",
         };
+
+        [Test]
+        public void RollDrops_HunterAndAssassin_GuaranteedChance_DropsForBoth()
+        {
+            // 2026-07-26 4병과 확장(§4-28)
+            var config = new ItemDropConfig { hunterDropChance = 1f, assassinDropChance = 1f };
+            var composition = new List<ArmyClass> { ArmyClass.Hunter, ArmyClass.Assassin };
+
+            List<string> drops = ItemDropCalculator.RollDrops(composition, config, ItemIdByClass, new Random(1));
+
+            CollectionAssert.AreEquivalent(new[] { "item_axe", "item_dagger" }, drops);
+        }
 
         [Test]
         public void RollDrops_GuaranteedChance_DropsForEveryClassedEnemy()
         {
-            var config = new ItemDropConfig { archerDropChance = 1f, shieldmanDropChance = 1f };
-            var composition = new List<ArmyClass> { ArmyClass.Archer, ArmyClass.Archer, ArmyClass.Shieldman };
+            var config = new ItemDropConfig { archerDropChance = 1f, warriorDropChance = 1f };
+            var composition = new List<ArmyClass> { ArmyClass.Archer, ArmyClass.Archer, ArmyClass.Warrior };
 
             List<string> drops = ItemDropCalculator.RollDrops(composition, config, ItemIdByClass, new Random(1));
 
@@ -31,8 +45,8 @@ namespace OutGame.Tests.EditMode
         [Test]
         public void RollDrops_ZeroChance_NeverDrops()
         {
-            var config = new ItemDropConfig { archerDropChance = 0f, shieldmanDropChance = 0f };
-            var composition = new List<ArmyClass> { ArmyClass.Archer, ArmyClass.Shieldman };
+            var config = new ItemDropConfig { archerDropChance = 0f, warriorDropChance = 0f };
+            var composition = new List<ArmyClass> { ArmyClass.Archer, ArmyClass.Warrior };
 
             List<string> drops = ItemDropCalculator.RollDrops(composition, config, ItemIdByClass, new Random(1));
 
@@ -42,7 +56,7 @@ namespace OutGame.Tests.EditMode
         [Test]
         public void RollDrops_ClasslessEnemies_NeverRolled()
         {
-            var config = new ItemDropConfig { archerDropChance = 1f, shieldmanDropChance = 1f };
+            var config = new ItemDropConfig { archerDropChance = 1f, warriorDropChance = 1f };
             var composition = new List<ArmyClass> { ArmyClass.None, ArmyClass.None };
 
             List<string> drops = ItemDropCalculator.RollDrops(composition, config, ItemIdByClass, new Random(1));
@@ -53,7 +67,7 @@ namespace OutGame.Tests.EditMode
         [Test]
         public void RollDrops_ClassWithoutMappedItem_IsSkipped()
         {
-            var config = new ItemDropConfig { archerDropChance = 1f, shieldmanDropChance = 1f };
+            var config = new ItemDropConfig { archerDropChance = 1f, warriorDropChance = 1f };
             var composition = new List<ArmyClass> { ArmyClass.Archer };
 
             List<string> drops = ItemDropCalculator.RollDrops(

@@ -112,7 +112,7 @@ namespace OutGame.Tests.PlayMode
                 var enemyComposition = new System.Collections.Generic.List<OutGame.Logic.Battle.EnemyArmy>
                 {
                     new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.Archer, soldierCount = 30 },
-                    new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.Shieldman, soldierCount = 30 },
+                    new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.Warrior, soldierCount = 30 },
                     new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.None, soldierCount = 30 },
                 };
                 panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default", new[] { armyDef }, new[] { bowDef },

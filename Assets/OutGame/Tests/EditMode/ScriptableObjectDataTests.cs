@@ -84,7 +84,9 @@ namespace OutGame.Tests.EditMode
                 var data = so.ToData();
                 Assert.AreEqual(1.0f, data.WeightOf(ArmyClass.None));
                 Assert.AreEqual(1.2f, data.WeightOf(ArmyClass.Archer));
-                Assert.AreEqual(1.5f, data.WeightOf(ArmyClass.Shieldman));
+                Assert.AreEqual(1.5f, data.WeightOf(ArmyClass.Warrior));
+                Assert.AreEqual(1.6f, data.WeightOf(ArmyClass.Hunter));
+                Assert.AreEqual(1.4f, data.WeightOf(ArmyClass.Assassin));
             }
             finally
             {
@@ -215,7 +217,7 @@ namespace OutGame.Tests.EditMode
             {
                 ItemDropConfig data = so.ToConfig();
                 Assert.AreEqual(0.25f, data.archerDropChance);
-                Assert.AreEqual(0.25f, data.shieldmanDropChance);
+                Assert.AreEqual(0.25f, data.warriorDropChance);
             }
             finally
             {

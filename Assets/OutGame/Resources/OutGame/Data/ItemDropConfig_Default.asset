@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.ItemDropConfigAsset
   config:
     archerDropChance: 0.25
-    shieldmanDropChance: 0.25
+    warriorDropChance: 0.25
+    hunterDropChance: 0.25
+    assassinDropChance: 0.25

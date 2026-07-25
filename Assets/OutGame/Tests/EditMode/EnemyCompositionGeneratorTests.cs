@@ -78,7 +78,7 @@ namespace OutGame.Tests.EditMode
             var config = new EnemyCompositionConfig
             {
                 baseEnemyCount = 5, perFloorEnemyIncrement = 0, maxEnemyCount = 5,
-                baseWeight = 1f, archerWeight = 0f, shieldmanWeight = 0f,
+                baseWeight = 1f, archerWeight = 0f, warriorWeight = 0f,
             };
             var result = EnemyCompositionGenerator.Generate(0, RoomType.NormalBattle, config, Template(), new Random(1));
 

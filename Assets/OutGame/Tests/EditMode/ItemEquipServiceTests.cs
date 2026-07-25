@@ -18,7 +18,7 @@ namespace OutGame.Tests.EditMode
         private static readonly Dictionary<string, ItemData> Items = new Dictionary<string, ItemData>
         {
             ["item_bow"] = new ItemData { id = "item_bow", displayName = "활", armyClass = ArmyClass.Archer, generalSkillId = "skill_volley" },
-            ["item_shield"] = new ItemData { id = "item_shield", displayName = "방패", armyClass = ArmyClass.Shieldman, generalSkillId = "skill_taunt" },
+            ["item_shield"] = new ItemData { id = "item_shield", displayName = "방패", armyClass = ArmyClass.Warrior, generalSkillId = "skill_taunt" },
         };
 
         [SetUp]
@@ -101,7 +101,9 @@ namespace OutGame.Tests.EditMode
         {
             Assert.AreEqual("", ItemEquipService.ClassDisplayName(ArmyClass.None));
             Assert.AreEqual("궁수", ItemEquipService.ClassDisplayName(ArmyClass.Archer));
-            Assert.AreEqual("방패병", ItemEquipService.ClassDisplayName(ArmyClass.Shieldman));
+            Assert.AreEqual("전사", ItemEquipService.ClassDisplayName(ArmyClass.Warrior));
+            Assert.AreEqual("사냥꾼", ItemEquipService.ClassDisplayName(ArmyClass.Hunter));
+            Assert.AreEqual("암살자", ItemEquipService.ClassDisplayName(ArmyClass.Assassin));
         }
 
         [Test]
@@ -110,7 +112,7 @@ namespace OutGame.Tests.EditMode
             var result = ItemEquipService.ResolveItemIdByClass(Items.Values);
 
             Assert.AreEqual("item_bow", result[ArmyClass.Archer]);
-            Assert.AreEqual("item_shield", result[ArmyClass.Shieldman]);
+            Assert.AreEqual("item_shield", result[ArmyClass.Warrior]);
             Assert.IsFalse(result.ContainsKey(ArmyClass.None), "병과 없는 아이템은 매핑에서 제외");
         }
 

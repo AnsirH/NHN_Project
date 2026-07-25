@@ -114,7 +114,7 @@ namespace OutGame.Tests.PlayMode
             RunState run = GetField<RunState>(flow, "run");
             var itemDropConfig = GetField<ItemDropConfig>(flow, "itemDropConfig");
             itemDropConfig.archerDropChance = 1f;
-            itemDropConfig.shieldmanDropChance = 1f;
+            itemDropConfig.warriorDropChance = 1f;
 
             int ownedItemsBefore = run.ownedItemIds.Count;
 
@@ -133,7 +133,7 @@ namespace OutGame.Tests.PlayMode
             victoryButton.onClick.Invoke();
             yield return null;
 
-            // 기본 보스 구성(EnemyCompositionConfig.bossComposition)에 궁수/방패병이 포함돼 있고
+            // 기본 보스 구성(EnemyCompositionConfig.bossComposition)에 궁수/전사가 포함돼 있고
             // 드롭 확률을 100%로 강제했으므로 최소 1개 이상은 반드시 늘어나야 한다.
             Assert.Greater(run.ownedItemIds.Count, ownedItemsBefore,
                 "보스 승리 후 병과 기반 아이템 드롭으로 보유 아이템이 늘어나야 함 (§4-28)");

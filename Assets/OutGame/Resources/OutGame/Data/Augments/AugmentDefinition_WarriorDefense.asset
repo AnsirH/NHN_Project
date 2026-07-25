@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 21bdd9ec8a4a74b4e893f86d809c6b5a, type: 3}
-  m_Name: AugmentDefinition_ShieldmanHealth
+  m_Name: AugmentDefinition_WarriorDefense
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.AugmentDefinition
-  augmentId: aug_shieldman_health
-  displayName: "\uBC29\uD328\uBCD1 \uCCB4\uB825 \uC99D\uAC00"
-  description: "\uBC29\uD328\uBCD1 \uAD70\uB300 \uC720\uB2DB\uC758 \uCCB4\uB825\uC774
+  augmentId: aug_warrior_defense
+  displayName: "\uC804\uC0AC \uBC29\uC5B4\uB825 \uC99D\uAC00"
+  description: "\uC804\uC0AC \uAD70\uB300 \uC720\uB2DB\uC758 \uBC29\uC5B4\uB825\uC774
     15% \uC99D\uAC00\uD569\uB2C8\uB2E4."
   icon: {fileID: 0}
   category: 0
   targetArmyClass: 11
   effectType: 0
-  targetStat: 0
+  targetStat: 2
   statBoostPercent: 0.15

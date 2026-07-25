@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bd8994cdbedbf004db2dc2fb61829e63, type: 3}
-  m_Name: ItemDefinition_Shield
+  m_Name: ItemDefinition_Axe
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.ItemDefinition
-  itemId: item_shield
-  displayName: "\uBC29\uD328"
+  itemId: item_axe
+  displayName: "\uB3C4\uB07C"
   icon: {fileID: 0}
-  description: "\uBD80\uC5EC \uC2DC \uC804\uC0AC \uAD70\uB300\uAC00 \uB418\uC5B4
-    \uC7A5\uAD70\uC774 \uB3C4\uBC1C\uC744 \uC0AC\uC6A9\uD569\uB2C8\uB2E4."
-  armyClass: 11
-  generalSkillId: skill_taunt
+  description: "\uBD80\uC5EC \uC2DC \uC0AC\uB0E5\uAFBC \uAD70\uB300\uAC00 \uB418\uC5B4
+    \uC7A5\uAD70\uC774 \uAC15\uD0C0\uB97C \uC0AC\uC6A9\uD569\uB2C8\uB2E4."
+  armyClass: 12
+  generalSkillId: skill_smash
   category: 
   prerequisiteItem: {fileID: 0}

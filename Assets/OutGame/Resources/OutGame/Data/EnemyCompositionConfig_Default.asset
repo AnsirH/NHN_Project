@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: EnemyCompositionConfig_Default
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.EnemyCompositionConfigAsset
   config:
-    baseEnemyCount: 2
+    baseEnemyCount: 3
     perFloorEnemyIncrement: 1
     maxEnemyCount: 9
     baseWeight: 1
     archerWeight: 1
-    shieldmanWeight: 1
+    warriorWeight: 1
     bossComposition: 0b0000000b000000010000000100000000000000

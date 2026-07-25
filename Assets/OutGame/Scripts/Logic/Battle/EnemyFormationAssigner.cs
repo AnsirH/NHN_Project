@@ -64,7 +64,7 @@ namespace OutGame.Logic.Battle
 
         /// <summary>근접/원거리만 전용 구역(서로 못 넘어옴)을 가진다 — 그 외 병과는 구역 제한이 없다.</summary>
         private static bool HasDedicatedZone(ArmyClass armyClass) =>
-            armyClass == ArmyClass.Shieldman || armyClass == ArmyClass.Archer;
+            armyClass == ArmyClass.Warrior || armyClass == ArmyClass.Archer;
 
         /// <summary>
         /// 병과별 배치 가능 열 목록(우선순위 순, 0-indexed) — 근접은 전방 절반, 원거리는 후방 절반,
@@ -77,7 +77,7 @@ namespace OutGame.Logic.Battle
             int frontHalfSize = columns / 2;
             switch (armyClass)
             {
-                case ArmyClass.Shieldman:
+                case ArmyClass.Warrior:
                     return Enumerable.Range(0, frontHalfSize).ToList();
                 case ArmyClass.Archer:
                     return Enumerable.Range(frontHalfSize, columns - frontHalfSize).ToList();
