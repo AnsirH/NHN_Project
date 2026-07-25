@@ -25,3 +25,5 @@ MonoBehaviour:
   maxBattleSeconds: 180
   deploymentDepth: 10
   deploymentHalfWidth: 14
+  defenseK: 50
+  critMultiplier: 1.8

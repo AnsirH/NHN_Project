@@ -45,6 +45,11 @@ namespace NHN.Simulation.Battle
         /// <summary>
         /// 엘리트 파생 공식의 단일 출처 — 장군 전투 능력 = 기반 롤 × 배율 (기획 §5 롤별 장군 스탯 차등).
         /// GeneralData.ToDefinition(Unity)과 BalanceLab CLI가 함께 이 팩토리에 위임한다 (공식 중복 금지).
+        ///
+        /// 주의(아웃게임 연동 계약): 연결 경로에서는 장군 스탯도 아웃게임이 계산해 전달하므로
+        /// hp/damage 배율은 사용되지 않는다 — 이 배율들은 테스트 씬·BalanceLab 로컬 경로 전용이다.
+        /// size 배율은 유닛 반경(인게임 소유 속성)이라 연결 경로에서도 계속 쓰인다.
+        /// 방어력·치명타는 기반 롤 값을 그대로 승계한다 (엘리트 배율 없음).
         /// </summary>
         public static GeneralDefinition CreateElite(
             RoleDefinition baseRole, string generalName,
@@ -57,6 +62,8 @@ namespace NHN.Simulation.Battle
                 generalName,
                 baseRole.MaxHp * hpMultiplier,
                 baseRole.AttackDamage * damageMultiplier,
+                baseRole.Defense,
+                baseRole.CritChancePercent,
                 baseRole.AttackInterval,
                 baseRole.AttackRange,
                 baseRole.MoveSpeed,

@@ -19,12 +19,20 @@ namespace NHN.Simulation.Battle
         public readonly float DeploymentDepth;
         /// <summary>정규화 슬롯 slotY 0~1이 펼쳐지는 측면 절반 폭 (중앙 기준 ±).</summary>
         public readonly float DeploymentHalfWidth;
+        /// <summary>
+        /// 방어력 감쇠 계수 K — 피해 × K/(K+방어력). 방어력 = K일 때 피해 50% 감소.
+        /// 밸런싱 손잡이이므로 데이터(BattleConfig 에셋)에 둔다.
+        /// </summary>
+        public readonly float DefenseK;
+        /// <summary>치명타 발생 시 피해 배율 (기획 합의: 1.8배). 전역 상수 — 병과별 차등 없음.</summary>
+        public readonly float CritMultiplier;
 
         public BattleConfig(
             int ticksPerSecond, float arenaHalfWidth, float arenaHalfHeight,
             float retargetInterval, float projectileImpactRadius, float maxBattleSeconds,
             int maxUnits, int maxProjectiles, int maxSkillZones, float frontLineOffsetX,
-            float deploymentDepth, float deploymentHalfWidth)
+            float deploymentDepth, float deploymentHalfWidth,
+            float defenseK, float critMultiplier)
         {
             TicksPerSecond = ticksPerSecond;
             ArenaHalfWidth = arenaHalfWidth;
@@ -38,6 +46,18 @@ namespace NHN.Simulation.Battle
             FrontLineOffsetX = frontLineOffsetX;
             DeploymentDepth = deploymentDepth;
             DeploymentHalfWidth = deploymentHalfWidth;
+            DefenseK = defenseK;
+            CritMultiplier = critMultiplier;
+        }
+
+        /// <summary>방어력 감쇠 배율 K/(K+방어력) — 방어력 0이면 1(무감쇠)이라 기존 밸런스가 보존된다.</summary>
+        public float DefenseDamping(float defense)
+        {
+            if (defense <= 0f || DefenseK <= 0f)
+            {
+                return 1f;
+            }
+            return DefenseK / (DefenseK + defense);
         }
 
         public float TickDeltaTime => 1f / TicksPerSecond;

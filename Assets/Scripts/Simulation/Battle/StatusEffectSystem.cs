@@ -66,11 +66,12 @@ namespace NHN.Simulation.Battle
         }
 
         /// <summary>
-        /// 지속시간 감쇠 + 도트 데미지를 pendingDamage에, 지속 회복을 pendingHeal에 누적.
+        /// 지속시간 감쇠 + 도트 데미지를 pendingDotDamage에, 지속 회복을 pendingHeal에 누적.
+        /// 도트는 방어력 감쇠를 받지 않으므로(기획 합의) 일반 피해와 별도 누적기에 쌓인다.
         /// 사망 유닛은 건너뛴다. 배율형(Mark/AttackUp/DamageResist)은 여기서 아무것도 하지 않는다 —
         /// 세기는 데미지 계산 시점에 GetMagnitude로 조회된다.
         /// </summary>
-        public void Tick(float dt, int unitCount, bool[] alives, float[] pendingDamage, float[] pendingHeal)
+        public void Tick(float dt, int unitCount, bool[] alives, float[] pendingDotDamage, float[] pendingHeal)
         {
             for (int i = 0; i < unitCount; i++)
             {
@@ -88,7 +89,7 @@ namespace NHN.Simulation.Battle
                     }
                     if (IsDotType((StatusEffectType)t))
                     {
-                        pendingDamage[i] += _magnitudes[slot] * dt;
+                        pendingDotDamage[i] += _magnitudes[slot] * dt;
                     }
                     else if ((StatusEffectType)t == StatusEffectType.HealOverTime)
                     {

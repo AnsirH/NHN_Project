@@ -11,6 +11,10 @@ namespace NHN.Simulation.Battle
         public readonly string RoleName;
         public readonly float MaxHp;
         public readonly float AttackDamage;
+        /// <summary>방어력 — 피해 감쇠 계수 K/(K+방어력)로 적용된다 (K = BattleConfig.DefenseK). 0 = 감쇠 없음.</summary>
+        public readonly float Defense;
+        /// <summary>치명타 확률 (0~100 퍼센트 — 아웃게임 표기 단위와 동일). 0이면 추첨하지 않는다.</summary>
+        public readonly float CritChancePercent;
         public readonly float AttackInterval;
         /// <summary>유닛 가장자리 기준 사거리 (중심 거리 - 양쪽 반경).</summary>
         public readonly float AttackRange;
@@ -32,7 +36,8 @@ namespace NHN.Simulation.Battle
 
         public RoleDefinition(
             string roleName,
-            float maxHp, float attackDamage, float attackInterval, float attackRange,
+            float maxHp, float attackDamage, float defense, float critChancePercent,
+            float attackInterval, float attackRange,
             float moveSpeed, float unitRadius,
             float projectileSpeed, float projectileArcHeight,
             PositionFilter positionFilter, TargetPriority[] priorities, MovePattern movePattern,
@@ -41,6 +46,8 @@ namespace NHN.Simulation.Battle
             RoleName = roleName;
             MaxHp = maxHp;
             AttackDamage = attackDamage;
+            Defense = defense;
+            CritChancePercent = critChancePercent;
             AttackInterval = attackInterval;
             AttackRange = attackRange;
             MoveSpeed = moveSpeed;

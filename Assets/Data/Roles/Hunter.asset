@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: NHN.Data::NHN.Data.RoleData
   maxHp: 75
   attackDamage: 13
+  defense: 0
+  critChancePercent: 0
   attackInterval: 1.1
   attackRange: 6
   moveSpeed: 3.2

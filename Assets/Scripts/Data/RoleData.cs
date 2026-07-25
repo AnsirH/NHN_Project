@@ -15,6 +15,10 @@ namespace NHN.Data
         [Header("스탯")]
         [SerializeField] private float maxHp = 100f;
         [SerializeField] private float attackDamage = 10f;
+        [Tooltip("피해 감쇠 K/(K+방어력) — K는 BattleConfig.defenseK. 0 = 감쇠 없음")]
+        [SerializeField] private float defense;
+        [Tooltip("치명타 확률 (0~100 퍼센트 — 아웃게임 표기 단위). 0이면 추첨하지 않는다")]
+        [SerializeField] private float critChancePercent;
         [SerializeField] private float attackInterval = 1f;
         [Tooltip("유닛 가장자리 기준 사거리")]
         [SerializeField] private float attackRange = 1.2f;
@@ -48,7 +52,8 @@ namespace NHN.Data
         {
             return new RoleDefinition(
                 name,
-                maxHp, attackDamage, attackInterval, attackRange,
+                maxHp, attackDamage, defense, critChancePercent,
+                attackInterval, attackRange,
                 moveSpeed, unitRadius,
                 projectileSpeed, projectileArcHeight,
                 positionFilter, priorities.ToArray(), movePattern, moveParamA, moveParamB);

@@ -26,6 +26,12 @@ namespace NHN.Data
         [Tooltip("이 시간까지 승부가 나지 않으면 무승부")]
         [SerializeField] private float maxBattleSeconds = 180f;
 
+        [Header("피해 공식")]
+        [Tooltip("방어력 감쇠 계수 K — 피해 × K/(K+방어력). 방어력=K일 때 피해 50% 감소")]
+        [SerializeField] private float defenseK = 50f;
+        [Tooltip("치명타 피해 배율 (기획 합의: 1.8배)")]
+        [SerializeField] private float critMultiplier = 1.8f;
+
         [Header("배치 슬롯 변환 (정규화 0~1 → anchor, DeploymentGrid)")]
         [Tooltip("slotX 0(후방)~1(전선)이 펼쳐지는 깊이 범위")]
         [SerializeField] private float deploymentDepth = 10f;
@@ -44,7 +50,8 @@ namespace NHN.Data
                 ticksPerSecond, arenaHalfWidth, arenaHalfHeight,
                 retargetInterval, projectileImpactRadius, maxBattleSeconds,
                 maxUnits, maxProjectiles, maxSkillZones, frontLineOffsetX,
-                deploymentDepth, deploymentHalfWidth);
+                deploymentDepth, deploymentHalfWidth,
+                defenseK, critMultiplier);
         }
     }
 }

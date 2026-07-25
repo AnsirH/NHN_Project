@@ -49,6 +49,8 @@ namespace NHN.Simulation.Tests
                 baseRole.RoleName + "General",
                 baseRole.MaxHp * hpMultiplier,
                 baseRole.AttackDamage * EliteDamageMultiplier,
+                baseRole.Defense,
+                baseRole.CritChancePercent,
                 baseRole.AttackInterval,
                 baseRole.AttackRange,
                 baseRole.MoveSpeed,

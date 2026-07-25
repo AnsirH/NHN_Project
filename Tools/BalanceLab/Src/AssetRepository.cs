@@ -93,7 +93,9 @@ namespace BalanceLab
                 c.GetInt("maxSkillZones"),
                 c.GetFloat("frontLineOffsetX"),
                 c.GetFloat("deploymentDepth"),
-                c.GetFloat("deploymentHalfWidth"));
+                c.GetFloat("deploymentHalfWidth"),
+                c.GetFloat("defenseK"),
+                c.GetFloat("critMultiplier"));
         }
 
         public RoleDefinition GetRole(string roleId)
@@ -164,6 +166,8 @@ namespace BalanceLab
                 a.Name,
                 a.GetFloat("maxHp"),
                 a.GetFloat("attackDamage"),
+                a.GetFloat("defense"),
+                a.GetFloat("critChancePercent"),
                 a.GetFloat("attackInterval"),
                 a.GetFloat("attackRange"),
                 a.GetFloat("moveSpeed"),

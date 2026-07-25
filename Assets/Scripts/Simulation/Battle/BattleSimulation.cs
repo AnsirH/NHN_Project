@@ -76,7 +76,10 @@ namespace NHN.Simulation.Battle
         private readonly Vector2[] _prevPositions;
         private readonly float[] _hps;
         private readonly float[] _maxHps;
+        /// <summary>틱 내 누적 피해 — 방어력 감쇠 적용 대상 (일반 공격·투사체·장군 액티브·플레이어 스킬 즉발).</summary>
         private readonly float[] _pendingDamage;
+        /// <summary>틱 내 누적 도트 피해 — 방어력 감쇠 미적용 (기획 합의: 상태이상 셋업의 가치 보존).</summary>
+        private readonly float[] _pendingDotDamage;
         /// <summary>틱 내 누적 회복량 — HealOverTime(힐 장판)이 채우고 데미지 적용 단계에서 함께 정산.</summary>
         private readonly float[] _pendingHeal;
         private readonly int[] _roleIndices;
@@ -167,6 +170,7 @@ namespace NHN.Simulation.Battle
             _hps = new float[totalUnits];
             _maxHps = new float[totalUnits];
             _pendingDamage = new float[totalUnits];
+            _pendingDotDamage = new float[totalUnits];
             _pendingHeal = new float[totalUnits];
             _roleIndices = new int[totalUnits];
             _teams = new byte[totalUnits];
@@ -542,25 +546,35 @@ namespace NHN.Simulation.Battle
                 }
             }
 
-            // 3.5) 상태이상 틱: 지속시간 감쇠 + 도트/회복 누적 — 정산(4번)보다 먼저
-            _statusEffects.Tick(dt, _unitCount, _alives, _pendingDamage, _pendingHeal);
+            // 3.5) 상태이상 틱: 지속시간 감쇠 + 도트/회복 누적 — 정산(4번)보다 먼저.
+            //      도트는 방어력 감쇠를 받지 않으므로 별도 누적기에 쌓인다.
+            _statusEffects.Tick(dt, _unitCount, _alives, _pendingDotDamage, _pendingHeal);
 
             // 4) 누적 데미지·회복 정산 + 사망 처리 (동시 공격의 순서 이점 제거).
             //    받는 피해 배율(표식 증가/방진 감소/패시브 감소)은 여기서 일괄 적용된다.
             for (int i = 0; i < _unitCount; i++)
             {
                 float damage = _pendingDamage[i];
+                float dotDamage = _pendingDotDamage[i];
                 float heal = _pendingHeal[i];
-                if (damage <= 0f && heal <= 0f)
+                if (damage <= 0f && dotDamage <= 0f && heal <= 0f)
                 {
                     continue;
                 }
                 _pendingDamage[i] = 0f;
+                _pendingDotDamage[i] = 0f;
                 _pendingHeal[i] = 0f;
                 if (!_alives[i])
                 {
                     continue;
                 }
+
+                // 피해 계산 순서: [일반 피해 × 방어력 감쇠] + [도트(감쇠 없음)] → 표식/방진/패시브 배율.
+                if (damage > 0f)
+                {
+                    damage *= _config.DefenseDamping(_roles[_roleIndices[i]].Defense);
+                }
+                damage += dotDamage;
                 if (damage > 0f)
                 {
                     float markMultiplier = _statusEffects.GetMagnitude(i, StatusEffectType.Mark);
@@ -641,8 +655,7 @@ namespace NHN.Simulation.Battle
                 _stealthRemaining[attacker] = 0f; // 첫 공격으로 은신 해제
             }
 
-            float damage = role.AttackDamage * _critPending[attacker] * OutgoingDamageMultiplier(attacker);
-            _critPending[attacker] = 1f;
+            float damage = role.AttackDamage * RollCritMultiplier(attacker, role) * OutgoingDamageMultiplier(attacker);
 
             int attackerSquad = _squadIndices[attacker];
             AddCharge(attackerSquad, ChargeCondition.SquadAttacks, 1f);
@@ -672,6 +685,27 @@ namespace NHN.Simulation.Battle
             _projTeam[p] = _teams[attacker];
             _projArcHeight[p] = role.ProjectileArcHeight;
             _projSourceSquad[p] = attackerSquad;
+        }
+
+        /// <summary>
+        /// 이번 공격의 치명타 배율. 무장된 확정 치명타(그림자 습격)가 있으면 그것을 소비하고 확률 추첨은 건너뛴다 —
+        /// 확정 치명타의 정체성을 지키고 이중 적용을 막는다.
+        /// 확률 추첨은 CritChancePercent가 0보다 클 때만 시드 RNG를 뽑는다:
+        /// 확률 0인 데이터는 난수 소비 자체가 없어 기존 전투 결과가 그대로 재현된다.
+        /// </summary>
+        private float RollCritMultiplier(int attacker, RoleDefinition role)
+        {
+            float armed = _critPending[attacker];
+            if (armed > 1f)
+            {
+                _critPending[attacker] = 1f;
+                return armed;
+            }
+            if (role.CritChancePercent > 0f && _random.NextDouble() * 100.0 < role.CritChancePercent)
+            {
+                return _config.CritMultiplier;
+            }
+            return 1f;
         }
 
         /// <summary>공격력 배율: 장군 패시브(AttackPercent, 생존 중) × 상태 버프(AttackUp — 전투 함성).</summary>
@@ -1173,6 +1207,7 @@ namespace NHN.Simulation.Battle
             _hps[i] = role.MaxHp;
             _maxHps[i] = role.MaxHp;
             _pendingDamage[i] = 0f;
+            _pendingDotDamage[i] = 0f;
             _pendingHeal[i] = 0f;
             _roleIndices[i] = roleIndex;
             _teams[i] = team;
