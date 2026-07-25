@@ -160,16 +160,24 @@ namespace OutGame.Flow
 
             // 저장은 방 결과(보상 적용 등)까지 반영된 뒤 OnRoomCompleted에서 한 번만 수행한다.
             // 여기서 먼저 저장하면 "방문함"만 기록되고 보상은 누락된 상태로 저장될 위험이 있다.
+            //
+            // 증원/증강/이벤트 방은 난이도 커브 기준점(powerRoomsVisited, §4-28 재설계)을 올린다 —
+            // 전투방 승리 드롭은 확률적이라 이 카운터에는 포함하지 않는다. Open 호출이 끝난 뒤에
+            // 증가시켜서, 혹시 Open 쪽에서 예외가 나면(예: 정의되지 않은 id 조회) 카운터만 먼저
+            // 올라가고 방은 실제로 안 열리는 불일치가 생기지 않게 한다.
             switch (node.roomType)
             {
                 case RoomType.Event:
                     OpenEventRoom();
+                    run.powerRoomsVisited++;
                     break;
                 case RoomType.Rest:
                     restPanel.Open(run, armyDefsById, itemDefsById);
+                    run.powerRoomsVisited++;
                     break;
                 case RoomType.Augment:
                     OpenAugmentRoom();
+                    run.powerRoomsVisited++;
                     break;
                 default:
                     OpenBattleRoom(node);
