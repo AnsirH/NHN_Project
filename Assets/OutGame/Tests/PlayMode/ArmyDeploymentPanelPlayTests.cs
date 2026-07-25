@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Linq;
 using NUnit.Framework;
+using OutGame.Logic.Armies;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
@@ -27,6 +28,7 @@ namespace OutGame.Tests.PlayMode
         private ItemDefinition bowDef;
         private ItemDefinition shieldDef;
         private RunConfig runConfig;
+        private static readonly ArmyClass[] TestEnemyComposition = { ArmyClass.Archer, ArmyClass.Shieldman, ArmyClass.None };
 
         [SetUp]
         public void SetUp()
@@ -67,7 +69,8 @@ namespace OutGame.Tests.PlayMode
         private void OpenPanel()
         {
             panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default",
-                new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0]);
+                new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0],
+                TestEnemyComposition);
         }
 
         // OnItemDroppedOnCard는 처리를 한 프레임 늦추므로(코드 리뷰 CRITICAL 수정 — 드래그 종료 처리와의
@@ -115,6 +118,30 @@ namespace OutGame.Tests.PlayMode
             Assert.IsTrue(startButton.interactable, "전원 자동 배치되므로 Open() 직후 바로 전투 시작 가능해야 함");
         }
 
+        [UnityTest]
+        public IEnumerator Open_BuildsOneEnemySlotPerCompositionEntry()
+        {
+            OpenPanel();
+            yield return null;
+
+            Transform enemySlotGrid = panel.transform.Find("MainRow/EnemyColumn/SlotGrid");
+            Assert.IsNotNull(enemySlotGrid, "적 진영 슬롯 컨테이너가 있어야 함");
+            Assert.AreEqual(TestEnemyComposition.Length, enemySlotGrid.childCount,
+                "§4-28: 적 진영 슬롯은 생성된 구성 개수만큼만 만들어져야 함 (아군 슬롯 격자 전체를 채우면 안 됨)");
+        }
+
+        [UnityTest]
+        public IEnumerator Open_EnemySlotsShowClassLabels()
+        {
+            OpenPanel();
+            yield return null;
+
+            Transform enemySlotGrid = panel.transform.Find("MainRow/EnemyColumn/SlotGrid");
+            var labels = enemySlotGrid.GetComponentsInChildren<Text>().Select(t => t.text).ToList();
+
+            CollectionAssert.AreEquivalent(new[] { "궁수", "방패병", "기본" }, labels);
+        }
+
         [Test]
         public void Open_WithNoArmies_StartBattleButtonDisabled()
         {
@@ -122,7 +149,8 @@ namespace OutGame.Tests.PlayMode
             var emptyRun = new RunState { mapState = map };
 
             panel.Open(emptyRun, "room_2_0", RoomType.NormalBattle, "enc_default",
-                new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0]);
+                new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0],
+                TestEnemyComposition);
 
             Button startButton = panel.transform.Find("MainRow/CenterColumn/StartBattleButton").GetComponent<Button>();
             Assert.IsFalse(startButton.interactable, "군대가 하나도 없으면 전투 시작 불가 (§5.7)");
@@ -139,7 +167,8 @@ namespace OutGame.Tests.PlayMode
 
             Assert.Throws<System.InvalidOperationException>(() =>
                 panel.Open(overCapRun, "room_2_0", RoomType.NormalBattle, "enc_default",
-                    new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0]));
+                    new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0],
+                    TestEnemyComposition));
         }
 
         [UnityTest]

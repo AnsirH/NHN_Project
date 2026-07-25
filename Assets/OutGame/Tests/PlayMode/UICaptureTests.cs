@@ -110,7 +110,8 @@ namespace OutGame.Tests.PlayMode
                 run.ownedItemIds.Add("item_bow");
 
                 panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default", new[] { armyDef }, new[] { bowDef },
-                    runConfig, new AugmentDefinition[0]);
+                    runConfig, new AugmentDefinition[0],
+                    new[] { OutGame.Logic.Armies.ArmyClass.Archer, OutGame.Logic.Armies.ArmyClass.Shieldman, OutGame.Logic.Armies.ArmyClass.None });
 
                 yield return CaptureToFile("ArmyDeploymentPanel_01_initial.png");
 

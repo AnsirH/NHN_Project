@@ -190,7 +190,7 @@ namespace OutGame.Flow
                 node.point.y, node.roomType, enemyCompositionConfig, rng);
             deploymentPanel.Open(run, node.id, node.roomType, encounterId,
                 armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), runConfig.ToData(),
-                augmentDefsById.Values.ToList());
+                augmentDefsById.Values.ToList(), currentEnemyComposition);
         }
 
         private void OnBattleSetupConfirmed(BattleSetupData setup)

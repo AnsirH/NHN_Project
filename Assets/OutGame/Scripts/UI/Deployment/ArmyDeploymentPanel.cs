@@ -64,6 +64,7 @@ namespace OutGame.UI.Deployment
         private string roomId;
         private RoomType roomType;
         private string encounterId;
+        private IReadOnlyList<ArmyClass> enemyComposition = Array.Empty<ArmyClass>();
 
         public event Action<BattleSetupData> Confirmed;
 
@@ -75,13 +76,15 @@ namespace OutGame.UI.Deployment
             IReadOnlyList<ArmyDefinition> armyDefs,
             IReadOnlyList<ItemDefinition> itemDefs,
             RunConfig runConfigValue,
-            IReadOnlyList<AugmentDefinition> augmentDefs)
+            IReadOnlyList<AugmentDefinition> augmentDefs,
+            IReadOnlyList<ArmyClass> enemyCompositionValue)
         {
             if (runState == null) throw new ArgumentNullException(nameof(runState));
             if (armyDefs == null) throw new ArgumentNullException(nameof(armyDefs));
             if (itemDefs == null) throw new ArgumentNullException(nameof(itemDefs));
             if (runConfigValue == null) throw new ArgumentNullException(nameof(runConfigValue));
             if (augmentDefs == null) throw new ArgumentNullException(nameof(augmentDefs));
+            if (enemyCompositionValue == null) throw new ArgumentNullException(nameof(enemyCompositionValue));
             ValidateWiring();
 
             run = runState;
@@ -89,6 +92,7 @@ namespace OutGame.UI.Deployment
             roomId = roomIdValue;
             roomType = roomTypeValue;
             encounterId = encounterIdValue;
+            enemyComposition = enemyCompositionValue;
 
             armyDefsById.Clear();
             foreach (ArmyDefinition def in armyDefs) armyDefsById[def.ToData().id] = def;
@@ -162,10 +166,21 @@ namespace OutGame.UI.Deployment
                 allySlotViewsById[slot.slotId] = view;
             }
 
-            // 적 진영 — 시각적 자리만 (RoomEncounterTable 미결, §9)
-            for (int i = 0; i < slots.Count; i++)
-                Instantiate(enemySlotPrefab, enemySlotContainer);
+            // 적 진영 — §4-28 생성된 구성을 그대로 시각화(전술 판단 근거, §5.7). 실제 적 스탯/AI는
+            // 여전히 RoomEncounterTable 미결(§9) — 여기서는 병과 라벨만 보여준다.
+            foreach (ArmyClass enemyClass in enemyComposition)
+            {
+                Image slotImage = Instantiate(enemySlotPrefab, enemySlotContainer);
+                Text label = slotImage.GetComponentInChildren<Text>();
+                if (label != null)
+                    label.text = EnemyClassLabel(enemyClass);
+                else
+                    Debug.LogWarning("[ArmyDeploymentPanel] EnemySlotPlaceholder 프리팹에 라벨(Text)이 없어 병과를 표시하지 못했습니다 — SceneSetupM3UI.Run() 재실행 필요.");
+            }
         }
+
+        private static string EnemyClassLabel(ArmyClass armyClass) =>
+            armyClass == ArmyClass.None ? "기본" : ItemEquipService.ClassDisplayName(armyClass);
 
         private void BuildCards()
         {
