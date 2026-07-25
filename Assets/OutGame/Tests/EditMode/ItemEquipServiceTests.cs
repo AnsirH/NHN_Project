@@ -18,7 +18,7 @@ namespace OutGame.Tests.EditMode
         private static readonly Dictionary<string, ItemData> Items = new Dictionary<string, ItemData>
         {
             ["item_bow"] = new ItemData { id = "item_bow", displayName = "활", armyClass = ArmyClass.Archer, generalSkillId = "skill_volley" },
-            ["item_shield"] = new ItemData { id = "item_shield", displayName = "방패", armyClass = ArmyClass.Warrior, generalSkillId = "skill_taunt" },
+            ["item_shield"] = new ItemData { id = "item_shield", displayName = "검+방패", armyClass = ArmyClass.Warrior, generalSkillId = "skill_taunt" },
         };
 
         [SetUp]

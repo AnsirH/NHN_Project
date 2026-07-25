@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ItemDefinition_Shield
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.ItemDefinition
   itemId: item_shield
-  displayName: "\uBC29\uD328"
+  displayName: "\uAC80+\uBC29\uD328"
   icon: {fileID: 0}
   description: "\uBD80\uC5EC \uC2DC \uC804\uC0AC \uAD70\uB300\uAC00 \uB418\uC5B4
     \uC7A5\uAD70\uC774 \uB3C4\uBC1C\uC744 \uC0AC\uC6A9\uD569\uB2C8\uB2E4."
