@@ -18,6 +18,9 @@ namespace OutGame.Logic.Runs
         public int gold; // §4-20: 획득만 1차 구현
         public List<string> visitedEventIds = new List<string>(); // 동일 런 내 이벤트 중복 방지 (§5.4)
 
+        // 선택한 증강 id 누적(중복 선택/스택 허용, §4-27) — 효과는 조회 시점에 계산(ArmyStatCalculator).
+        public List<string> selectedAugmentIds = new List<string>();
+
         // 배치 슬롯 진형 — 방을 넘어가도 유지되어야 하므로 패널 로컬이 아니라 여기 저장 (§5.7 2026-07-19 개정).
         public List<ArmySlotAssignment> deployment = new List<ArmySlotAssignment>();
 
@@ -43,7 +46,7 @@ namespace OutGame.Logic.Runs
 
             if (state == null || state.mapState == null || state.mapState.nodes == null
                 || state.mapState.nodes.Count == 0 || state.armies == null || state.ownedItemIds == null
-                || state.visitedEventIds == null || state.deployment == null)
+                || state.visitedEventIds == null || state.deployment == null || state.selectedAugmentIds == null)
                 throw new ArgumentException("RunState JSON에 필수 데이터가 없습니다.", nameof(json));
 
             return state;

@@ -81,5 +81,30 @@ namespace OutGame.Tests.EditMode
                     $"seed {seed}: eventWeight=0인데 이벤트 방 생성됨");
             }
         }
+
+        [Test]
+        public void Generate_ZeroAugmentWeight_NoAugmentRooms()
+        {
+            var config = new MapGenerationConfig { augmentWeight = 0f };
+
+            for (int seed = 0; seed < 30; seed++)
+            {
+                MapState map = new MapGenerator(config, seed).Generate();
+                Assert.IsFalse(map.nodes.Any(n => n.roomType == RoomType.Augment),
+                    $"seed {seed}: augmentWeight=0인데 증강 방 생성됨");
+            }
+        }
+
+        [Test]
+        public void Generate_DefaultConfig_ProducesAugmentRoomsAcrossManySeeds()
+        {
+            var config = new MapGenerationConfig();
+
+            bool anyAugmentRoom = Enumerable.Range(0, 30)
+                .Select(seed => new MapGenerator(config, seed).Generate())
+                .Any(map => map.nodes.Any(n => n.roomType == RoomType.Augment));
+
+            Assert.IsTrue(anyAugmentRoom, "기본 augmentWeight(20)로는 30개 시드 중 최소 1개는 증강 방이 나와야 함 (§4-27)");
+        }
     }
 }

@@ -17,10 +17,11 @@ namespace OutGame.Logic.Maps
         public IntRange startingNodeCount = new IntRange(2, 3);    // 1층 시작 노드 수 (최소 2)
         public IntRange preBossNodeCount = new IntRange(2, 3);     // 보스 직전 층 노드 수
 
-        // 방 타입 확률 — 고정층 제외 나머지 층 (상세 기획 §5.3 초안: 55/30/15)
-        public float battleWeight = 55f;
-        public float eventWeight = 30f;
+        // 방 타입 확률 — 고정층 제외 나머지 층 (상세 기획 §5.3 초안, 2026-07-19 증강 추가 개정: 40/25/15/20)
+        public float battleWeight = 40f;
+        public float eventWeight = 25f;
         public float restWeight = 15f;
+        public float augmentWeight = 20f;
 
         // 뷰 배치 참고용 레이아웃 값
         public float layerDistance = 2f;            // 층 간 세로 거리
@@ -39,6 +40,7 @@ namespace OutGame.Logic.Maps
             battleWeight = battleWeight,
             eventWeight = eventWeight,
             restWeight = restWeight,
+            augmentWeight = augmentWeight,
             layerDistance = layerDistance,
             nodesApartDistance = nodesApartDistance,
             positionRandomization = positionRandomization,
@@ -56,8 +58,10 @@ namespace OutGame.Logic.Maps
                 throw new ArgumentException($"startingNodeCount는 2 ≤ min ≤ max ≤ gridWidth 여야 합니다. 현재: [{startingNodeCount.min},{startingNodeCount.max}]");
             if (preBossNodeCount.min < 1 || preBossNodeCount.min > preBossNodeCount.max || preBossNodeCount.max > gridWidth)
                 throw new ArgumentException($"preBossNodeCount는 1 ≤ min ≤ max ≤ gridWidth 여야 합니다. 현재: [{preBossNodeCount.min},{preBossNodeCount.max}]");
-            if (battleWeight <= 0f || eventWeight < 0f || restWeight < 0f)
-                throw new ArgumentException($"확률 가중치는 battle > 0, event/rest ≥ 0 이어야 합니다. 현재: {battleWeight}/{eventWeight}/{restWeight}");
+            if (battleWeight <= 0f || eventWeight < 0f || restWeight < 0f || augmentWeight < 0f)
+                throw new ArgumentException(
+                    $"확률 가중치는 battle > 0, event/rest/augment ≥ 0 이어야 합니다. " +
+                    $"현재: {battleWeight}/{eventWeight}/{restWeight}/{augmentWeight}");
         }
     }
 }

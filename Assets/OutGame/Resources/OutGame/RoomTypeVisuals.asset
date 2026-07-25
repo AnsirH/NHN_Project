@@ -29,3 +29,7 @@ MonoBehaviour:
     displayName: "\uBCF4\uC2A4"
     color: {r: 0.9, g: 0.71, b: 0.13, a: 1}
     icon: {fileID: 0}
+  - roomType: 4
+    displayName: "\uC99D\uAC15"
+    color: {r: 0.2, g: 0.65, b: 0.75, a: 1}
+    icon: {fileID: 0}

@@ -124,14 +124,14 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Open_BuildsLegendWithFourPrimaryTypes()
+        public IEnumerator Open_BuildsLegendWithFivePrimaryTypes()
         {
             panel.Open(map);
             yield return null;
 
             Transform legend = panel.transform.Find("Legend");
             Assert.IsNotNull(legend, "Legend 컨테이너가 프리팹에 있어야 함");
-            Assert.AreEqual(4, legend.childCount, "범례는 1차 방 타입 4종을 표시");
+            Assert.AreEqual(5, legend.childCount, "범례는 1차 방 타입 5종을 표시 (2026-07-19 증강 추가, §4-27)");
         }
     }
 }

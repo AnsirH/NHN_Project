@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using OutGame.Logic.Augments;
 using OutGame.Logic.Battle;
 using OutGame.Logic.Events;
 using OutGame.Logic.Maps;
@@ -24,6 +25,7 @@ namespace OutGame.Flow
         [SerializeField] private DummyRoomPanel roomPanel; // 런 종료(클리어/패배) 화면
         [SerializeField] private EventPanel eventPanel;
         [SerializeField] private RestPanel restPanel;
+        [SerializeField] private AugmentPanel augmentPanel;
         [SerializeField] private ArmyDeploymentPanel deploymentPanel;
         [SerializeField] private DummyBattlePanel battlePanel; // BattleBridge.Implementation의 M6 더미 구현
         [SerializeField] private RoomTypeVisualSet visuals;
@@ -42,6 +44,7 @@ namespace OutGame.Flow
         private Dictionary<string, EventDefinition> eventDefsById;
         private Dictionary<string, ArmyDefinition> armyDefsById;
         private Dictionary<string, ItemDefinition> itemDefsById;
+        private Dictionary<string, AugmentDefinition> augmentDefsById;
         private string savePath;
         private bool runEnded;
         private RoomType currentBattleRoomType;
@@ -57,7 +60,8 @@ namespace OutGame.Flow
                 runConfig = Resources.Load<RunConfigAsset>("OutGame/Data/RunConfig_Default");
 
             if (mapPanel == null || roomPanel == null || eventPanel == null || restPanel == null
-                || deploymentPanel == null || battlePanel == null || visuals == null || runConfig == null)
+                || augmentPanel == null || deploymentPanel == null || battlePanel == null
+                || visuals == null || runConfig == null)
                 throw new InvalidOperationException(
                     "InGameFlowController의 필수 참조가 배선되지 않았습니다 — 씬 구성(SceneSetupM2/M4/M6) 확인");
 
@@ -66,6 +70,11 @@ namespace OutGame.Flow
                 throw new InvalidOperationException("이벤트 정의를 찾을 수 없습니다 — SceneSetupM4Data.Run() 실행 필요");
             eventDataPool = eventPool.Select(e => e.ToData()).ToList(); // 한 번만 변환해 캐시 (매 방문마다 재파싱 방지)
             eventDefsById = eventPool.ToDictionary(e => e.ToData().id);
+
+            List<AugmentDefinition> augmentPool = Resources.LoadAll<AugmentDefinition>("OutGame/Data/Augments").ToList();
+            if (augmentPool.Count == 0)
+                throw new InvalidOperationException("증강 정의를 찾을 수 없습니다 — SceneSetupM4Data.Run() 실행 필요 (§4-27)");
+            augmentDefsById = augmentPool.ToDictionary(a => a.ToData().id);
 
             armyDefsById = Resources.LoadAll<ArmyDefinition>("OutGame/Data")
                 .ToDictionary(a => a.ToData().id);
@@ -91,6 +100,7 @@ namespace OutGame.Flow
             roomPanel.Completed += OnRoomCompleted;
             eventPanel.Completed += OnRoomCompleted;
             restPanel.Completed += OnRoomCompleted;
+            augmentPanel.Completed += OnRoomCompleted;
             deploymentPanel.Confirmed += OnBattleSetupConfirmed;
 
             roomPanel.Hide();
@@ -103,6 +113,7 @@ namespace OutGame.Flow
             if (roomPanel != null) roomPanel.Completed -= OnRoomCompleted;
             if (eventPanel != null) eventPanel.Completed -= OnRoomCompleted;
             if (restPanel != null) restPanel.Completed -= OnRoomCompleted;
+            if (augmentPanel != null) augmentPanel.Completed -= OnRoomCompleted;
             if (deploymentPanel != null) deploymentPanel.Confirmed -= OnBattleSetupConfirmed;
         }
 
@@ -124,6 +135,9 @@ namespace OutGame.Flow
                 case RoomType.Rest:
                     restPanel.Open(run, armyDefsById, itemDefsById);
                     break;
+                case RoomType.Augment:
+                    OpenAugmentRoom();
+                    break;
                 default:
                     OpenBattleRoom(node);
                     break;
@@ -139,12 +153,18 @@ namespace OutGame.Flow
             eventPanel.Open(eventDefsById[selected.id], run, runConfig.ToData().maxArmyCount);
         }
 
+        private void OpenAugmentRoom()
+        {
+            augmentPanel.Open(run, augmentDefsById.Values.ToList(), rng);
+        }
+
         private void OpenBattleRoom(MapNode node)
         {
             // RoomEncounterTable 협의 전 임시 키(§9) — 적 구성이 정의되면 노드별 실제 값으로 대체
             string encounterId = $"enc_{node.roomType}";
             deploymentPanel.Open(run, node.id, node.roomType, encounterId,
-                armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), runConfig.ToData());
+                armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), runConfig.ToData(),
+                augmentDefsById.Values.ToList());
         }
 
         private void OnBattleSetupConfirmed(BattleSetupData setup)

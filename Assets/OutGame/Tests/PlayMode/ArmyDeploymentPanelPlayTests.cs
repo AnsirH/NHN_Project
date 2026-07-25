@@ -67,7 +67,7 @@ namespace OutGame.Tests.PlayMode
         private void OpenPanel()
         {
             panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default",
-                new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig);
+                new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0]);
         }
 
         // OnItemDroppedOnCard는 처리를 한 프레임 늦추므로(코드 리뷰 CRITICAL 수정 — 드래그 종료 처리와의
@@ -122,7 +122,7 @@ namespace OutGame.Tests.PlayMode
             var emptyRun = new RunState { mapState = map };
 
             panel.Open(emptyRun, "room_2_0", RoomType.NormalBattle, "enc_default",
-                new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig);
+                new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0]);
 
             Button startButton = panel.transform.Find("MainRow/CenterColumn/StartBattleButton").GetComponent<Button>();
             Assert.IsFalse(startButton.interactable, "군대가 하나도 없으면 전투 시작 불가 (§5.7)");
@@ -139,7 +139,7 @@ namespace OutGame.Tests.PlayMode
 
             Assert.Throws<System.InvalidOperationException>(() =>
                 panel.Open(overCapRun, "room_2_0", RoomType.NormalBattle, "enc_default",
-                    new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig));
+                    new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0]));
         }
 
         [UnityTest]

@@ -9,6 +9,7 @@ namespace OutGame.Logic.Maps
         Event = 1,
         Rest = 2,
         Boss = 3,
+        Augment = 4, // §4-27(2026-07-19): 증강 방 신규 도입
 
         // ── 예약 (1차 미사용) ──
         Elite = 10,

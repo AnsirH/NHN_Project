@@ -60,6 +60,8 @@ namespace OutGame.Tests.EditMode
             original.armies[1].AddBonusSoldiers(6);
             original.visitedEventIds.Add("evt_recruit_deserters");
             original.visitedEventIds.Add("evt_old_armory");
+            original.selectedAugmentIds.Add("aug_common_attack");
+            original.selectedAugmentIds.Add("aug_common_attack"); // 중복 선택/스택 허용(§4-27) — 리스트 그대로 보존돼야 함
             original.deployment.Add(new ArmySlotAssignment { armyInstanceId = original.armies[0].instanceId, slotId = 4 });
             original.deployment.Add(new ArmySlotAssignment { armyInstanceId = original.armies[1].instanceId, slotId = 0 });
             MapProgress.Visit(original.mapState, MapProgress.GetSelectableNodes(original.mapState)[0].point);
@@ -69,6 +71,7 @@ namespace OutGame.Tests.EditMode
             Assert.AreEqual(original.gold, restored.gold);
             Assert.AreEqual(original.ownedItemIds, restored.ownedItemIds);
             Assert.AreEqual(original.visitedEventIds, restored.visitedEventIds);
+            Assert.AreEqual(original.selectedAugmentIds, restored.selectedAugmentIds);
             Assert.AreEqual(original.deployment.Count, restored.deployment.Count);
             for (int i = 0; i < original.deployment.Count; i++)
             {

@@ -60,9 +60,16 @@ namespace OutGame.Logic.Maps
             // 가중치 0 = config로 비활성화된 타입 (battle은 Validate가 양수를 보장)
             if (config.eventWeight <= 0f) forbidden.Add(RoomType.Event);
             if (config.restWeight <= 0f) forbidden.Add(RoomType.Rest);
+            if (config.augmentWeight <= 0f) forbidden.Add(RoomType.Augment);
 
-            // 2층은 전투/이벤트만 · 고정 휴식층 직전 층은 휴식 금지 (연속 방지)
-            if (y == 1 || y == topFloor - 2)
+            // 2층은 전투/이벤트만 허용 (§5.3) — 휴식뿐 아니라 증강도 제외
+            if (y == 1)
+            {
+                forbidden.Add(RoomType.Rest);
+                forbidden.Add(RoomType.Augment);
+            }
+            // 고정 휴식층 직전 층은 휴식 금지 (연속 방지)
+            if (y == topFloor - 2)
                 forbidden.Add(RoomType.Rest);
 
             // 선행 노드가 휴식이면 휴식 금지 (휴식 연속 금지)
@@ -92,10 +99,11 @@ namespace OutGame.Logic.Maps
 
         private static List<RoomType> CandidatesExcept(HashSet<RoomType> forbidden)
         {
-            var candidates = new List<RoomType>(3);
+            var candidates = new List<RoomType>(4);
             if (!forbidden.Contains(RoomType.NormalBattle)) candidates.Add(RoomType.NormalBattle);
             if (!forbidden.Contains(RoomType.Event)) candidates.Add(RoomType.Event);
             if (!forbidden.Contains(RoomType.Rest)) candidates.Add(RoomType.Rest);
+            if (!forbidden.Contains(RoomType.Augment)) candidates.Add(RoomType.Augment);
             return candidates;
         }
 
@@ -126,6 +134,7 @@ namespace OutGame.Logic.Maps
                 case RoomType.NormalBattle: return config.battleWeight;
                 case RoomType.Event: return config.eventWeight;
                 case RoomType.Rest: return config.restWeight;
+                case RoomType.Augment: return config.augmentWeight;
                 default: return 0f;
             }
         }

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21bdd9ec8a4a74b4e893f86d809c6b5a, type: 3}
+  m_Name: AugmentDefinition_ArcherHealth
+  m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.AugmentDefinition
+  augmentId: aug_archer_health
+  displayName: "\uAD81\uC218 \uCCB4\uB825 \uC99D\uAC00"
+  description: "\uAD81\uC218 \uAD70\uB300 \uC720\uB2DB\uC758 \uCCB4\uB825\uC774 15%
+    \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  icon: {fileID: 0}
+  category: 0
+  targetArmyClass: 1
+  effectType: 0
+  targetStat: 0
+  statBoostPercent: 0.15

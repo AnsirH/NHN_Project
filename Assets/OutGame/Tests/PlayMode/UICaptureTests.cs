@@ -109,7 +109,8 @@ namespace OutGame.Tests.PlayMode
                 RunState run = RunStateFactory.Create(map, runConfig);
                 run.ownedItemIds.Add("item_bow");
 
-                panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default", new[] { armyDef }, new[] { bowDef }, runConfig);
+                panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default", new[] { armyDef }, new[] { bowDef },
+                    runConfig, new AugmentDefinition[0]);
 
                 yield return CaptureToFile("ArmyDeploymentPanel_01_initial.png");
 
@@ -205,6 +206,21 @@ namespace OutGame.Tests.PlayMode
                     .First(b => b.transform.parent.name == "ArmyListContainer");
                 optionButton.onClick.Invoke();
                 yield return CaptureToFile("RestPanel_02_result.png");
+                Object.Destroy(restPanel.gameObject);
+                yield return null;
+
+                // AugmentPanel — 초기 상태(3개 무작위 노출) + 선택 후 결과 상태 (§4-27)
+                var augmentPrefab = Resources.Load<GameObject>("OutGame/AugmentPanel");
+                var augmentDefs = Resources.LoadAll<OutGame.ScriptableObjects.AugmentDefinition>("OutGame/Data/Augments");
+                Assert.IsTrue(augmentDefs.Length > 0, "증강 정의 없음 — SceneSetupM4Data.Run() 실행 필요");
+                var augmentPanel = Object.Instantiate(augmentPrefab, canvasGo.transform).GetComponent<AugmentPanel>();
+                augmentPanel.Open(run, augmentDefs, new System.Random(1));
+                yield return CaptureToFile("AugmentPanel_01_initial.png");
+
+                var augmentChoiceButton = augmentPanel.GetComponentsInChildren<UnityEngine.UI.Button>()
+                    .First(b => b.transform.parent.name == "ChoiceContainer");
+                augmentChoiceButton.onClick.Invoke();
+                yield return CaptureToFile("AugmentPanel_02_result.png");
             }
             finally
             {

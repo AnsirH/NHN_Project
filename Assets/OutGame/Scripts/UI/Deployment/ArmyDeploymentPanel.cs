@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using OutGame.Logic.Armies;
+using OutGame.Logic.Augments;
 using OutGame.Logic.Battle;
 using OutGame.Logic.Items;
 using OutGame.Logic.Maps;
@@ -54,6 +55,7 @@ namespace OutGame.UI.Deployment
         private readonly Dictionary<string, ArmyCardView> cardsByArmyId = new Dictionary<string, ArmyCardView>();
         private readonly Dictionary<string, ArmyDefinition> armyDefsById = new Dictionary<string, ArmyDefinition>();
         private readonly Dictionary<string, ItemDefinition> itemDefsById = new Dictionary<string, ItemDefinition>();
+        private readonly Dictionary<string, AugmentDefinition> augmentDefsById = new Dictionary<string, AugmentDefinition>();
         private readonly Dictionary<int, DeploySlotView> allySlotViewsById = new Dictionary<int, DeploySlotView>();
 
         private RunState run;
@@ -72,12 +74,14 @@ namespace OutGame.UI.Deployment
             string encounterIdValue,
             IReadOnlyList<ArmyDefinition> armyDefs,
             IReadOnlyList<ItemDefinition> itemDefs,
-            RunConfig runConfigValue)
+            RunConfig runConfigValue,
+            IReadOnlyList<AugmentDefinition> augmentDefs)
         {
             if (runState == null) throw new ArgumentNullException(nameof(runState));
             if (armyDefs == null) throw new ArgumentNullException(nameof(armyDefs));
             if (itemDefs == null) throw new ArgumentNullException(nameof(itemDefs));
             if (runConfigValue == null) throw new ArgumentNullException(nameof(runConfigValue));
+            if (augmentDefs == null) throw new ArgumentNullException(nameof(augmentDefs));
             ValidateWiring();
 
             run = runState;
@@ -90,6 +94,8 @@ namespace OutGame.UI.Deployment
             foreach (ArmyDefinition def in armyDefs) armyDefsById[def.ToData().id] = def;
             itemDefsById.Clear();
             foreach (ItemDefinition def in itemDefs) itemDefsById[def.ToData().id] = def;
+            augmentDefsById.Clear();
+            foreach (AugmentDefinition def in augmentDefs) augmentDefsById[def.ToData().id] = def;
 
             deployment = new DeploymentState(fieldConfig.ToData().GenerateSlots());
             if (run.armies.Count > deployment.SlotCount)
@@ -271,7 +277,8 @@ namespace OutGame.UI.Deployment
                 return;
             }
 
-            armyInfoPopup.Open(army, def, ToDataDict(itemDefsById), run, runConfig);
+            var augmentDataById = augmentDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
+            armyInfoPopup.Open(army, def, ToDataDict(itemDefsById), run, runConfig, augmentDataById);
         }
 
         private void OnStartBattleClicked()

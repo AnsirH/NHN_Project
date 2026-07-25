@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using OutGame.Logic.Armies;
+using OutGame.Logic.Augments;
 using OutGame.Logic.Items;
 using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
@@ -43,6 +44,7 @@ namespace OutGame.UI.Deployment
         private ArmyInstance army;
         private ArmyDefinition armyDef;
         private IReadOnlyDictionary<string, ItemData> itemDataById;
+        private IReadOnlyDictionary<string, AugmentData> augmentDataById;
         private RunState run;
         private RunConfig runConfig;
 
@@ -73,19 +75,22 @@ namespace OutGame.UI.Deployment
             ArmyDefinition armyDefValue,
             IReadOnlyDictionary<string, ItemData> itemDataByIdValue,
             RunState runValue,
-            RunConfig runConfigValue)
+            RunConfig runConfigValue,
+            IReadOnlyDictionary<string, AugmentData> augmentDataByIdValue)
         {
             if (armyValue == null) throw new ArgumentNullException(nameof(armyValue));
             if (armyDefValue == null) throw new ArgumentNullException(nameof(armyDefValue));
             if (itemDataByIdValue == null) throw new ArgumentNullException(nameof(itemDataByIdValue));
             if (runValue == null) throw new ArgumentNullException(nameof(runValue));
             if (runConfigValue == null) throw new ArgumentNullException(nameof(runConfigValue));
+            if (augmentDataByIdValue == null) throw new ArgumentNullException(nameof(augmentDataByIdValue));
 
             army = armyValue;
             armyDef = armyDefValue;
             itemDataById = itemDataByIdValue;
             run = runValue;
             runConfig = runConfigValue;
+            augmentDataById = augmentDataByIdValue;
 
             Render();
 
@@ -106,7 +111,21 @@ namespace OutGame.UI.Deployment
         {
             ArmyData data = armyDef.ToData();
             string displayName = ItemEquipService.ResolveDisplayName(army, data.displayName, itemDataById);
-            float multiplier = ArmyUpgradeService.GetStatMultiplier(army.upgradeLevel);
+            ArmyClass armyClass = ItemEquipService.ResolveClass(army, itemDataById);
+            // 장군 스탯은 업그레이드만 반영(§4-26) — 증강은 전부 "유닛" 대상이라 장군에는 안 붙는다(§5.6).
+            float generalMultiplier = ArmyUpgradeService.GetStatMultiplier(army.upgradeLevel);
+            // 유닛 스탯은 업그레이드 + 증강(아이템/공통) 합산 — 각자 계산하지 않도록 공용 헬퍼 하나로 통일.
+            var selectedAugments = new List<AugmentData>();
+            foreach (string augmentId in run.selectedAugmentIds)
+            {
+                if (augmentDataById.TryGetValue(augmentId, out AugmentData augmentData))
+                    selectedAugments.Add(augmentData);
+                else
+                    Debug.LogWarning($"[ArmyInfoPopup] 정의되지 않은 증강 id '{augmentId}'는 스탯 계산에서 제외합니다.");
+            }
+            float soldierHealthMultiplier = ArmyStatCalculator.GetStatMultiplier(army, armyClass, AugmentStat.Health, selectedAugments);
+            float soldierAttackMultiplier = ArmyStatCalculator.GetStatMultiplier(army, armyClass, AugmentStat.Attack, selectedAugments);
+            float soldierDefenseMultiplier = ArmyStatCalculator.GetStatMultiplier(army, armyClass, AugmentStat.Defense, selectedAugments);
 
             currencyLabel.text = $"재화: {run.gold}";
 
@@ -117,9 +136,9 @@ namespace OutGame.UI.Deployment
             generalPreviewNameLabel.text = data.generalName;
             upgradeLevelLabel.text = $"+{army.upgradeLevel}";
             upgradeButton.interactable = ArmyUpgradeService.CanUpgrade(army, run, runConfig);
-            generalHealthLabel.text = $"{data.generalHealth * multiplier:0}";
-            generalAttackLabel.text = $"{data.generalAttack * multiplier:0}";
-            generalDefenseLabel.text = $"{data.generalDefense * multiplier:0}";
+            generalHealthLabel.text = $"{data.generalHealth * generalMultiplier:0}";
+            generalAttackLabel.text = $"{data.generalAttack * generalMultiplier:0}";
+            generalDefenseLabel.text = $"{data.generalDefense * generalMultiplier:0}";
             generalCritRateLabel.text = $"{data.generalCritRate:0}%";
             generalMoveSpeedLabel.text = $"{data.generalMoveSpeed:0}";
 
@@ -128,9 +147,9 @@ namespace OutGame.UI.Deployment
             int soldierCount = data.baseSoldierCount + army.bonusSoldierCount;
             soldierCountLabel.text = $"{soldierCount}/{data.maxSoldierCount}명";
             armyDescriptionLabel.text = string.IsNullOrWhiteSpace(data.description) ? "-" : data.description;
-            armySoldierHealthLabel.text = $"{data.soldierHealth * multiplier:0}";
-            armySoldierAttackLabel.text = $"{data.soldierAttack * multiplier:0}";
-            armySoldierDefenseLabel.text = $"{data.soldierDefense * multiplier:0}";
+            armySoldierHealthLabel.text = $"{data.soldierHealth * soldierHealthMultiplier:0}";
+            armySoldierAttackLabel.text = $"{data.soldierAttack * soldierAttackMultiplier:0}";
+            armySoldierDefenseLabel.text = $"{data.soldierDefense * soldierDefenseMultiplier:0}";
         }
     }
 }
