@@ -109,10 +109,13 @@ namespace OutGame.Tests.PlayMode
                 RunState run = RunStateFactory.Create(map, runConfig);
                 run.ownedItemIds.Add("item_bow");
 
+                // 2026-07-26 4병과 확장(§4-30) — 스크린샷에 전 병과 배치 구역이 다 보이도록 5종 전부 포함.
                 var enemyComposition = new System.Collections.Generic.List<OutGame.Logic.Battle.EnemyArmy>
                 {
                     new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.Archer, soldierCount = 30 },
                     new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.Warrior, soldierCount = 30 },
+                    new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.Hunter, soldierCount = 30 },
+                    new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.Assassin, soldierCount = 30 },
                     new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.None, soldierCount = 30 },
                 };
                 panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default", new[] { armyDef }, new[] { bowDef },
