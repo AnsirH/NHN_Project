@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using OutGame.Logic.Armies;
 using OutGame.Logic.Augments;
 using OutGame.Logic.Battle;
 using OutGame.Logic.Events;
+using OutGame.Logic.Items;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
@@ -45,14 +47,26 @@ namespace OutGame.Flow
         private Dictionary<string, ArmyDefinition> armyDefsById;
         private Dictionary<string, ItemDefinition> itemDefsById;
         private Dictionary<string, AugmentDefinition> augmentDefsById;
+        private Dictionary<ArmyClass, string> itemIdByClass; // §4-28: 병과→아이템 매핑, Start()에서 한 번만 계산
         private string savePath;
         private bool runEnded;
         private RoomType currentBattleRoomType;
+        private List<ArmyClass> currentEnemyComposition;
+
+        // §4-28: RoomEncounterTable 협의 전 임시 대체 — 아웃게임 내부 전용(아이템 드롭 계산용),
+        // §7 인터페이스(BattleSetupData)에는 노출하지 않는다. 초안값, 인스펙터 노출은 후속 과제.
+        private readonly EnemyCompositionConfig enemyCompositionConfig = new EnemyCompositionConfig();
+        private readonly ItemDropConfig itemDropConfig = new ItemDropConfig();
 
         private void Start()
         {
             // 이후 검증에서 예외가 나더라도 PendingRun이 stale 상태로 남지 않도록 가장 먼저 소비한다.
             RunState pendingRun = RunSessionContext.ConsumePendingRun();
+
+            // §4-28: 인스펙터 노출 없는 in-code 초안 config라도 다른 config들과 동일하게 fail-fast —
+            // 조용히 잘못된 값으로 동작하는 대신 시작 시점에 바로 예외로 드러나야 한다.
+            enemyCompositionConfig.Validate();
+            itemDropConfig.Validate();
 
             if (visuals == null)
                 visuals = Resources.Load<RoomTypeVisualSet>("OutGame/RoomTypeVisuals"); // 배선 누락 대비 폴백
@@ -80,6 +94,8 @@ namespace OutGame.Flow
                 .ToDictionary(a => a.ToData().id);
             itemDefsById = Resources.LoadAll<ItemDefinition>("OutGame/Data")
                 .ToDictionary(i => i.ToData().id);
+            // §4-28: 병과→아이템 매핑은 런 도중 안 바뀌므로 승리마다 다시 만들지 않고 한 번만 캐시.
+            itemIdByClass = ItemEquipService.ResolveItemIdByClass(itemDefsById.Values.Select(d => d.ToData()));
 
             savePath = RunSaveService.DefaultPath;
             run = pendingRun;
@@ -162,6 +178,9 @@ namespace OutGame.Flow
         {
             // RoomEncounterTable 협의 전 임시 키(§9) — 적 구성이 정의되면 노드별 실제 값으로 대체
             string encounterId = $"enc_{node.roomType}";
+            // §4-28: 적 구성을 미리 생성해둔다 — 순수 아웃게임 내부용(아이템 드롭 계산), BattleSetupData에는 안 실음.
+            currentEnemyComposition = EnemyCompositionGenerator.Generate(
+                node.point.y, node.roomType, enemyCompositionConfig, rng);
             deploymentPanel.Open(run, node.id, node.roomType, encounterId,
                 armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), runConfig.ToData(),
                 augmentDefsById.Values.ToList());
@@ -185,6 +204,11 @@ namespace OutGame.Flow
             }
 
             BattleRewardApplier.ApplyVictoryReward(run, runConfig.ToData().battleVictoryGold); // §4-20/§9: 초안값
+
+            // §4-28: 격파한 적 병과 구성에 따라 확률적으로 아이템 드롭.
+            List<string> drops = ItemDropCalculator.RollDrops(currentEnemyComposition, itemDropConfig, itemIdByClass, rng);
+            BattleRewardApplier.ApplyItemDrops(run, drops);
+            currentEnemyComposition = null;
 
             if (currentBattleRoomType == RoomType.Boss)
             {

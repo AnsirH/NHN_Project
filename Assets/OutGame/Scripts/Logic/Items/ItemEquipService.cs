@@ -73,5 +73,24 @@ namespace OutGame.Logic.Items
             ArmyClass armyClass = ResolveClass(army, items);
             return armyClass == ArmyClass.None ? baseDisplayName : $"{ClassDisplayName(armyClass)} 군대";
         }
+
+        /// <summary>
+        /// 병과별 대표 아이템 id 매핑을 만든다 (§4-28 아이템 드롭 계산용). 같은 병과에 아이템이
+        /// 여럿이면 먼저 등장한 것을 쓴다 — 1차 범위(병과당 아이템 1종)에서는 항상 유일하다.
+        /// </summary>
+        public static Dictionary<ArmyClass, string> ResolveItemIdByClass(IEnumerable<ItemData> allItems)
+        {
+            if (allItems == null) throw new ArgumentNullException(nameof(allItems));
+
+            var result = new Dictionary<ArmyClass, string>();
+            foreach (ItemData item in allItems)
+            {
+                if (item.armyClass == ArmyClass.None) continue;
+                if (!result.ContainsKey(item.armyClass))
+                    result[item.armyClass] = item.id;
+            }
+
+            return result;
+        }
     }
 }

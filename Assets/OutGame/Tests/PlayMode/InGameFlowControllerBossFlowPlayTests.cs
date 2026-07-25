@@ -3,6 +3,8 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using OutGame.Flow;
+using OutGame.Logic.Battle;
+using OutGame.Logic.Items;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
 using OutGame.UI;
@@ -98,6 +100,43 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             Assert.IsTrue(roomPanel.gameObject.activeSelf, "보스 승리 후에는 런 클리어 화면이 떠야 함");
+        }
+
+        [UnityTest]
+        public IEnumerator BossVictory_WithGuaranteedDropChance_AddsItemsToInventory()
+        {
+            // §4-28 엔드투엔드 확인 — 드롭 확률을 100%로 강제해 결정적으로 검증한다(기본값은
+            // System.Random(Environment.TickCount)라 시드 고정이 불가능하므로 확률 자체를 조작).
+            yield return SceneManager.LoadSceneAsync(SceneNames.InGame, LoadSceneMode.Additive);
+            yield return null;
+
+            InGameFlowController flow = GameObject.Find("InGameFlow").GetComponent<InGameFlowController>();
+            RunState run = GetField<RunState>(flow, "run");
+            var itemDropConfig = GetField<ItemDropConfig>(flow, "itemDropConfig");
+            itemDropConfig.archerDropChance = 1f;
+            itemDropConfig.shieldmanDropChance = 1f;
+
+            int ownedItemsBefore = run.ownedItemIds.Count;
+
+            WalkToJustBeforeBoss(run.mapState);
+            MapNode boss = MapProgress.GetSelectableNodes(run.mapState).First(n => n.roomType == RoomType.Boss);
+            typeof(InGameFlowController).GetMethod("OnRoomSelected", Priv).Invoke(flow, new object[] { boss });
+            yield return null;
+
+            var deploymentPanel = GetField<ArmyDeploymentPanel>(flow, "deploymentPanel");
+            var battlePanel = GetField<DummyBattlePanel>(flow, "battlePanel");
+            var startButton = deploymentPanel.GetComponentsInChildren<Button>(true).First(b => b.name == "StartBattleButton");
+            startButton.onClick.Invoke();
+            yield return null;
+
+            var victoryButton = battlePanel.GetComponentsInChildren<Button>(true).First(b => b.name == "VictoryButton");
+            victoryButton.onClick.Invoke();
+            yield return null;
+
+            // 기본 보스 구성(EnemyCompositionConfig.bossComposition)에 궁수/방패병이 포함돼 있고
+            // 드롭 확률을 100%로 강제했으므로 최소 1개 이상은 반드시 늘어나야 한다.
+            Assert.Greater(run.ownedItemIds.Count, ownedItemsBefore,
+                "보스 승리 후 병과 기반 아이템 드롭으로 보유 아이템이 늘어나야 함 (§4-28)");
         }
     }
 }

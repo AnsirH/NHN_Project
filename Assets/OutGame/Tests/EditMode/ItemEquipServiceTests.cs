@@ -103,5 +103,21 @@ namespace OutGame.Tests.EditMode
             Assert.AreEqual("궁수", ItemEquipService.ClassDisplayName(ArmyClass.Archer));
             Assert.AreEqual("방패병", ItemEquipService.ClassDisplayName(ArmyClass.Shieldman));
         }
+
+        [Test]
+        public void ResolveItemIdByClass_MapsEachClassToItsItem()
+        {
+            var result = ItemEquipService.ResolveItemIdByClass(Items.Values);
+
+            Assert.AreEqual("item_bow", result[ArmyClass.Archer]);
+            Assert.AreEqual("item_shield", result[ArmyClass.Shieldman]);
+            Assert.IsFalse(result.ContainsKey(ArmyClass.None), "병과 없는 아이템은 매핑에서 제외");
+        }
+
+        [Test]
+        public void ResolveItemIdByClass_NullArgument_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => ItemEquipService.ResolveItemIdByClass(null));
+        }
     }
 }
