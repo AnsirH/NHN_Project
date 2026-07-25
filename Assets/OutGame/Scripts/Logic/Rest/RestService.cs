@@ -13,14 +13,21 @@ namespace OutGame.Logic.Rest
     {
         public const float DefaultReinforcePercent = 0.2f;
 
-        /// <summary>증원을 적용하고 실제로 늘어난 병사 수를 반환한다 (UI 표시용).</summary>
+        /// <summary>
+        /// 증원을 적용하고 실제로 늘어난 병사 수를 반환한다 (UI 표시용). 총 병사 수(base+bonus)가
+        /// maxSoldierCount(§4-26)를 넘지 않도록 증원량을 잘라낸다 — 이미 상한이면 0을 반환한다.
+        /// </summary>
         public static int Reinforce(ArmyInstance army, ArmyData armyDef, float bonusPercent = DefaultReinforcePercent)
         {
             if (army == null) throw new ArgumentNullException(nameof(army));
             if (armyDef == null) throw new ArgumentNullException(nameof(armyDef));
             if (bonusPercent < 0f) throw new ArgumentException($"bonusPercent는 음수일 수 없습니다: {bonusPercent}");
 
-            int amount = Mathf.RoundToInt(armyDef.baseSoldierCount * bonusPercent);
+            int desired = Mathf.RoundToInt(armyDef.baseSoldierCount * bonusPercent);
+            int currentTotal = armyDef.baseSoldierCount + army.bonusSoldierCount;
+            int room = Mathf.Max(0, armyDef.maxSoldierCount - currentTotal);
+            int amount = Mathf.Min(desired, room);
+
             army.AddBonusSoldiers(amount);
             return amount;
         }

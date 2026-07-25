@@ -11,9 +11,12 @@ namespace OutGame.Logic.Runs
     [Serializable]
     public class ArmyInstance
     {
+        public const int MaxUpgradeLevel = 5; // §4-26
+
         public string instanceId;
         public string armyDefId;
         public int bonusSoldierCount;   // 휴식 방 증원 누적 (§5.5) — 음수 금지
+        public int upgradeLevel;        // 군대 업그레이드 단계 (§4-26), 0~MaxUpgradeLevel
 
         [SerializeField] private string equippedItemId; // 비어 있으면 기본 군대
 
@@ -37,6 +40,15 @@ namespace OutGame.Logic.Runs
             if (amount < 0)
                 throw new ArgumentException($"증원량은 음수일 수 없습니다: {amount}", nameof(amount));
             bonusSoldierCount += amount;
+        }
+
+        /// <summary>업그레이드 1단계 증가 — 이미 최대 단계면 예외 (실제 실행은 ArmyUpgradeService가 재화 차감 후 호출).</summary>
+        public void IncrementUpgradeLevel()
+        {
+            if (upgradeLevel >= MaxUpgradeLevel)
+                throw new InvalidOperationException(
+                    $"부대 {instanceId}는 이미 최대 업그레이드 단계({MaxUpgradeLevel})입니다.");
+            upgradeLevel++;
         }
     }
 }

@@ -144,7 +144,7 @@ namespace OutGame.Flow
             // RoomEncounterTable 협의 전 임시 키(§9) — 적 구성이 정의되면 노드별 실제 값으로 대체
             string encounterId = $"enc_{node.roomType}";
             deploymentPanel.Open(run, node.id, node.roomType, encounterId,
-                armyDefsById.Values.ToList(), itemDefsById.Values.ToList());
+                armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), runConfig.ToData());
         }
 
         private void OnBattleSetupConfirmed(BattleSetupData setup)

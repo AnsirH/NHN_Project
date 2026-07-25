@@ -26,6 +26,7 @@ namespace OutGame.Tests.PlayMode
         private ArmyDefinition armyDef;
         private ItemDefinition bowDef;
         private ItemDefinition shieldDef;
+        private RunConfig runConfig;
 
         [SetUp]
         public void SetUp()
@@ -50,8 +51,9 @@ namespace OutGame.Tests.PlayMode
             Assert.IsNotNull(bowDef);
             Assert.IsNotNull(shieldDef);
 
+            runConfig = new RunConfig { startingArmyCount = 3, startingArmyDefId = "army_basic" };
             MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
-            run = RunStateFactory.Create(map, new RunConfig { startingArmyCount = 3, startingArmyDefId = "army_basic" });
+            run = RunStateFactory.Create(map, runConfig);
         }
 
         [TearDown]
@@ -65,7 +67,7 @@ namespace OutGame.Tests.PlayMode
         private void OpenPanel()
         {
             panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default",
-                new[] { armyDef }, new[] { bowDef, shieldDef });
+                new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig);
         }
 
         // OnItemDroppedOnCard는 처리를 한 프레임 늦추므로(코드 리뷰 CRITICAL 수정 — 드래그 종료 처리와의
@@ -75,6 +77,17 @@ namespace OutGame.Tests.PlayMode
             typeof(ArmyDeploymentPanel)
                 .GetMethod("OnItemDroppedOnCard", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                 .Invoke(panel, new object[] { card, itemId });
+        }
+
+        [UnityTest]
+        public IEnumerator RunConfigDefaultAsset_HasArmyUpgradeCosts()
+        {
+            // int[] 필드가 SceneSetupM3Data 재실행 후에도 에셋 YAML에 실제로 올바르게 저장/복원되는지
+            // 확인한다(§4-26) — Unity가 primitive 배열을 hex 블롭으로 직렬화하는 것을 실제로 확인했음.
+            var runConfigAsset = Resources.Load<RunConfigAsset>("OutGame/Data/RunConfig_Default");
+            Assert.IsNotNull(runConfigAsset, "RunConfig_Default 에셋이 없음 — SceneSetupM3Data.Run() 실행 필요");
+            CollectionAssert.AreEqual(new[] { 50, 100, 200, 350, 550 }, runConfigAsset.ToData().armyUpgradeCosts);
+            yield break;
         }
 
         [UnityTest]
@@ -109,7 +122,7 @@ namespace OutGame.Tests.PlayMode
             var emptyRun = new RunState { mapState = map };
 
             panel.Open(emptyRun, "room_2_0", RoomType.NormalBattle, "enc_default",
-                new[] { armyDef }, new[] { bowDef, shieldDef });
+                new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig);
 
             Button startButton = panel.transform.Find("MainRow/CenterColumn/StartBattleButton").GetComponent<Button>();
             Assert.IsFalse(startButton.interactable, "군대가 하나도 없으면 전투 시작 불가 (§5.7)");
@@ -126,7 +139,7 @@ namespace OutGame.Tests.PlayMode
 
             Assert.Throws<System.InvalidOperationException>(() =>
                 panel.Open(overCapRun, "room_2_0", RoomType.NormalBattle, "enc_default",
-                    new[] { armyDef }, new[] { bowDef, shieldDef }));
+                    new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig));
         }
 
         [UnityTest]
@@ -519,7 +532,7 @@ namespace OutGame.Tests.PlayMode
 
             Text soldierCountLabel = infoPopup.transform
                 .Find("Window/BodyRow/ArmyColumn/SoldierPreview/SoldierCountLabel").GetComponent<Text>();
-            Assert.AreEqual("30명", soldierCountLabel.text);
+            Assert.AreEqual($"30/{armyDef.ToData().maxSoldierCount}명", soldierCountLabel.text);
         }
 
         [UnityTest]
@@ -537,9 +550,9 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Click_OnArmyCard_ShowsPlaceholderExpText()
+        public IEnumerator Click_OnArmyCard_ShowsUpgradeLevelZeroInitially()
         {
-            // 장군 경험치/성장은 미결(§5.5/§9) — 실제 값이 아니라 항상 고정 플레이스홀더여야 한다.
+            // 장군 경험치는 제거되고 군대 업그레이드(§4-26)로 대체됐다(2026-07-19).
             OpenPanel();
             yield return null;
 
@@ -547,8 +560,47 @@ namespace OutGame.Tests.PlayMode
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
-            Text expLabel = infoPopup.transform.Find("Window/BodyRow/GeneralColumn/ExpBand/ExpLabel").GetComponent<Text>();
-            Assert.AreEqual("경험치: -", expLabel.text);
+            Text upgradeLevelLabel = infoPopup.transform
+                .Find("Window/BodyRow/GeneralColumn/UpgradeBand/UpgradeLevelLabel").GetComponent<Text>();
+            Assert.AreEqual("+0", upgradeLevelLabel.text);
+        }
+
+        [UnityTest]
+        public IEnumerator Click_OnUpgradeButton_WithEnoughGold_IncrementsLevelAndDeductsGold()
+        {
+            run.gold = 1000;
+            OpenPanel();
+            yield return null;
+
+            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            int costForFirstLevel = runConfig.armyUpgradeCosts[0];
+            infoPopup.transform.Find("Window/BodyRow/GeneralColumn/UpgradeBand/UpgradeButton")
+                .GetComponent<Button>().onClick.Invoke();
+
+            Text upgradeLevelLabel = infoPopup.transform
+                .Find("Window/BodyRow/GeneralColumn/UpgradeBand/UpgradeLevelLabel").GetComponent<Text>();
+            Text currencyLabel = infoPopup.transform.Find("Window/CurrencyLabel").GetComponent<Text>();
+            Assert.AreEqual("+1", upgradeLevelLabel.text);
+            Assert.AreEqual($"재화: {1000 - costForFirstLevel}", currencyLabel.text);
+        }
+
+        [UnityTest]
+        public IEnumerator UpgradeButton_WithInsufficientGold_IsNotInteractable()
+        {
+            run.gold = 0;
+            OpenPanel();
+            yield return null;
+
+            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
+
+            var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+            Button upgradeButton = infoPopup.transform
+                .Find("Window/BodyRow/GeneralColumn/UpgradeBand/UpgradeButton").GetComponent<Button>();
+            Assert.IsFalse(upgradeButton.interactable, "재화 부족 시 업그레이드 버튼은 비활성이어야 함");
         }
 
         [UnityTest]

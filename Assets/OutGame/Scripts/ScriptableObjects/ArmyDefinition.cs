@@ -13,6 +13,7 @@ namespace OutGame.ScriptableObjects
         [SerializeField] private string displayName = "기본 군대";
         [SerializeField] private Sprite portrait;
         [SerializeField, Min(1)] private int baseSoldierCount = 30;
+        [SerializeField, Min(1)] private int maxSoldierCount = 60; // §4-26: 초안 baseSoldierCount×2
 
         [Header("장군 (§5.5)")]
         [SerializeField] private string generalName = "이름 없는 장군";
@@ -42,6 +43,7 @@ namespace OutGame.ScriptableObjects
                 id = armyId,
                 displayName = displayName,
                 baseSoldierCount = baseSoldierCount,
+                maxSoldierCount = maxSoldierCount,
                 generalName = generalName,
                 generalPower = generalPower,
                 generalHealth = generalHealth,
@@ -70,6 +72,7 @@ namespace OutGame.ScriptableObjects
         private void OnValidate()
         {
             if (baseSoldierCount < 1) baseSoldierCount = 1;
+            if (maxSoldierCount < baseSoldierCount) maxSoldierCount = baseSoldierCount;
             if (generalPower < 0f) generalPower = 0f;
             if (generalHealth < 0f) generalHealth = 0f;
             if (generalAttack < 0f) generalAttack = 0f;

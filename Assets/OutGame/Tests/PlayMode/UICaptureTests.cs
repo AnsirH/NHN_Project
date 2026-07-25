@@ -104,11 +104,12 @@ namespace OutGame.Tests.PlayMode
                 var armyDef = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
                 var bowDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Bow");
 
+                var runConfig = new RunConfig { startingArmyCount = 3, startingArmyDefId = "army_basic" };
                 MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
-                RunState run = RunStateFactory.Create(map, new RunConfig { startingArmyCount = 3, startingArmyDefId = "army_basic" });
+                RunState run = RunStateFactory.Create(map, runConfig);
                 run.ownedItemIds.Add("item_bow");
 
-                panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default", new[] { armyDef }, new[] { bowDef });
+                panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default", new[] { armyDef }, new[] { bowDef }, runConfig);
 
                 yield return CaptureToFile("ArmyDeploymentPanel_01_initial.png");
 
@@ -133,9 +134,17 @@ namespace OutGame.Tests.PlayMode
 
                 // 군대 정보 팝업 오픈 상태 (인벤토리 팝업 닫고 확인)
                 panel.GetComponentInChildren<InventoryPopup>(includeInactive: true).Hide();
+                run.gold = 1000; // 업그레이드 버튼이 활성화되어 있는 상태를 캡처하기 위해 재화 지급
                 cardView.OnPointerClick(new PointerEventData(EventSystem.current));
 
                 yield return CaptureToFile("ArmyDeploymentPanel_04_army_info.png");
+
+                // 군대 업그레이드(§4-26) 버튼 클릭 후 상태 — "+N" 라벨과 스탯 상승 반영 확인용.
+                var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
+                infoPopup.transform.Find("Window/BodyRow/GeneralColumn/UpgradeBand/UpgradeButton")
+                    .GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
+
+                yield return CaptureToFile("ArmyDeploymentPanel_05_army_info_upgraded.png");
             }
             finally
             {

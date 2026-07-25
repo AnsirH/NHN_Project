@@ -57,6 +57,7 @@ namespace OutGame.UI.Deployment
         private readonly Dictionary<int, DeploySlotView> allySlotViewsById = new Dictionary<int, DeploySlotView>();
 
         private RunState run;
+        private RunConfig runConfig;
         private DeploymentState deployment;
         private string roomId;
         private RoomType roomType;
@@ -70,14 +71,17 @@ namespace OutGame.UI.Deployment
             RoomType roomTypeValue,
             string encounterIdValue,
             IReadOnlyList<ArmyDefinition> armyDefs,
-            IReadOnlyList<ItemDefinition> itemDefs)
+            IReadOnlyList<ItemDefinition> itemDefs,
+            RunConfig runConfigValue)
         {
             if (runState == null) throw new ArgumentNullException(nameof(runState));
             if (armyDefs == null) throw new ArgumentNullException(nameof(armyDefs));
             if (itemDefs == null) throw new ArgumentNullException(nameof(itemDefs));
+            if (runConfigValue == null) throw new ArgumentNullException(nameof(runConfigValue));
             ValidateWiring();
 
             run = runState;
+            runConfig = runConfigValue;
             roomId = roomIdValue;
             roomType = roomTypeValue;
             encounterId = encounterIdValue;
@@ -267,7 +271,7 @@ namespace OutGame.UI.Deployment
                 return;
             }
 
-            armyInfoPopup.Open(army, def, ToDataDict(itemDefsById), run.gold);
+            armyInfoPopup.Open(army, def, ToDataDict(itemDefsById), run, runConfig);
         }
 
         private void OnStartBattleClicked()

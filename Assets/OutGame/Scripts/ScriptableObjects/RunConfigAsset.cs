@@ -14,6 +14,7 @@ namespace OutGame.ScriptableObjects
         [SerializeField, Min(0)] private int startingGold = 0;
         [SerializeField, Min(0)] private int battleVictoryGold = 20; // §4-20/§9: 초안값
         [SerializeField, Min(1)] private int maxArmyCount = 28; // §4-7: BattleFieldConfig 슬롯 수와 일치해야 함
+        [SerializeField] private int[] armyUpgradeCosts = { 50, 100, 200, 350, 550 }; // §4-26: 초안값
 
         public RunConfig ToData()
         {
@@ -28,6 +29,7 @@ namespace OutGame.ScriptableObjects
                 startingGold = startingGold,
                 battleVictoryGold = battleVictoryGold,
                 maxArmyCount = maxArmyCount,
+                armyUpgradeCosts = (int[])armyUpgradeCosts.Clone(), // 배열 참조 공유 방지 — RunConfig 쪽 변경이 에셋에 반영되면 안 됨
             };
 
             try

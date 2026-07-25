@@ -16,6 +16,7 @@ MonoBehaviour:
   displayName: "\uAE30\uBCF8 \uAD70\uB300"
   portrait: {fileID: 0}
   baseSoldierCount: 30
+  maxSoldierCount: 60
   generalName: "\uC774\uB984 \uC5C6\uB294 \uC7A5\uAD70"
   generalPortrait: {fileID: 0}
   generalPower: 10

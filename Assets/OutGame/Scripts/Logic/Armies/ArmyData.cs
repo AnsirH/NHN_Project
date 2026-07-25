@@ -12,6 +12,7 @@ namespace OutGame.Logic.Armies
         public string id;
         public string displayName;
         public int baseSoldierCount = 30;
+        public int maxSoldierCount = 60; // §4-26(2026-07-19): 휴식 방 증원의 상한. 초안: baseSoldierCount×2
 
         // 장군 (§5.5 — 군대당 1명 상시 존재)
         public string generalName;
@@ -36,6 +37,9 @@ namespace OutGame.Logic.Armies
                 throw new ArgumentException("ArmyData.id가 비어 있습니다.");
             if (baseSoldierCount < 1)
                 throw new ArgumentException($"baseSoldierCount는 1 이상이어야 합니다. 현재: {baseSoldierCount}");
+            if (maxSoldierCount < baseSoldierCount)
+                throw new ArgumentException(
+                    $"maxSoldierCount({maxSoldierCount})는 baseSoldierCount({baseSoldierCount}) 이상이어야 합니다.");
             if (generalPower < 0f)
                 throw new ArgumentException($"generalPower는 0 이상이어야 합니다. 현재: {generalPower}");
             if (generalHealth < 0f)

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace OutGame.Logic.Runs
 {
@@ -17,6 +18,10 @@ namespace OutGame.Logic.Runs
         // 일치해야 하지만 서로 다른 에셋이라 자동 동기화되지 않는다 — 슬롯 수를 바꾸면 같이 조정할 것.
         public int maxArmyCount = 28;
 
+        // §4-26(2026-07-19): 군대 업그레이드 단계별 재화 비용 — 길이는 ArmyInstance.MaxUpgradeLevel과
+        // 일치해야 한다(인덱스 0 = +1단계 비용). 초안값, 밸런스 튜닝 전.
+        public int[] armyUpgradeCosts = { 50, 100, 200, 350, 550 };
+
         public void Validate()
         {
             if (string.IsNullOrWhiteSpace(startingArmyDefId))
@@ -32,6 +37,12 @@ namespace OutGame.Logic.Runs
             if (startingArmyCount > maxArmyCount)
                 throw new ArgumentException(
                     $"startingArmyCount({startingArmyCount})가 maxArmyCount({maxArmyCount})를 초과할 수 없습니다.");
+            if (armyUpgradeCosts == null || armyUpgradeCosts.Length != ArmyInstance.MaxUpgradeLevel)
+                throw new ArgumentException(
+                    $"armyUpgradeCosts는 길이 {ArmyInstance.MaxUpgradeLevel}이어야 합니다. " +
+                    $"현재: {armyUpgradeCosts?.Length.ToString() ?? "null"}");
+            if (armyUpgradeCosts.Any(cost => cost < 0))
+                throw new ArgumentException("armyUpgradeCosts는 모두 0 이상이어야 합니다.");
         }
     }
 }

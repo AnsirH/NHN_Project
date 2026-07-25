@@ -17,3 +17,4 @@ MonoBehaviour:
   startingGold: 0
   battleVictoryGold: 20
   maxArmyCount: 28
+  armyUpgradeCosts: 3200000064000000c80000005e01000026020000
