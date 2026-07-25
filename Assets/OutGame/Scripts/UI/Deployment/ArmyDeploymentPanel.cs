@@ -25,8 +25,9 @@ namespace OutGame.UI.Deployment
     /// 드래그 앤 드롭은 슬롯 간 이동/스왑(진형 변경)만 지원 — DeploymentState.Place가 이미 처리.
     /// 우측 "적 진영"은 아군과 같은 크기의 격자를 항상 전부 표시하고, EnemyCompositionGenerator가
     /// 생성한 구성(병과+병사 수)을 EnemyFormationAssigner로 열(column) 배치한다(§4-28) — 근접
-    /// 병과는 앞열, 원거리 병과는 뒷열에 군집(2026-07-19 사용자 요청). 실제 적 AI/전투 시뮬레이션은
-    /// 여전히 RoomEncounterTable 미결(§9), 표시·전투력·드롭 계산 전용.
+    /// 병과는 앞열, 원거리 병과는 뒷열에 군집(2026-07-19 사용자 요청). 유닛 UI는 아군과 동일한
+    /// ArmyCardView를 재사용하되 interactable=false로 표시 전용 처리한다(2026-07-26 사용자 요청).
+    /// 실제 적 AI/전투 시뮬레이션은 여전히 RoomEncounterTable 미결(§9), 표시·전투력·드롭 계산 전용.
     /// 중앙 축: 적 버프 표시(1차 "없음") → [전투 시작] → [아이템] → [프리셋](비활성).
     /// </summary>
     public class ArmyDeploymentPanel : MonoBehaviour
@@ -60,7 +61,7 @@ namespace OutGame.UI.Deployment
         private readonly Dictionary<string, ItemDefinition> itemDefsById = new Dictionary<string, ItemDefinition>();
         private readonly Dictionary<string, AugmentDefinition> augmentDefsById = new Dictionary<string, AugmentDefinition>();
         private readonly Dictionary<int, DeploySlotView> allySlotViewsById = new Dictionary<int, DeploySlotView>();
-        private readonly Dictionary<int, Text> enemySlotLabelsById = new Dictionary<int, Text>();
+        private readonly Dictionary<int, Transform> enemySlotCardContainersById = new Dictionary<int, Transform>();
 
         private RunState run;
         private RunConfig runConfig;
@@ -158,7 +159,7 @@ namespace OutGame.UI.Deployment
             foreach (Transform child in allySlotContainer.Cast<Transform>().ToArray()) Destroy(child.gameObject);
             foreach (Transform child in enemySlotContainer.Cast<Transform>().ToArray()) Destroy(child.gameObject);
             allySlotViewsById.Clear();
-            enemySlotLabelsById.Clear();
+            enemySlotCardContainersById.Clear();
 
             BattleFieldConfigData fieldData = fieldConfig.ToData();
             List<SlotDefinition> slots = fieldData.GenerateSlots();
@@ -173,26 +174,33 @@ namespace OutGame.UI.Deployment
             }
 
             // 적 진영 — 아군과 똑같은 크기의 격자를 항상 전부 만들고(§5.7 "플레이어 진영처럼"), 그 위에
-            // §4-28 생성된 구성을 EnemyFormationAssigner로 배치한다. 실제 적 AI/전투 시뮬레이션은
-            // 여전히 RoomEncounterTable 미결(§9) — 표시만 이 데이터로 한다.
+            // §4-28 생성된 구성을 EnemyFormationAssigner로 배치한다. 유닛 표시는 아군과 동일한
+            // ArmyCardView를 재사용한다(2026-07-26 사용자 요청 — 진영 간 UI 통일). 실제 적 AI/전투
+            // 시뮬레이션은 여전히 RoomEncounterTable 미결(§9) — 표시만 이 데이터로 한다.
             foreach (SlotDefinition slot in slots)
             {
-                Image slotImage = Instantiate(enemySlotPrefab, enemySlotContainer);
-                Text label = slotImage.GetComponentInChildren<Text>();
-                if (label == null)
+                Image slotBackground = Instantiate(enemySlotPrefab, enemySlotContainer);
+                Transform cardContainer = slotBackground.transform.Find("CardContainer");
+                if (cardContainer == null)
                 {
-                    Debug.LogWarning("[ArmyDeploymentPanel] EnemySlotPlaceholder 프리팹에 라벨(Text)이 없습니다 — SceneSetupM3UI.Run() 재실행 필요.");
+                    Debug.LogWarning("[ArmyDeploymentPanel] EnemySlotPlaceholder 프리팹에 CardContainer가 없습니다 — SceneSetupM3UI.Run() 재실행 필요.");
                     continue;
                 }
-                label.text = "";
-                enemySlotLabelsById[slot.slotId] = label;
+                enemySlotCardContainersById[slot.slotId] = cardContainer;
             }
 
             var assignments = EnemyFormationAssigner.Assign(enemyComposition, slots, fieldData.columns);
             foreach ((EnemyArmy enemy, SlotDefinition slot) in assignments)
             {
-                if (enemySlotLabelsById.TryGetValue(slot.slotId, out Text label))
-                    label.text = $"{EnemyClassLabel(enemy.armyClass)}\n{enemy.soldierCount}명";
+                if (!enemySlotCardContainersById.TryGetValue(slot.slotId, out Transform container)) continue;
+
+                ArmyCardView card = Instantiate(armyCardPrefab, container);
+                // 적 유닛은 run.armies에 속하지 않는 임시 표시용이라 실제 armyInstanceId가 없다 —
+                // interactable=false로 드래그/클릭/아이템 드롭을 막으므로 이 값은 식별용으로만 쓰인다.
+                card.Initialize($"enemy_{slot.slotId}", interactable: false);
+                armyDefsById.TryGetValue(enemy.armyDefId, out ArmyDefinition def);
+                card.SetDisplay(EnemyClassLabel(enemy.armyClass), $"{enemy.soldierCount}명", def != null ? def.Portrait : null);
+                ((RectTransform)card.transform).anchoredPosition = Vector2.zero;
             }
         }
 

@@ -124,7 +124,10 @@ namespace OutGame.Tests.PlayMode
                 // Open() 시점에 이미 전원 자동 배치돼 있으므로, 첫 카드를 "이미 있는 자리"로 다시
                 // 놓으면 아무 변화도 없는 캡처가 된다(2026-07-19 발견 — list-captures.sh로 01/02가
                 // 해시까지 완전히 동일함을 확인). 실제로 다른 슬롯으로 옮겨야 화면이 바뀐다.
-                var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+                // 적 진영도 아군과 동일한 ArmyCardView를 재사용하므로(2026-07-26) 아군 격자로 범위를
+                // 좁혀야 실제 보유 군대 카드를 얻는다.
+                var cardView = panel.transform.Find("MainRow/AllyColumn/SlotGrid")
+                    .GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
                 var emptySlot = panel.GetComponentsInChildren<DeploySlotView>()
                     .First(s => s.CardContainer.GetComponentInChildren<ArmyCardView>() == null);
                 typeof(ArmyDeploymentPanel)

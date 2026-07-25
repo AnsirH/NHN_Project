@@ -89,6 +89,11 @@ namespace OutGame.Tests.PlayMode
                 .Invoke(panel, new object[] { card, itemId });
         }
 
+        // 적 진영도 아군과 동일한 ArmyCardView를 재사용하므로(2026-07-26), panel 전체를 뒤지면 적
+        // 카드까지 섞여 나온다 — 실제 보유 군대 카드만 필요한 테스트는 반드시 아군 격자로 범위를 좁힌다.
+        private ArmyCardView[] AllyCards() =>
+            panel.transform.Find("MainRow/AllyColumn/SlotGrid").GetComponentsInChildren<ArmyCardView>(includeInactive: true);
+
         [UnityTest]
         public IEnumerator RunConfigDefaultAsset_HasArmyUpgradeCosts()
         {
@@ -106,7 +111,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cards = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
+            var cards = AllyCards();
             Assert.AreEqual(run.armies.Count, cards.Length);
         }
 
@@ -116,7 +121,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cards = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
+            var cards = AllyCards();
             Assert.AreEqual(run.armies.Count, cards.Length);
             foreach (var card in cards)
                 Assert.IsNotNull(card.GetComponentInParent<DeploySlotView>(), "자동 배치 후 모든 카드는 슬롯 안에 있어야 함 (§4-7)");
@@ -143,16 +148,19 @@ namespace OutGame.Tests.PlayMode
         [UnityTest]
         public IEnumerator Open_EnemySlotsShowClassLabelsOnlyForGeneratedUnits()
         {
+            // 2026-07-26 사용자 요청: 적 진영도 아군과 동일한 ArmyCardView로 표시한다 — 빈 슬롯은
+            // 배경만 있고 카드 자체가 없어야 한다(구성 개수만큼만 카드 생성).
             OpenPanel();
             yield return null;
 
             Transform enemySlotGrid = panel.transform.Find("MainRow/EnemyColumn/SlotGrid");
-            var nonEmptyLabels = enemySlotGrid.GetComponentsInChildren<Text>()
-                .Select(t => t.text).Where(t => !string.IsNullOrEmpty(t)).ToList();
+            var enemyCards = enemySlotGrid.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
+            Assert.AreEqual(TestEnemyComposition.Count, enemyCards.Length, "생성된 적 구성 개수만큼만 카드가 있어야 함");
 
-            // §4-28: 각 항목은 플레이어 군대와 같은 형태(병과+병사 수)라 라벨에도 병사 수가 함께
-            // 표시된다. 나머지(빈 슬롯)는 라벨이 비어 있어야 한다.
-            CollectionAssert.AreEquivalent(new[] { "궁수\n30명", "방패병\n30명", "기본\n30명" }, nonEmptyLabels);
+            var labels = enemyCards.Select(card =>
+                $"{card.transform.Find("NameLabel").GetComponent<Text>().text}\n{card.transform.Find("ClassBadge").GetComponent<Text>().text}"
+            ).ToList();
+            CollectionAssert.AreEquivalent(new[] { "궁수\n30명", "방패병\n30명", "기본\n30명" }, labels);
         }
 
         [UnityTest]
@@ -166,11 +174,19 @@ namespace OutGame.Tests.PlayMode
             var gridLayout = enemySlotGrid.GetComponent<GridLayoutGroup>();
             int columns = gridLayout.constraintCount;
 
-            var slots = enemySlotGrid.GetComponentsInChildren<Text>().ToList();
-            int shieldmanIndex = slots.FindIndex(t => t.text.StartsWith("방패병"));
-            int archerIndex = slots.FindIndex(t => t.text.StartsWith("궁수"));
-            Assert.Less(shieldmanIndex % columns, archerIndex % columns,
-                "방패병 슬롯의 열 인덱스가 궁수보다 낮아야(더 앞열이어야) 함");
+            int ColumnOf(ArmyCardView card)
+            {
+                Transform slotRoot = card.transform.parent;
+                while (slotRoot.parent != enemySlotGrid) slotRoot = slotRoot.parent;
+                return slotRoot.GetSiblingIndex() % columns;
+            }
+
+            var enemyCards = enemySlotGrid.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
+            ArmyCardView shieldman = enemyCards.First(c => c.transform.Find("NameLabel").GetComponent<Text>().text == "방패병");
+            ArmyCardView archer = enemyCards.First(c => c.transform.Find("NameLabel").GetComponent<Text>().text == "궁수");
+
+            Assert.Less(ColumnOf(shieldman), ColumnOf(archer),
+                "방패병 카드의 열 인덱스가 궁수보다 낮아야(더 앞열이어야) 함");
         }
 
         [UnityTest]
@@ -310,7 +326,7 @@ namespace OutGame.Tests.PlayMode
             Assert.DoesNotThrow(() => OpenPanel());
             yield return null;
 
-            var cards = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
+            var cards = AllyCards();
             foreach (var card in cards)
                 Assert.IsNotNull(card.GetComponentInParent<DeploySlotView>(), "유효하지 않은 저장 슬롯도 자동 배치로 대체돼야 함");
         }
@@ -331,7 +347,7 @@ namespace OutGame.Tests.PlayMode
 
             Assert.IsTrue(run.deployment.Any(a => a.armyInstanceId == newArmy.instanceId),
                 "새로 얻은 부대는 남는 슬롯에 자동 배치되어 run.deployment에 반영돼야 함");
-            var cards = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
+            var cards = AllyCards();
             Assert.IsTrue(cards.Any(c => c.ArmyInstanceId == newArmy.instanceId));
         }
 
@@ -354,7 +370,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             DropItemOnCard(cardView, "item_bow");
             yield return null; // HandleItemDropNextFrame의 1프레임 지연
             yield return null; // 부여 로직 완료 대기
@@ -396,7 +412,7 @@ namespace OutGame.Tests.PlayMode
             var bindWarningPopup = panel.GetComponentInChildren<ItemBindWarningPopup>(includeInactive: true);
 
             panel.transform.Find("MainRow/CenterColumn/ItemButton").GetComponent<Button>().onClick.Invoke();
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             DropItemOnCard(cardView, "item_bow");
             yield return null;
             yield return null;
@@ -415,7 +431,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             DropItemOnCard(cardView, "item_bow");
             yield return null;
             yield return null;
@@ -461,7 +477,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             DropItemOnCard(cardView, "item_shield"); // ownedItemIds에 없음
             yield return null;
             yield return null;
@@ -481,7 +497,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             DropItemOnCard(cardView, "item_bow");
             yield return null;
             yield return null;
@@ -503,7 +519,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
@@ -523,7 +539,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
@@ -542,7 +558,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
@@ -560,7 +576,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
@@ -576,7 +592,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
@@ -596,7 +612,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
@@ -613,7 +629,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
@@ -628,7 +644,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
@@ -644,7 +660,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
@@ -666,7 +682,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
@@ -689,7 +705,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
@@ -707,7 +723,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var cardView = panel.GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+            var cardView = AllyCards().First();
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);

@@ -33,7 +33,12 @@ namespace OutGame.UI.Deployment
         /// <summary>드래그 없이 카드를 클릭했을 때 발행 — 군대 정보 팝업(§5.7)을 연다.</summary>
         public event Action<ArmyCardView> Clicked;
 
-        public void Initialize(string armyInstanceId)
+        /// <summary>
+        /// interactable=false면 드래그/클릭/아이템 드롭을 전부 비활성화한다 — 적 진영처럼 순수
+        /// 표시 전용으로 같은 카드 UI를 재사용할 때 쓴다(2026-07-26). CanvasGroup.blocksRaycasts를
+        /// 끄면 레이캐스트 자체가 이 카드를 건너뛰므로 각 이벤트 핸들러를 개별적으로 막을 필요가 없다.
+        /// </summary>
+        public void Initialize(string armyInstanceId, bool interactable = true)
         {
             if (string.IsNullOrEmpty(armyInstanceId))
                 throw new ArgumentException("armyInstanceId가 비어 있습니다.", nameof(armyInstanceId));
@@ -41,13 +46,19 @@ namespace OutGame.UI.Deployment
                 throw new InvalidOperationException("ArmyCardView 프리팹의 필드가 배선되지 않았습니다.");
 
             ArmyInstanceId = armyInstanceId;
+            canvasGroup.blocksRaycasts = interactable;
         }
 
-        public void SetDisplay(string displayName, string classLabel, Sprite portraitSprite)
+        /// <summary>
+        /// badgeText는 아군 쪽에선 병과 뱃지로 쓰이지만(현재는 이름에 병과가 포함돼 항상 빈 문자열),
+        /// 적 진영(ArmyDeploymentPanel)에서는 같은 자리를 병사 수 표시로 재사용한다 — 필드 하나를
+        /// 문맥에 따라 다른 값으로 채우는 것이니 호출부에서 이 재사용을 명시적으로 인지해야 한다.
+        /// </summary>
+        public void SetDisplay(string displayName, string badgeText, Sprite portraitSprite)
         {
             nameLabel.text = displayName;
-            classBadge.text = classLabel;
-            classBadge.gameObject.SetActive(!string.IsNullOrEmpty(classLabel));
+            classBadge.text = badgeText;
+            classBadge.gameObject.SetActive(!string.IsNullOrEmpty(badgeText));
             if (portraitSprite != null) portrait.sprite = portraitSprite;
         }
 
