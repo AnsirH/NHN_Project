@@ -173,10 +173,16 @@ namespace BalanceLab
                 c.GetFloat("critMultiplier"));
         }
 
-        public RoleDefinition GetRole(string roleId)
+        /// <summary>
+        /// 병사 정의 = .asset(인게임 속성) + CSV 레벨별 5스탯 결합 —
+        /// 실제 게임의 연결 경로(아웃게임이 스탯을 보내는 구조)와 **같은 결합 함수**를 타므로
+        /// 밸런싱이 실전과 같은 코드로 검증된다.
+        /// </summary>
+        public RoleDefinition GetRole(string roleId, int level)
         {
             string key = string.IsNullOrEmpty(roleId) ? NormalRoleName : roleId;
-            if (_roleDefinitions.TryGetValue(key, out RoleDefinition cached))
+            string cacheKey = key + "@" + level;
+            if (_roleDefinitions.TryGetValue(cacheKey, out RoleDefinition cached))
             {
                 return cached;
             }
@@ -184,19 +190,23 @@ namespace BalanceLab
             {
                 throw new InvalidDataException($"미등록 roleId '{key}' — Assets/Data의 RoleData 에셋 이름과 일치해야 한다");
             }
-            RoleDefinition role = BuildRole(parsed);
-            _roleDefinitions[key] = role;
+            RequireLevelInRange(SoldierStats, level);
+            StatTable.StatRow row = SoldierStats.Get(key, level);
+            RoleDefinition role = RoleDefinition.WithStats(
+                BuildRole(parsed), row.MaxHp, row.AttackDamage, row.Defense, row.CritChancePercent, row.MoveSpeed);
+            _roleDefinitions[cacheKey] = role;
             return role;
         }
 
         /// <summary>null/빈 문자열 = 장군 없음(null). 미등록 키는 예외.</summary>
-        public GeneralDefinition GetGeneral(string generalId)
+        public GeneralDefinition GetGeneral(string generalId, int level)
         {
             if (string.IsNullOrEmpty(generalId))
             {
                 return null;
             }
-            if (_generalDefinitions.TryGetValue(generalId, out GeneralDefinition cached))
+            string cacheKey = generalId + "@" + level;
+            if (_generalDefinitions.TryGetValue(cacheKey, out GeneralDefinition cached))
             {
                 return cached;
             }
@@ -225,8 +235,32 @@ namespace BalanceLab
                 parsed.GetFloat("activeParamA"),
                 parsed.GetFloat("activeParamB"),
                 parsed.GetFloat("activeDuration"));
-            _generalDefinitions[generalId] = general;
+
+            // 장군 스탯도 병과별 × 레벨별 표에서 온다 (능력은 에셋, 스탯은 표 — 연결 경로와 같은 분리).
+            if (!StatTable.TryClassIdFromGeneralAssetName(parsed.Name, out string generalClassId))
+            {
+                throw parsed.Fail($"장군 에셋 이름이 규약('<병과>{StatTable.GeneralAssetSuffix}')을 벗어난다");
+            }
+            RequireLevelInRange(GeneralStats, level);
+            StatTable.StatRow generalRow = GeneralStats.Get(generalClassId, level);
+            general = GeneralDefinition.WithCombatRole(
+                general,
+                RoleDefinition.WithStats(
+                    general.CombatRole,
+                    generalRow.MaxHp, generalRow.AttackDamage, generalRow.Defense,
+                    generalRow.CritChancePercent, generalRow.MoveSpeed));
+
+            _generalDefinitions[cacheKey] = general;
             return general;
+        }
+
+        private static void RequireLevelInRange(StatTable table, int level)
+        {
+            if (level < 0 || level > table.MaxLevel)
+            {
+                throw new InvalidDataException(
+                    $"{table.SourceName}: 레벨 {level}은 범위를 벗어난다 (0~{table.MaxLevel})");
+            }
         }
 
         private static RoleDefinition BuildRole(ParsedAsset a)

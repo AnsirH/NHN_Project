@@ -1,0 +1,10 @@
+{
+  "name": "warrior_lv0_vs_lv5",
+  "runs": 200,
+  "left": [
+    { "squadId": "L1", "roleId": "Warrior", "generalId": "WarriorGeneral", "level": 0, "soldierCount": 20, "slotX": 1.0, "slotY": 0.5 }
+  ],
+  "right": [
+    { "squadId": "R1", "roleId": "Warrior", "generalId": "WarriorGeneral", "level": 5, "soldierCount": 20, "slotX": 1.0, "slotY": 0.5 }
+  ]
+}

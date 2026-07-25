@@ -38,6 +38,25 @@ namespace NHN.Simulation.Balance
         public const string ExpectedHeader = "classId,level,maxHp,attackDamage,defense,critChancePercent,moveSpeed";
         private const int ColumnCount = 7;
 
+        /// <summary>장군 에셋 이름 규약의 접미사 (예: Warrior → WarriorGeneral). 에디터·CLI 공용.</summary>
+        public const string GeneralAssetSuffix = "General";
+
+        public static string GeneralAssetName(string classId) => classId + GeneralAssetSuffix;
+
+        /// <summary>장군 에셋 이름 → 병과 id (스탯 표 조회 키). 규약을 벗어난 이름이면 false.</summary>
+        public static bool TryClassIdFromGeneralAssetName(string generalAssetName, out string classId)
+        {
+            if (!string.IsNullOrEmpty(generalAssetName)
+                && generalAssetName.Length > GeneralAssetSuffix.Length
+                && generalAssetName.EndsWith(GeneralAssetSuffix, System.StringComparison.Ordinal))
+            {
+                classId = generalAssetName.Substring(0, generalAssetName.Length - GeneralAssetSuffix.Length);
+                return true;
+            }
+            classId = null;
+            return false;
+        }
+
         private readonly Dictionary<string, StatRow[]> _rowsByClass;
         private readonly List<string> _classIds;
 

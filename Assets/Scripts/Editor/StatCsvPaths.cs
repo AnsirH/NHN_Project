@@ -1,3 +1,5 @@
+using NHN.Simulation.Balance;
+
 namespace NHN.EditorTools
 {
     /// <summary>
@@ -18,7 +20,7 @@ namespace NHN.EditorTools
         /// <summary>병과 id → RoleData 에셋 이름 (동일).</summary>
         public static string RoleAssetName(string classId) => classId;
 
-        /// <summary>병과 id → GeneralData 에셋 이름 규약 (예: Warrior → WarriorGeneral).</summary>
-        public static string GeneralAssetName(string classId) => classId + "General";
+        /// <summary>병과 id → GeneralData 에셋 이름 규약 (예: Warrior → WarriorGeneral). 규약은 StatTable이 소유 — CLI와 공유.</summary>
+        public static string GeneralAssetName(string classId) => StatTable.GeneralAssetName(classId);
     }
 }

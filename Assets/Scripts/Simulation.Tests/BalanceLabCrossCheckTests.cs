@@ -54,6 +54,48 @@ namespace NHN.Simulation.Tests
             public int ticks;
         }
 
+        // 레벨 확인 전용 DTO — JsonUtility는 선언된 필드만 읽으므로 나머지는 무시된다.
+        [System.Serializable]
+        private sealed class LevelProbeDto
+        {
+            public string squadId;
+            public int level;
+        }
+
+        [System.Serializable]
+        private sealed class LevelScenarioDto
+        {
+            public System.Collections.Generic.List<LevelProbeDto> left;
+            public System.Collections.Generic.List<LevelProbeDto> right;
+        }
+
+        /// <summary>
+        /// 교차 검증 대상 시나리오는 레벨 0이어야 한다.
+        /// 레벨은 BalanceLab 전용 대역(CLI가 CSV에서 스탯을 조회하는 키)이라 에디터 경로에는 없다 —
+        /// 레벨이 0이 아니면 두 쪽이 서로 다른 스탯으로 싸우게 되어 비교 자체가 무의미해진다.
+        /// </summary>
+        private static void RequireLevelZero(string scenarioJson, string scenarioName)
+        {
+            var probe = JsonUtility.FromJson<LevelScenarioDto>(scenarioJson);
+            AssertSideLevelZero(probe.left, "left", scenarioName);
+            AssertSideLevelZero(probe.right, "right", scenarioName);
+        }
+
+        private static void AssertSideLevelZero(
+            System.Collections.Generic.List<LevelProbeDto> side, string label, string scenarioName)
+        {
+            if (side == null)
+            {
+                return;
+            }
+            foreach (LevelProbeDto squad in side)
+            {
+                Assert.AreEqual(0, squad.level,
+                    $"{scenarioName}/{label}/{squad.squadId}: 교차 검증 시나리오는 레벨 0이어야 한다 " +
+                    "(레벨은 CLI 전용 스탯 조회 키라 에디터 경로가 재현할 수 없다)");
+            }
+        }
+
         [TestCase("warrior_general_vs_plain")]
         [TestCase("archer_general_volley_cross")]
         public void CliAndEditor_ProduceIdenticalResults(string scenarioName)
@@ -68,7 +110,9 @@ namespace NHN.Simulation.Tests
                     $"CLI 결과가 없습니다 — 먼저 실행: dotnet run --project Tools/BalanceLab -- Tools/BalanceLab/scenarios/{scenarioName}.json");
             }
 
-            var scenario = JsonUtility.FromJson<ScenarioDto>(File.ReadAllText(scenarioPath));
+            string scenarioJson = File.ReadAllText(scenarioPath);
+            RequireLevelZero(scenarioJson, scenarioName);
+            var scenario = JsonUtility.FromJson<ScenarioDto>(scenarioJson);
             var cliResult = JsonUtility.FromJson<ResultDto>(File.ReadAllText(resultPath));
             Assert.AreEqual(scenarioName, cliResult.scenarioName, "결과 파일이 같은 시나리오의 것이어야 한다");
             Assert.GreaterOrEqual(cliResult.battles.Count, CrossCheckSeeds, $"교차 검증에는 최소 {CrossCheckSeeds}판 기록이 필요하다");
