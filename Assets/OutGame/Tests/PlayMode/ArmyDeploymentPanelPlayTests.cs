@@ -126,28 +126,51 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Open_BuildsOneEnemySlotPerCompositionEntry()
+        public IEnumerator Open_BuildsFullEnemyGridMatchingAllySize()
         {
+            // 2026-07-19 사용자 요청: 적 진영도 플레이어 진영처럼 항상 꽉 찬 격자를 보여줘야 한다 —
+            // 생성된 구성 개수(3개)만큼만 슬롯을 만들던 이전 방식은 폐기.
             OpenPanel();
             yield return null;
 
+            Transform allySlotGrid = panel.transform.Find("MainRow/AllyColumn/SlotGrid");
             Transform enemySlotGrid = panel.transform.Find("MainRow/EnemyColumn/SlotGrid");
             Assert.IsNotNull(enemySlotGrid, "적 진영 슬롯 컨테이너가 있어야 함");
-            Assert.AreEqual(TestEnemyComposition.Count, enemySlotGrid.childCount,
-                "§4-28: 적 진영 슬롯은 생성된 구성 개수만큼만 만들어져야 함 (아군 슬롯 격자 전체를 채우면 안 됨)");
+            Assert.AreEqual(allySlotGrid.childCount, enemySlotGrid.childCount,
+                "적 진영 격자 크기는 아군과 같아야 함(§5.7)");
         }
 
         [UnityTest]
-        public IEnumerator Open_EnemySlotsShowClassLabels()
+        public IEnumerator Open_EnemySlotsShowClassLabelsOnlyForGeneratedUnits()
         {
             OpenPanel();
             yield return null;
 
             Transform enemySlotGrid = panel.transform.Find("MainRow/EnemyColumn/SlotGrid");
-            var labels = enemySlotGrid.GetComponentsInChildren<Text>().Select(t => t.text).ToList();
+            var nonEmptyLabels = enemySlotGrid.GetComponentsInChildren<Text>()
+                .Select(t => t.text).Where(t => !string.IsNullOrEmpty(t)).ToList();
 
-            // §4-28: 각 항목은 플레이어 군대와 같은 형태(병과+병사 수)라 라벨에도 병사 수가 함께 표시된다.
-            CollectionAssert.AreEquivalent(new[] { "궁수\n30명", "방패병\n30명", "기본\n30명" }, labels);
+            // §4-28: 각 항목은 플레이어 군대와 같은 형태(병과+병사 수)라 라벨에도 병사 수가 함께
+            // 표시된다. 나머지(빈 슬롯)는 라벨이 비어 있어야 한다.
+            CollectionAssert.AreEquivalent(new[] { "궁수\n30명", "방패병\n30명", "기본\n30명" }, nonEmptyLabels);
+        }
+
+        [UnityTest]
+        public IEnumerator Open_ShieldmanPlacedInFrontOfArcher()
+        {
+            // 2026-07-19 사용자 요청: 근접(방패병)은 앞열, 원거리(궁수)는 뒷열.
+            OpenPanel();
+            yield return null;
+
+            Transform enemySlotGrid = panel.transform.Find("MainRow/EnemyColumn/SlotGrid");
+            var gridLayout = enemySlotGrid.GetComponent<GridLayoutGroup>();
+            int columns = gridLayout.constraintCount;
+
+            var slots = enemySlotGrid.GetComponentsInChildren<Text>().ToList();
+            int shieldmanIndex = slots.FindIndex(t => t.text.StartsWith("방패병"));
+            int archerIndex = slots.FindIndex(t => t.text.StartsWith("궁수"));
+            Assert.Less(shieldmanIndex % columns, archerIndex % columns,
+                "방패병 슬롯의 열 인덱스가 궁수보다 낮아야(더 앞열이어야) 함");
         }
 
         [UnityTest]

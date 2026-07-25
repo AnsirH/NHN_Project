@@ -23,8 +23,10 @@ namespace OutGame.UI.Deployment
     /// 군대 보유 상한 = 배치 슬롯 수(§4-7)이므로 보유 군대는 항상 전부 슬롯에 들어간다.
     /// Open() 시점에 슬롯 ID 오름차순으로 자동 배치되며, 별도 "보유 군대" 목록/드롭존은 없다.
     /// 드래그 앤 드롭은 슬롯 간 이동/스왑(진형 변경)만 지원 — DeploymentState.Place가 이미 처리.
-    /// 우측 "적 진영"은 EnemyCompositionGenerator가 생성한 구성(병과+병사 수)을 표시한다(§4-28) —
-    /// 실제 적 AI/전투 시뮬레이션은 여전히 RoomEncounterTable 미결(§9), 표시·전투력·드롭 계산 전용.
+    /// 우측 "적 진영"은 아군과 같은 크기의 격자를 항상 전부 표시하고, EnemyCompositionGenerator가
+    /// 생성한 구성(병과+병사 수)을 EnemyFormationAssigner로 열(column) 배치한다(§4-28) — 근접
+    /// 병과는 앞열, 원거리 병과는 뒷열에 군집(2026-07-19 사용자 요청). 실제 적 AI/전투 시뮬레이션은
+    /// 여전히 RoomEncounterTable 미결(§9), 표시·전투력·드롭 계산 전용.
     /// 중앙 축: 적 버프 표시(1차 "없음") → [전투 시작] → [아이템] → [프리셋](비활성).
     /// </summary>
     public class ArmyDeploymentPanel : MonoBehaviour
@@ -58,6 +60,7 @@ namespace OutGame.UI.Deployment
         private readonly Dictionary<string, ItemDefinition> itemDefsById = new Dictionary<string, ItemDefinition>();
         private readonly Dictionary<string, AugmentDefinition> augmentDefsById = new Dictionary<string, AugmentDefinition>();
         private readonly Dictionary<int, DeploySlotView> allySlotViewsById = new Dictionary<int, DeploySlotView>();
+        private readonly Dictionary<int, Text> enemySlotLabelsById = new Dictionary<int, Text>();
 
         private RunState run;
         private RunConfig runConfig;
@@ -155,8 +158,10 @@ namespace OutGame.UI.Deployment
             foreach (Transform child in allySlotContainer.Cast<Transform>().ToArray()) Destroy(child.gameObject);
             foreach (Transform child in enemySlotContainer.Cast<Transform>().ToArray()) Destroy(child.gameObject);
             allySlotViewsById.Clear();
+            enemySlotLabelsById.Clear();
 
-            List<SlotDefinition> slots = fieldConfig.ToData().GenerateSlots();
+            BattleFieldConfigData fieldData = fieldConfig.ToData();
+            List<SlotDefinition> slots = fieldData.GenerateSlots();
 
             foreach (SlotDefinition slot in slots)
             {
@@ -167,17 +172,27 @@ namespace OutGame.UI.Deployment
                 allySlotViewsById[slot.slotId] = view;
             }
 
-            // 적 진영 — §4-28 생성된 구성을 그대로 시각화(전술 판단 근거, §5.7). 각 항목은 플레이어
-            // 군대와 같은 형태(ArmyDefinition 참조+병과+병사 수)라 병사 수도 함께 보여준다. 실제
-            // 적 AI/전투 시뮬레이션은 여전히 RoomEncounterTable 미결(§9) — 표시만 이 데이터로 한다.
-            foreach (EnemyArmy enemy in enemyComposition)
+            // 적 진영 — 아군과 똑같은 크기의 격자를 항상 전부 만들고(§5.7 "플레이어 진영처럼"), 그 위에
+            // §4-28 생성된 구성을 EnemyFormationAssigner로 배치한다. 실제 적 AI/전투 시뮬레이션은
+            // 여전히 RoomEncounterTable 미결(§9) — 표시만 이 데이터로 한다.
+            foreach (SlotDefinition slot in slots)
             {
                 Image slotImage = Instantiate(enemySlotPrefab, enemySlotContainer);
                 Text label = slotImage.GetComponentInChildren<Text>();
-                if (label != null)
+                if (label == null)
+                {
+                    Debug.LogWarning("[ArmyDeploymentPanel] EnemySlotPlaceholder 프리팹에 라벨(Text)이 없습니다 — SceneSetupM3UI.Run() 재실행 필요.");
+                    continue;
+                }
+                label.text = "";
+                enemySlotLabelsById[slot.slotId] = label;
+            }
+
+            var assignments = EnemyFormationAssigner.Assign(enemyComposition, slots, fieldData.columns);
+            foreach ((EnemyArmy enemy, SlotDefinition slot) in assignments)
+            {
+                if (enemySlotLabelsById.TryGetValue(slot.slotId, out Text label))
                     label.text = $"{EnemyClassLabel(enemy.armyClass)}\n{enemy.soldierCount}명";
-                else
-                    Debug.LogWarning("[ArmyDeploymentPanel] EnemySlotPlaceholder 프리팹에 라벨(Text)이 없어 병과를 표시하지 못했습니다 — SceneSetupM3UI.Run() 재실행 필요.");
             }
         }
 
