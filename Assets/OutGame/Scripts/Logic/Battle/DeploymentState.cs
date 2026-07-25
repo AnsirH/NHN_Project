@@ -88,30 +88,19 @@ namespace OutGame.Logic.Battle
             armyToSlot.Remove(armyInstanceId);
         }
 
-        /// <summary>배치 확정 → 인게임 전달 데이터 생성 (§7.1). 전투/보스 방이 아니면 예외.</summary>
-        public BattleSetupData BuildSetup(
-            string roomId,
-            RoomType roomType,
-            string encounterId,
-            RunState run,
-            IReadOnlyDictionary<string, ItemData> items,
-            IReadOnlyDictionary<string, ArmyData> armyDefs)
+        /// <summary>
+        /// 현재 배치를 DeployedArmy 목록으로 변환한다 — 전투 시작 가능 여부/방 타입 제약 없이 항상
+        /// 호출 가능하다(배치 화면의 실시간 전투력 미리보기 등에 사용, §4-28). BuildSetup은 이 결과에
+        /// §7 전송 조건(방 타입, 최소 1개 배치)을 추가로 검사해서 쓴다 — 변환 로직 자체는 여기 하나뿐.
+        /// </summary>
+        public List<DeployedArmy> BuildDeployedArmies(
+            RunState run, IReadOnlyDictionary<string, ItemData> items, IReadOnlyDictionary<string, ArmyData> armyDefs)
         {
             if (run == null) throw new ArgumentNullException(nameof(run));
             if (items == null) throw new ArgumentNullException(nameof(items));
             if (armyDefs == null) throw new ArgumentNullException(nameof(armyDefs));
-            if (roomType != RoomType.NormalBattle && roomType != RoomType.Boss)
-                throw new ArgumentException(
-                    $"배치는 전투/보스 방에서만 가능합니다 (§4-8). 요청 타입: {roomType}", nameof(roomType));
-            if (!CanStartBattle)
-                throw new InvalidOperationException("최소 1개 부대를 배치해야 전투를 시작할 수 있습니다 (§5.7).");
 
-            var setup = new BattleSetupData
-            {
-                roomId = roomId,
-                roomType = roomType,
-                encounterId = encounterId,
-            };
+            var result = new List<DeployedArmy>();
 
             // slotId 오름차순 고정 — Dictionary 열거 순서는 계약이 아니므로 인게임에 넘길 리스트
             // 순서를 여기서 결정적으로 만든다 (§7.1: 직렬화된 계약의 형태가 안정적이어야 함).
@@ -127,7 +116,7 @@ namespace OutGame.Logic.Battle
                 ItemData item = ItemEquipService.ResolveItem(army, items);
                 (float x, float y) = slotPositions[slotId];
 
-                setup.armies.Add(new DeployedArmy
+                result.Add(new DeployedArmy
                 {
                     armyInstanceId = armyInstanceId,
                     armyDefId = army.armyDefId,
@@ -140,6 +129,32 @@ namespace OutGame.Logic.Battle
                     slotY = y,
                 });
             }
+
+            return result;
+        }
+
+        /// <summary>배치 확정 → 인게임 전달 데이터 생성 (§7.1). 전투/보스 방이 아니거나 배치가 없으면 예외.</summary>
+        public BattleSetupData BuildSetup(
+            string roomId,
+            RoomType roomType,
+            string encounterId,
+            RunState run,
+            IReadOnlyDictionary<string, ItemData> items,
+            IReadOnlyDictionary<string, ArmyData> armyDefs)
+        {
+            if (roomType != RoomType.NormalBattle && roomType != RoomType.Boss)
+                throw new ArgumentException(
+                    $"배치는 전투/보스 방에서만 가능합니다 (§4-8). 요청 타입: {roomType}", nameof(roomType));
+            if (!CanStartBattle)
+                throw new InvalidOperationException("최소 1개 부대를 배치해야 전투를 시작할 수 있습니다 (§5.7).");
+
+            var setup = new BattleSetupData
+            {
+                roomId = roomId,
+                roomType = roomType,
+                encounterId = encounterId,
+            };
+            setup.armies.AddRange(BuildDeployedArmies(run, items, armyDefs));
 
             return setup;
         }

@@ -257,6 +257,31 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
+        public void BuildDeployedArmies_EmptyDeployment_ReturnsEmptyList_DoesNotThrow()
+        {
+            // BuildSetup과 달리 전투 시작 가능 여부/방 타입 제약이 없다 — 배치 화면의 실시간 전투력
+            // 미리보기(§4-28)처럼 배치가 비어 있어도 항상 호출 가능해야 한다.
+            List<DeployedArmy> result = null;
+            Assert.DoesNotThrow(() => result = deployment.BuildDeployedArmies(run, Items, Defs));
+            Assert.IsEmpty(result);
+        }
+
+        [Test]
+        public void BuildDeployedArmies_MatchesBuildSetupArmies()
+        {
+            deployment.Place(run.armies[0].instanceId, 0);
+            deployment.Place(run.armies[1].instanceId, 3);
+
+            List<DeployedArmy> viaHelper = deployment.BuildDeployedArmies(run, Items, Defs);
+            BattleSetupData setup = deployment.BuildSetup("room_2_0", RoomType.NormalBattle, "enc", run, Items, Defs);
+
+            CollectionAssert.AreEqual(
+                setup.armies.Select(a => (a.armyInstanceId, a.slotId, a.soldierCount)),
+                viaHelper.Select(a => (a.armyInstanceId, a.slotId, a.soldierCount)),
+                "BuildSetup은 이 헬퍼 결과를 그대로 감싸는 것이어야 함 — 별도 로직이면 어긋날 수 있음");
+        }
+
+        [Test]
         public void BuildSetup_OrderIsStableAcrossMovesAndSwaps()
         {
             // 여러 이동/스왑을 거쳐도 결과 리스트는 slotId 오름차순으로 고정돼야 한다 (§7.1 계약 안정성)

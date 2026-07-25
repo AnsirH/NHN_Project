@@ -80,6 +80,33 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
+        public void Calculate_IgnoresFieldsUnrelatedToPower()
+        {
+            // ArmyDeploymentPanel이 적 진영을 위해 armyInstanceId/equippedItemId/generalSkillId/
+            // slotId/slotX/slotY를 비워둔 채(§4-28, EnemyArmy는 이 개념이 없음) DeployedArmy를
+            // 만들어 넘기는 걸 전제로 한다 — Calculate가 이 필드들을 실제로 안 읽는지 고정해둔다.
+            // 이 테스트가 깨지면 그 전제가 깨진 것이므로 해당 호출부도 함께 점검해야 한다.
+            var minimal = new DeployedArmy { armyDefId = "army_basic", armyClass = ArmyClass.Archer, soldierCount = 30 };
+            var full = new DeployedArmy
+            {
+                armyInstanceId = "some_instance",
+                armyDefId = "army_basic",
+                armyClass = ArmyClass.Archer,
+                equippedItemId = "item_bow",
+                generalSkillId = "skill_volley",
+                soldierCount = 30,
+                slotId = 7,
+                slotX = 0.5f,
+                slotY = 0.5f,
+            };
+
+            float minimalPower = BattlePowerCalculator.Calculate(new List<DeployedArmy> { minimal }, new BattlePowerConfig(), Defs);
+            float fullPower = BattlePowerCalculator.Calculate(new List<DeployedArmy> { full }, new BattlePowerConfig(), Defs);
+
+            Assert.AreEqual(fullPower, minimalPower, 1e-3f);
+        }
+
+        [Test]
         public void WeightOf_ReservedClass_Throws()
         {
             Assert.Throws<System.ArgumentException>(() => new BattlePowerConfig().WeightOf(ArmyClass.Spearman));

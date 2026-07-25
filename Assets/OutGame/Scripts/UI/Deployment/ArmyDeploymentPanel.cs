@@ -346,8 +346,11 @@ namespace OutGame.UI.Deployment
             }
 
             startBattleButton.interactable = deployment.CanStartBattle;
-            UpdatePowerLabels(armyDataById, itemDataById);
+            // 배치 영속화를 먼저 끝내둔다 — UpdatePowerLabels는 BattlePowerCalculator를 거치며 데이터
+            // 무결성 위반 시 예외를 던지므로(§4-28), 순서가 반대면 방금 한 Place()/Remove()가
+            // run.deployment에 반영되지 못한 채로 예외가 날 수 있다.
             SyncDeploymentToRunState();
+            UpdatePowerLabels(armyDataById, itemDataById);
         }
 
         /// <summary>
@@ -361,45 +364,29 @@ namespace OutGame.UI.Deployment
                 run.deployment.Add(new ArmySlotAssignment { armyInstanceId = placement.Key, slotId = placement.Value });
         }
 
+        /// <summary>
+        /// 아군/적 전투력을 같은 계산기(BattlePowerCalculator, §4-22)로 계산한다 — 예전엔 아군용과
+        /// 적용 두 벌을 손으로 각각 짜서 값이 어긋날 여지가 있었다(2026-07-19 사용자 지적으로 통합).
+        /// </summary>
         private void UpdatePowerLabels(
             IReadOnlyDictionary<string, ArmyData> armyDataById, IReadOnlyDictionary<string, ItemData> itemDataById)
         {
             BattlePowerConfig power = powerConfig.ToData();
 
-            float allyPower = 0f;
-            foreach (KeyValuePair<string, ArmyCardView> kv in cardsByArmyId)
-            {
-                if (!deployment.GetSlotOf(kv.Key).HasValue) continue;
-
-                ArmyInstance army = run.GetArmy(kv.Key);
-                if (army == null) continue; // 부대가 런에서 사라진 경우(미래 기능 대비) — RefreshLayout과 동일 방어
-
-                if (!armyDataById.TryGetValue(army.armyDefId, out ArmyData def))
-                {
-                    Debug.LogWarning($"[ArmyDeploymentPanel] armyDefId '{army.armyDefId}'를 찾을 수 없어 전투력 계산에서 제외했습니다.");
-                    continue;
-                }
-
-                ArmyClass armyClass = ItemEquipService.ResolveClass(army, itemDataById);
-                allyPower += (def.baseSoldierCount + army.bonusSoldierCount) * power.WeightOf(armyClass) + def.generalPower;
-            }
-
+            List<DeployedArmy> allyDeployed = deployment.BuildDeployedArmies(run, itemDataById, armyDataById);
+            float allyPower = BattlePowerCalculator.Calculate(allyDeployed, power, armyDataById);
             allyPowerLabel.text = $"전투력: {allyPower:0}";
 
-            // §4-28: 생성된 적 구성도 아군과 동일한 공식(Σ(병사 수 × 병과 계수) + 장군 보정, §4-22)으로
-            // 계산 — 각자 계산해서 어긋나는 걸 막기 위해 위 아군 루프와 같은 power.WeightOf()를 그대로 쓴다.
-            // (아군과 달리 bonusSoldierCount 항이 없다 — EnemyArmy는 휴식 방 증원 등 영구 성장이 없는
-            // 1회성 데이터라 설계상 그 항이 존재하지 않는다, 누락이 아님.)
-            float enemyPower = 0f;
-            foreach (EnemyArmy enemy in enemyComposition)
+            // EnemyArmy는 DeployedArmy의 armyDefId/armyClass/soldierCount에만 대응 개념이 있다 —
+            // 나머지(슬롯 위치 등)는 생성된 적에게 의미가 없어 기본값으로 두며, BattlePowerCalculator는
+            // 그 필드들을 아예 읽지 않으므로 안전하다.
+            List<DeployedArmy> enemyDeployed = enemyComposition.Select(enemy => new DeployedArmy
             {
-                if (!armyDataById.TryGetValue(enemy.armyDefId, out ArmyData def))
-                {
-                    Debug.LogWarning($"[ArmyDeploymentPanel] 적 armyDefId '{enemy.armyDefId}'를 찾을 수 없어 전투력 계산에서 제외했습니다.");
-                    continue;
-                }
-                enemyPower += enemy.soldierCount * power.WeightOf(enemy.armyClass) + def.generalPower;
-            }
+                armyDefId = enemy.armyDefId,
+                armyClass = enemy.armyClass,
+                soldierCount = enemy.soldierCount,
+            }).ToList();
+            float enemyPower = BattlePowerCalculator.Calculate(enemyDeployed, power, armyDataById);
             enemyPowerLabel.text = $"전투력: {enemyPower:0}";
         }
 
