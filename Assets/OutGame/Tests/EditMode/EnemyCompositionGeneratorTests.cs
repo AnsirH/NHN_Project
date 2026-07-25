@@ -103,5 +103,17 @@ namespace OutGame.Tests.EditMode
             var config = new EnemyCompositionConfig { bossComposition = new System.Collections.Generic.List<ArmyClass>() };
             Assert.Throws<ArgumentException>(() => config.Validate());
         }
+
+        [Test]
+        public void Clone_ReturnsIndependentCopy()
+        {
+            var original = new EnemyCompositionConfig { baseEnemyCount = 5 };
+            EnemyCompositionConfig clone = original.Clone();
+            clone.baseEnemyCount = 99;
+            clone.bossComposition.Add(ArmyClass.Archer);
+
+            Assert.AreEqual(5, original.baseEnemyCount, "clone 변형이 원본에 영향을 주면 안 됨");
+            Assert.AreNotEqual(original.bossComposition.Count, clone.bossComposition.Count, "리스트도 독립 복사돼야 함");
+        }
     }
 }

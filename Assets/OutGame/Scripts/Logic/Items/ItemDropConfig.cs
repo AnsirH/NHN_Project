@@ -10,6 +10,13 @@ namespace OutGame.Logic.Items
         public float archerDropChance = 0.25f;
         public float shieldmanDropChance = 0.25f;
 
+        /// <summary>필드 단위 얕은 복사 — 호출자가 반환값을 변형해도 원본(에셋 등)에 영향이 없도록 한다.</summary>
+        public ItemDropConfig Clone() => new ItemDropConfig
+        {
+            archerDropChance = archerDropChance,
+            shieldmanDropChance = shieldmanDropChance,
+        };
+
         public void Validate()
         {
             if (archerDropChance < 0f || archerDropChance > 1f)

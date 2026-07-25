@@ -88,5 +88,15 @@ namespace OutGame.Tests.EditMode
             var config = new ItemDropConfig { archerDropChance = 1.5f };
             Assert.Throws<ArgumentException>(() => config.Validate());
         }
+
+        [Test]
+        public void Clone_ReturnsIndependentCopy()
+        {
+            var original = new ItemDropConfig { archerDropChance = 0.5f };
+            ItemDropConfig clone = original.Clone();
+            clone.archerDropChance = 0.9f;
+
+            Assert.AreEqual(0.5f, original.archerDropChance, "clone 변형이 원본에 영향을 주면 안 됨");
+        }
     }
 }

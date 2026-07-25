@@ -32,6 +32,8 @@ namespace OutGame.Flow
         [SerializeField] private DummyBattlePanel battlePanel; // BattleBridge.Implementation의 M6 더미 구현
         [SerializeField] private RoomTypeVisualSet visuals;
         [SerializeField] private RunConfigAsset runConfig;
+        [SerializeField] private EnemyCompositionConfigAsset enemyCompositionConfigAsset; // §4-28
+        [SerializeField] private ItemDropConfigAsset itemDropConfigAsset; // §4-28
 
         [Header("개발용 맵 생성 설정 — MapSelect 없이 씬을 단독 실행할 때만 사용 (§5.2)")]
         [SerializeField] private int seed = 42;
@@ -54,30 +56,35 @@ namespace OutGame.Flow
         private List<ArmyClass> currentEnemyComposition;
 
         // §4-28: RoomEncounterTable 협의 전 임시 대체 — 아웃게임 내부 전용(아이템 드롭 계산용),
-        // §7 인터페이스(BattleSetupData)에는 노출하지 않는다. 초안값, 인스펙터 노출은 후속 과제.
-        private readonly EnemyCompositionConfig enemyCompositionConfig = new EnemyCompositionConfig();
-        private readonly ItemDropConfig itemDropConfig = new ItemDropConfig();
+        // §7 인터페이스(BattleSetupData)에는 노출하지 않는다. 위 Asset 필드에서 Start()에 채워진다.
+        private EnemyCompositionConfig enemyCompositionConfig;
+        private ItemDropConfig itemDropConfig;
 
         private void Start()
         {
             // 이후 검증에서 예외가 나더라도 PendingRun이 stale 상태로 남지 않도록 가장 먼저 소비한다.
             RunState pendingRun = RunSessionContext.ConsumePendingRun();
 
-            // §4-28: 인스펙터 노출 없는 in-code 초안 config라도 다른 config들과 동일하게 fail-fast —
-            // 조용히 잘못된 값으로 동작하는 대신 시작 시점에 바로 예외로 드러나야 한다.
-            enemyCompositionConfig.Validate();
-            itemDropConfig.Validate();
-
             if (visuals == null)
                 visuals = Resources.Load<RoomTypeVisualSet>("OutGame/RoomTypeVisuals"); // 배선 누락 대비 폴백
             if (runConfig == null)
                 runConfig = Resources.Load<RunConfigAsset>("OutGame/Data/RunConfig_Default");
+            if (enemyCompositionConfigAsset == null)
+                enemyCompositionConfigAsset = Resources.Load<EnemyCompositionConfigAsset>("OutGame/Data/EnemyCompositionConfig_Default");
+            if (itemDropConfigAsset == null)
+                itemDropConfigAsset = Resources.Load<ItemDropConfigAsset>("OutGame/Data/ItemDropConfig_Default");
 
             if (mapPanel == null || roomPanel == null || eventPanel == null || restPanel == null
                 || augmentPanel == null || deploymentPanel == null || battlePanel == null
-                || visuals == null || runConfig == null)
+                || visuals == null || runConfig == null
+                || enemyCompositionConfigAsset == null || itemDropConfigAsset == null)
                 throw new InvalidOperationException(
                     "InGameFlowController의 필수 참조가 배선되지 않았습니다 — 씬 구성(SceneSetupM2/M4/M6) 확인");
+
+            // ToConfig()가 Validate()를 포함하므로(다른 config 에셋과 동일 패턴) 잘못된 인스펙터
+            // 값은 여기서 바로 예외로 드러난다 — 조용히 잘못된 값으로 동작하지 않는다.
+            enemyCompositionConfig = enemyCompositionConfigAsset.ToConfig();
+            itemDropConfig = itemDropConfigAsset.ToConfig();
 
             List<EventDefinition> eventPool = Resources.LoadAll<EventDefinition>("OutGame/Data/Events").ToList();
             if (eventPool.Count == 0)

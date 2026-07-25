@@ -1,5 +1,7 @@
 using NUnit.Framework;
 using OutGame.Logic.Armies;
+using OutGame.Logic.Battle;
+using OutGame.Logic.Items;
 using OutGame.ScriptableObjects;
 using UnityEngine;
 
@@ -151,6 +153,92 @@ namespace OutGame.Tests.EditMode
             var field = typeof(RunConfigAsset).GetField(fieldName,
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             field.SetValue(target, value);
+        }
+
+        [Test]
+        public void EnemyCompositionConfigAsset_ToConfig_ReturnsDefaultValues()
+        {
+            var so = ScriptableObject.CreateInstance<EnemyCompositionConfigAsset>();
+            try
+            {
+                EnemyCompositionConfig data = so.ToConfig();
+                Assert.AreEqual(3, data.baseEnemyCount);
+                Assert.AreEqual(9, data.maxEnemyCount);
+                Assert.AreEqual(5, data.bossComposition.Count);
+            }
+            finally
+            {
+                Object.DestroyImmediate(so);
+            }
+        }
+
+        [Test]
+        public void EnemyCompositionConfigAsset_ToConfig_ReturnsIndependentCopy()
+        {
+            var so = ScriptableObject.CreateInstance<EnemyCompositionConfigAsset>();
+            try
+            {
+                EnemyCompositionConfig data = so.ToConfig();
+                data.baseEnemyCount = 999;
+
+                Assert.AreEqual(3, so.ToConfig().baseEnemyCount, "반환값 변형이 에셋에 영향을 주면 안 됨");
+            }
+            finally
+            {
+                Object.DestroyImmediate(so);
+            }
+        }
+
+        [Test]
+        public void EnemyCompositionConfigAsset_ToConfig_WithInvalidValue_Throws()
+        {
+            var so = ScriptableObject.CreateInstance<EnemyCompositionConfigAsset>();
+            try
+            {
+                var field = typeof(EnemyCompositionConfigAsset).GetField("config",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                field.SetValue(so, new EnemyCompositionConfig { maxEnemyCount = 0, baseEnemyCount = 5 });
+
+                Assert.Throws<System.InvalidOperationException>(() => so.ToConfig());
+            }
+            finally
+            {
+                Object.DestroyImmediate(so);
+            }
+        }
+
+        [Test]
+        public void ItemDropConfigAsset_ToConfig_ReturnsDefaultValues()
+        {
+            var so = ScriptableObject.CreateInstance<ItemDropConfigAsset>();
+            try
+            {
+                ItemDropConfig data = so.ToConfig();
+                Assert.AreEqual(0.25f, data.archerDropChance);
+                Assert.AreEqual(0.25f, data.shieldmanDropChance);
+            }
+            finally
+            {
+                Object.DestroyImmediate(so);
+            }
+        }
+
+        [Test]
+        public void ItemDropConfigAsset_ToConfig_WithInvalidValue_Throws()
+        {
+            var so = ScriptableObject.CreateInstance<ItemDropConfigAsset>();
+            try
+            {
+                var field = typeof(ItemDropConfigAsset).GetField("config",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                field.SetValue(so, new ItemDropConfig { archerDropChance = 1.5f });
+
+                Assert.Throws<System.InvalidOperationException>(() => so.ToConfig());
+            }
+            finally
+            {
+                Object.DestroyImmediate(so);
+            }
         }
     }
 }

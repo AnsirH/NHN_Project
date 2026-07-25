@@ -26,6 +26,18 @@ namespace OutGame.Logic.Battle
             ArmyClass.Shieldman, ArmyClass.Shieldman, ArmyClass.Archer, ArmyClass.Archer, ArmyClass.None,
         };
 
+        /// <summary>필드 단위 얕은 복사 — 호출자가 반환값을 변형해도 원본(에셋 등)에 영향이 없도록 한다.</summary>
+        public EnemyCompositionConfig Clone() => new EnemyCompositionConfig
+        {
+            baseEnemyCount = baseEnemyCount,
+            perFloorEnemyIncrement = perFloorEnemyIncrement,
+            maxEnemyCount = maxEnemyCount,
+            baseWeight = baseWeight,
+            archerWeight = archerWeight,
+            shieldmanWeight = shieldmanWeight,
+            bossComposition = new List<ArmyClass>(bossComposition),
+        };
+
         public void Validate()
         {
             if (baseEnemyCount < 0)
