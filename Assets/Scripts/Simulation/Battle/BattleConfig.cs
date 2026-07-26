@@ -26,14 +26,28 @@ namespace NHN.Simulation.Battle
         public readonly float DefenseK;
         /// <summary>치명타 발생 시 피해 배율 (기획 합의: 1.8배). 전역 상수 — 병과별 차등 없음.</summary>
         public readonly float CritMultiplier;
+        /// <summary>
+        /// 장군 스킬 강화 1회당 충전 필요량 감소 비율 (0.15 = −15%).
+        /// 아웃게임의 generalSkillUpgradeCount를 "스킬이 더 자주 발동"으로 번역하는 손잡이 —
+        /// 강화 방식의 해석은 인게임 책임이다 (아웃게임 계약 §7.1).
+        /// </summary>
+        public readonly float SkillUpgradeChargeReduction;
+        /// <summary>
+        /// 충전 필요량의 하한 비율 (0.4 = 기본값의 40%까지만 줄어든다).
+        /// 강화가 쌓여도 액티브가 매 순간 터지는 소음이 되지 않게 막는다 (기획 §6 이벤트 희소성).
+        /// </summary>
+        public readonly float MinChargeRequiredRatio;
 
         public BattleConfig(
             int ticksPerSecond, float arenaHalfWidth, float arenaHalfHeight,
             float retargetInterval, float projectileImpactRadius, float maxBattleSeconds,
             int maxUnits, int maxProjectiles, int maxSkillZones, float frontLineOffsetX,
             float deploymentDepth, float deploymentHalfWidth,
-            float defenseK, float critMultiplier)
+            float defenseK, float critMultiplier,
+            float skillUpgradeChargeReduction, float minChargeRequiredRatio)
         {
+            SkillUpgradeChargeReduction = skillUpgradeChargeReduction;
+            MinChargeRequiredRatio = minChargeRequiredRatio;
             TicksPerSecond = ticksPerSecond;
             ArenaHalfWidth = arenaHalfWidth;
             ArenaHalfHeight = arenaHalfHeight;

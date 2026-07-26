@@ -27,3 +27,5 @@ MonoBehaviour:
   deploymentHalfWidth: 14
   defenseK: 50
   critMultiplier: 1.8
+  skillUpgradeChargeReduction: 0.15
+  minChargeRequiredRatio: 0.4

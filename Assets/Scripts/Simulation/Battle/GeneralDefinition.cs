@@ -115,5 +115,36 @@ namespace NHN.Simulation.Battle
                 source.ActiveEffect, source.ActiveParamA, source.ActiveParamB, source.ActiveDuration,
                 source.LeadRankOffset);
         }
+
+        /// <summary>
+        /// 장군 스킬 강화 반영 — 강화 횟수만큼 충전 필요량을 줄인 새 정의 (능력·스탯은 그대로).
+        ///
+        /// 아웃게임은 "강화 증강을 몇 번 골랐는지"만 넘기고 그 해석은 인게임 몫이다(계약 §7.1).
+        /// 인게임은 이를 **발동 빈도 증가**로 번역한다: 장군 액티브는 기획 §6에서 "사건(event)" 계층이라
+        /// 체감을 지배하는 것이 발동 빈도이고, 스킬 4종에 일관되게 적용되는 단일 규칙이라 밸런싱도 단순하다.
+        ///
+        /// 유효 필요량 = max(기본 × (1 − 감소율 × 횟수), 기본 × 하한비율).
+        /// 하한을 두는 이유: 강화가 쌓여도 매 순간 터지는 소음이 되지 않게 (이벤트 희소성 원칙).
+        /// </summary>
+        public static GeneralDefinition WithSkillUpgrades(
+            GeneralDefinition source, int upgradeCount, float reductionPerUpgrade, float minRatio)
+        {
+            if (upgradeCount <= 0 || source.ChargeRequired <= 0f || reductionPerUpgrade <= 0f)
+            {
+                return source;
+            }
+            float ratio = 1f - reductionPerUpgrade * upgradeCount;
+            float floor = minRatio > 0f ? minRatio : 0f;
+            if (ratio < floor)
+            {
+                ratio = floor;
+            }
+            return new GeneralDefinition(
+                source.CombatRole,
+                source.Passive, source.PassiveValue,
+                source.ChargeCondition, source.ChargeRequired * ratio,
+                source.ActiveEffect, source.ActiveParamA, source.ActiveParamB, source.ActiveDuration,
+                source.LeadRankOffset);
+        }
     }
 }

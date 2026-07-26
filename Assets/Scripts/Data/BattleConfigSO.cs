@@ -32,6 +32,12 @@ namespace NHN.Data
         [Tooltip("치명타 피해 배율 (기획 합의: 1.8배)")]
         [SerializeField] private float critMultiplier = 1.8f;
 
+        [Header("장군 스킬 강화 (아웃게임 generalSkillUpgradeCount → 발동 빈도)")]
+        [Tooltip("강화 1회당 충전 필요량 감소 비율 (0.15 = -15%)")]
+        [SerializeField] private float skillUpgradeChargeReduction = 0.15f;
+        [Tooltip("충전 필요량 하한 비율 (0.4 = 기본값의 40%까지만 줄어든다 — 발동이 소음이 되지 않게)")]
+        [SerializeField] private float minChargeRequiredRatio = 0.4f;
+
         [Header("배치 슬롯 변환 (정규화 0~1 → anchor, DeploymentGrid)")]
         [Tooltip("slotX 0(후방)~1(전선)이 펼쳐지는 깊이 범위")]
         [SerializeField] private float deploymentDepth = 10f;
@@ -51,7 +57,8 @@ namespace NHN.Data
                 retargetInterval, projectileImpactRadius, maxBattleSeconds,
                 maxUnits, maxProjectiles, maxSkillZones, frontLineOffsetX,
                 deploymentDepth, deploymentHalfWidth,
-                defenseK, critMultiplier);
+                defenseK, critMultiplier,
+                skillUpgradeChargeReduction, minChargeRequiredRatio);
         }
     }
 }

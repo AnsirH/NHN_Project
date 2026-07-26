@@ -17,16 +17,23 @@ armies[]: armyDefId, armyClass, equippedItemId, generalSkillId,
           slotId, slotX, slotY   // 진영 내 정규화 0~1
 ```
 
-**스탯은 전달되지 않는다.** `armyDefId`(원형) + `upgradeLevel`(배율)만 오고,
-인게임이 아웃게임과 **같은 헬퍼**로 최종 스탯을 재구성한다 (§7.1.1):
+**최종 스탯이 직접 전달된다** (2026-07-26 확정 — 계산 로직이 두 곳에 흩어지는 위험을 없애기 위해
+아웃게임이 배치 확정 시점에 업그레이드+증강 배율을 모두 곱해 담아 보낸다):
 
 ```
-최종스탯 = ArmyData 원형값 × ArmyStatCalculator.GetStatMultiplier(upgradeLevel, armyClass, stat, augments)
+generalHealth, generalAttack, generalDefense
+generalCritRate, generalMoveSpeed    // 배율 대상 아님, 원본 그대로. 유닛도 이 값 공유 (§5.7)
+soldierHealth, soldierAttack, soldierDefense
+generalSkillUpgradeCount             // 장군 스킬 강화 증강 선택 횟수 — 해석은 인게임 몫
+upgradeLevel                         // 참고용(UI 배지·3D 모델 매핑). 배율은 이미 반영됨
 ```
-- 대상 스탯 3종: Health / Attack / Defense (장군·유닛 모두 같은 배율)
-- **치명타율·이동속도는 배율 없이 장군 값을 유닛도 그대로 쓴다** (아웃게임 §5.7)
-- ⚠ **배율 공식을 재구현하지 말 것** — 아웃게임 화면(정보 팝업·전투력) 수치와 어긋난다.
-  실제로 그런 버그가 두 번 발생해서 헬퍼 단일화가 규칙이 됐다.
+인게임은 `ArmyDefinition`/`ArmyStatCalculator`를 몰라도 되고 `Resources` 조회도 필요 없다 — 받은 값을 그대로 쓴다.
+
+**`generalSkillUpgradeCount` 해석 (인게임 결정)**: **충전 필요량 감소 = 발동 빈도 증가**로 번역한다.
+`유효 필요량 = max(기본 × (1 − 감소율 × 횟수), 기본 × 하한비율)`, 초기값 감소율 0.15 / 하한 0.4.
+장군 액티브는 기획 §6에서 "사건(event)" 계층이라 체감을 지배하는 것이 발동 빈도이고, 스킬 4종에
+일관 적용되는 단일 규칙이라 밸런싱도 단순하다. 하한을 둔 이유는 강화가 쌓여도 매 순간 터지는
+소음이 되지 않게 하기 위함(이벤트 희소성). 수치는 `BattleConfig` 데이터라 코드 수정 없이 튜닝된다.
 
 ### 출력 `BattleResultData`
 ```
@@ -67,8 +74,9 @@ roomId, victory, survivals[]{ armyInstanceId, survivedSoldierCount }
 | `BattleCatalog` (SO) | Assets/Data/BattleCatalog.asset | roleId/generalId → 에셋 해석 (3D 모델 매핑도 이 자리) |
 | `EncounterTable` (SO) | Assets/Data/EncounterTable.asset | encounterId → 적 구성 (적 구성 출처는 협의 중) |
 | `BattleTestBootstrap.RunBattle(request, onFinished)` | Scripts/Presentation/Battle | 전투 1판 실행 + 결과 콜백 1회 |
-| `RoleDefinition.WithStats(...)` | Scripts/Simulation/Battle | 인게임 속성(.asset) + 외부 스탯 결합 |
-| 커넥터 템플릿 | 본 폴더 `BattleBridgeConnector.cs.txt` | 스탯 재구성 + 씬 핸드오프 어댑터 |
+| `RoleDefinition.WithStats(...)` | Scripts/Simulation/Battle | 인게임 속성(.asset) + 전달 스탯 결합 |
+| `GeneralDefinition.WithSkillUpgrades(...)` | Scripts/Simulation/Battle | 스킬 강화 횟수 → 충전 필요량 감소 |
+| 커넥터 템플릿 | 본 폴더 `BattleBridgeConnector.cs.txt` | 필드 복사 + 단위 환산 + 씬 핸드오프 어댑터 |
 
 **인게임이 소유하는 것** (아웃게임이 모르는 값): 공격 주기·사거리·투사체 속도/궤적, 타겟팅(위치 필터·우선순위),
 이동 패턴, 유닛 반경, 장군 능력(패시브·충전·액티브 4종), 전투 중 변동분(버프·상태이상·치명타 판정),
@@ -79,8 +87,8 @@ roomId, victory, survivals[]{ armyInstanceId, survivedSoldierCount }
 ## 4. 머지 후 활성화 절차
 
 1. `Assets/Scripts/Integration/` 생성 후 `BattleBridgeConnector.cs.txt` → `BattleBridgeConnector.cs`로 복사
-2. 같은 폴더에 asmdef 생성: 이름 `NHN.Integration`, 참조 `NHN.Data`, `NHN.Presentation`, `NHN.Simulation`,
-   `OutGame.Logic`, `OutGame.ScriptableObjects`
+2. 같은 폴더에 asmdef 생성: 이름 `NHN.Integration`, 참조 `NHN.Data`, `NHN.Presentation`, `OutGame.Logic`
+   (`OutGame.ScriptableObjects`는 불필요 — 스탯을 직접 받으므로 에셋 조회를 하지 않는다)
 3. **전투 씬 `Battle.unity` 생성** (BattleTest 기반) — `BattleBridgeConnector` 배치 + `battleRunner` 배선
 4. `ProjectSettings/EditorBuildSettings`에 `Battle` 씬 추가 (아웃게임 3개 씬과 함께)
 5. 아웃게임 쪽 `BattleBridge.Implementation`이 `SetPendingBattle` + `LoadScene("Battle")`을 호출하도록 확인
@@ -92,12 +100,11 @@ roomId, victory, survivals[]{ armyInstanceId, survivedSoldierCount }
 
 ---
 
-## 5. 남은 협의 2건
+## 5. 남은 협의 1건
 
-1. **증강(augment) id 전달** — 증강이 스탯 배율(`statBoostPercent`)에 들어가므로, 없으면 전투 수치가
-   배치 화면 표기와 어긋난다. `BattleSetupData`에 `List<string> selectedAugmentIds` 추가 요청 중.
-   커넥터는 이미 그 자리를 비워두고 대기한다 (`LoadSelectedAugments`).
-2. **적 구성(encounterId) 출처** — 인게임 `EncounterTable`(현재) vs 아웃게임 생성기(난이도 커브 티어) 중
+- ~~증강 id 전달~~ → **해소**: 증강 배율이 최종 스탯에 이미 반영돼 오므로 id를 받을 필요가 없어졌다.
+  스킬 강화만 `generalSkillUpgradeCount`로 별도 전달되며, 그 해석은 인게임이 정했다(위 §1).
+- **적 구성(encounterId) 출처** — 인게임 `EncounterTable`(현재) vs 아웃게임 생성기(난이도 커브 티어) 중
    어느 쪽을 정본으로 할지. 아웃게임이 정본이 되면 적 군대도 `armyDefId`+`upgradeLevel` 형태로
    넘겨주면 되고, 인게임은 같은 재구성 경로를 그대로 쓴다.
 

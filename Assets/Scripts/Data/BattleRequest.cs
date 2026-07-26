@@ -54,6 +54,13 @@ namespace NHN.Data
         /// <summary>인게임 단위(초당 이동 거리) — 아웃게임 단위 변환은 커넥터가 한다. 장군·병사 공용.</summary>
         public float moveSpeed;
 
+        /// <summary>
+        /// 장군 스킬 강화 증강을 선택한 횟수 (아웃게임 generalSkillUpgradeCount).
+        /// 아웃게임은 횟수만 넘기고 해석은 인게임 몫 — 인게임은 이를 **충전 필요량 감소**(= 발동 빈도 증가)로
+        /// 번역한다. 배율은 BattleConfig의 감소율·하한 비율이 결정한다.
+        /// </summary>
+        public int generalSkillUpgradeCount;
+
         /// <summary>병사 스탯이 외부에서 전달됐는지 — 체력은 0일 수 없으므로 판정 기준으로 쓴다.</summary>
         public bool HasSoldierStats => maxHp > 0f;
 

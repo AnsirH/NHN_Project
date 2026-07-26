@@ -214,6 +214,96 @@ namespace NHN.Simulation.Tests
             Assert.AreEqual(1500f, sim.GetHp(sim.GetGeneralUnit(1)), 1e-3f, "분대 1 장군 HP = 전달값");
         }
 
+        /// <summary>
+        /// 장군 스킬 강화(아웃게임 generalSkillUpgradeCount) → 충전 필요량 감소.
+        /// 아웃게임은 횟수만 넘기고 해석은 인게임 몫이며, 인게임은 "더 자주 발동"으로 번역한다.
+        /// </summary>
+        [Test]
+        public void SkillUpgradeCount_ReducesChargeRequirement_WithFloor()
+        {
+            BattleCatalog catalog = LoadCatalog();
+            BattleConfig config = LoadConfig();
+            float baseRequired = catalog.ResolveGeneral("WarriorGeneral").ToDefinition().ChargeRequired;
+            Assert.Greater(baseRequired, 0f, "충전 필요량이 데이터로 정의돼 있어야 한다");
+            Assert.Greater(config.SkillUpgradeChargeReduction, 0f, "감소율이 BattleConfig에 있어야 한다");
+
+            // 강화 0회 = 원본 (회귀 방어)
+            Assert.AreEqual(baseRequired, ChargeRequiredFor(0, catalog, config), 1e-3f,
+                "강화 0회면 충전 필요량이 그대로여야 한다");
+
+            // 강화 1·2회 = 감소율 × 횟수만큼 선형 감소
+            for (int count = 1; count <= 2; count++)
+            {
+                float expected = baseRequired * (1f - config.SkillUpgradeChargeReduction * count);
+                Assert.AreEqual(expected, ChargeRequiredFor(count, catalog, config), 1e-3f,
+                    $"강화 {count}회의 충전 필요량이 공식과 일치해야 한다");
+            }
+
+            // 과다 강화는 하한 비율에서 멈춘다 (발동이 소음이 되지 않게 — 기획 §6 이벤트 희소성)
+            float floor = baseRequired * config.MinChargeRequiredRatio;
+            Assert.AreEqual(floor, ChargeRequiredFor(99, catalog, config), 1e-3f,
+                "강화가 아무리 많아도 하한 비율에서 클램프되어야 한다");
+            Assert.Greater(floor, 0f, "하한은 0보다 커야 한다 (충전 없이 무한 발동 금지)");
+        }
+
+        private static float ChargeRequiredFor(int upgradeCount, BattleCatalog catalog, in BattleConfig config)
+        {
+            var squads = new System.Collections.Generic.List<SquadRequest>
+            {
+                new SquadRequest
+                {
+                    squadId = "u", roleId = "Warrior", generalId = "WarriorGeneral",
+                    soldierCount = 2, slotX = 1f, slotY = 0.5f,
+                    generalSkillUpgradeCount = upgradeCount,
+                },
+            };
+            ArmyDefinition army = BattleRequestBuilder.BuildSquads(squads, catalog, config, null, null);
+            return army.Squads[0].General.ChargeRequired;
+        }
+
+        /// <summary>강화된 장군은 같은 전투에서 액티브를 더 많이 발동한다 (수치가 아니라 실제 거동 확인).</summary>
+        [Test]
+        public void SkillUpgrade_IncreasesActivationCount_InBattle()
+        {
+            BattleCatalog catalog = LoadCatalog();
+            BattleConfig config = LoadConfig();
+
+            int plain = ActivationsInBattle(upgradeCount: 0, catalog, config);
+            int upgraded = ActivationsInBattle(upgradeCount: 4, catalog, config);
+
+            UnityEngine.Debug.Log($"[스킬 강화] 발동 횟수 — 강화 0회: {plain}, 강화 4회: {upgraded}");
+            Assert.Greater(upgraded, plain, "강화된 장군의 액티브가 더 많이 발동해야 한다");
+        }
+
+        private static int ActivationsInBattle(int upgradeCount, BattleCatalog catalog, in BattleConfig config)
+        {
+            // 시간 충전(사냥 선포)을 쓰는 장군이라 전투 길이만으로 발동 횟수 차이가 드러난다.
+            var left = new System.Collections.Generic.List<SquadRequest>
+            {
+                new SquadRequest
+                {
+                    squadId = "L", roleId = "Hunter", generalId = "HunterGeneral",
+                    soldierCount = 15, slotX = 0.5f, slotY = 0.5f,
+                    generalSkillUpgradeCount = upgradeCount,
+                },
+            };
+            var right = new System.Collections.Generic.List<SquadRequest>
+            {
+                new SquadRequest { squadId = "R", roleId = "Warrior", soldierCount = 25, slotX = 1f, slotY = 0.5f },
+            };
+            var sim = new BattleSimulation(
+                config,
+                BattleRequestBuilder.BuildSquads(left, catalog, config, null, null),
+                BattleRequestBuilder.BuildSquads(right, catalog, config, null, null),
+                seed: 17);
+            int safetyTicks = 1_000_000;
+            while (!sim.Finished && safetyTicks-- > 0)
+            {
+                sim.Tick();
+            }
+            return sim.GetSquadActivationCount(0);
+        }
+
         /// <summary>요청 → 전투 → 결과 왕복: 분대 id 보존 + 생존 수 집계 + victory 일관성 (계약 대응 핵심).</summary>
         [Test]
         public void BattleRequest_RoundTrip_ProducesContractOutcome()

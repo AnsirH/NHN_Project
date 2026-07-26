@@ -99,7 +99,9 @@ namespace BalanceLab
                 c.GetFloat("deploymentDepth"),
                 c.GetFloat("deploymentHalfWidth"),
                 c.GetFloat("defenseK"),
-                c.GetFloat("critMultiplier"));
+                c.GetFloat("critMultiplier"),
+                c.GetFloat("skillUpgradeChargeReduction"),
+                c.GetFloat("minChargeRequiredRatio"));
         }
 
         /// <summary>
