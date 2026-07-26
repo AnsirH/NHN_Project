@@ -14,12 +14,9 @@ namespace BalanceLab
         public float slotX { get; set; }
         public float slotY { get; set; }
 
-        /// <summary>
-        /// 분대 레벨 (0~5) = 장군 레벨 = 군대 강화 레벨, 단일 축. 스탯은 이 레벨로 CSV에서 조회한다.
-        /// 스탯 값이 아니라 참조 키이므로 "시나리오에 스탯 금지" 컷 라인에 저촉되지 않는다.
-        /// 실전에서 이 자리는 아웃게임이 계산해 보내는 5스탯이 대신한다 — BalanceLab 전용 대역이다.
-        /// </summary>
-        public int level { get; set; }
+        // 업그레이드 레벨(0~5)은 여기 없다: 실전 스탯은 아웃게임이 armyDefId+upgradeLevel로 계산해
+        // 넘기며(계약 §7.1.1), 배율 공식은 ArmyStatCalculator가 단일 출처다. 그 공식을 툴에서 재현하면
+        // 양쪽 수치가 갈라지므로, 레벨 스윕은 머지 후 그 계산기를 링크해 되살린다.
     }
 
     public sealed class Scenario
@@ -183,10 +180,6 @@ namespace BalanceLab
                 if (squad.soldierCount < 1)
                 {
                     throw new InvalidDataException($"{path}: {label}/{squad.squadId} soldierCount는 1 이상이어야 한다");
-                }
-                if (squad.level < 0)
-                {
-                    throw new InvalidDataException($"{path}: {label}/{squad.squadId} level은 0 이상이어야 한다 (현재 {squad.level})");
                 }
             }
         }

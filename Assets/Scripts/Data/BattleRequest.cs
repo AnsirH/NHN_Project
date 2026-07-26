@@ -33,22 +33,26 @@ namespace NHN.Data
         /// <summary>진영 내 정규화 0~1, 0.5 = 측면 중앙.</summary>
         public float slotY;
 
-        // ── 병사 5스탯 (아웃게임이 레벨·강화를 반영해 계산한 값, 병사 1명 기준) ──
-        // maxHp > 0 이면 다섯 값 전부가 제공된 것으로 보고 .asset 스탯 대신 사용한다 (StatsProvided).
+        // ── 전투 스탯 (아웃게임 계약 §7.1.1 모델) ──
+        // 커넥터가 armyDefId로 원형(ArmyData)을 조회하고 ArmyStatCalculator 배율을 곱해 채운다.
+        // maxHp > 0 이면 전달된 것으로 보고 .asset 스탯 대신 사용한다.
         // 전달이 없으면(로컬 테스트·BalanceLab 경로) .asset 값을 그대로 쓴다.
+
+        /// <summary>병사 "1명" 기준 체력 (분대 합계 아님).</summary>
         public float maxHp;
         public float attackDamage;
         public float defense;
-        /// <summary>0~100 퍼센트 (아웃게임 표기 단위와 동일).</summary>
-        public float critChancePercent;
-        public float moveSpeed;
 
-        // ── 장군 5스탯 (분대 레벨 = 장군 레벨. 병사와 별도로 전달된다) ──
         public float generalMaxHp;
         public float generalAttackDamage;
         public float generalDefense;
-        public float generalCritChancePercent;
-        public float generalMoveSpeed;
+
+        // ── 장군·병사 공유 스탯 ──
+        // 아웃게임 기획 §5.7: 치명타 확률과 이동속도는 유닛도 장군 값을 그대로 쓴다 (배율 미적용).
+        /// <summary>0~100 퍼센트 (아웃게임 표기 단위와 동일). 장군·병사 공용.</summary>
+        public float critChancePercent;
+        /// <summary>인게임 단위(초당 이동 거리) — 아웃게임 단위 변환은 커넥터가 한다. 장군·병사 공용.</summary>
+        public float moveSpeed;
 
         /// <summary>병사 스탯이 외부에서 전달됐는지 — 체력은 0일 수 없으므로 판정 기준으로 쓴다.</summary>
         public bool HasSoldierStats => maxHp > 0f;

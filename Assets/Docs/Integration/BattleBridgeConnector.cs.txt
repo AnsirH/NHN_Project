@@ -1,64 +1,53 @@
-// ⚠ 커넥터 템플릿 (컴파일 제외: .cs.txt) — feature/outgame 머지 후 활성화한다. 절차는 INTEGRATION.md 참고.
-// 역할: outGame BattleBridge.Implementation ↔ 인게임 전투(BattleTestBootstrap.RunBattle) 어댑터.
-// 이 파일 1개 활성화 + 씬 배선 외에는 양쪽 코드를 손댈 필요가 없도록 설계돼 있다 (계약 §7.3 준수).
-using System;
+// ⚠ 커넥터 템플릿 (컴파일 제외: .cs.txt) — dev 머지 후 활성화한다. 절차는 INTEGRATION.md 참고.
+//
+// 역할: 아웃게임 계약(BattleSetupData) ↔ 인게임 전투(BattleTestBootstrap.RunBattle) 어댑터.
+// 아웃게임 계약 §7.1.1 모델을 따른다:
+//   · 스탯은 전달되지 않는다. armyDefId로 원형(ArmyData)을 조회하고
+//     ArmyStatCalculator.GetStatMultiplier(...)를 곱해 최종 스탯을 인게임이 재구성한다.
+//   · 배율 공식을 여기서 재구현하지 않는다 — 아웃게임 화면(정보 팝업/전투력)과 수치가 어긋나기 때문.
+//     반드시 ArmyStatCalculator 하나를 재사용한다.
+// 씬 전환은 §7.4 핸드오프를 쓴다: 아웃게임이 SetPendingBattle → 전투 씬 로드 →
+// 이 스크립트가 ConsumePendingSetup → 전투 → CompleteBattle → 아웃게임 씬 복귀.
+using System.Collections.Generic;
 using NHN.Data;
 using NHN.Presentation.Battle;
 using OutGame.Logic.Armies;
+using OutGame.Logic.Augments;
 using OutGame.Logic.Battle;
+using OutGame.ScriptableObjects;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace NHN.Integration
 {
     /// <summary>
-    /// InGameFlowController가 있는 씬(또는 전투 씬)에 배치하고 battleRunner를 배선한다.
-    /// 계약 주석대로 씬 로드마다 재등록 — OnEnable에서 Implementation을 덮어쓴다.
+    /// 전투 씬(Battle.unity)의 진입점. 씬에 하나만 두고 battleRunner를 배선한다.
+    /// 아웃게임 씬에서 넘겨준 BattleSetupData를 받아 전투를 실행하고, 끝나면 결과를 돌려주고 복귀한다.
     /// </summary>
     public sealed class BattleBridgeConnector : MonoBehaviour
     {
+        /// <summary>아웃게임 진입점 씬 이름 (전투 종료 후 복귀 대상).</summary>
+        private const string OutGameSceneName = "InGame";
+
+        /// <summary>
+        /// 아웃게임 이동속도 단위 → 인게임 단위(초당 이동 거리) 환산 계수.
+        /// 아웃게임 기본값 100이 인게임 기본 근접 속도 3.5에 대응한다 (100 × 0.035 = 3.5).
+        /// </summary>
+        private const float MoveSpeedScale = 0.035f;
+
         [SerializeField] private BattleTestBootstrap battleRunner;
 
-        private void OnEnable()
+        private void Start()
         {
-            BattleBridge.Implementation = Run;
-        }
-
-        private void Run(BattleSetupData setup, Action<BattleResultData> onResult)
-        {
-            var request = new BattleRequest
+            BattleSetupData setup = BattleBridge.ConsumePendingSetup();
+            if (setup == null)
             {
-                encounterId = setup.encounterId,
-                seed = StableSeed(setup.roomId), // 방마다 결정론적 시드 — 같은 방 재도전은 같은 전개
-            };
-            foreach (DeployedArmy army in setup.armies)
-            {
-                // 스탯은 아웃게임이 레벨(=장군 레벨, 0~5)을 반영해 계산한 값을 병사/장군 각각 전달한다.
-                // 인게임은 공격 주기·사거리·타겟팅·이동 패턴·반경만 소유한다 (RoleDefinition.WithStats로 결합).
-                request.playerSquads.Add(new SquadRequest
-                {
-                    squadId = army.armyInstanceId,
-                    roleId = MapClassToRoleId(army.armyClass),
-                    generalId = army.generalSkillId, // 키 규약(협의 ②): generalSkillId = GeneralData 에셋 이름
-                    soldierCount = army.soldierCount,
-                    slotX = army.slotX,
-                    slotY = army.slotY,
-
-                    // 병사 5스탯 (병사 1명 기준) — 필드명은 아웃게임 DTO 확정 시 맞춘다
-                    maxHp = army.soldierMaxHp,
-                    attackDamage = army.soldierAttackDamage,
-                    defense = army.soldierDefense,
-                    critChancePercent = army.soldierCritChancePercent,
-                    moveSpeed = army.soldierMoveSpeed,
-
-                    // 장군 5스탯
-                    generalMaxHp = army.generalMaxHp,
-                    generalAttackDamage = army.generalAttackDamage,
-                    generalDefense = army.generalDefense,
-                    generalCritChancePercent = army.generalCritChancePercent,
-                    generalMoveSpeed = army.generalMoveSpeed,
-                });
+                // 씬을 단독으로 열어 테스트하는 경우 — 인스펙터 구성으로 그냥 전투가 돌아간다.
+                Debug.Log("[연동] 대기 중인 BattleSetupData가 없다 — 씬 단독 실행 모드");
+                return;
             }
 
+            BattleRequest request = BuildRequest(setup);
             battleRunner.RunBattle(request, outcome =>
             {
                 var result = new BattleResultData { roomId = setup.roomId, victory = outcome.Victory };
@@ -70,25 +59,116 @@ namespace NHN.Integration
                         survivedSoldierCount = survival.SurvivedSoldierCount,
                     });
                 }
-                onResult(result);
+                BattleBridge.CompleteBattle(result);
+                SceneManager.LoadScene(OutGameSceneName);
             });
         }
 
+        private BattleRequest BuildRequest(BattleSetupData setup)
+        {
+            Dictionary<string, ArmyData> armyDefsById = LoadArmyDefs();
+            IReadOnlyList<AugmentData> augments = LoadSelectedAugments(setup);
+
+            var request = new BattleRequest
+            {
+                encounterId = setup.encounterId,
+                seed = StableSeed(setup.roomId), // 방마다 결정론적 시드 — 같은 방 재도전은 같은 전개
+            };
+
+            foreach (DeployedArmy army in setup.armies)
+            {
+                if (!armyDefsById.TryGetValue(army.armyDefId, out ArmyData def))
+                {
+                    Debug.LogError($"[연동] armyDefId '{army.armyDefId}'의 원형을 찾을 수 없다 — 기본 스탯으로 진행");
+                    request.playerSquads.Add(BuildSquad(army, def: null, augments));
+                    continue;
+                }
+                request.playerSquads.Add(BuildSquad(army, def, augments));
+            }
+            return request;
+        }
+
         /// <summary>
-        /// 협의 ①: outGame ArmyClass ↔ 인게임 롤 4종 매핑 — enum을 인게임 기준으로 개정하기로 합의했으므로
-        /// 머지 후 이 표만 채우면 된다. 병과는 아이템이 부여하며, 그 병과가 장군 스킬(generalSkillId)도 결정한다.
+        /// 최종 스탯 재구성 (§7.1.1) — 원형값 × ArmyStatCalculator 배율.
+        /// 치명타율·이동속도는 배율 없이 장군 값을 유닛도 그대로 쓴다 (아웃게임 §5.7).
         /// </summary>
+        private SquadRequest BuildSquad(DeployedArmy army, ArmyData def, IReadOnlyList<AugmentData> augments)
+        {
+            var squad = new SquadRequest
+            {
+                squadId = army.armyInstanceId,
+                roleId = MapClassToRoleId(army.armyClass),
+                generalId = MapClassToGeneralId(army.armyClass),
+                soldierCount = army.soldierCount,
+                slotX = army.slotX,
+                slotY = army.slotY,
+            };
+            if (def == null)
+            {
+                return squad; // 스탯 미설정 → 인게임 .asset 기본값으로 폴백
+            }
+
+            float healthMul = ArmyStatCalculator.GetStatMultiplier(
+                army.upgradeLevel, army.armyClass, AugmentStat.Health, augments);
+            float attackMul = ArmyStatCalculator.GetStatMultiplier(
+                army.upgradeLevel, army.armyClass, AugmentStat.Attack, augments);
+            float defenseMul = ArmyStatCalculator.GetStatMultiplier(
+                army.upgradeLevel, army.armyClass, AugmentStat.Defense, augments);
+
+            squad.maxHp = def.soldierHealth * healthMul;
+            squad.attackDamage = def.soldierAttack * attackMul;
+            squad.defense = def.soldierDefense * defenseMul;
+
+            squad.generalMaxHp = def.generalHealth * healthMul;
+            squad.generalAttackDamage = def.generalAttack * attackMul;
+            squad.generalDefense = def.generalDefense * defenseMul;
+
+            squad.critChancePercent = def.generalCritRate;              // 0~100, 배율 없음
+            squad.moveSpeed = def.generalMoveSpeed * MoveSpeedScale;    // 단위 환산
+            return squad;
+        }
+
+        /// <summary>아웃게임 병과 → 인게임 롤 (4병과 확정, 2026-07-26 — 어휘가 일치한다).</summary>
         private static string MapClassToRoleId(ArmyClass armyClass)
         {
             switch (armyClass)
             {
+                case ArmyClass.Warrior: return "Warrior";
                 case ArmyClass.Archer: return "Archer";
-                // 합의 후 추가 예시:
-                // case ArmyClass.Warrior: return "Warrior";
-                // case ArmyClass.Assassin: return "Assassin";
-                // case ArmyClass.Hunter: return "Hunter";
-                default: return null; // None(아이템 미부여) → 노멀 병사 + NormalGeneral (BattleCatalog 폴백)
+                case ArmyClass.Hunter: return "Hunter";
+                case ArmyClass.Assassin: return "Assassin";
+                default: return null; // None(아이템 미부여) → 노멀 병사 (BattleCatalog 폴백)
             }
+        }
+
+        /// <summary>
+        /// 장군은 병과에서 파생한다 — 병과가 장군 스킬을 결정하므로(§4-23) generalSkillId 키 규약에
+        /// 의존하지 않는 편이 안전하다. 아이템 미부여 부대도 능력 없는 노멀 장군을 갖는다.
+        /// </summary>
+        private static string MapClassToGeneralId(ArmyClass armyClass)
+        {
+            string roleId = MapClassToRoleId(armyClass);
+            return (roleId ?? "Normal") + "General";
+        }
+
+        private static Dictionary<string, ArmyData> LoadArmyDefs()
+        {
+            var map = new Dictionary<string, ArmyData>();
+            foreach (ArmyDefinition definition in Resources.LoadAll<ArmyDefinition>("OutGame/Data"))
+            {
+                ArmyData data = definition.ToData();
+                map[data.id] = data;
+            }
+            return map;
+        }
+
+        /// <summary>
+        /// 증강 목록 — 계약에 selectedAugmentIds가 추가되면 그 id로 AugmentDefinition을 조회해 채운다.
+        /// 필드가 없는 동안은 빈 목록이며, 그 경우 업그레이드 배율만 적용된다 (§7.1.1).
+        /// </summary>
+        private static IReadOnlyList<AugmentData> LoadSelectedAugments(BattleSetupData setup)
+        {
+            return new List<AugmentData>();
         }
 
         /// <summary>프로세스 간 안정적인 문자열 해시 — string.GetHashCode는 런타임마다 달라질 수 있다.</summary>

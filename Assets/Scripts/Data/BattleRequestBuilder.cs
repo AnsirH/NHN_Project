@@ -80,10 +80,11 @@ namespace NHN.Data
             {
                 return definition;
             }
+            // 치명타·이동속도는 장군 값을 병사와 공유하므로 같은 필드를 쓴다 (아웃게임 §5.7).
             RoleDefinition combatRole = RoleDefinition.WithStats(
                 definition.CombatRole,
                 request.generalMaxHp, request.generalAttackDamage, request.generalDefense,
-                request.generalCritChancePercent, request.generalMoveSpeed);
+                request.critChancePercent, request.moveSpeed);
             return GeneralDefinition.WithCombatRole(definition, combatRole);
         }
 

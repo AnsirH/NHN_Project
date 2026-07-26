@@ -102,9 +102,9 @@ namespace NHN.Simulation.Tests
                 {
                     squadId = "lv5", roleId = "Archer", generalId = "ArcherGeneral",
                     soldierCount = 3, slotX = 1f, slotY = 0.5f,
-                    maxHp = 675f, attackDamage = 236f, defense = 69f, critChancePercent = 20f, moveSpeed = 4.2f,
+                    maxHp = 675f, attackDamage = 236f, defense = 69f,
                     generalMaxHp = 3123f, generalAttackDamage = 565f, generalDefense = 143f,
-                    generalCritChancePercent = 25f, generalMoveSpeed = 4.5f,
+                    critChancePercent = 20f, moveSpeed = 4.2f, // 장군·병사 공유 (아웃게임 §5.7)
                 },
             };
 
@@ -118,9 +118,11 @@ namespace NHN.Simulation.Tests
             Assert.AreEqual(69f, soldier.Defense, 1e-3f);
             Assert.AreEqual(20f, soldier.CritChancePercent, 1e-3f);
             Assert.AreEqual(4.2f, soldier.MoveSpeed, 1e-3f);
-            Assert.AreEqual(3123f, general.CombatRole.MaxHp, 1e-3f, "장군 스탯은 병사와 별도로 전달된다");
+            Assert.AreEqual(3123f, general.CombatRole.MaxHp, 1e-3f, "장군 체력·공격력·방어력은 병사와 별도로 전달된다");
             Assert.AreEqual(565f, general.CombatRole.AttackDamage, 1e-3f);
             Assert.AreEqual(143f, general.CombatRole.Defense, 1e-3f);
+            Assert.AreEqual(20f, general.CombatRole.CritChancePercent, 1e-3f, "치명타는 장군·병사가 같은 값을 공유한다");
+            Assert.AreEqual(4.2f, general.CombatRole.MoveSpeed, 1e-3f, "이동속도도 장군·병사 공유");
 
             // 인게임 소유 속성은 .asset 그대로
             Assert.AreEqual(assetRole.AttackInterval, soldier.AttackInterval, 1e-3f, "공격 주기는 인게임 소유");
@@ -179,17 +181,17 @@ namespace NHN.Simulation.Tests
                 {
                     squadId = "lv1", roleId = "Warrior", generalId = "WarriorGeneral",
                     soldierCount = 3, slotX = 1f, slotY = 0.3f,
-                    maxHp = 100f, attackDamage = 10f, defense = 5f, critChancePercent = 0f, moveSpeed = 3f,
+                    maxHp = 100f, attackDamage = 10f, defense = 5f,
                     generalMaxHp = 500f, generalAttackDamage = 50f, generalDefense = 20f,
-                    generalCritChancePercent = 5f, generalMoveSpeed = 3f,
+                    critChancePercent = 0f, moveSpeed = 3f,
                 },
                 new SquadRequest
                 {
                     squadId = "lv5", roleId = "Warrior", generalId = "WarriorGeneral",
                     soldierCount = 3, slotX = 1f, slotY = 0.7f,
-                    maxHp = 300f, attackDamage = 30f, defense = 15f, critChancePercent = 10f, moveSpeed = 3.6f,
+                    maxHp = 300f, attackDamage = 30f, defense = 15f,
                     generalMaxHp = 1500f, generalAttackDamage = 150f, generalDefense = 60f,
-                    generalCritChancePercent = 15f, generalMoveSpeed = 3.6f,
+                    critChancePercent = 10f, moveSpeed = 3.6f,
                 },
             };
 

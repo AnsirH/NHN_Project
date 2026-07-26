@@ -48,27 +48,6 @@ namespace NHN.Data
 
         public float UnitRadius => unitRadius;
 
-        // ── 5스탯 접근자 (soldier_stats.csv 임포트/익스포트 경로) ──
-        public float MaxHp => maxHp;
-
-        public float AttackDamage => attackDamage;
-
-        public float Defense => defense;
-
-        public float CritChancePercent => critChancePercent;
-
-        public float MoveSpeed => moveSpeed;
-
-        /// <summary>CSV 임포터가 레벨 0 스냅샷을 써넣는다 (에디터 전용 경로).</summary>
-        public void SetStats(float hp, float damage, float armor, float critPercent, float speed)
-        {
-            maxHp = hp;
-            attackDamage = damage;
-            defense = armor;
-            critChancePercent = critPercent;
-            moveSpeed = speed;
-        }
-
         public RoleDefinition ToDefinition()
         {
             return new RoleDefinition(

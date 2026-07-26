@@ -8,8 +8,6 @@ namespace BalanceLab
     public sealed class SquadRecord
     {
         public string squadId;
-        /// <summary>이 분대의 레벨 (스탯 출처 추적용 — 리포트에서 레벨 스윕 결과를 구분한다).</summary>
-        public int level;
         public int survivors;
         public bool hasGeneral;
         public bool generalAlive;
@@ -121,10 +119,10 @@ namespace BalanceLab
             {
                 SquadEntry entry = entries[s];
                 squads[s] = new SquadDefinition(
-                    repository.GetRole(entry.roleId, entry.level),
+                    repository.GetRole(entry.roleId),
                     entry.soldierCount,
                     DeploymentGrid.SlotToAnchor(entry.slotX, entry.slotY, config.DeploymentDepth, config.DeploymentHalfWidth),
-                    repository.GetGeneral(entry.generalId, entry.level));
+                    repository.GetGeneral(entry.generalId));
             }
             return new ArmyDefinition(squads);
         }
@@ -139,7 +137,6 @@ namespace BalanceLab
                 records.Add(new SquadRecord
                 {
                     squadId = entries[s].squadId,
-                    level = entries[s].level,
                     survivors = sim.CountSquadSurvivors(squadIndex),
                     hasGeneral = sim.GetGeneralUnit(squadIndex) >= 0,
                     generalAlive = sim.IsGeneralAlive(squadIndex),
