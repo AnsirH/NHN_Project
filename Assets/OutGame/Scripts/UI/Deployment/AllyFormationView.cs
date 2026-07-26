@@ -325,9 +325,11 @@ namespace OutGame.UI.Deployment
                 Sprite portrait = def != null ? def.Portrait : null;
                 string baseDisplayName = def != null ? def.ToData().displayName : army.armyDefId;
                 string displayName = ItemEquipService.ResolveDisplayName(army, baseDisplayName, itemDataById);
-                // 이름 자체가 병과를 나타내므로(§2 용어: 기본 군대 + 활 = 궁수 군대) 별도 뱃지/병사 수는
-                // 카드에 표시하지 않는다(2026-07-26 사용자 확정 — 진영 카드엔 군대 수 표시 안 함).
-                kv.Value.SetDisplay(displayName, portrait);
+                // 진영 카드에 병사 수도 표시한다(2026-07-26 사용자 요청 — 이전엔 이름이 병과를
+                // 나타낸다는 이유로 뺐었는데(§2 용어: 기본 군대 + 활 = 궁수 군대), 사용자가 다시
+                // 켜기로 확정).
+                int? soldierCount = def != null ? def.ToData().baseSoldierCount + army.bonusSoldierCount : (int?)null;
+                kv.Value.SetDisplay(displayName, portrait, soldierCount);
             }
 
             // 배치 영속화를 먼저 끝내둔다 — 전투력 계산은 BattlePowerCalculator를 거치며 데이터
