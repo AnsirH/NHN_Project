@@ -205,8 +205,10 @@ namespace OutGame.UI.Deployment
 
             var armyDataById = armyDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
             var itemDataById = itemDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
+            List<AugmentData> selectedAugments = allyFormationView.BuildSelectedAugments();
 
-            BattleSetupData setup = allyFormationView.Deployment.BuildSetup(roomId, roomType, encounterId, run, itemDataById, armyDataById);
+            BattleSetupData setup = allyFormationView.Deployment.BuildSetup(
+                roomId, roomType, encounterId, run, itemDataById, armyDataById, selectedAugments);
             Confirmed?.Invoke(setup);
         }
 
