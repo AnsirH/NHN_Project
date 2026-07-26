@@ -133,9 +133,10 @@ namespace OutGame.Tests.PlayMode
                     .GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
                 var emptySlot = panel.GetComponentsInChildren<DeploySlotView>()
                     .First(s => s.CardContainer.GetComponentInChildren<ArmyCardView>() == null);
-                typeof(ArmyDeploymentPanel)
+                var allyFormationView = panel.transform.Find("MainRow/AllyColumn").GetComponent<AllyFormationView>();
+                typeof(AllyFormationView)
                     .GetMethod("OnArmyDroppedOnSlot", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                    .Invoke(panel, new object[] { cardView.ArmyInstanceId, emptySlot.SlotId });
+                    .Invoke(allyFormationView, new object[] { cardView.ArmyInstanceId, emptySlot.SlotId });
 
                 yield return CaptureToFile("ArmyDeploymentPanel_02_deployed.png");
 
@@ -330,6 +331,65 @@ namespace OutGame.Tests.PlayMode
             finally
             {
                 Object.Destroy(canvasGo);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator Capture_ArmyFormationPopup()
+        {
+            // 2026-07-26 사용자 요청: 방 그래프에서 여는 "진영" 팝업 — 전체화면 dim, 배치 화면과 동일한
+            // 4×7 그리드/전투력/재화 표시, 아이템 버튼→인벤토리, 카드 클릭→군대 정보 팝업까지 배치
+            // 화면과 동일하게 동작하는지 육안 확인.
+            if (Application.isBatchMode)
+            {
+                Assert.Ignore("batchmode에서는 렌더 프레임이 없어 캡처 불가 — 에디터 열림 상태에서만 실행");
+                yield break;
+            }
+
+            yield return SettleGameView();
+
+            var canvasGo = new GameObject("CaptureCanvas", typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler));
+            var eventSystemGo = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
+            try
+            {
+                var canvas = canvasGo.GetComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                var scaler = canvasGo.GetComponent<UnityEngine.UI.CanvasScaler>();
+                scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                scaler.referenceResolution = new Vector2(1920f, 1080f);
+                scaler.matchWidthOrHeight = 0.5f;
+
+                var prefab = Resources.Load<GameObject>("OutGame/ArmyFormationPopup");
+                Assert.IsNotNull(prefab, "ArmyFormationPopup 프리팹 없음 — SceneSetupM3UI.Run() 실행 필요");
+                var popup = Object.Instantiate(prefab, canvasGo.transform).GetComponent<ArmyFormationPopup>();
+
+                var armyDef = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
+                var bowDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Bow");
+
+                var runConfig = new RunConfig { startingArmyCount = 3, startingArmyDefId = "army_basic" };
+                MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
+                RunState run = RunStateFactory.Create(map, runConfig);
+                run.ownedItemIds.Add("item_bow");
+                run.gold = 500;
+
+                popup.Open(run, runConfig, new[] { armyDef }, new[] { bowDef }, new AugmentDefinition[0]);
+
+                yield return CaptureToFile("ArmyFormationPopup_01_initial.png");
+
+                Transform window = popup.transform.Find("Window");
+                window.Find("ItemButton").GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
+                yield return CaptureToFile("ArmyFormationPopup_02_inventory_open.png");
+
+                popup.GetComponentInChildren<InventoryPopup>(includeInactive: true).Hide();
+                var cardView = window.Find("AllyArea/SlotGrid")
+                    .GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+                cardView.OnPointerClick(new PointerEventData(EventSystem.current));
+                yield return CaptureToFile("ArmyFormationPopup_03_army_info.png");
+            }
+            finally
+            {
+                Object.Destroy(canvasGo);
+                Object.Destroy(eventSystemGo);
             }
         }
 

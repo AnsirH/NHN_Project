@@ -29,6 +29,7 @@ namespace OutGame.Flow
         [SerializeField] private RestPanel restPanel;
         [SerializeField] private AugmentPanel augmentPanel;
         [SerializeField] private ArmyDeploymentPanel deploymentPanel;
+        [SerializeField] private ArmyFormationPopup armyFormationPopup; // 2026-07-26: 방 그래프의 "진영" 팝업
         [SerializeField] private ItemRewardPopup itemRewardPopup; // 2026-07-26: 전투 승리 아이템 드롭 알림
         [SerializeField] private DummyBattlePanel battlePanel; // BattleBridge.Implementation의 M6 더미 구현
         [SerializeField] private RoomTypeVisualSet visuals;
@@ -77,7 +78,8 @@ namespace OutGame.Flow
                 itemDropConfigAsset = Resources.Load<ItemDropConfigAsset>("OutGame/Data/ItemDropConfig_Default");
 
             if (mapPanel == null || roomPanel == null || eventPanel == null || restPanel == null
-                || augmentPanel == null || deploymentPanel == null || itemRewardPopup == null || battlePanel == null
+                || augmentPanel == null || deploymentPanel == null || armyFormationPopup == null
+                || itemRewardPopup == null || battlePanel == null
                 || visuals == null || runConfig == null
                 || enemyCompositionConfigAsset == null || itemDropConfigAsset == null)
                 throw new InvalidOperationException(
@@ -131,11 +133,13 @@ namespace OutGame.Flow
             BattleBridge.Implementation = battlePanel.Open;
 
             mapPanel.RoomSelected += OnRoomSelected;
+            mapPanel.FormationRequested += OnFormationRequested;
             roomPanel.Completed += OnRoomCompleted;
             eventPanel.Completed += OnRoomCompleted;
             restPanel.Completed += OnRoomCompleted;
             augmentPanel.Completed += OnRoomCompleted;
             deploymentPanel.Confirmed += OnBattleSetupConfirmed;
+            armyFormationPopup.Changed += OnArmyFormationChanged;
 
             roomPanel.Hide();
             mapPanel.Open(run.mapState);
@@ -145,15 +149,32 @@ namespace OutGame.Flow
         private void OnDestroy()
         {
             if (mapPanel != null) mapPanel.RoomSelected -= OnRoomSelected;
+            if (mapPanel != null) mapPanel.FormationRequested -= OnFormationRequested;
             if (roomPanel != null) roomPanel.Completed -= OnRoomCompleted;
             if (eventPanel != null) eventPanel.Completed -= OnRoomCompleted;
             if (restPanel != null) restPanel.Completed -= OnRoomCompleted;
             if (augmentPanel != null) augmentPanel.Completed -= OnRoomCompleted;
             if (deploymentPanel != null) deploymentPanel.Confirmed -= OnBattleSetupConfirmed;
+            if (armyFormationPopup != null) armyFormationPopup.Changed -= OnArmyFormationChanged;
         }
+
+        private void OnFormationRequested()
+        {
+            armyFormationPopup.Open(run, runConfig.ToData(),
+                armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), augmentDefsById.Values.ToList());
+        }
+
+        /// <summary>진영 팝업 안에서 업그레이드로 골드를 쓰면 방 그래프 재화 표시도 즉시 최신 상태로
+        /// 유지한다(2026-07-26 사용자 확정) — 팝업이 전체화면 dim이라 그 표시가 가려져 있는 동안에도
+        /// 미리 동기화해둬야 팝업을 닫는 순간 바로 정확한 값이 보인다.</summary>
+        private void OnArmyFormationChanged() => mapPanel.SetGold(run.gold);
 
         private void OnRoomSelected(MapNode node)
         {
+            // 진영 팝업을 열어둔 채로 다른 방을 선택했을 가능성에 대비 — 다음 방 패널 위에 잔존해서
+            // 보이지 않도록 방어적으로 닫는다(2026-07-26, 배치 패널의 팝업 잔존 방지와 동일한 이유).
+            armyFormationPopup.Hide();
+
             MapProgress.Visit(run.mapState, node.point);
             mapPanel.Refresh();
 

@@ -24,6 +24,7 @@ namespace OutGame.UI
         [SerializeField] private RectTransform nodeLayer;
         [SerializeField] private RectTransform legendContainer;
         [SerializeField] private CurrencyDisplay currencyDisplay; // 2026-07-26: 범례가 있던 우측 상단 자리로 이동
+        [SerializeField] private Button formationButton; // 2026-07-26: 좌측 하단 "진영" 버튼
 
         [Header("요소 프리팹 (비주얼은 각 프리팹에서 수정)")]
         [SerializeField] private RoomNodeView nodePrefab;
@@ -47,6 +48,21 @@ namespace OutGame.UI
         /// <summary>선택 가능한 노드가 클릭됐을 때 발행. 방문 확정은 구독자 책임.</summary>
         public event Action<MapNode> RoomSelected;
 
+        /// <summary>"진영" 버튼 클릭 시 발행 — 진영 팝업을 여는 것은 구독자(InGameFlowController) 책임.</summary>
+        public event Action FormationRequested;
+
+        private void Awake()
+        {
+            formationButton.onClick.AddListener(OnFormationButtonClicked);
+        }
+
+        private void OnDestroy()
+        {
+            formationButton.onClick.RemoveListener(OnFormationButtonClicked);
+        }
+
+        private void OnFormationButtonClicked() => FormationRequested?.Invoke();
+
         public void Open(MapState map)
         {
             if (map == null) throw new ArgumentNullException(nameof(map));
@@ -69,6 +85,8 @@ namespace OutGame.UI
                     "RoomMapPanel의 nodePrefab/linePrefab/legendEntryPrefab이 배선되지 않았습니다");
             if (currencyDisplay == null)
                 throw new InvalidOperationException("RoomMapPanel의 currencyDisplay가 배선되지 않았습니다");
+            if (formationButton == null)
+                throw new InvalidOperationException("RoomMapPanel의 formationButton이 배선되지 않았습니다");
             if (visuals == null)
                 throw new InvalidOperationException(
                     "RoomMapPanel.visuals(RoomTypeVisualSet)가 할당되지 않았습니다");

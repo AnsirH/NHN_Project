@@ -80,13 +80,25 @@ namespace OutGame.Tests.PlayMode
                 TestEnemyComposition);
         }
 
+        // 플레이어 진영(슬롯/카드/드래그앤드롭/아이템장착/업그레이드)은 AllyFormationView가 담당한다
+        // (2026-07-26 추출) — private 메서드 리플렉션 호출은 이제 이 컴포넌트를 대상으로 한다.
+        private AllyFormationView AllyFormationView() =>
+            panel.transform.Find("MainRow/AllyColumn").GetComponent<AllyFormationView>();
+
         // OnItemDroppedOnCard는 처리를 한 프레임 늦추므로(코드 리뷰 CRITICAL 수정 — 드래그 종료 처리와의
         // 경합 방지), 테스트에서도 반드시 private 메서드를 호출한 뒤 프레임을 흘려보내야 결과가 반영된다.
         private void DropItemOnCard(ArmyCardView card, string itemId)
         {
-            typeof(ArmyDeploymentPanel)
+            typeof(AllyFormationView)
                 .GetMethod("OnItemDroppedOnCard", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                .Invoke(panel, new object[] { card, itemId });
+                .Invoke(AllyFormationView(), new object[] { card, itemId });
+        }
+
+        private void DropArmyOnSlot(string armyInstanceId, int slotId)
+        {
+            typeof(AllyFormationView)
+                .GetMethod("OnArmyDroppedOnSlot", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .Invoke(AllyFormationView(), new object[] { armyInstanceId, slotId });
         }
 
         // 적 진영도 아군과 동일한 ArmyCardView를 재사용하므로(2026-07-26), panel 전체를 뒤지면 적
@@ -312,9 +324,7 @@ namespace OutGame.Tests.PlayMode
             Assert.IsNotNull(secondCard);
 
             // 첫 슬롯의 카드를 두 번째 슬롯 위로 드래그 — DeploymentState.Place가 스왑을 처리 (§5.7)
-            typeof(ArmyDeploymentPanel)
-                .GetMethod("OnArmyDroppedOnSlot", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                .Invoke(panel, new object[] { firstCard.ArmyInstanceId, slots[1].SlotId });
+            DropArmyOnSlot(firstCard.ArmyInstanceId, slots[1].SlotId);
             yield return null;
 
             Assert.AreSame(firstCard, slots[1].CardContainer.GetComponentInChildren<ArmyCardView>());
@@ -332,9 +342,7 @@ namespace OutGame.Tests.PlayMode
             var slots = OccupiedAllySlotsOrdered();
             var firstCard = slots[0].CardContainer.GetComponentInChildren<ArmyCardView>();
 
-            typeof(ArmyDeploymentPanel)
-                .GetMethod("OnArmyDroppedOnSlot", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                .Invoke(panel, new object[] { firstCard.ArmyInstanceId, slots[1].SlotId });
+            DropArmyOnSlot(firstCard.ArmyInstanceId, slots[1].SlotId);
             yield return null;
 
             Assert.AreEqual(Vector2.zero, ((RectTransform)firstCard.transform).anchoredPosition,
@@ -352,9 +360,7 @@ namespace OutGame.Tests.PlayMode
             string firstArmyId = slots[0].CardContainer.GetComponentInChildren<ArmyCardView>().ArmyInstanceId;
             string secondArmyId = slots[1].CardContainer.GetComponentInChildren<ArmyCardView>().ArmyInstanceId;
 
-            typeof(ArmyDeploymentPanel)
-                .GetMethod("OnArmyDroppedOnSlot", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                .Invoke(panel, new object[] { firstArmyId, slots[1].SlotId });
+            DropArmyOnSlot(firstArmyId, slots[1].SlotId);
             yield return null;
 
             panel.Close();

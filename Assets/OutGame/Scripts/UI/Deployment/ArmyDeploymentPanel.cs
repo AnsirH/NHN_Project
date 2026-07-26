@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using OutGame.Logic.Armies;
@@ -19,10 +18,11 @@ namespace OutGame.UI.Deployment
     /// 군대 배치 UI (상세 기획 §5.7 — 핵심 산출물). 씬 독립 프리팹.
     /// 사용법: Open(...) → 배치 편집(드래그 앤 드롭) → [전투 시작] → OnConfirmed(BattleSetupData).
     ///
-    /// 레이아웃(2026-07-18 개정 — Mini Warriors 참고 이미지 재확인 후 로스터 목록 제거):
-    /// 군대 보유 상한 = 배치 슬롯 수(§4-7)이므로 보유 군대는 항상 전부 슬롯에 들어간다.
-    /// Open() 시점에 슬롯 ID 오름차순으로 자동 배치되며, 별도 "보유 군대" 목록/드롭존은 없다.
-    /// 드래그 앤 드롭은 슬롯 간 이동/스왑(진형 변경)만 지원 — DeploymentState.Place가 이미 처리.
+    /// 플레이어 진영(슬롯/카드/드래그앤드롭/아이템장착/업그레이드/전투력)은 AllyFormationView가
+    /// 담당한다(2026-07-26 추출 — 방 그래프의 "진영" 팝업(ArmyFormationPopup)과 공유하기 위함).
+    /// 이 클래스는 적 진영(슬롯/자동배치/전투력)과 중앙 버튼 축(전투 시작/프리셋), 상단 재화 표시만
+    /// 담당한다.
+    ///
     /// 우측 "적 진영"은 아군과 같은 크기의 격자를 항상 전부 표시하고, EnemyCompositionGenerator가
     /// 생성한 구성(병과+병사 수)을 EnemyFormationAssigner로 열(column) 배치한다(§4-28) — 근접
     /// 병과는 앞열, 원거리 병과는 뒷열에 군집(2026-07-19 사용자 요청). 유닛 UI는 아군과 동일한
@@ -33,41 +33,29 @@ namespace OutGame.UI.Deployment
     public class ArmyDeploymentPanel : MonoBehaviour
     {
         [Header("구조 참조")]
-        [SerializeField] private RectTransform allySlotContainer;
         [SerializeField] private RectTransform enemySlotContainer;
-        [SerializeField] private Text allyPowerLabel;
         [SerializeField] private Text enemyPowerLabel;
         [SerializeField] private Text enemyBuffLabel;
         [SerializeField] private Button startBattleButton;
-        [SerializeField] private Button itemButton;
         [SerializeField] private Button presetButton; // §4-17: 배치만, 항상 비활성
         [SerializeField] private CurrencyDisplay currencyDisplay; // 2026-07-26: 상단 바 재화 표시
 
         [Header("요소 프리팹")]
-        [SerializeField] private ArmyCardView armyCardPrefab;
-        [SerializeField] private DeploySlotView allySlotPrefab;
+        [SerializeField] private ArmyCardView armyCardPrefab; // 적 카드 표시용(interactable=false)
         [SerializeField] private Image enemySlotPrefab;
 
-        [Header("팝업")]
-        [SerializeField] private ItemBindWarningPopup bindWarningPopup;
-        [SerializeField] private InventoryPopup inventoryPopup;
-        [SerializeField] private ArmyInfoPopup armyInfoPopup;
+        [Header("플레이어 진영")]
+        [SerializeField] private AllyFormationView allyFormationView;
 
         [Header("설정")]
         [SerializeField] private BattleFieldConfig fieldConfig;
         [SerializeField] private BattlePowerConfigAsset powerConfig;
 
-        private readonly Dictionary<string, ArmyCardView> cardsByArmyId = new Dictionary<string, ArmyCardView>();
         private readonly Dictionary<string, ArmyDefinition> armyDefsById = new Dictionary<string, ArmyDefinition>();
         private readonly Dictionary<string, ItemDefinition> itemDefsById = new Dictionary<string, ItemDefinition>();
-        private readonly Dictionary<string, AugmentDefinition> augmentDefsById = new Dictionary<string, AugmentDefinition>();
-        private readonly Dictionary<int, DeploySlotView> allySlotViewsById = new Dictionary<int, DeploySlotView>();
         private readonly Dictionary<int, Transform> enemySlotCardContainersById = new Dictionary<int, Transform>();
-        private readonly List<int> allySlotPriorityOrder = new List<int>();
 
         private RunState run;
-        private RunConfig runConfig;
-        private DeploymentState deployment;
         private string roomId;
         private RoomType roomType;
         private string encounterId;
@@ -95,7 +83,6 @@ namespace OutGame.UI.Deployment
             ValidateWiring();
 
             run = runState;
-            runConfig = runConfigValue;
             roomId = roomIdValue;
             roomType = roomTypeValue;
             encounterId = encounterIdValue;
@@ -105,30 +92,20 @@ namespace OutGame.UI.Deployment
             foreach (ArmyDefinition def in armyDefs) armyDefsById[def.ToData().id] = def;
             itemDefsById.Clear();
             foreach (ItemDefinition def in itemDefs) itemDefsById[def.ToData().id] = def;
-            augmentDefsById.Clear();
-            foreach (AugmentDefinition def in augmentDefs) augmentDefsById[def.ToData().id] = def;
 
-            deployment = new DeploymentState(fieldConfig.ToData().GenerateSlots());
-            if (run.armies.Count > deployment.SlotCount)
-                throw new InvalidOperationException(
-                    $"보유 군대({run.armies.Count})가 배치 슬롯 수({deployment.SlotCount})를 초과했습니다 — " +
-                    "RunConfig.maxArmyCount와 BattleFieldConfig 슬롯 수가 어긋나 있습니다 (§4-7).");
-
-            BuildSlots();
-            BuildCards();
-            RestoreOrAutoPlaceArmies();
-            RefreshLayout();
+            BuildEnemySlots();
+            UpdateEnemyPowerLabel();
 
             enemyBuffLabel.text = "없음"; // §4-21: 1차는 표시 영역만
             presetButton.interactable = false; // §4-17
 
-            // 이전 방에서 팝업을 열어둔 채로 전투를 시작했을 가능성에 대비한 방어적 초기화 —
-            // Close()에서도 닫지만(2026-07-26), 그 경로를 놓치는 경우까지 이중으로 막는다.
-            // bindWarningPopup도 인벤토리/군대 정보 팝업과 동일하게 dim이 없어 같은 문제가 생길 수
-            // 있어 코드 리뷰 지적으로 함께 추가(원래 요청은 인벤토리/군대 정보 팝업만 언급했었음).
-            inventoryPopup.Hide();
-            armyInfoPopup.Hide();
-            bindWarningPopup.Hide();
+            allyFormationView.Open(run, runConfigValue, armyDefs, itemDefs, augmentDefs);
+            // AllyFormationView.Changed 구독(Awake)에만 기대지 않고 최초 1회는 직접 동기화한다 —
+            // 이 패널의 GameObject가 비활성 상태에서 Open()이 먼저 호출되면(씬에서 항상 그렇다,
+            // SceneSetupM6UI가 SetActive(false)로 배치) Unity가 Awake()를 활성화 시점까지 미뤄서,
+            // 첫 Open() 때는 구독이 아직 안 걸려있을 수 있다(이번 세션에 이미 겪은 것과 동일한
+            // Awake 타이밍 문제 — 업그레이드 버튼 라벨, CurrencyDisplay).
+            SyncFromAllyFormation();
 
             gameObject.SetActive(true);
             PanelTransitions.FadeIn(gameObject);
@@ -136,29 +113,26 @@ namespace OutGame.UI.Deployment
 
         /// <summary>
         /// 패널을 닫는다 — 전투 시작 확정 직후(InGameFlowController.OnBattleSetupConfirmed) 호출된다.
-        /// 인벤토리/군대 정보/귀속 경고 팝업은 이 패널의 자식이라 부모가 비활성화되면 화면에서는
+        /// 플레이어 진영 팝업들은 AllyFormationView의 자식이라 부모(이 패널)가 비활성화되면 화면에서는
         /// 같이 사라지지만 각자의 activeSelf는 그대로 남아, 다음 방에서 패널이 다시 열릴 때 그대로
-        /// 재노출될 수 있다(2026-07-26 사용자 지적) — 명시적으로 닫아 이 상태가 남지 않게 한다.
+        /// 재노출될 수 있다(2026-07-26 사용자 지적) — AllyFormationView.Close()로 명시적으로 닫는다.
         /// </summary>
         public void Close()
         {
-            inventoryPopup.Hide();
-            armyInfoPopup.Hide();
-            bindWarningPopup.Hide();
+            allyFormationView.Close();
             gameObject.SetActive(false);
         }
 
         private void ValidateWiring()
         {
-            if (allySlotContainer == null
-                || enemySlotContainer == null || allyPowerLabel == null || enemyPowerLabel == null
-                || enemyBuffLabel == null || startBattleButton == null || itemButton == null || presetButton == null
+            if (enemySlotContainer == null || enemyPowerLabel == null
+                || enemyBuffLabel == null || startBattleButton == null || presetButton == null
                 || currencyDisplay == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 구조 참조가 배선되지 않았습니다.");
-            if (armyCardPrefab == null || allySlotPrefab == null || enemySlotPrefab == null)
+            if (armyCardPrefab == null || enemySlotPrefab == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 요소 프리팹이 배선되지 않았습니다.");
-            if (bindWarningPopup == null || inventoryPopup == null || armyInfoPopup == null)
-                throw new InvalidOperationException("ArmyDeploymentPanel의 팝업이 배선되지 않았습니다.");
+            if (allyFormationView == null)
+                throw new InvalidOperationException("ArmyDeploymentPanel의 allyFormationView가 배선되지 않았습니다.");
             if (fieldConfig == null || powerConfig == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 config 에셋이 배선되지 않았습니다.");
         }
@@ -166,47 +140,30 @@ namespace OutGame.UI.Deployment
         private void Awake()
         {
             startBattleButton.onClick.AddListener(OnStartBattleClicked);
-            itemButton.onClick.AddListener(OnItemButtonClicked);
-            // 업그레이드는 팝업 안에서 골드를 차감하므로(ArmyUpgradeService), 패널 상단 재화 표시도
-            // 같이 갱신해야 한다 — RefreshLayout이 이미 전투력과 재화를 함께 갱신하므로 재사용한다.
-            armyInfoPopup.Upgraded += RefreshLayout;
+            allyFormationView.Changed += SyncFromAllyFormation;
         }
 
         private void OnDestroy()
         {
             startBattleButton.onClick.RemoveListener(OnStartBattleClicked);
-            itemButton.onClick.RemoveListener(OnItemButtonClicked);
-            armyInfoPopup.Upgraded -= RefreshLayout;
+            allyFormationView.Changed -= SyncFromAllyFormation;
+        }
+
+        private void SyncFromAllyFormation()
+        {
+            startBattleButton.interactable = allyFormationView.Deployment.CanStartBattle;
+            currencyDisplay.SetAmount(run.gold);
         }
 
         // ── 구성 ─────────────────────────────────────────────────────
 
-        private void BuildSlots()
+        private void BuildEnemySlots()
         {
-            foreach (Transform child in allySlotContainer.Cast<Transform>().ToArray()) Destroy(child.gameObject);
             foreach (Transform child in enemySlotContainer.Cast<Transform>().ToArray()) Destroy(child.gameObject);
-            allySlotViewsById.Clear();
             enemySlotCardContainersById.Clear();
 
             BattleFieldConfigData fieldData = fieldConfig.ToData();
             List<SlotDefinition> slots = fieldData.GenerateSlots();
-
-            foreach (SlotDefinition slot in slots)
-            {
-                DeploySlotView view = Instantiate(allySlotPrefab, allySlotContainer);
-                view.Initialize(slot.slotId);
-                view.ArmyDropped += OnArmyDroppedOnSlot;
-                view.ItemDroppedOnOccupant += OnItemDroppedOnCard;
-                allySlotViewsById[slot.slotId] = view;
-            }
-
-            // 자동 배치 우선순위 — "가운데 전방"이 기본 배치 기준점이다(2026-07-26 사용자 확정).
-            // 아군은 구역 제한 없이 전방 열(마지막 열)부터 후방 쪽으로(4→3→2→1) 훑고, 각 열 안에서는
-            // 가운데 행부터 위아래로 번갈아 채운다. RestoreOrAutoPlaceArmies()가 이 순서를 사용한다.
-            List<int> columnPriority = Enumerable.Range(0, fieldData.columns).Reverse().ToList();
-            allySlotPriorityOrder.Clear();
-            allySlotPriorityOrder.AddRange(
-                SlotPriorityOrder.ByColumnPriority(slots, fieldData.columns, columnPriority).Select(s => s.slotId));
 
             // 적 진영 — 아군과 똑같은 크기의 격자를 항상 전부 만들고(§5.7 "플레이어 진영처럼"), 그 위에
             // §4-28 생성된 구성을 EnemyFormationAssigner로 배치한다. 유닛 표시는 아군과 동일한
@@ -242,200 +199,27 @@ namespace OutGame.UI.Deployment
         private static string EnemyClassLabel(ArmyClass armyClass) =>
             armyClass == ArmyClass.None ? "기본" : ItemEquipService.ClassDisplayName(armyClass);
 
-        private void BuildCards()
-        {
-            foreach (ArmyCardView view in cardsByArmyId.Values)
-                if (view != null) Destroy(view.gameObject);
-            cardsByArmyId.Clear();
-
-            // 임시 부모(패널 루트) — RestoreOrAutoPlaceArmies() 직후 RefreshLayout()이 슬롯 CardContainer로 재배치한다.
-            foreach (ArmyInstance army in run.armies)
-            {
-                ArmyCardView card = Instantiate(armyCardPrefab, transform);
-                card.Initialize(army.instanceId);
-                card.DragEnded += OnCardDragEnded;
-                card.ItemDropped += OnItemDroppedOnCard;
-                card.Clicked += OnCardClicked;
-                cardsByArmyId[army.instanceId] = card;
-            }
-        }
-
-        /// <summary>
-        /// run.deployment에 저장된 배치를 먼저 복원하고, 아직 슬롯이 없는 부대(최초 방문 시 전부 해당,
-        /// 또는 방문 사이 이벤트로 새로 얻은 부대)만 남는 슬롯에 자동 배치한다 (§5.7 2026-07-19 개정
-        /// — 배치는 방을 넘어가도 유지되어야 하며, 매번 새로 자동 배치하면 안 된다). 자동 배치 순서는
-        /// allySlotPriorityOrder(가운데 전방 기준, 2026-07-26 사용자 확정)를 따른다.
-        /// </summary>
-        private void RestoreOrAutoPlaceArmies()
-        {
-            foreach (ArmySlotAssignment saved in run.deployment)
-                // 방어적: 저장된 부대가 더 이상 없거나, BattleFieldConfig가 그 사이 바뀌어(§4-7) 저장된
-                // slotId가 더 이상 존재하지 않으면 건너뜀 — 아래 자동 배치 루프가 남는 슬롯에 채워준다.
-                if (run.GetArmy(saved.armyInstanceId) != null && deployment.IsValidSlot(saved.slotId))
-                    deployment.Place(saved.armyInstanceId, saved.slotId);
-
-            List<int> freeSlotIds = allySlotPriorityOrder
-                .Where(id => deployment.GetArmyAt(id) == null)
-                .ToList();
-
-            int freeIndex = 0;
-            foreach (ArmyInstance army in run.armies)
-            {
-                if (deployment.GetSlotOf(army.instanceId).HasValue) continue; // 이미 복원됨
-                if (freeIndex >= freeSlotIds.Count)
-                    throw new InvalidOperationException(
-                        "배치 슬롯이 부족합니다 — RunConfig.maxArmyCount와 BattleFieldConfig 슬롯 수 확인 필요 (§4-7).");
-                deployment.Place(army.instanceId, freeSlotIds[freeIndex]);
-                freeIndex++;
-            }
-        }
-
-        // ── 이벤트 처리 ──────────────────────────────────────────────
-        //
-        // uGUI 이벤트 순서: OnDrop(드롭 타깃) → OnEndDrag(드래그 소스), 같은 포인터-업 처리 안에서 순차 실행.
-        // OnCardDragEnded(OnEndDrag 경유)가 항상 RefreshLayout을 호출하므로 실제 드래그 흐름에서는
-        // 아래 호출이 중복이지만, Place/Remove 직후 상태를 즉시 반영해두면 드래그를 거치지 않는
-        // 호출(테스트, 추후 클릭 배치 등)에서도 항상 일관된 화면을 보장한다.
-
-        private void OnArmyDroppedOnSlot(string armyInstanceId, int slotId)
-        {
-            deployment.Place(armyInstanceId, slotId);
-            RefreshLayout();
-        }
-
-        private void OnCardDragEnded(ArmyCardView view)
-        {
-            RefreshLayout();
-        }
-
-        private void OnItemDroppedOnCard(ArmyCardView card, string itemId)
-        {
-            if (bindWarningPopup.IsShowing) return; // 이미 확인 대기 중 — 새 드롭은 무시(카드는 원위치로 복귀)
-
-            // 인벤토리 팝업 재구성(아이템 카드 파괴 포함)은 지금 진행 중인 드래그의 OnEndDrag보다
-            // 절대 먼저 실행되면 안 된다 — 한 프레임 늦춰 안전하게 처리한다 (코드 리뷰 CRITICAL 수정).
-            StartCoroutine(HandleItemDropNextFrame(card.ArmyInstanceId, itemId));
-        }
-
-        private IEnumerator HandleItemDropNextFrame(string armyInstanceId, string itemId)
-        {
-            yield return null;
-
-            ArmyInstance army = run.GetArmy(armyInstanceId);
-            if (army == null || !run.ownedItemIds.Contains(itemId) || army.HasItem)
-                yield break; // 부여 불가 조건 — 조용히 무시 (드래그 실패와 동일하게 취급)
-
-            string itemName = itemDefsById.TryGetValue(itemId, out ItemDefinition itemDef)
-                ? itemDef.DisplayName
-                : itemId;
-            string armyName = armyDefsById.TryGetValue(army.armyDefId, out ArmyDefinition armyDef)
-                ? armyDef.ToData().displayName
-                : army.armyDefId;
-
-            bindWarningPopup.ShowOrConfirmImmediately(itemName, armyName, () =>
-            {
-                ItemEquipService.Equip(run, army.instanceId, itemId);
-                inventoryPopup.Rebuild(run.ownedItemIds, itemDefsById);
-                RefreshLayout();
-            });
-        }
-
-        private void OnItemButtonClicked() => inventoryPopup.Show(run.ownedItemIds, itemDefsById);
-
-        private void OnCardClicked(ArmyCardView card)
-        {
-            ArmyInstance army = run.GetArmy(card.ArmyInstanceId);
-            if (army == null) return; // 방어적 — 카드는 항상 살아있는 부대에만 존재해야 함
-            if (!armyDefsById.TryGetValue(army.armyDefId, out ArmyDefinition def))
-            {
-                Debug.LogWarning($"[ArmyDeploymentPanel] armyDefId '{army.armyDefId}'에 대한 ArmyDefinition을 찾을 수 없어 정보 팝업을 열지 못했습니다.");
-                return;
-            }
-
-            var augmentDataById = augmentDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
-            armyInfoPopup.Open(army, def, ToDataDict(itemDefsById), run, runConfig, augmentDataById);
-        }
-
         private void OnStartBattleClicked()
         {
-            if (!deployment.CanStartBattle) return;
+            if (!allyFormationView.Deployment.CanStartBattle) return;
 
             var armyDataById = armyDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
-            var itemDataById = ToDataDict(itemDefsById);
+            var itemDataById = itemDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
 
-            BattleSetupData setup = deployment.BuildSetup(roomId, roomType, encounterId, run, itemDataById, armyDataById);
+            BattleSetupData setup = allyFormationView.Deployment.BuildSetup(roomId, roomType, encounterId, run, itemDataById, armyDataById);
             Confirmed?.Invoke(setup);
         }
 
-        // ── 레이아웃 갱신 ────────────────────────────────────────────
-
-        private void RefreshLayout()
-        {
-            currencyDisplay.SetAmount(run.gold);
-
-            Dictionary<string, ItemData> itemDataById = ToDataDict(itemDefsById);
-            Dictionary<string, ArmyData> armyDataById = armyDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
-
-            foreach (KeyValuePair<string, ArmyCardView> kv in cardsByArmyId)
-            {
-                ArmyInstance army = run.GetArmy(kv.Key);
-                if (army == null) continue; // 부대가 런에서 사라진 경우(미래 기능 대비) — 카드만 남기고 스킵
-
-                int? slotId = deployment.GetSlotOf(kv.Key);
-                if (!slotId.HasValue || !allySlotViewsById.TryGetValue(slotId.Value, out DeploySlotView slotView))
-                    throw new InvalidOperationException(
-                        $"부대 {kv.Key}가 어떤 슬롯에도 배치되지 않았습니다 — 자동 배치 로직 확인 필요 (§4-7: 상한=슬롯 수).");
-                Transform target = slotView.CardContainer;
-
-                if (kv.Value.transform.parent != target)
-                {
-                    kv.Value.transform.SetParent(target, worldPositionStays: false);
-                    // worldPositionStays:false는 로컬 위치 값을 그대로 유지한다 — 드래그 중이던 카드는
-                    // 그 값이 "루트 캔버스 기준 마우스 좌표"라 슬롯 컨테이너 스케일과 안 맞아 화면 밖으로
-                    // 튕겨나간다. 명시적으로 리셋해야 슬롯 중앙에 정확히 들어온다 (버그 수정).
-                    ((RectTransform)kv.Value.transform).anchoredPosition = Vector2.zero;
-                }
-
-                armyDefsById.TryGetValue(army.armyDefId, out ArmyDefinition def);
-                Sprite portrait = def != null ? def.Portrait : null;
-                string baseDisplayName = def != null ? def.ToData().displayName : army.armyDefId;
-                string displayName = ItemEquipService.ResolveDisplayName(army, baseDisplayName, itemDataById);
-                // 이름 자체가 병과를 나타내므로(§2 용어: 기본 군대 + 활 = 궁수 군대) 별도 뱃지/병사 수는
-                // 카드에 표시하지 않는다(2026-07-26 사용자 확정 — 진영 카드엔 군대 수 표시 안 함).
-                kv.Value.SetDisplay(displayName, portrait);
-            }
-
-            startBattleButton.interactable = deployment.CanStartBattle;
-            // 배치 영속화를 먼저 끝내둔다 — UpdatePowerLabels는 BattlePowerCalculator를 거치며 데이터
-            // 무결성 위반 시 예외를 던지므로(§4-28), 순서가 반대면 방금 한 Place()/Remove()가
-            // run.deployment에 반영되지 못한 채로 예외가 날 수 있다.
-            SyncDeploymentToRunState();
-            UpdatePowerLabels(armyDataById, itemDataById);
-        }
-
         /// <summary>
-        /// 현재 배치를 run.deployment에 다시 쓴다 — 방을 넘어가도 유지되어야 하므로(§5.7) 여기서 매번
-        /// 동기화한다. Place() 이후엔 항상 RefreshLayout이 호출되므로 별도 훅이 필요 없다.
+        /// 적 전투력은 적 구성이 확정되는 Open() 시점에 한 번만 계산한다 — 적 구성은 세션 중 바뀌지
+        /// 않으므로(플레이어 배치 변경과 무관), 예전처럼 아군이 바뀔 때마다 다시 계산할 필요가 없다
+        /// (2026-07-26 추출 겸 정리). 아군/적 전투력은 같은 계산기(BattlePowerCalculator, §4-22)를
+        /// 쓴다 — 예전엔 두 벌로 각자 계산해서 값이 어긋날 여지가 있었다(2026-07-19 통합).
         /// </summary>
-        private void SyncDeploymentToRunState()
+        private void UpdateEnemyPowerLabel()
         {
-            run.deployment.Clear();
-            foreach (KeyValuePair<string, int> placement in deployment.Placements)
-                run.deployment.Add(new ArmySlotAssignment { armyInstanceId = placement.Key, slotId = placement.Value });
-        }
-
-        /// <summary>
-        /// 아군/적 전투력을 같은 계산기(BattlePowerCalculator, §4-22)로 계산한다 — 예전엔 아군용과
-        /// 적용 두 벌을 손으로 각각 짜서 값이 어긋날 여지가 있었다(2026-07-19 사용자 지적으로 통합).
-        /// </summary>
-        private void UpdatePowerLabels(
-            IReadOnlyDictionary<string, ArmyData> armyDataById, IReadOnlyDictionary<string, ItemData> itemDataById)
-        {
+            var armyDataById = armyDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
             BattlePowerConfig power = powerConfig.ToData();
-
-            List<DeployedArmy> allyDeployed = deployment.BuildDeployedArmies(run, itemDataById, armyDataById);
-            float allyPower = BattlePowerCalculator.Calculate(allyDeployed, power, armyDataById);
-            allyPowerLabel.text = $"전투력: {allyPower:0}";
 
             // EnemyArmy는 DeployedArmy의 armyDefId/armyClass/soldierCount에만 대응 개념이 있다 —
             // 나머지(슬롯 위치 등)는 생성된 적에게 의미가 없어 기본값으로 두며, BattlePowerCalculator는
@@ -449,8 +233,5 @@ namespace OutGame.UI.Deployment
             float enemyPower = BattlePowerCalculator.Calculate(enemyDeployed, power, armyDataById);
             enemyPowerLabel.text = $"전투력: {enemyPower:0}";
         }
-
-        private static Dictionary<string, ItemData> ToDataDict(Dictionary<string, ItemDefinition> defs) =>
-            defs.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
     }
 }
