@@ -119,12 +119,12 @@ namespace NHN.Simulation.Tests
             var setup = new BattleSetupData
             {
                 roomId = "room-42",
-                encounterId = "encounter_basic",
+                encounterId = "enc_NormalBattle",
                 armies = new List<DeployedArmy> { SampleArmy() },
             };
 
             BattleRequest request = BattleSetupConverter.ToBattleRequest(setup);
-            Assert.AreEqual("encounter_basic", request.encounterId);
+            Assert.AreEqual("enc_NormalBattle", request.encounterId);
             Assert.AreEqual(1, request.playerSquads.Count);
 
             var squadIds = new List<string>();

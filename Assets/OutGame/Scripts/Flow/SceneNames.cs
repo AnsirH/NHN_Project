@@ -6,5 +6,7 @@ namespace OutGame.Flow
         public const string MainMenu = "MainMenu";
         public const string MapSelect = "MapSelect";
         public const string InGame = "InGame";
+        /// <summary>인게임 전투 씬 (§7.4 — 배치 확정 시 전환, 인게임 개발자 담당).</summary>
+        public const string Battle = "Battle";
     }
 }

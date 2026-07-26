@@ -76,12 +76,12 @@ namespace NHN.Simulation.Tests
         {
             EncounterTable table = LoadEncounterTable();
 
-            Assert.IsTrue(table.TryGetEncounter("encounter_basic", out _));
-            Assert.IsTrue(table.TryGetEncounter("encounter_boss", out _));
+            Assert.IsTrue(table.TryGetEncounter("enc_NormalBattle", out _));
+            Assert.IsTrue(table.TryGetEncounter("enc_Boss", out _));
             Assert.IsFalse(table.TryGetEncounter("no_such_encounter", out _));
 
             EncounterTable.Encounter fallback = table.GetEncounterOrFallback("no_such_encounter");
-            Assert.AreEqual("encounter_basic", fallback.encounterId, "미등록 encounterId는 폴백 구성을 써야 한다");
+            Assert.AreEqual("enc_NormalBattle", fallback.encounterId, "미등록 encounterId는 폴백 구성을 써야 한다");
         }
 
         /// <summary>
@@ -311,7 +311,7 @@ namespace NHN.Simulation.Tests
             BattleCatalog catalog = LoadCatalog();
             EncounterTable table = LoadEncounterTable();
 
-            var request = new BattleRequest { encounterId = "encounter_basic", seed = 77 };
+            var request = new BattleRequest { encounterId = "enc_NormalBattle", seed = 77 };
             request.playerSquads.Add(new SquadRequest
             {
                 squadId = "army-1", roleId = "Warrior", generalId = "WarriorGeneral",
@@ -328,7 +328,7 @@ namespace NHN.Simulation.Tests
             ArmyDefinition enemy = BattleRequestBuilder.BuildEnemyArmy(request.encounterId, table, catalog, config, viewSquadsOut: null);
 
             Assert.AreEqual(31, player.TotalUnits, "전사 20+장군 + 노멀 10 = 31유닛이어야 한다");
-            Assert.AreEqual(29, enemy.TotalUnits, "encounter_basic = 전사 15+장군 + 궁수 12+장군 = 29유닛이어야 한다");
+            Assert.AreEqual(29, enemy.TotalUnits, "enc_NormalBattle = 전사 15+장군 + 궁수 12+장군 = 29유닛이어야 한다");
 
             var sim = new BattleSimulation(LoadConfig(), player, enemy, request.seed);
             int safetyTicks = 1_000_000;

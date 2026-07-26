@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EncounterTable
   m_EditorClassIdentifier: NHN.Data::NHN.Data.EncounterTable
   encounters:
-  - encounterId: encounter_basic
+  - encounterId: enc_NormalBattle
     squads:
     - role: {fileID: 11400000, guid: bb0033d66abb649409b4061e3eba26ad, type: 2}
       general: {fileID: 11400000, guid: 3f314d7902daeb34aa50e8cc49ec6f96, type: 2}
@@ -25,7 +25,7 @@ MonoBehaviour:
       count: 12
       slotX: 0.3
       slotY: 0.5
-  - encounterId: encounter_boss
+  - encounterId: enc_Boss
     squads:
     - role: {fileID: 11400000, guid: bb0033d66abb649409b4061e3eba26ad, type: 2}
       general: {fileID: 11400000, guid: 3f314d7902daeb34aa50e8cc49ec6f96, type: 2}
@@ -42,4 +42,4 @@ MonoBehaviour:
       count: 8
       slotX: 0.9
       slotY: 0.15
-  fallbackEncounterId: encounter_basic
+  fallbackEncounterId: enc_NormalBattle

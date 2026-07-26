@@ -255,10 +255,10 @@ namespace NHN.Presentation.Battle
         }
 
         /// <summary>연동 경로 스모크 테스트 — 플레이 중 컴포넌트 컨텍스트 메뉴에서 실행 (머지 전 개발용).</summary>
-        [ContextMenu("연동 경로 테스트: RunBattle(encounter_basic)")]
+        [ContextMenu("연동 경로 테스트: RunBattle(enc_NormalBattle)")]
         private void RunBridgePathSample()
         {
-            var request = new BattleRequest { encounterId = "encounter_basic", seed = config.Seed };
+            var request = new BattleRequest { encounterId = "enc_NormalBattle", seed = config.Seed };
             request.playerSquads.Add(new SquadRequest
             {
                 squadId = "sample-1", roleId = "Warrior", generalId = "WarriorGeneral",

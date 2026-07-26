@@ -130,7 +130,14 @@ namespace OutGame.Flow
 
             // BattleBridge.Implementation은 씬이 로드될 때마다 재등록해야 한다 — Domain Reload가
             // 꺼져 있어도 파괴된 오브젝트의 클로저를 가리키지 않도록 (BattleBridge.cs 참조).
-            BattleBridge.Implementation = battlePanel.Open;
+            //
+            // 인게임 전투 씬 연결 (§7.4 핸드오프): setup/콜백을 static 홀더에 보관하고 전투 씬으로 전환한다.
+            // 더미 패널(battlePanel)은 전투 씬이 없던 시절의 임시 구현이라 이제 쓰이지 않는다.
+            BattleBridge.Implementation = (setup, onResult) =>
+            {
+                BattleBridge.SetPendingBattle(setup, onResult);
+                LoadSceneAction(SceneNames.Battle);
+            };
 
             mapPanel.RoomSelected += OnRoomSelected;
             mapPanel.FormationRequested += OnFormationRequested;
