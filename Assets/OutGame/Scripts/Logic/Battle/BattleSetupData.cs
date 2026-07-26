@@ -27,6 +27,7 @@ namespace OutGame.Logic.Battle
         public string equippedItemId;      // 없으면 null/empty
         public string generalSkillId;      // 병과 부여 시 장군 스킬 (§4-23, 없으면 null/empty)
         public int soldierCount;           // 증원 보정 반영된 최종 병사 수
+        public int upgradeLevel;           // 군대 업그레이드 단계 (§4-26), 0~ArmyInstance.MaxUpgradeLevel
         public int slotId;                 // 배치 슬롯 ID
         public float slotX;                // 진영 내 정규화 좌표 (0~1), 아군 진영=좌측
         public float slotY;

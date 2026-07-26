@@ -124,6 +124,7 @@ namespace OutGame.Logic.Battle
                     equippedItemId = army.EquippedItemId,
                     generalSkillId = item?.generalSkillId,
                     soldierCount = def.baseSoldierCount + army.bonusSoldierCount,
+                    upgradeLevel = army.upgradeLevel,
                     slotId = slotId,
                     slotX = x,
                     slotY = y,

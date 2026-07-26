@@ -17,6 +17,8 @@ namespace OutGame.UI.Deployment
     /// 아이콘+수치 형태로 표시한다 — 치명타·이동속도는 장군을 따르므로 군대 쪽엔 없다(§5.7 참고 이미지).
     /// 장군 경험치는 제거되고 군대 업그레이드(§4-26)로 대체됐다(2026-07-19) — 업그레이드는 장군·유닛
     /// 체력/공격력/방어력에만 배율로 적용되고 치명타·이동속도는 대상에서 제외한다(밸런스 초안).
+    /// 증강(§4-27)도 장군·유닛 동일하게 적용된다(2026-07-26 사용자 확정 — 이전엔 장군은 업그레이드만
+    /// 받도록 돼 있었으나, "장군도 증강으로 강해져야 한다"는 피드백으로 유닛과 동일 배율 공식으로 통일).
     /// </summary>
     public class ArmyInfoPopup : MonoBehaviour
     {
@@ -116,20 +118,12 @@ namespace OutGame.UI.Deployment
             ArmyData data = armyDef.ToData();
             string displayName = ItemEquipService.ResolveDisplayName(army, data.displayName, itemDataById);
             ArmyClass armyClass = ItemEquipService.ResolveClass(army, itemDataById);
-            // 장군 스탯은 업그레이드만 반영(§4-26) — 증강은 전부 "유닛" 대상이라 장군에는 안 붙는다(§5.6).
-            float generalMultiplier = ArmyUpgradeService.GetStatMultiplier(army.upgradeLevel);
-            // 유닛 스탯은 업그레이드 + 증강(아이템/공통) 합산 — 각자 계산하지 않도록 공용 헬퍼 하나로 통일.
-            var selectedAugments = new List<AugmentData>();
-            foreach (string augmentId in run.selectedAugmentIds)
-            {
-                if (augmentDataById.TryGetValue(augmentId, out AugmentData augmentData))
-                    selectedAugments.Add(augmentData);
-                else
-                    Debug.LogWarning($"[ArmyInfoPopup] 정의되지 않은 증강 id '{augmentId}'는 스탯 계산에서 제외합니다.");
-            }
-            float soldierHealthMultiplier = ArmyStatCalculator.GetStatMultiplier(army, armyClass, AugmentStat.Health, selectedAugments);
-            float soldierAttackMultiplier = ArmyStatCalculator.GetStatMultiplier(army, armyClass, AugmentStat.Attack, selectedAugments);
-            float soldierDefenseMultiplier = ArmyStatCalculator.GetStatMultiplier(army, armyClass, AugmentStat.Defense, selectedAugments);
+            // 장군·유닛 스탯 모두 업그레이드 + 증강(아이템/공통) 합산 — 같은 군대·같은 병과이므로 배율도
+            // 동일하다(2026-07-26 사용자 확정). 각자 계산하지 않도록 공용 헬퍼 하나로 통일.
+            List<AugmentData> selectedAugments = AugmentSelectionResolver.Resolve(run.selectedAugmentIds, augmentDataById);
+            float healthMultiplier = ArmyStatCalculator.GetStatMultiplier(army.upgradeLevel, armyClass, AugmentStat.Health, selectedAugments);
+            float attackMultiplier = ArmyStatCalculator.GetStatMultiplier(army.upgradeLevel, armyClass, AugmentStat.Attack, selectedAugments);
+            float defenseMultiplier = ArmyStatCalculator.GetStatMultiplier(army.upgradeLevel, armyClass, AugmentStat.Defense, selectedAugments);
 
             currencyLabel.text = $"재화: {run.gold}";
 
@@ -150,9 +144,9 @@ namespace OutGame.UI.Deployment
             upgradeButtonLabel.text = army.upgradeLevel >= ArmyInstance.MaxUpgradeLevel
                 ? "MAX"
                 : $"업그레이드 ({ArmyUpgradeService.NextUpgradeCost(army, runConfig)})";
-            generalHealthLabel.text = $"{data.generalHealth * generalMultiplier:0}";
-            generalAttackLabel.text = $"{data.generalAttack * generalMultiplier:0}";
-            generalDefenseLabel.text = $"{data.generalDefense * generalMultiplier:0}";
+            generalHealthLabel.text = $"{data.generalHealth * healthMultiplier:0}";
+            generalAttackLabel.text = $"{data.generalAttack * attackMultiplier:0}";
+            generalDefenseLabel.text = $"{data.generalDefense * defenseMultiplier:0}";
             generalCritRateLabel.text = $"{data.generalCritRate:0}%";
             generalMoveSpeedLabel.text = $"{data.generalMoveSpeed:0}";
 
@@ -161,9 +155,9 @@ namespace OutGame.UI.Deployment
             int soldierCount = data.baseSoldierCount + army.bonusSoldierCount;
             soldierCountLabel.text = $"{soldierCount}/{data.maxSoldierCount}명";
             armyDescriptionLabel.text = string.IsNullOrWhiteSpace(data.description) ? "-" : data.description;
-            armySoldierHealthLabel.text = $"{data.soldierHealth * soldierHealthMultiplier:0}";
-            armySoldierAttackLabel.text = $"{data.soldierAttack * soldierAttackMultiplier:0}";
-            armySoldierDefenseLabel.text = $"{data.soldierDefense * soldierDefenseMultiplier:0}";
+            armySoldierHealthLabel.text = $"{data.soldierHealth * healthMultiplier:0}";
+            armySoldierAttackLabel.text = $"{data.soldierAttack * attackMultiplier:0}";
+            armySoldierDefenseLabel.text = $"{data.soldierDefense * defenseMultiplier:0}";
         }
     }
 }

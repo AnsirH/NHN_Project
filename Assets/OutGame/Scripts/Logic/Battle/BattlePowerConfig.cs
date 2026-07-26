@@ -5,7 +5,7 @@ namespace OutGame.Logic.Battle
 {
     /// <summary>
     /// 전투력 계산 계수 (§4-22 초안 — 인게임 스탯 확정 후 조율, 전부 config).
-    /// 공식: Σ(병사 수 × 병과 계수) + 장군 보정.
+    /// 공식은 <see cref="BattlePowerCalculator"/> 참고 — 여기 중복 기술하면 한쪽만 고치고 어긋날 수 있다.
     /// </summary>
     [Serializable]
     public class BattlePowerConfig

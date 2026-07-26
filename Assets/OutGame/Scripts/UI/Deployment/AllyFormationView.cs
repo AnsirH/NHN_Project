@@ -338,7 +338,8 @@ namespace OutGame.UI.Deployment
             SyncDeploymentToRunState();
 
             List<DeployedArmy> allyDeployed = deployment.BuildDeployedArmies(run, itemDataById, armyDataById);
-            float allyPower = BattlePowerCalculator.Calculate(allyDeployed, powerConfig.ToData(), armyDataById);
+            List<AugmentData> selectedAugments = BuildSelectedAugments();
+            float allyPower = BattlePowerCalculator.Calculate(allyDeployed, powerConfig.ToData(), armyDataById, selectedAugments);
             allyPowerLabel.text = $"전투력: {allyPower:0}";
 
             Changed?.Invoke();
@@ -357,5 +358,14 @@ namespace OutGame.UI.Deployment
 
         private static Dictionary<string, ItemData> ToDataDict(Dictionary<string, ItemDefinition> defs) =>
             defs.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
+
+        /// <summary>run이 선택한 증강 id들을 AugmentData로 해석 — 전투력 계산(§4-22)에 ArmyInfoPopup과
+        /// 동일한 배율을 먹이기 위해 쓴다(2026-07-26). 해석 로직 자체는 AugmentSelectionResolver 공유
+        /// (ArmyInfoPopup.Render와 각자 구현하면 어긋날 위험이 있어 코드 리뷰로 추출).</summary>
+        private List<AugmentData> BuildSelectedAugments()
+        {
+            Dictionary<string, AugmentData> augmentDataById = augmentDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
+            return AugmentSelectionResolver.Resolve(run.selectedAugmentIds, augmentDataById);
+        }
     }
 }

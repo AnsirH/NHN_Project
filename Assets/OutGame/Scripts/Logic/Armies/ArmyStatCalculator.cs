@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using OutGame.Logic.Augments;
-using OutGame.Logic.Runs;
 
 namespace OutGame.Logic.Armies
 {
     /// <summary>
     /// 군대 업그레이드(§4-26) + 증강(§4-27) 효과를 합산한 최종 스탯 배율. 스탯을 표시·계산하는
     /// 모든 곳이 이 헬퍼 하나를 공유해야 한다 — 각자 계산하면 한쪽만 고치고 다른 쪽을 놓치는
-    /// 불일치 버그가 난다(2026-07-19, 배치 UI와 증원 방이 각자 계산하다 어긋났던 사례와 동일 원칙).
+    /// 불일치 버그가 난다(2026-07-19, 배치 UI와 증원 방이 각자 계산하다 어긋났던 사례와 동일 원칙;
+    /// 2026-07-26, BattlePowerCalculator가 이 헬퍼를 안 써서 업그레이드가 전투력에 반영 안 되던
+    /// 사례로 재발 — 그래서 army 대신 upgradeLevel(int)만 받도록 낮춰 Runs 의존 없이도 재사용 가능하게 함).
     /// </summary>
     public static class ArmyStatCalculator
     {
@@ -18,15 +19,14 @@ namespace OutGame.Logic.Armies
         /// GeneralSkillUpgrade 타입 증강은 수치가 없으므로(§4-23과 동일 원칙 — 인게임 책임) 대상에서 제외.
         /// </summary>
         public static float GetStatMultiplier(
-            ArmyInstance army,
+            int upgradeLevel,
             ArmyClass armyClass,
             AugmentStat stat,
             IReadOnlyList<AugmentData> selectedAugments)
         {
-            if (army == null) throw new ArgumentNullException(nameof(army));
             if (selectedAugments == null) throw new ArgumentNullException(nameof(selectedAugments));
 
-            float multiplier = ArmyUpgradeService.GetStatMultiplier(army.upgradeLevel);
+            float multiplier = ArmyUpgradeService.GetStatMultiplier(upgradeLevel);
             foreach (AugmentData augment in selectedAugments)
             {
                 if (augment.effectType != AugmentEffectType.StatBoost) continue;

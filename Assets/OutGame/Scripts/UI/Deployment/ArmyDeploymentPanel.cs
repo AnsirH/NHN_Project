@@ -230,7 +230,9 @@ namespace OutGame.UI.Deployment
                 armyClass = enemy.armyClass,
                 soldierCount = enemy.soldierCount,
             }).ToList();
-            float enemyPower = BattlePowerCalculator.Calculate(enemyDeployed, power, armyDataById);
+            // 적은 업그레이드/증강 개념이 없으므로(§4-28) 빈 목록을 넘긴다 — DeployedArmy.upgradeLevel도
+            // 기본값 0이라 배율은 항상 1.0으로 계산된다.
+            float enemyPower = BattlePowerCalculator.Calculate(enemyDeployed, power, armyDataById, new List<AugmentData>());
             enemyPowerLabel.text = $"전투력: {enemyPower:0}";
         }
     }
