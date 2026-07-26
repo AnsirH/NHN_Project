@@ -337,8 +337,8 @@ namespace OutGame.UI.Deployment
             // run.deployment에 반영되지 못한 채로 예외가 날 수 있다.
             SyncDeploymentToRunState();
 
-            List<DeployedArmy> allyDeployed = deployment.BuildDeployedArmies(run, itemDataById, armyDataById);
             List<AugmentData> selectedAugments = BuildSelectedAugments();
+            List<DeployedArmy> allyDeployed = deployment.BuildDeployedArmies(run, itemDataById, armyDataById, selectedAugments);
             float allyPower = BattlePowerCalculator.Calculate(allyDeployed, powerConfig.ToData(), armyDataById, selectedAugments);
             allyPowerLabel.text = $"전투력: {allyPower:0}";
 
@@ -361,8 +361,10 @@ namespace OutGame.UI.Deployment
 
         /// <summary>run이 선택한 증강 id들을 AugmentData로 해석 — 전투력 계산(§4-22)에 ArmyInfoPopup과
         /// 동일한 배율을 먹이기 위해 쓴다(2026-07-26). 해석 로직 자체는 AugmentSelectionResolver 공유
-        /// (ArmyInfoPopup.Render와 각자 구현하면 어긋날 위험이 있어 코드 리뷰로 추출).</summary>
-        private List<AugmentData> BuildSelectedAugments()
+        /// (ArmyInfoPopup.Render와 각자 구현하면 어긋날 위험이 있어 코드 리뷰로 추출). public인 이유:
+        /// 호스트(ArmyDeploymentPanel)가 BattleSetupData 생성(BuildSetup) 시 같은 리스트를 다시 얻어야
+        /// 하는데, 그 계산을 호스트 쪽에서 따로 하면 여기 결과와 어긋날 수 있어 그대로 재사용한다.</summary>
+        public List<AugmentData> BuildSelectedAugments()
         {
             Dictionary<string, AugmentData> augmentDataById = augmentDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
             return AugmentSelectionResolver.Resolve(run.selectedAugmentIds, augmentDataById);

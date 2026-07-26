@@ -32,9 +32,7 @@ namespace OutGame.Logic.Armies
                 if (augment.effectType != AugmentEffectType.StatBoost) continue;
                 if (augment.targetStat != stat) continue;
 
-                bool applies = augment.category == AugmentCategory.StatAugment
-                    || (augment.category == AugmentCategory.ItemAugment && augment.targetArmyClass == armyClass);
-                if (applies) multiplier += augment.statBoostPercent;
+                if (AugmentTargeting.AppliesToClass(augment, armyClass)) multiplier += augment.statBoostPercent;
             }
 
             return multiplier;

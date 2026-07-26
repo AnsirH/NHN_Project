@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using OutGame.Logic.Armies;
+using OutGame.Logic.Augments;
 using OutGame.Logic.Battle;
 using OutGame.Logic.Items;
 using OutGame.Logic.Maps;
@@ -24,6 +25,8 @@ namespace OutGame.Tests.EditMode
         {
             ["army_basic"] = new ArmyData { id = "army_basic", baseSoldierCount = 30, generalPower = 10f },
         };
+
+        private static readonly List<AugmentData> NoAugments = new List<AugmentData>();
 
         private RunState run;
         private DeploymentState deployment;
@@ -218,7 +221,7 @@ namespace OutGame.Tests.EditMode
             deployment.Place(run.armies[1].instanceId, 0);
 
             BattleSetupData setup = deployment.BuildSetup(
-                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs);
+                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs, NoAugments);
 
             Assert.AreEqual("room_2_0", setup.roomId);
             Assert.AreEqual(RoomType.NormalBattle, setup.roomType);
@@ -234,6 +237,15 @@ namespace OutGame.Tests.EditMode
             Assert.AreEqual(4, deployed.slotId);
             Assert.IsTrue(deployed.slotX > 0f && deployed.slotX < 1f);
             Assert.IsTrue(deployed.slotY > 0f && deployed.slotY < 1f);
+            // 업그레이드/증강 없음 → 배율 1.0, ArmyData 기본값(생성자 초안값) 그대로 전달돼야 함.
+            Assert.AreEqual(100f, deployed.generalHealth, 1e-3f);
+            Assert.AreEqual(10f, deployed.generalAttack, 1e-3f);
+            Assert.AreEqual(5f, deployed.generalDefense, 1e-3f);
+            Assert.AreEqual(5f, deployed.generalCritRate, 1e-3f);
+            Assert.AreEqual(100f, deployed.generalMoveSpeed, 1e-3f);
+            Assert.AreEqual(50f, deployed.soldierHealth, 1e-3f);
+            Assert.AreEqual(5f, deployed.soldierAttack, 1e-3f);
+            Assert.AreEqual(2f, deployed.soldierDefense, 1e-3f);
 
             DeployedArmy basic = setup.armies.First(a => a.armyInstanceId != archer);
             Assert.AreEqual(ArmyClass.None, basic.armyClass);
@@ -241,11 +253,73 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
+        public void BuildSetup_FinalStats_ReflectUpgradeAndAugments()
+        {
+            // 2026-07-26 확정: 최종 스탯은 아웃게임이 계산해서 넘긴다 — 인게임이 재계산하지 않도록.
+            // 업그레이드(+10%×레벨)와 증강(StatBoost)이 장군·유닛 동일 배율로 반영되는지 검증.
+            string archer = run.armies[0].instanceId;
+            run.armies[0].IncrementUpgradeLevel(); // 레벨 1 → 배율 1.1
+            run.ownedItemIds.Add("item_bow");
+            ItemEquipService.Equip(run, archer, "item_bow");
+            deployment.Place(archer, 0);
+
+            var attackAugment = new AugmentData
+            {
+                id = "aug_archer_attack", category = AugmentCategory.ItemAugment, targetArmyClass = ArmyClass.Archer,
+                effectType = AugmentEffectType.StatBoost, targetStat = AugmentStat.Attack, statBoostPercent = 0.15f,
+            };
+
+            BattleSetupData setup = deployment.BuildSetup(
+                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs,
+                new List<AugmentData> { attackAugment });
+
+            DeployedArmy deployed = setup.armies.First(a => a.armyInstanceId == archer);
+            Assert.AreEqual(110f, deployed.generalHealth, 1e-3f, "체력은 업그레이드 배율(1.1)만 적용");
+            Assert.AreEqual(10f * 1.25f, deployed.generalAttack, 1e-3f, "공격력은 업그레이드(1.1)+증강(0.15) = 1.25, 장군도 증강 혜택 받음(2026-07-26)");
+            Assert.AreEqual(5f * 1.1f, deployed.generalDefense, 1e-3f, "방어력은 업그레이드 배율(1.1)만 적용");
+            Assert.AreEqual(5f, deployed.generalCritRate, 1e-3f, "치명타율은 배율 대상 아님");
+            Assert.AreEqual(50f * 1.1f, deployed.soldierHealth, 1e-3f);
+            Assert.AreEqual(5f * 1.25f, deployed.soldierAttack, 1e-3f);
+            Assert.AreEqual(2f * 1.1f, deployed.soldierDefense, 1e-3f);
+        }
+
+        [Test]
+        public void BuildSetup_GeneralSkillUpgradeAugments_CountedPerMatchingClassOnly()
+        {
+            // 스킬이 정확히 어떻게 강화되는지는 인게임 책임이라(§4-23) 넘기지 않고, 몇 번 선택했는지
+            // 횟수만 DeployedArmy.generalSkillUpgradeCount로 전달한다(2026-07-26 사용자 확정).
+            run.ownedItemIds.Add("item_bow");
+            string archer = run.armies[0].instanceId;
+            ItemEquipService.Equip(run, archer, "item_bow");
+            deployment.Place(archer, 4);
+            deployment.Place(run.armies[1].instanceId, 0); // 기본 군대(궁수 스킬 강화 대상 아님)
+
+            var archerSkillAugment = new AugmentData
+            {
+                id = "aug_archer_skill",
+                category = AugmentCategory.ItemAugment,
+                targetArmyClass = ArmyClass.Archer,
+                effectType = AugmentEffectType.GeneralSkillUpgrade,
+            };
+            // 같은 증강을 2번 선택(중복 선택/스택 허용, §4-27) — 리스트에 두 번 들어있으면 카운트도 2.
+            var selectedAugments = new List<AugmentData> { archerSkillAugment, archerSkillAugment };
+
+            BattleSetupData setup = deployment.BuildSetup(
+                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs, selectedAugments);
+
+            DeployedArmy archerDeployed = setup.armies.First(a => a.armyInstanceId == archer);
+            Assert.AreEqual(2, archerDeployed.generalSkillUpgradeCount, "같은 스킬 강화 증강을 2번 선택하면 카운트도 2");
+
+            DeployedArmy basicDeployed = setup.armies.First(a => a.armyInstanceId != archer);
+            Assert.AreEqual(0, basicDeployed.generalSkillUpgradeCount, "궁수 전용 스킬 강화는 다른 병과에 적용되면 안 됨");
+        }
+
+        [Test]
         public void BuildSetup_NonBattleRoomType_Throws()
         {
             deployment.Place(run.armies[0].instanceId, 0);
             Assert.Throws<ArgumentException>(() => deployment.BuildSetup(
-                "room_0_3", RoomType.Rest, "enc", run, Items, Defs),
+                "room_0_3", RoomType.Rest, "enc", run, Items, Defs, NoAugments),
                 "배치는 전투/보스 방에서만 (§4-8)");
         }
 
@@ -253,7 +327,7 @@ namespace OutGame.Tests.EditMode
         public void BuildSetup_EmptyDeployment_Throws()
         {
             Assert.Throws<InvalidOperationException>(() => deployment.BuildSetup(
-                "room_2_0", RoomType.NormalBattle, "enc", run, Items, Defs));
+                "room_2_0", RoomType.NormalBattle, "enc", run, Items, Defs, NoAugments));
         }
 
         [Test]
@@ -262,7 +336,7 @@ namespace OutGame.Tests.EditMode
             // BuildSetup과 달리 전투 시작 가능 여부/방 타입 제약이 없다 — 배치 화면의 실시간 전투력
             // 미리보기(§4-28)처럼 배치가 비어 있어도 항상 호출 가능해야 한다.
             List<DeployedArmy> result = null;
-            Assert.DoesNotThrow(() => result = deployment.BuildDeployedArmies(run, Items, Defs));
+            Assert.DoesNotThrow(() => result = deployment.BuildDeployedArmies(run, Items, Defs, NoAugments));
             Assert.IsEmpty(result);
         }
 
@@ -272,8 +346,8 @@ namespace OutGame.Tests.EditMode
             deployment.Place(run.armies[0].instanceId, 0);
             deployment.Place(run.armies[1].instanceId, 3);
 
-            List<DeployedArmy> viaHelper = deployment.BuildDeployedArmies(run, Items, Defs);
-            BattleSetupData setup = deployment.BuildSetup("room_2_0", RoomType.NormalBattle, "enc", run, Items, Defs);
+            List<DeployedArmy> viaHelper = deployment.BuildDeployedArmies(run, Items, Defs, NoAugments);
+            BattleSetupData setup = deployment.BuildSetup("room_2_0", RoomType.NormalBattle, "enc", run, Items, Defs, NoAugments);
 
             CollectionAssert.AreEqual(
                 setup.armies.Select(a => (a.armyInstanceId, a.slotId, a.soldierCount)),
@@ -296,7 +370,7 @@ namespace OutGame.Tests.EditMode
             deployment.Place(c, 3); // 자기 슬롯 재배치 (no-op)
 
             BattleSetupData setup = deployment.BuildSetup(
-                "room_2_0", RoomType.NormalBattle, "enc", run, Items, Defs);
+                "room_2_0", RoomType.NormalBattle, "enc", run, Items, Defs, NoAugments);
 
             CollectionAssert.AreEqual(
                 new[] { 1, 3, 5 }, setup.armies.Select(x => x.slotId).ToArray());

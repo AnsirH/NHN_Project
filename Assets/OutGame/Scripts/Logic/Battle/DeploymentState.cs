@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OutGame.Logic.Armies;
+using OutGame.Logic.Augments;
 using OutGame.Logic.Items;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
@@ -94,11 +95,13 @@ namespace OutGame.Logic.Battle
         /// §7 전송 조건(방 타입, 최소 1개 배치)을 추가로 검사해서 쓴다 — 변환 로직 자체는 여기 하나뿐.
         /// </summary>
         public List<DeployedArmy> BuildDeployedArmies(
-            RunState run, IReadOnlyDictionary<string, ItemData> items, IReadOnlyDictionary<string, ArmyData> armyDefs)
+            RunState run, IReadOnlyDictionary<string, ItemData> items, IReadOnlyDictionary<string, ArmyData> armyDefs,
+            IReadOnlyList<AugmentData> selectedAugments)
         {
             if (run == null) throw new ArgumentNullException(nameof(run));
             if (items == null) throw new ArgumentNullException(nameof(items));
             if (armyDefs == null) throw new ArgumentNullException(nameof(armyDefs));
+            if (selectedAugments == null) throw new ArgumentNullException(nameof(selectedAugments));
 
             var result = new List<DeployedArmy>();
 
@@ -114,17 +117,35 @@ namespace OutGame.Logic.Battle
                     throw new ArgumentException($"정의되지 않은 ArmyDefinition: {army.armyDefId}");
 
                 ItemData item = ItemEquipService.ResolveItem(army, items);
+                ArmyClass armyClass = item?.armyClass ?? ArmyClass.None;
                 (float x, float y) = slotPositions[slotId];
+
+                // 장군·유닛 최종 스탯(§7.1) — ArmyInfoPopup/BattlePowerCalculator와 동일한
+                // ArmyStatCalculator를 공유해 계산한다(2026-07-26 확정: 인게임이 재계산하지 않도록
+                // 아웃게임이 최종값을 그대로 넘긴다). 장군도 증강 혜택을 받으므로 유닛과 같은 배율.
+                float healthMultiplier = ArmyStatCalculator.GetStatMultiplier(army.upgradeLevel, armyClass, AugmentStat.Health, selectedAugments);
+                float attackMultiplier = ArmyStatCalculator.GetStatMultiplier(army.upgradeLevel, armyClass, AugmentStat.Attack, selectedAugments);
+                float defenseMultiplier = ArmyStatCalculator.GetStatMultiplier(army.upgradeLevel, armyClass, AugmentStat.Defense, selectedAugments);
 
                 result.Add(new DeployedArmy
                 {
                     armyInstanceId = armyInstanceId,
                     armyDefId = army.armyDefId,
-                    armyClass = item?.armyClass ?? ArmyClass.None,
+                    armyClass = armyClass,
                     equippedItemId = army.EquippedItemId,
                     generalSkillId = item?.generalSkillId,
                     soldierCount = def.baseSoldierCount + army.bonusSoldierCount,
                     upgradeLevel = army.upgradeLevel,
+                    generalSkillUpgradeCount = AugmentTargeting.CountMatching(
+                        armyClass, AugmentEffectType.GeneralSkillUpgrade, selectedAugments),
+                    generalHealth = def.generalHealth * healthMultiplier,
+                    generalAttack = def.generalAttack * attackMultiplier,
+                    generalDefense = def.generalDefense * defenseMultiplier,
+                    generalCritRate = def.generalCritRate,
+                    generalMoveSpeed = def.generalMoveSpeed,
+                    soldierHealth = def.soldierHealth * healthMultiplier,
+                    soldierAttack = def.soldierAttack * attackMultiplier,
+                    soldierDefense = def.soldierDefense * defenseMultiplier,
                     slotId = slotId,
                     slotX = x,
                     slotY = y,
@@ -141,7 +162,8 @@ namespace OutGame.Logic.Battle
             string encounterId,
             RunState run,
             IReadOnlyDictionary<string, ItemData> items,
-            IReadOnlyDictionary<string, ArmyData> armyDefs)
+            IReadOnlyDictionary<string, ArmyData> armyDefs,
+            IReadOnlyList<AugmentData> selectedAugments)
         {
             if (roomType != RoomType.NormalBattle && roomType != RoomType.Boss)
                 throw new ArgumentException(
@@ -155,7 +177,7 @@ namespace OutGame.Logic.Battle
                 roomType = roomType,
                 encounterId = encounterId,
             };
-            setup.armies.AddRange(BuildDeployedArmies(run, items, armyDefs));
+            setup.armies.AddRange(BuildDeployedArmies(run, items, armyDefs, selectedAugments));
 
             return setup;
         }
