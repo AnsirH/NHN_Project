@@ -63,6 +63,12 @@ namespace OutGame.Tests.PlayMode
         private ArmyCardView[] Cards() =>
             panel.GetComponentInChildren<AllyFormationView>().GetComponentsInChildren<ArmyCardView>(includeInactive: true);
 
+        // 결과는 진영 그리드를 그대로 보여준 채 그 위에 dim 팝업(ResultPopup)으로 뜬다(2026-07-26
+        // 사용자 요청) — resultText/continueButton 자신은 항상 active, ResultPopup(부모)만 토글된다.
+        private GameObject ResultPopupRoot() => panel.transform.Find("Window/ResultPopup").gameObject;
+        private Text ResultText() => panel.transform.Find("Window/ResultPopup/ResultWindow/ResultText").GetComponent<Text>();
+        private Button ContinueButton() => panel.transform.Find("Window/ResultPopup/ResultWindow/ContinueButton").GetComponent<Button>();
+
         [UnityTest]
         public IEnumerator Open_SpawnsCardPerArmy()
         {
@@ -78,11 +84,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            Button continueButton = panel.transform.Find("Window/ContinueButton").GetComponent<Button>();
-            Text resultText = panel.transform.Find("Window/ResultText").GetComponent<Text>();
-
-            Assert.IsFalse(continueButton.gameObject.activeSelf, "선택 전에는 계속 버튼이 비활성이어야 함");
-            Assert.IsFalse(resultText.gameObject.activeSelf, "선택 전에는 결과 텍스트가 비활성이어야 함");
+            Assert.IsFalse(ResultPopupRoot().activeSelf, "선택 전에는 결과 팝업이 비활성이어야 함");
         }
 
         [UnityTest]
@@ -129,10 +131,10 @@ namespace OutGame.Tests.PlayMode
 
             Assert.AreEqual(6, run.GetArmy(targetId).bonusSoldierCount, "30명 기본 × 20% = 6명 증원");
 
-            Text resultText = panel.transform.Find("Window/ResultText").GetComponent<Text>();
-            Assert.IsTrue(resultText.gameObject.activeSelf);
-            Button continueButton = panel.transform.Find("Window/ContinueButton").GetComponent<Button>();
-            Assert.IsTrue(continueButton.gameObject.activeSelf);
+            Assert.IsTrue(ResultPopupRoot().activeSelf, "증원 후에는 결과 팝업이 떠야 함");
+            var allyFormationView = panel.GetComponentInChildren<AllyFormationView>(includeInactive: true);
+            Assert.IsTrue(allyFormationView.gameObject.activeSelf,
+                "증원 결과는 팝업으로 뜨고 진영 그리드는 그대로 보여야 함(사용자 확정)");
         }
 
         [UnityTest]
@@ -147,7 +149,7 @@ namespace OutGame.Tests.PlayMode
             bool completed = false;
             panel.Completed += () => completed = true;
 
-            panel.transform.Find("Window/ContinueButton").GetComponent<Button>().onClick.Invoke();
+            ContinueButton().onClick.Invoke();
 
             Assert.IsTrue(completed);
             Assert.IsFalse(panel.gameObject.activeSelf);
@@ -165,11 +167,8 @@ namespace OutGame.Tests.PlayMode
             var allyFormationView = panel.GetComponentInChildren<AllyFormationView>(includeInactive: true);
             Assert.IsFalse(allyFormationView.gameObject.activeSelf, "군대가 없으면 진영 그리드를 열면 안 됨");
 
-            Text resultText = panel.transform.Find("Window/ResultText").GetComponent<Text>();
-            Button continueButton = panel.transform.Find("Window/ContinueButton").GetComponent<Button>();
-            Assert.IsTrue(resultText.gameObject.activeSelf);
-            Assert.IsTrue(continueButton.gameObject.activeSelf);
-            Assert.AreEqual("증원할 수 있는 부대가 없습니다.", resultText.text);
+            Assert.IsTrue(ResultPopupRoot().activeSelf);
+            Assert.AreEqual("증원할 수 있는 부대가 없습니다.", ResultText().text);
         }
 
         [UnityTest]
@@ -188,10 +187,7 @@ namespace OutGame.Tests.PlayMode
             Assert.IsFalse(allyFormationView.gameObject.activeSelf,
                 "보유 군대 전부가 정의를 찾을 수 없으면 진영 그리드를 열면 안 됨");
 
-            Text resultText = panel.transform.Find("Window/ResultText").GetComponent<Text>();
-            Button continueButton = panel.transform.Find("Window/ContinueButton").GetComponent<Button>();
-            Assert.IsTrue(resultText.gameObject.activeSelf);
-            Assert.IsTrue(continueButton.gameObject.activeSelf);
+            Assert.IsTrue(ResultPopupRoot().activeSelf);
         }
     }
 }

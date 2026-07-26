@@ -31,7 +31,7 @@ namespace OutGame.UI.Deployment
         [Header("구조 참조")]
         [SerializeField] private RectTransform allySlotContainer;
         [SerializeField] private Text allyPowerLabel;
-        [SerializeField] private Button itemButton;
+        [SerializeField] private Button itemButton; // null 허용 — 아이템 버튼이 필요 없는 호스트도 있음(예: 증원 방, 2026-07-26)
 
         [Header("요소 프리팹")]
         [SerializeField] private ArmyCardView armyCardPrefab;
@@ -122,7 +122,7 @@ namespace OutGame.UI.Deployment
 
         private void ValidateWiring()
         {
-            if (allySlotContainer == null || allyPowerLabel == null || itemButton == null)
+            if (allySlotContainer == null || allyPowerLabel == null)
                 throw new InvalidOperationException("AllyFormationView의 구조 참조가 배선되지 않았습니다.");
             if (armyCardPrefab == null || allySlotPrefab == null)
                 throw new InvalidOperationException("AllyFormationView의 요소 프리팹이 배선되지 않았습니다.");
@@ -134,7 +134,7 @@ namespace OutGame.UI.Deployment
 
         private void Awake()
         {
-            itemButton.onClick.AddListener(OnItemButtonClicked);
+            if (itemButton != null) itemButton.onClick.AddListener(OnItemButtonClicked);
             // 업그레이드는 팝업 안에서 골드를 차감하므로(ArmyUpgradeService), 전투력/재화 표시도
             // 같이 갱신해야 한다 — RefreshLayout이 이미 둘 다 갱신하므로 재사용한다.
             armyInfoPopup.Upgraded += RefreshLayout;
@@ -142,7 +142,7 @@ namespace OutGame.UI.Deployment
 
         private void OnDestroy()
         {
-            itemButton.onClick.RemoveListener(OnItemButtonClicked);
+            if (itemButton != null) itemButton.onClick.RemoveListener(OnItemButtonClicked);
             armyInfoPopup.Upgraded -= RefreshLayout;
         }
 
