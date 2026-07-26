@@ -84,19 +84,28 @@ roomId, victory, survivals[]{ armyInstanceId, survivedSoldierCount }
 
 ---
 
-## 4. 머지 후 활성화 절차
+## 4. 연결 상태 (2026-07-26)
 
-1. `Assets/Scripts/Integration/` 생성 후 `BattleBridgeConnector.cs.txt` → `BattleBridgeConnector.cs`로 복사
-2. 같은 폴더에 asmdef 생성: 이름 `NHN.Integration`, 참조 `NHN.Data`, `NHN.Presentation`, `OutGame.Logic`
-   (`OutGame.ScriptableObjects`는 불필요 — 스탯을 직접 받으므로 에셋 조회를 하지 않는다)
-3. **전투 씬 `Battle.unity` 생성** (BattleTest 기반) — `BattleBridgeConnector` 배치 + `battleRunner` 배선
-4. `ProjectSettings/EditorBuildSettings`에 `Battle` 씬 추가 (아웃게임 3개 씬과 함께)
-5. 아웃게임 쪽 `BattleBridge.Implementation`이 `SetPendingBattle` + `LoadScene("Battle")`을 호출하도록 확인
-6. 아웃게임의 `DummyBattlePanel` 배선 제거(또는 비활성)
+**인게임 쪽은 완료됐다.**
 
-머지 시 충돌은 **프로젝트 설정 파일에만** 발생한다 (코드·콘텐츠는 완전 분리):
-`.gitignore` / `ProjectSettings/*` / `Assets/Settings/*_RPAsset` / `URP.png`.
-그중 **`EditorBuildSettings.asset`(씬 목록)만 실질적**이며 양쪽 씬을 합쳐야 한다.
+| 항목 | 상태 |
+|---|---|
+| `Assets/Scripts/Integration/` + `NHN.Integration` asmdef (참조: NHN.Simulation/Data/Presentation, OutGame.Logic) | ✅ |
+| `BattleBridgeConnector` (씬 배선: 핸드오프 수신 → 전투 → 결과 반환 → 복귀) | ✅ |
+| `BattleSetupConverter` (순수 변환: 계약 → 요청, 결과 → 계약) + 단위 테스트 4종 | ✅ |
+| **전투 씬 `Assets/Scenes/Battle.unity`** — 커넥터 배치·배선 완료, 단독 실행도 동작 | ✅ |
+| `EditorBuildSettings` 씬 목록 (MainMenu/MapSelect/InGame/**Battle**/StressTest/SampleScene) | ✅ |
+
+**남은 한 줄 — 아웃게임 쪽 라우팅 전환** (동료 담당):
+`InGameFlowController.Start()`의 `BattleBridge.Implementation = battlePanel.Open;`를 아래로 바꾸면 연결이 완성된다.
+```csharp
+BattleBridge.Implementation = (setup, onResult) =>
+{
+    BattleBridge.SetPendingBattle(setup, onResult);
+    SceneManager.LoadScene("Battle");
+};
+```
+이 줄이 더미 패널을 가리키는 동안에도 인게임 쪽은 아무 문제 없이 대기한다(전투 씬 단독 실행 모드).
 
 ---
 

@@ -4,6 +4,8 @@
     "references": [
         "NHN.Simulation",
         "NHN.Data",
+        "NHN.Integration",
+        "OutGame.Logic",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

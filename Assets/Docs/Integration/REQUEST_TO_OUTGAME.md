@@ -44,8 +44,20 @@ BattleBridge.Implementation = (setup, onResult) =>
 전투가 끝나면 인게임이 `BattleBridge.CompleteBattle(result)`를 호출한 뒤 `SceneManager.LoadScene("InGame")`으로
 아웃게임 씬으로 복귀합니다. 복귀 씬 이름이 `InGame`이 맞는지만 확인 부탁드립니다.
 
-머지 시 `ProjectSettings/EditorBuildSettings.asset`에서 씬 목록이 충돌합니다 —
-아웃게임 3개(MainMenu/MapSelect/InGame) + 인게임 전투 씬을 **합치면** 됩니다. 인게임 쪽에서 정리하겠습니다.
+**전투 씬 `Assets/Scenes/Battle.unity`은 이미 만들어 dev에 올려뒀습니다** (커넥터 배치·배선 완료,
+빌드 설정에도 등록). 그래서 아웃게임 쪽에 남은 작업은 **딱 한 줄**입니다 —
+`InGameFlowController.Start()`의 `BattleBridge.Implementation = battlePanel.Open;`를 이렇게 바꿔주세요:
+
+```csharp
+BattleBridge.Implementation = (setup, onResult) =>
+{
+    BattleBridge.SetPendingBattle(setup, onResult);
+    SceneManager.LoadScene("Battle");
+};
+```
+
+이 줄이 바뀌기 전까지도 인게임 쪽은 아무 문제 없습니다(전투 씬을 단독으로 열면 그냥 테스트 전투가 돌아갑니다).
+바꾸신 뒤에는 `DummyBattlePanel` 배선을 빼거나 비활성하시면 됩니다.
 
 ---
 

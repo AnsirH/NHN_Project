@@ -229,3 +229,19 @@
 - **검증**: 신규 테스트 2종(공식·하한 클램프 / 실제 발동 횟수 증가) → **EditMode 301/301 통과**.
   실측: 강화 0회 1발동 → 강화 4회 2발동. BalanceLab 회귀 유지(시드0 339틱).
 - **협의 해소**: 증강 id 요청 불필요(배율이 최종 스탯에 반영됨). 남은 안건은 적 구성 출처 1건.
+
+## 2026-07-26 — 6단계 후속: 전투 씬 생성 + 커넥터 활성화
+
+- **커넥터 활성화**: `.cs.txt` 템플릿 → `Assets/Scripts/Integration/`, `NHN.Integration` asmdef
+  (참조: NHN.Simulation/Data/Presentation + OutGame.Logic). 통합 컴파일 정상.
+- **전투 씬 `Battle.unity`**: BattleTest를 복제해 만들고 `BattleBridgeConnector` 배치·배선,
+  빌드 설정 씬 목록에 등록(MainMenu/MapSelect/InGame/**Battle**/StressTest/SampleScene).
+  단독 실행 시 "대기 중인 setup 없음 → 씬 단독 모드"로 빠져 기존 테스트 전투가 그대로 돌아간다.
+- **변환 로직을 MonoBehaviour에서 분리** (`BattleSetupConverter`, 순수 static):
+  계약이 세 번 바뀐 이력(스탯 미전달 → 재계산 → 직접 전달)이 있어 **매핑이 조용히 깨지는 것을 막을
+  단위 테스트 그물**이 필요했다. 커넥터는 씬 배선만 담당하도록 얇게 남겼다.
+- **검증**: 신규 테스트 4종(최종 스탯 복사·치명타/이동속도 공유·단위 환산 / 병과 4종 + None 폴백 매핑이
+  실제 카탈로그에서 해석되는지 / 방별 결정론 시드 / 계약→전투→결과 왕복) → **EditMode 305/305 통과**.
+  Battle 씬 플레이 확인(승리 결과 표시, 런타임 에러 0).
+- **남은 것은 아웃게임 쪽 한 줄**: `BattleBridge.Implementation`을 더미 패널에서
+  `SetPendingBattle + LoadScene("Battle")`로 교체하면 전체 흐름이 연결된다 (동료 담당).
