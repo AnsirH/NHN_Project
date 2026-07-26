@@ -139,6 +139,7 @@ namespace OutGame.Flow
 
             roomPanel.Hide();
             mapPanel.Open(run.mapState);
+            mapPanel.SetGold(run.gold); // 2026-07-26: 방 그래프 우측 상단 재화 표시
         }
 
         private void OnDestroy()
@@ -286,6 +287,7 @@ namespace OutGame.Flow
             }
 
             mapPanel.Refresh();
+            mapPanel.SetGold(run.gold); // 이벤트/전투 보상으로 바뀐 골드를 방 그래프 복귀 시 반영
             SaveProgress();
         }
 

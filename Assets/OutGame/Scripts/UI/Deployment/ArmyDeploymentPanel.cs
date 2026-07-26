@@ -41,6 +41,7 @@ namespace OutGame.UI.Deployment
         [SerializeField] private Button startBattleButton;
         [SerializeField] private Button itemButton;
         [SerializeField] private Button presetButton; // §4-17: 배치만, 항상 비활성
+        [SerializeField] private CurrencyDisplay currencyDisplay; // 2026-07-26: 상단 바 재화 표시
 
         [Header("요소 프리팹")]
         [SerializeField] private ArmyCardView armyCardPrefab;
@@ -151,7 +152,8 @@ namespace OutGame.UI.Deployment
         {
             if (allySlotContainer == null
                 || enemySlotContainer == null || allyPowerLabel == null || enemyPowerLabel == null
-                || enemyBuffLabel == null || startBattleButton == null || itemButton == null || presetButton == null)
+                || enemyBuffLabel == null || startBattleButton == null || itemButton == null || presetButton == null
+                || currencyDisplay == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 구조 참조가 배선되지 않았습니다.");
             if (armyCardPrefab == null || allySlotPrefab == null || enemySlotPrefab == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 요소 프리팹이 배선되지 않았습니다.");
@@ -165,12 +167,16 @@ namespace OutGame.UI.Deployment
         {
             startBattleButton.onClick.AddListener(OnStartBattleClicked);
             itemButton.onClick.AddListener(OnItemButtonClicked);
+            // 업그레이드는 팝업 안에서 골드를 차감하므로(ArmyUpgradeService), 패널 상단 재화 표시도
+            // 같이 갱신해야 한다 — RefreshLayout이 이미 전투력과 재화를 함께 갱신하므로 재사용한다.
+            armyInfoPopup.Upgraded += RefreshLayout;
         }
 
         private void OnDestroy()
         {
             startBattleButton.onClick.RemoveListener(OnStartBattleClicked);
             itemButton.onClick.RemoveListener(OnItemButtonClicked);
+            armyInfoPopup.Upgraded -= RefreshLayout;
         }
 
         // ── 구성 ─────────────────────────────────────────────────────
@@ -365,6 +371,8 @@ namespace OutGame.UI.Deployment
 
         private void RefreshLayout()
         {
+            currencyDisplay.SetAmount(run.gold);
+
             Dictionary<string, ItemData> itemDataById = ToDataDict(itemDefsById);
             Dictionary<string, ArmyData> armyDataById = armyDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
 

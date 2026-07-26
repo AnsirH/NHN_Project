@@ -48,6 +48,9 @@ namespace OutGame.UI.Deployment
         private RunState run;
         private RunConfig runConfig;
 
+        /// <summary>업그레이드로 골드가 차감됐을 때 발행 — 배치 패널 상단 재화 표시 갱신용(2026-07-26).</summary>
+        public event Action Upgraded;
+
         private void Awake()
         {
             if (closeButton == null || currencyLabel == null
@@ -105,6 +108,7 @@ namespace OutGame.UI.Deployment
             if (!ArmyUpgradeService.CanUpgrade(army, run, runConfig)) return;
             ArmyUpgradeService.Upgrade(army, run, runConfig);
             Render();
+            Upgraded?.Invoke();
         }
 
         private void Render()

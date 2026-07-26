@@ -22,7 +22,7 @@ MonoBehaviour:
     color: {r: 0.56, g: 0.42, b: 0.78, a: 1}
     icon: {fileID: 0}
   - roomType: 2
-    displayName: "\uC99D\uC6D0"
+    displayName: "\uD734\uC2DD"
     color: {r: 0.3, g: 0.69, b: 0.41, a: 1}
     icon: {fileID: 0}
   - roomType: 3

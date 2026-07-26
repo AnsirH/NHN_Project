@@ -23,6 +23,7 @@ namespace OutGame.UI
         [SerializeField] private RectTransform lineLayer;
         [SerializeField] private RectTransform nodeLayer;
         [SerializeField] private RectTransform legendContainer;
+        [SerializeField] private CurrencyDisplay currencyDisplay; // 2026-07-26: 범례가 있던 우측 상단 자리로 이동
 
         [Header("요소 프리팹 (비주얼은 각 프리팹에서 수정)")]
         [SerializeField] private RoomNodeView nodePrefab;
@@ -66,12 +67,17 @@ namespace OutGame.UI
             if (nodePrefab == null || linePrefab == null || legendEntryPrefab == null)
                 throw new InvalidOperationException(
                     "RoomMapPanel의 nodePrefab/linePrefab/legendEntryPrefab이 배선되지 않았습니다");
+            if (currencyDisplay == null)
+                throw new InvalidOperationException("RoomMapPanel의 currencyDisplay가 배선되지 않았습니다");
             if (visuals == null)
                 throw new InvalidOperationException(
                     "RoomMapPanel.visuals(RoomTypeVisualSet)가 할당되지 않았습니다");
         }
 
         public void Close() => gameObject.SetActive(false);
+
+        /// <summary>재화 표시를 갱신한다 — 이벤트/전투 보상으로 골드가 바뀐 뒤 맵으로 돌아올 때 호출.</summary>
+        public void SetGold(int amount) => currencyDisplay.SetAmount(amount);
 
         /// <summary>방문 기록이 바뀐 뒤(MapProgress.Visit 후) 호출 — 노드 상태와 경로 강조를 갱신한다.</summary>
         public void Refresh()
