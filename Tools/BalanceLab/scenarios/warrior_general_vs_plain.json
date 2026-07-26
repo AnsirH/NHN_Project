@@ -1,0 +1,10 @@
+{
+  "name": "warrior_general_vs_plain",
+  "runs": 500,
+  "left": [
+    { "squadId": "L1", "roleId": "Warrior", "generalId": "WarriorGeneral", "soldierCount": 20, "slotX": 1.0, "slotY": 0.5 }
+  ],
+  "right": [
+    { "squadId": "R1", "roleId": "Warrior", "generalId": "", "soldierCount": 20, "slotX": 1.0, "slotY": 0.5 }
+  ]
+}

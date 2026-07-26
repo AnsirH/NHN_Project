@@ -1,0 +1,20 @@
+{
+  "name": "all",
+  "_comment": "전체 매트릭스 — 장군 유/무 4종 + 미러 4종 + 롤 상성 6쌍. dotnet run -- scenarios/all.json 한 번으로 실행된다.",
+  "scenarios": [
+    "matrix/general_vs_none_warrior.json",
+    "matrix/general_vs_none_archer.json",
+    "matrix/general_vs_none_assassin.json",
+    "matrix/general_vs_none_hunter.json",
+    "matrix/mirror_warrior.json",
+    "matrix/mirror_archer.json",
+    "matrix/mirror_assassin.json",
+    "matrix/mirror_hunter.json",
+    "matrix/role_warrior_vs_archer.json",
+    "matrix/role_warrior_vs_assassin.json",
+    "matrix/role_warrior_vs_hunter.json",
+    "matrix/role_archer_vs_assassin.json",
+    "matrix/role_archer_vs_hunter.json",
+    "matrix/role_assassin_vs_hunter.json"
+  ]
+}

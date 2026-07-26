@@ -1,0 +1,7 @@
+{
+  "name": "general_vs_none_hunter",
+  "runs": 200,
+  "band": "general_vs_none",
+  "left": "@../../armies/Hunter_general.json",
+  "right": "@../../armies/Hunter_plain.json"
+}
