@@ -195,7 +195,8 @@ namespace OutGame.Flow
                     run.powerRoomsVisited++;
                     break;
                 case RoomType.Rest:
-                    restPanel.Open(run, armyDefsById, itemDefsById);
+                    restPanel.Open(run, runConfig.ToData(),
+                        armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), augmentDefsById.Values.ToList());
                     run.powerRoomsVisited++;
                     break;
                 case RoomType.Augment:

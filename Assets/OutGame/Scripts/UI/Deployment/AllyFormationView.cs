@@ -56,10 +56,15 @@ namespace OutGame.UI.Deployment
         private RunState run;
         private RunConfig runConfig;
         private DeploymentState deployment;
+        private bool selectionModeEnabled;
 
         /// <summary>배치/아이템 장착/업그레이드로 상태가 바뀔 때마다 RefreshLayout 끝에서 발행 —
         /// 호스트가 자신의 표시(전투력 대비 시작 버튼, 재화 표시 등)를 함께 갱신하는 데 쓴다.</summary>
         public event Action Changed;
+
+        /// <summary>selectionMode가 true일 때 카드를 클릭하면 정보 팝업 대신 이 이벤트가 발행된다
+        /// (armyInstanceId 전달) — 예: 증원 방에서 증원 대상을 고를 때(2026-07-26).</summary>
+        public event Action<string> ArmySelected;
 
         public DeploymentState Deployment => deployment;
 
@@ -68,7 +73,8 @@ namespace OutGame.UI.Deployment
             RunConfig runConfigValue,
             IReadOnlyList<ArmyDefinition> armyDefs,
             IReadOnlyList<ItemDefinition> itemDefs,
-            IReadOnlyList<AugmentDefinition> augmentDefs)
+            IReadOnlyList<AugmentDefinition> augmentDefs,
+            bool selectionMode = false)
         {
             if (runState == null) throw new ArgumentNullException(nameof(runState));
             if (runConfigValue == null) throw new ArgumentNullException(nameof(runConfigValue));
@@ -79,6 +85,7 @@ namespace OutGame.UI.Deployment
 
             run = runState;
             runConfig = runConfigValue;
+            selectionModeEnabled = selectionMode;
 
             armyDefsById.Clear();
             foreach (ArmyDefinition def in armyDefs) armyDefsById[def.ToData().id] = def;
@@ -269,6 +276,12 @@ namespace OutGame.UI.Deployment
 
         private void OnCardClicked(ArmyCardView card)
         {
+            if (selectionModeEnabled)
+            {
+                ArmySelected?.Invoke(card.ArmyInstanceId);
+                return;
+            }
+
             ArmyInstance army = run.GetArmy(card.ArmyInstanceId);
             if (army == null) return; // 방어적 — 카드는 항상 살아있는 부대에만 존재해야 함
             if (!armyDefsById.TryGetValue(army.armyDefId, out ArmyDefinition def))

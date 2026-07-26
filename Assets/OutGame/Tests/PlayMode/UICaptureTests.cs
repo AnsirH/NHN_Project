@@ -205,19 +205,22 @@ namespace OutGame.Tests.PlayMode
                 Object.Destroy(eventPanel.gameObject);
                 yield return null;
 
-                // RestPanel — 초기 상태 + 선택 후 결과 상태
+                // RestPanel — 초기 상태(진영 그리드) + 카드 클릭 후 결과 상태 (2026-07-26: 증원 대상
+                // 선택을 배치 화면과 동일한 진영 그리드로 교체 — 카드 클릭 즉시 증원)
                 var restPrefab = Resources.Load<GameObject>("OutGame/RestPanel");
                 var armyDef = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
                 var restPanel = Object.Instantiate(restPrefab, canvasGo.transform).GetComponent<RestPanel>();
                 restPanel.Open(
                     run,
-                    new System.Collections.Generic.Dictionary<string, ArmyDefinition> { ["army_basic"] = armyDef },
-                    new System.Collections.Generic.Dictionary<string, ItemDefinition>());
+                    new RunConfig { startingArmyCount = 2, startingArmyDefId = "army_basic" },
+                    new[] { armyDef },
+                    new ItemDefinition[0],
+                    new OutGame.ScriptableObjects.AugmentDefinition[0]);
                 yield return CaptureToFile("RestPanel_01_initial.png");
 
-                var optionButton = restPanel.GetComponentsInChildren<UnityEngine.UI.Button>()
-                    .First(b => b.transform.parent.name == "ArmyListContainer");
-                optionButton.onClick.Invoke();
+                var restCard = restPanel.GetComponentInChildren<AllyFormationView>()
+                    .GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
+                restCard.OnPointerClick(new PointerEventData(EventSystem.current));
                 yield return CaptureToFile("RestPanel_02_result.png");
                 Object.Destroy(restPanel.gameObject);
                 yield return null;
