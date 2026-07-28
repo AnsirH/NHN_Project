@@ -52,7 +52,7 @@ namespace OutGame.Flow
         private void RefreshContinueButton() =>
             continueButton.interactable = RunSaveService.HasSave(savePath);
 
-        private void OnStartClicked() => LoadSceneAction(SceneNames.MapSelect);
+        private void OnStartClicked() => LoadSceneAction(SceneNames.OutGame);
 
         private void OnContinueClicked()
         {
@@ -66,7 +66,7 @@ namespace OutGame.Flow
             }
 
             RunSessionContext.SetPendingRun(run);
-            LoadSceneAction(SceneNames.InGame);
+            LoadSceneAction(SceneNames.OutGame);
         }
 
         private void OnQuitClicked()

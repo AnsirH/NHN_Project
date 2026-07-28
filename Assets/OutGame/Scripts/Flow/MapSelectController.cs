@@ -5,13 +5,14 @@ using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
 using OutGame.UI;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace OutGame.Flow
 {
     /// <summary>
-    /// 맵 선택 (§5.2): MapDefinition 목록 표시 → 선택 시 런 생성 후 인게임 씬 로드.
-    /// 1차는 에셋 1개뿐이지만 목록 순회 구조로 구현해 복수 맵을 전제한다.
+    /// 맵 선택 (§5.2): MapDefinition 목록 표시 → 선택 시 런 생성 후 <see cref="MapConfirmed"/> 발생.
+    /// OutGame.unity 안의 한 패널(§3.1 씬 통합) — OutGameFlowController가 활성화하면
+    /// Awake()에서 목록을 채우고, 선택 결과는 씬 전환이 아니라 이벤트로 다음 패널(캐릭터 선택)에
+    /// 전달된다. 1차는 에셋 1개뿐이지만 목록 순회 구조로 구현해 복수 맵을 전제한다.
     /// </summary>
     public class MapSelectController : MonoBehaviour
     {
@@ -19,17 +20,15 @@ namespace OutGame.Flow
         [SerializeField] private MapEntryView mapEntryPrefab;
         [SerializeField] private RunConfigAsset runConfig;
 
-        /// <summary>테스트에서 실제 씬 전환 없이 호출을 가로챌 수 있게 하는 훅.</summary>
-        public Action<string> LoadSceneAction = SceneManager.LoadScene;
+        /// <summary>맵이 확정되어 RunState가 만들어졌을 때 발생 — OutGameFlowController가 구독해
+        /// 캐릭터 선택 패널로 넘긴다.</summary>
+        public event Action<RunState> MapConfirmed;
 
         private void Awake()
         {
             if (mapListContainer == null || mapEntryPrefab == null)
                 throw new InvalidOperationException("MapSelectController의 mapListContainer/mapEntryPrefab이 배선되지 않았습니다.");
-        }
 
-        private void Start()
-        {
             if (runConfig == null)
                 runConfig = Resources.Load<RunConfigAsset>("OutGame/Data/RunConfig_Default");
             if (runConfig == null)
@@ -53,8 +52,7 @@ namespace OutGame.Flow
             MapState mapState = new MapGenerator(config, seed).Generate();
             RunState run = RunStateFactory.Create(mapState, runConfig.ToData());
 
-            RunSessionContext.SetPendingRun(run);
-            LoadSceneAction(SceneNames.CharacterSelect);
+            MapConfirmed?.Invoke(run);
         }
     }
 }

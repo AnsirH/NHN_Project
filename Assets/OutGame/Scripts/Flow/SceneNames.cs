@@ -4,8 +4,6 @@ namespace OutGame.Flow
     public static class SceneNames
     {
         public const string MainMenu = "MainMenu";
-        public const string MapSelect = "MapSelect";
-        public const string CharacterSelect = "CharacterSelect";
-        public const string InGame = "InGame";
+        public const string OutGame = "OutGame";
     }
 }

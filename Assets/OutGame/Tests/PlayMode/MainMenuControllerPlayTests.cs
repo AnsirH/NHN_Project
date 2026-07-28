@@ -74,17 +74,17 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator StartButton_LoadsMapSelectScene()
+        public IEnumerator StartButton_LoadsOutGameScene()
         {
             yield return null;
 
             controller.transform.Find("StartButton").GetComponent<Button>().onClick.Invoke();
 
-            CollectionAssert.AreEqual(new[] { SceneNames.MapSelect }, loadedScenes);
+            CollectionAssert.AreEqual(new[] { SceneNames.OutGame }, loadedScenes);
         }
 
         [UnityTest]
-        public IEnumerator ContinueButton_WithValidSave_SetsPendingRunAndLoadsInGame()
+        public IEnumerator ContinueButton_WithValidSave_SetsPendingRunAndLoadsOutGame()
         {
             RunState saved = NewRun();
             saved.gold = 77;
@@ -94,7 +94,7 @@ namespace OutGame.Tests.PlayMode
 
             controller.transform.Find("ContinueButton").GetComponent<Button>().onClick.Invoke();
 
-            CollectionAssert.AreEqual(new[] { SceneNames.InGame }, loadedScenes);
+            CollectionAssert.AreEqual(new[] { SceneNames.OutGame }, loadedScenes);
             RunState pending = RunSessionContext.ConsumePendingRun();
             Assert.IsNotNull(pending);
             Assert.AreEqual(77, pending.gold);

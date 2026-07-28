@@ -20,7 +20,7 @@ namespace OutGame.Tests.PlayMode
     {
         private GameObject canvasGo;
         private CharacterSelectController controller;
-        private List<string> loadedScenes;
+        private List<RunState> confirmedRuns;
 
         [SetUp]
         public void SetUp()
@@ -32,18 +32,17 @@ namespace OutGame.Tests.PlayMode
             Assert.IsNotNull(prefab, "CharacterSelectScreen 프리팹 없음 — SceneSetupM7UI.Run() 실행 필요");
             controller = Object.Instantiate(prefab, canvasGo.transform).GetComponent<CharacterSelectController>();
 
-            loadedScenes = new List<string>();
-            controller.LoadSceneAction = name => loadedScenes.Add(name);
+            confirmedRuns = new List<RunState>();
+            controller.CharacterConfirmed += run => confirmedRuns.Add(run);
         }
 
         [TearDown]
         public void TearDown()
         {
             Object.Destroy(canvasGo);
-            RunSessionContext.ConsumePendingRun(); // 정적 상태 정리
         }
 
-        private static RunState NewPendingRun()
+        private static RunState NewRun()
         {
             MapState map = new MapGenerator(new MapGenerationConfig(), seed: 7).Generate();
             return RunStateFactory.Create(map, new RunConfig());
@@ -96,16 +95,27 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator ConfirmButton_SetsPendingRunSelectedCharacterIdAndLoadsInGame()
+        public IEnumerator ConfirmButton_SetsSelectedCharacterIdAndRaisesCharacterConfirmed()
         {
-            RunSessionContext.SetPendingRun(NewPendingRun());
+            RunState run = NewRun();
+            controller.Begin(run);
             yield return null;
 
             controller.transform.Find("NavRow/RightArrowButton").GetComponent<Button>().onClick.Invoke(); // 캐릭터 2 선택
             controller.transform.Find("ConfirmButton").GetComponent<Button>().onClick.Invoke();
 
-            CollectionAssert.AreEqual(new[] { SceneNames.InGame }, loadedScenes);
-            Assert.AreEqual("char_2", RunSessionContext.PendingRun.selectedCharacterId);
+            Assert.AreEqual(1, confirmedRuns.Count);
+            Assert.AreSame(run, confirmedRuns[0]);
+            Assert.AreEqual("char_2", run.selectedCharacterId);
+        }
+
+        [UnityTest]
+        public IEnumerator ConfirmButton_WithoutBegin_Throws()
+        {
+            yield return null;
+
+            Assert.Throws<System.InvalidOperationException>(() =>
+                controller.transform.Find("ConfirmButton").GetComponent<Button>().onClick.Invoke());
         }
     }
 }

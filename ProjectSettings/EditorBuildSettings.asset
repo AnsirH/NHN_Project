@@ -9,16 +9,7 @@ EditorBuildSettings:
     path: Assets/OutGame/Scenes/MainMenu.unity
     guid: 2bed9dbc39c47114a819e38b2f2605b0
   - enabled: 1
-    path: Assets/OutGame/Scenes/MapSelect.unity
-    guid: a4ad9eed2eb579646b49309729f240c4
-  - enabled: 1
-    path: Assets/OutGame/Scenes/CharacterSelect.unity
-    guid: b03242eb75aa4374baee195b69ccd135
-  - enabled: 1
-    path: Assets/OutGame/Scenes/InGame.unity
-    guid: 88cd249a890705448ba66794dc1ee209
-  - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/OutGame/Scenes/OutGame.unity
+    guid: ffe2a002552a0f4428134f252c99c572
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

@@ -19,8 +19,12 @@ using UnityEngine.SceneManagement;
 namespace OutGame.Flow
 {
     /// <summary>
-    /// 인게임 방 진행 루프: 맵 생성 → 방 그래프 표시 → 노드 선택 → 방문 확정 → 방 타입별 패널 → 복귀.
-    /// 전투/보스 방은 ArmyDeploymentPanel → BattleBridge(M6부터 더미 구현) → 결과 처리로 이어진다.
+    /// 방 그래프 진행 루프 (§3.1: OutGame.unity 안의 한 패널 — "InGame"이라는 이름과 달리 실제
+    /// 전투 씬이 아니라 아웃게임 콘텐츠다): 방 그래프 표시 → 노드 선택 → 방문 확정 → 방 타입별
+    /// 패널 → 복귀. 전투/보스 방은 ArmyDeploymentPanel → BattleBridge(M6부터 더미 구현) → 결과
+    /// 처리로 이어진다. 리소스 로딩/이벤트 구독은 Awake()에서 한 번, 런이 준비된 뒤에만 가능한
+    /// 활성화는 <see cref="Begin"/>에서 처리한다(OutGameFlowController가 캐릭터 선택 확정 직후,
+    /// 또는 이어하기로 곧장 호출).
     /// </summary>
     public class InGameFlowController : MonoBehaviour
     {
@@ -38,10 +42,6 @@ namespace OutGame.Flow
         [SerializeField] private EnemyCompositionConfigAsset enemyCompositionConfigAsset; // §4-28
         [SerializeField] private ItemDropConfigAsset itemDropConfigAsset; // §4-28
 
-        [Header("개발용 맵 생성 설정 — MapSelect 없이 씬을 단독 실행할 때만 사용 (§5.2)")]
-        [SerializeField] private int seed = 42;
-        [SerializeField] private bool randomizeSeed;
-
         /// <summary>테스트/툴링에서 실제 씬 전환 없이 호출을 가로챌 수 있게 하는 훅.</summary>
         public Action<string> LoadSceneAction = SceneManager.LoadScene;
 
@@ -53,23 +53,27 @@ namespace OutGame.Flow
         private Dictionary<string, ItemDefinition> itemDefsById;
         private Dictionary<string, AugmentDefinition> augmentDefsById;
         private Dictionary<string, PlayerCharacterDefinition> characterDefsById; // §5.2.5
-        private Dictionary<ArmyClass, string> itemIdByClass; // §4-28: 병과→아이템 매핑, Start()에서 한 번만 계산
-        private ArmyData enemyTemplate; // §4-28: 적 구성 스탯 템플릿, Start()에서 한 번만 확정
+        private Dictionary<ArmyClass, string> itemIdByClass; // §4-28: 병과→아이템 매핑, Awake()에서 한 번만 계산
+        private ArmyData enemyTemplate; // §4-28: 적 구성 스탯 템플릿, Awake()에서 한 번만 확정
         private string savePath;
         private bool runEnded;
         private RoomType currentBattleRoomType;
         private List<EnemyArmy> currentEnemyComposition;
 
         // §4-28: RoomEncounterTable 협의 전 임시 대체 — 아웃게임 내부 전용(아이템 드롭 계산용),
-        // §7 인터페이스(BattleSetupData)에는 노출하지 않는다. 위 Asset 필드에서 Start()에 채워진다.
+        // §7 인터페이스(BattleSetupData)에는 노출하지 않는다. 위 Asset 필드에서 Awake()에 채워진다.
         private EnemyCompositionConfig enemyCompositionConfig;
         private ItemDropConfig itemDropConfig;
 
-        private void Start()
+        private void Awake()
         {
-            // 이후 검증에서 예외가 나더라도 PendingRun이 stale 상태로 남지 않도록 가장 먼저 소비한다.
-            RunState pendingRun = RunSessionContext.ConsumePendingRun();
+            LoadResourcePools();
+            WireRoomEvents();
+            roomPanel.Hide();
+        }
 
+        private void LoadResourcePools()
+        {
             if (visuals == null)
                 visuals = Resources.Load<RoomTypeVisualSet>("OutGame/RoomTypeVisuals"); // 배선 누락 대비 폴백
             if (runConfig == null)
@@ -85,7 +89,7 @@ namespace OutGame.Flow
                 || visuals == null || runConfig == null
                 || enemyCompositionConfigAsset == null || itemDropConfigAsset == null)
                 throw new InvalidOperationException(
-                    "InGameFlowController의 필수 참조가 배선되지 않았습니다 — 씬 구성(SceneSetupM2/M4/M6) 확인");
+                    "InGameFlowController의 필수 참조가 배선되지 않았습니다 — 씬 구성(SceneSetupOutGame) 확인");
 
             // ToConfig()가 Validate()를 포함하므로(다른 config 에셋과 동일 패턴) 잘못된 인스펙터
             // 값은 여기서 바로 예외로 드러난다 — 조용히 잘못된 값으로 동작하지 않는다.
@@ -125,25 +129,10 @@ namespace OutGame.Flow
             enemyTemplate = startingArmyDef.ToData();
 
             savePath = RunSaveService.DefaultPath;
-            run = pendingRun;
-            if (run == null)
-            {
-                // MapSelect/캐릭터 선택(§5.2.5)을 거치지 않고 이 씬을 단독 실행했을 때의 개발용 폴백
-                // — 정상 플로우라면 항상 CharacterSelectController가 selectedCharacterId를 채운 뒤 넘어온다.
-                int usedSeed = randomizeSeed ? Environment.TickCount : seed;
-                MapState map = new MapGenerator(new MapGenerationConfig(), usedSeed).Generate();
-                run = RunStateFactory.Create(map, runConfig.ToData());
-                // CharacterSelectController와 동일하게 SortOrder 기준 1번째를 기본값으로 —
-                // Resources.LoadAll/Dictionary 열거 순서는 보장되지 않는다 (코드 리뷰 HIGH 수정).
-                run.selectedCharacterId = characterDefsById.Values
-                    .OrderBy(c => c.SortOrder).First().ToData().id;
-            }
-            rng = new System.Random(Environment.TickCount);
+        }
 
-            // BattleBridge.Implementation은 씬이 로드될 때마다 재등록해야 한다 — Domain Reload가
-            // 꺼져 있어도 파괴된 오브젝트의 클로저를 가리키지 않도록 (BattleBridge.cs 참조).
-            BattleBridge.Implementation = battlePanel.Open;
-
+        private void WireRoomEvents()
+        {
             mapPanel.RoomSelected += OnRoomSelected;
             mapPanel.FormationRequested += OnFormationRequested;
             roomPanel.Completed += OnRoomCompleted;
@@ -152,8 +141,20 @@ namespace OutGame.Flow
             augmentPanel.Completed += OnRoomCompleted;
             deploymentPanel.Confirmed += OnBattleSetupConfirmed;
             armyFormationPopup.Changed += OnArmyFormationChanged;
+        }
 
-            roomPanel.Hide();
+        /// <summary>OutGameFlowController가 이 패널을 활성화한 직후 호출 — 확정된 런으로 방 그래프를
+        /// 시작한다(캐릭터 선택 확정 직후, 또는 "이어하기"로 곧장). Awake()의 리소스 로딩과 달리 매번
+        /// 새 런에 대해 다시 실행된다.</summary>
+        public void Begin(RunState run)
+        {
+            this.run = run ?? throw new ArgumentNullException(nameof(run));
+            rng = new System.Random(Environment.TickCount);
+
+            // BattleBridge.Implementation은 이 패널이 활성화될 때마다 재등록해야 한다 — Domain Reload가
+            // 꺼져 있어도 파괴된 오브젝트의 클로저를 가리키지 않도록 (BattleBridge.cs 참조).
+            BattleBridge.Implementation = battlePanel.Open;
+
             mapPanel.Open(run.mapState);
             mapPanel.SetGold(run.gold); // 2026-07-26: 방 그래프 우측 상단 재화 표시
         }
@@ -183,6 +184,12 @@ namespace OutGame.Flow
 
         private void OnRoomSelected(MapNode node)
         {
+            // 이 패널의 유일한 실제 진입 경로(OutGameFlowController)는 활성화 직후 반드시 Begin()을
+            // 호출하지만, mapPanel.RoomSelected 자체는 그 보장에 기대지 않고 fail-fast로 확인한다
+            // (CharacterSelectController.OnConfirmClicked와 동일한 방어 — 코드 리뷰 HIGH 수정).
+            if (run == null)
+                throw new InvalidOperationException("InGameFlowController.Begin(RunState)이 호출되지 않았습니다.");
+
             // 진영 팝업을 열어둔 채로 다른 방을 선택했을 가능성에 대비 — 다음 방 패널 위에 잔존해서
             // 보이지 않도록 방어적으로 닫는다(2026-07-26, 배치 패널의 팝업 잔존 방지와 동일한 이유).
             armyFormationPopup.Hide();
@@ -240,7 +247,7 @@ namespace OutGame.Flow
             // RoomEncounterTable 협의 전 임시 키(§9) — 적 구성이 정의되면 노드별 실제 값으로 대체
             string encounterId = $"enc_{node.roomType}";
             // §4-28: 적 구성을 미리 생성해둔다 — 순수 아웃게임 내부용(아이템 드롭·전투력 계산),
-            // BattleSetupData에는 안 실음. 스탯 템플릿은 Start()에서 확정해둔 시작 군대(army_basic)를
+            // BattleSetupData에는 안 실음. 스탯 템플릿은 Awake()에서 확정해둔 시작 군대(army_basic)를
             // 그대로 물려받는다 — ArmyDefinition이 여러 종류가 되면 이 자리를 풀(pool)에서 고르도록 확장.
             // 2026-07-26: 난이도 기준을 "층수(node.point.y)"에서 run.powerRoomsVisited(증원·증강·
             // 이벤트 방 통과 횟수)로 교체 — 전투방만 연달아 나오는 런에서 플레이어 보강 없이 적만

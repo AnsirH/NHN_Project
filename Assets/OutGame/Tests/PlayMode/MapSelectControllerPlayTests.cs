@@ -19,7 +19,7 @@ namespace OutGame.Tests.PlayMode
     {
         private GameObject canvasGo;
         private MapSelectController controller;
-        private List<string> loadedScenes;
+        private List<RunState> confirmedRuns;
 
         [SetUp]
         public void SetUp()
@@ -31,15 +31,14 @@ namespace OutGame.Tests.PlayMode
             Assert.IsNotNull(prefab, "MapSelectScreen 프리팹 없음 — SceneSetupM5UI.Run() 실행 필요");
             controller = Object.Instantiate(prefab, canvasGo.transform).GetComponent<MapSelectController>();
 
-            loadedScenes = new List<string>();
-            controller.LoadSceneAction = name => loadedScenes.Add(name);
+            confirmedRuns = new List<RunState>();
+            controller.MapConfirmed += run => confirmedRuns.Add(run);
         }
 
         [TearDown]
         public void TearDown()
         {
             Object.Destroy(canvasGo);
-            RunSessionContext.ConsumePendingRun(); // 정적 상태 정리
         }
 
         [UnityTest]
@@ -53,7 +52,7 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator SelectMap_SetsPendingRunAndLoadsCharacterSelect()
+        public IEnumerator SelectMap_RaisesMapConfirmedWithRunState()
         {
             yield return null;
 
@@ -61,13 +60,12 @@ namespace OutGame.Tests.PlayMode
                 .First(b => b.transform.parent.name == "Content");
             entryButton.onClick.Invoke();
 
-            // §5.2.5: 맵 확정 다음은 인게임이 아니라 캐릭터 선택 화면 — 캐릭터 선택 화면이 확정된
-            // RunState에 selectedCharacterId를 채운 뒤 인게임으로 넘긴다.
-            CollectionAssert.AreEqual(new[] { SceneNames.CharacterSelect }, loadedScenes);
-            RunState pending = RunSessionContext.ConsumePendingRun();
-            Assert.IsNotNull(pending);
-            Assert.IsNotEmpty(pending.mapState.nodes);
-            Assert.IsNotEmpty(pending.armies);
+            // §3.1 씬 통합: 맵 확정은 씬 전환이 아니라 MapConfirmed 이벤트로 알린다 —
+            // OutGameFlowController가 이 RunState를 캐릭터 선택 패널로 그대로 넘긴다.
+            Assert.AreEqual(1, confirmedRuns.Count);
+            RunState confirmed = confirmedRuns[0];
+            Assert.IsNotEmpty(confirmed.mapState.nodes);
+            Assert.IsNotEmpty(confirmed.armies);
         }
 
         [UnityTest]

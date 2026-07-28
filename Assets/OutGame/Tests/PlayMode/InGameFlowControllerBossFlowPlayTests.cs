@@ -7,6 +7,7 @@ using OutGame.Logic.Battle;
 using OutGame.Logic.Items;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
+using OutGame.ScriptableObjects;
 using OutGame.UI;
 using OutGame.UI.Deployment;
 using UnityEngine;
@@ -19,7 +20,9 @@ namespace OutGame.Tests.PlayMode
     /// <summary>
     /// 회귀 테스트 — 코드 리뷰에서 발견: MapProgress.HasVisitedBoss는 보스 "방문" 여부이지
     /// "승리" 여부가 아니라서, 예전 코드는 보스 노드를 선택하는 즉시(전투 없이) 런 클리어를 띄웠다.
-    /// InGame.unity(빌드 세팅 등록됨)를 직접 로드해 실제 배선을 통합 검증한다.
+    /// OutGame.unity(빌드 세팅 등록됨, §3.1 씬 통합)를 직접 로드해 실제 배선을 통합 검증한다.
+    /// 방 그래프(RoomGraphRoot)는 씬 로드 시점엔 비활성 상태라 직접 활성화한 뒤 Begin(RunState)으로
+    /// 진입시킨다 — 예전의 "MapSelect 없이 단독 실행 시 seed로 더미 런 생성" 폴백은 제거됐다.
     /// </summary>
     public class InGameFlowControllerBossFlowPlayTests
     {
@@ -30,11 +33,33 @@ namespace OutGame.Tests.PlayMode
         [UnityTearDown]
         public IEnumerator TearDown()
         {
-            yield return SceneManager.UnloadSceneAsync(SceneNames.InGame);
+            yield return SceneManager.UnloadSceneAsync(SceneNames.OutGame);
         }
 
         private static T GetField<T>(object target, string name) =>
             (T)typeof(InGameFlowController).GetField(name, Priv).GetValue(target);
+
+        /// <summary>OutGame.unity를 얹고 RoomGraphRoot를 활성화한 뒤 테스트용 RunState로 방 그래프에
+        /// 진입시킨다 — 씬에 실제 배선된 InGameFlowController(패널·설정 에셋 전부 배선됨)를 그대로
+        /// 쓰되, UI를 거치지 않고 Begin()을 직접 호출해 결정적으로 진입한다.</summary>
+        private static IEnumerator LoadRoomGraph(int seed, System.Action<InGameFlowController, RunState> onReady)
+        {
+            yield return SceneManager.LoadSceneAsync(SceneNames.OutGame, LoadSceneMode.Additive);
+            yield return null;
+
+            InGameFlowController flow = Object.FindFirstObjectByType<InGameFlowController>(FindObjectsInactive.Include);
+            flow.gameObject.SetActive(true); // 최초 활성화 — Awake()가 이 시점에 동기 실행됨
+
+            var runConfigAsset = GetField<RunConfigAsset>(flow, "runConfig");
+            MapState map = new MapGenerator(new MapGenerationConfig(), seed).Generate();
+            RunState run = RunStateFactory.Create(map, runConfigAsset.ToData());
+            run.selectedCharacterId = "char_1";
+
+            flow.Begin(run);
+            yield return null;
+
+            onReady(flow, run);
+        }
 
         private static void WalkToJustBeforeBoss(MapState map)
         {
@@ -49,11 +74,9 @@ namespace OutGame.Tests.PlayMode
         [UnityTest]
         public IEnumerator BossNodeSelected_OpensDeploymentPanel_NotImmediateRunClear()
         {
-            yield return SceneManager.LoadSceneAsync(SceneNames.InGame, LoadSceneMode.Additive);
-            yield return null;
-
-            InGameFlowController flow = GameObject.Find("InGameFlow").GetComponent<InGameFlowController>();
-            RunState run = GetField<RunState>(flow, "run");
+            InGameFlowController flow = null;
+            RunState run = null;
+            yield return LoadRoomGraph(1, (f, r) => { flow = f; run = r; });
 
             WalkToJustBeforeBoss(run.mapState);
             MapNode boss = MapProgress.GetSelectableNodes(run.mapState).First(n => n.roomType == RoomType.Boss);
@@ -72,11 +95,9 @@ namespace OutGame.Tests.PlayMode
         [UnityTest]
         public IEnumerator BossVictory_ShowsRunClear_AfterDeploymentAndBattle()
         {
-            yield return SceneManager.LoadSceneAsync(SceneNames.InGame, LoadSceneMode.Additive);
-            yield return null;
-
-            InGameFlowController flow = GameObject.Find("InGameFlow").GetComponent<InGameFlowController>();
-            RunState run = GetField<RunState>(flow, "run");
+            InGameFlowController flow = null;
+            RunState run = null;
+            yield return LoadRoomGraph(1, (f, r) => { flow = f; run = r; });
             // 이 테스트는 런 클리어 타이밍만 검증한다 — 드롭 확률이 기본값(0이 아님)이면 시드 고정이
             // 안 되는 System.Random(Environment.TickCount) 특성상 가끔 아이템 획득 팝업이 먼저 뜨면서
             // 런 클리어를 가로막아 이 테스트가 간헐적으로 실패할 수 있다. 0으로 고정해 결정적으로 만든다.
@@ -115,11 +136,9 @@ namespace OutGame.Tests.PlayMode
         {
             // §4-28 엔드투엔드 확인 — 드롭 확률을 100%로 강제해 결정적으로 검증한다(기본값은
             // System.Random(Environment.TickCount)라 시드 고정이 불가능하므로 확률 자체를 조작).
-            yield return SceneManager.LoadSceneAsync(SceneNames.InGame, LoadSceneMode.Additive);
-            yield return null;
-
-            InGameFlowController flow = GameObject.Find("InGameFlow").GetComponent<InGameFlowController>();
-            RunState run = GetField<RunState>(flow, "run");
+            InGameFlowController flow = null;
+            RunState run = null;
+            yield return LoadRoomGraph(1, (f, r) => { flow = f; run = r; });
             var itemDropConfig = GetField<ItemDropConfig>(flow, "itemDropConfig");
             itemDropConfig.archerDropChance = 1f;
             itemDropConfig.warriorDropChance = 1f;
@@ -153,11 +172,9 @@ namespace OutGame.Tests.PlayMode
         {
             // 2026-07-26 사용자 요청: 아이템 획득 팝업이 뜬 동안은 다음 진행(런 클리어 화면)으로
             // 넘어가면 안 되고, 확인을 눌러야 이어져야 한다.
-            yield return SceneManager.LoadSceneAsync(SceneNames.InGame, LoadSceneMode.Additive);
-            yield return null;
-
-            InGameFlowController flow = GameObject.Find("InGameFlow").GetComponent<InGameFlowController>();
-            RunState run = GetField<RunState>(flow, "run");
+            InGameFlowController flow = null;
+            RunState run = null;
+            yield return LoadRoomGraph(1, (f, r) => { flow = f; run = r; });
             var itemDropConfig = GetField<ItemDropConfig>(flow, "itemDropConfig");
             itemDropConfig.archerDropChance = 1f;
             itemDropConfig.warriorDropChance = 1f;
@@ -194,11 +211,9 @@ namespace OutGame.Tests.PlayMode
         [UnityTest]
         public IEnumerator BattleVictory_WithGuaranteedDropChance_ShowsItemRewardPopupForNonBossRoom()
         {
-            yield return SceneManager.LoadSceneAsync(SceneNames.InGame, LoadSceneMode.Additive);
-            yield return null;
-
-            InGameFlowController flow = GameObject.Find("InGameFlow").GetComponent<InGameFlowController>();
-            RunState run = GetField<RunState>(flow, "run");
+            InGameFlowController flow = null;
+            RunState run = null;
+            yield return LoadRoomGraph(1, (f, r) => { flow = f; run = r; });
             // 마지막 티어(카운터 6 이상)로 강제 — 전 병과 등장 가능 + enemyCount=9라 전원 기본(None)으로만
             // 나올 확률은 사실상 0에 가까워 결정적으로 취급해도 안전하다(§4-28).
             run.powerRoomsVisited = 6;
@@ -236,11 +251,9 @@ namespace OutGame.Tests.PlayMode
         [UnityTest]
         public IEnumerator BattleVictory_WithZeroDropChance_SkipsPopupEntirely()
         {
-            yield return SceneManager.LoadSceneAsync(SceneNames.InGame, LoadSceneMode.Additive);
-            yield return null;
-
-            InGameFlowController flow = GameObject.Find("InGameFlow").GetComponent<InGameFlowController>();
-            RunState run = GetField<RunState>(flow, "run");
+            InGameFlowController flow = null;
+            RunState run = null;
+            yield return LoadRoomGraph(1, (f, r) => { flow = f; run = r; });
             var itemDropConfig = GetField<ItemDropConfig>(flow, "itemDropConfig");
             itemDropConfig.archerDropChance = 0f;
             itemDropConfig.warriorDropChance = 0f;

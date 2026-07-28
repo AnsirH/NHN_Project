@@ -23,7 +23,7 @@ namespace OutGame.Tests.PlayMode
         [UnityTearDown]
         public IEnumerator TearDown()
         {
-            yield return SceneManager.UnloadSceneAsync(SceneNames.InGame);
+            yield return SceneManager.UnloadSceneAsync(SceneNames.OutGame);
         }
 
         // 노드 하나짜리 최소 맵 — OnRoomSelected의 카운터 증가는 방 타입만으로 분기하므로
@@ -34,19 +34,26 @@ namespace OutGame.Tests.PlayMode
             {
                 nodes = new List<MapNode> { new MapNode(roomType, new GridPoint(0, 0)) },
             };
-            return RunStateFactory.Create(map, new RunConfig());
+            RunState run = RunStateFactory.Create(map, new RunConfig());
+            run.selectedCharacterId = "char_1";
+            return run;
         }
 
+        /// <summary>OutGame.unity를 얹고 RoomGraphRoot를 활성화한 뒤 Begin(run)으로 방 그래프에
+        /// 직접 진입시킨다 — 씬 로드 시점엔 RoomGraphRoot가 비활성 상태라 GameObject.Find로는 찾을
+        /// 수 없으므로 FindObjectsInactive.Include로 찾은 뒤 활성화한다.</summary>
         private static IEnumerator SelectSingleRoomAndGetRun(RoomType roomType, System.Action<RunState> onReady)
         {
-            RunSessionContext.SetPendingRun(CreateSingleRoomRun(roomType));
-            yield return SceneManager.LoadSceneAsync(SceneNames.InGame, LoadSceneMode.Additive);
+            RunState run = CreateSingleRoomRun(roomType);
+            yield return SceneManager.LoadSceneAsync(SceneNames.OutGame, LoadSceneMode.Additive);
             yield return null;
 
-            var flow = GameObject.Find("InGameFlow").GetComponent<InGameFlowController>();
-            var run = (RunState)typeof(InGameFlowController).GetField("run", Priv).GetValue(flow);
-            MapNode node = run.mapState.nodes[0];
+            var flow = Object.FindFirstObjectByType<InGameFlowController>(FindObjectsInactive.Include);
+            flow.gameObject.SetActive(true);
+            flow.Begin(run);
+            yield return null;
 
+            MapNode node = run.mapState.nodes[0];
             typeof(InGameFlowController).GetMethod("OnRoomSelected", Priv).Invoke(flow, new object[] { node });
             yield return null;
 
@@ -96,22 +103,24 @@ namespace OutGame.Tests.PlayMode
             second.AddIncoming(first.point);
             var map = new MapState { nodes = new List<MapNode> { first, second } };
             var run = RunStateFactory.Create(map, new RunConfig());
+            run.selectedCharacterId = "char_1";
 
-            RunSessionContext.SetPendingRun(run);
-            yield return SceneManager.LoadSceneAsync(SceneNames.InGame, LoadSceneMode.Additive);
+            yield return SceneManager.LoadSceneAsync(SceneNames.OutGame, LoadSceneMode.Additive);
             yield return null;
 
-            var flow = GameObject.Find("InGameFlow").GetComponent<InGameFlowController>();
-            var liveRun = (RunState)typeof(InGameFlowController).GetField("run", Priv).GetValue(flow);
+            var flow = Object.FindFirstObjectByType<InGameFlowController>(FindObjectsInactive.Include);
+            flow.gameObject.SetActive(true);
+            flow.Begin(run);
+            yield return null;
             MethodInfo onRoomSelected = typeof(InGameFlowController).GetMethod("OnRoomSelected", Priv);
 
             onRoomSelected.Invoke(flow, new object[] { first });
             yield return null;
-            Assert.AreEqual(1, liveRun.powerRoomsVisited, "첫 번째 파워룸 통과 후 1이어야 함");
+            Assert.AreEqual(1, run.powerRoomsVisited, "첫 번째 파워룸 통과 후 1이어야 함");
 
             onRoomSelected.Invoke(flow, new object[] { second });
             yield return null;
-            Assert.AreEqual(2, liveRun.powerRoomsVisited, "두 번째 파워룸까지 통과하면 누적 2여야 함");
+            Assert.AreEqual(2, run.powerRoomsVisited, "두 번째 파워룸까지 통과하면 누적 2여야 함");
         }
     }
 }
