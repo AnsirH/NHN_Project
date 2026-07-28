@@ -28,7 +28,8 @@ namespace OutGame.UI.Deployment
     /// 생성한 구성(병과+병사 수)을 EnemyFormationAssigner로 열(column) 배치한다(§4-28) — 근접
     /// 병과는 앞열, 원거리 병과는 뒷열에 군집(2026-07-19 사용자 요청). 유닛 UI는 아군과 동일한
     /// ArmyCardView를 재사용하되 interactable=false로 표시 전용 처리한다(2026-07-26 사용자 요청).
-    /// 실제 적 AI/전투 시뮬레이션은 여전히 RoomEncounterTable 미결(§9), 표시·전투력·드롭 계산 전용.
+    /// 이 구성은 표시·전투력·드롭 계산뿐 아니라 2026-07-29부터 BuildSetup()을 통해 실제 전투 스폰
+    /// 데이터(BattleSetupData.enemies)로도 그대로 전달된다(§9 RoomEncounterTable 참고).
     /// 중앙 축: 적 버프 표시(1차 "없음") → [전투 시작] → [아이템] → [프리셋](비활성).
     /// </summary>
     public class ArmyDeploymentPanel : MonoBehaviour
@@ -173,8 +174,9 @@ namespace OutGame.UI.Deployment
 
             // 적 진영 — 아군과 똑같은 크기의 격자를 항상 전부 만들고(§5.7 "플레이어 진영처럼"), 그 위에
             // §4-28 생성된 구성을 EnemyFormationAssigner로 배치한다. 유닛 표시는 아군과 동일한
-            // ArmyCardView를 재사용한다(2026-07-26 사용자 요청 — 진영 간 UI 통일). 실제 적 AI/전투
-            // 시뮬레이션은 여전히 RoomEncounterTable 미결(§9) — 표시만 이 데이터로 한다.
+            // ArmyCardView를 재사용한다(2026-07-26 사용자 요청 — 진영 간 UI 통일). 이 구성은 여기서는
+            // 표시용으로만 쓰이지만, BuildSetup() 시점엔 동일한 enemyComposition이 그대로 §7 계약에
+            // 실려 나간다 — 화면에 보이는 것과 실제 전투에 스폰되는 것이 항상 같다.
             foreach (SlotDefinition slot in slots)
             {
                 Image slotBackground = Instantiate(enemySlotPrefab, enemySlotContainer);
@@ -215,7 +217,8 @@ namespace OutGame.UI.Deployment
             List<AugmentData> selectedAugments = allyFormationView.BuildSelectedAugments();
 
             BattleSetupData setup = allyFormationView.Deployment.BuildSetup(
-                roomId, roomType, encounterId, run, itemDataById, armyDataById, selectedAugments, characterDataById);
+                roomId, roomType, encounterId, run, itemDataById, armyDataById, selectedAugments, characterDataById,
+                enemyComposition);
             Confirmed?.Invoke(setup);
         }
 

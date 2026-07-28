@@ -5,8 +5,9 @@ using UnityEngine;
 namespace OutGame.ScriptableObjects
 {
     /// <summary>
-    /// 적 군대 구성 밸런스 에셋 (§4-28) — 작업자가 인스펙터에서 조정. RoomEncounterTable이
-    /// 인게임과 협의되기 전까지의 임시 대체(아웃게임 내부 전용, §7 인터페이스에는 노출 안 함).
+    /// 적 군대 구성 밸런스 에셋 (§4-28) — 작업자가 인스펙터에서 조정. §9 RoomEncounterTable의
+    /// 아웃게임 쪽 실제 구현체이며, 여기서 생성된 구성이 그대로 §7 계약(BattleSetupData.enemies)에
+    /// 실려 인게임에 전달된다(2026-07-29).
     /// </summary>
     [CreateAssetMenu(menuName = "OutGame/Enemy Composition Config", fileName = "EnemyCompositionConfig")]
     public class EnemyCompositionConfigAsset : ScriptableObject

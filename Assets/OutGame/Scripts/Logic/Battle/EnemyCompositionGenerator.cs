@@ -10,7 +10,8 @@ namespace OutGame.Logic.Battle
     /// 적 군대 구성 자동 생성 (§4-28) — 일반전투는 난이도 커브 구간(DifficultyTier)에서 개수를
     /// 가져온 뒤 그 구간의 병과 가중치로 가중 랜덤 배정하고, 보스는 같은 구간의 고정 구성을 그대로
     /// 반환한다. RoomTypeAssigner.WeightedPick과 동일한 가중 랜덤 알고리즘 구조를 재사용한다.
-    /// 아웃게임 내부 전용(아이템 드롭·전투력 표시용).
+    /// 여기서 생성된 결과는 아이템 드롭·전투력 표시뿐 아니라 2026-07-29부터 BattleSetupData.enemies로
+    /// §7 계약에도 그대로 실린다 — 별도의 인게임 쪽 재생성 없이 이 결과가 곧 실제 전투 스폰 구성이다.
     ///
     /// 2026-07-26 재설계: "층수"가 아니라 <paramref name="powerRoomsVisited"/>(RunState의 난이도
     /// 커브 기준점 — 증원·증강·이벤트 방을 지난 횟수)로 구간을 고른다(§4-28, 사용자 확정). 전투방만
@@ -18,8 +19,8 @@ namespace OutGame.Logic.Battle
     ///
     /// 각 결과는 플레이어의 ArmyInstance와 동일한 형태(ArmyDefinition 참조 + 병과 + 병사 수)를
     /// 갖는다 — <paramref name="template"/>(현재는 army_basic 하나뿐)의 baseSoldierCount/generalPower를
-    /// 그대로 물려받는다. 실제 RoomEncounterTable이 여러 ArmyDefinition 중에서 고르게 되면
-    /// 이 template 하나만 받던 자리를 풀(pool)로 확장하면 된다.
+    /// 그대로 물려받는다. 여러 ArmyDefinition 중에서 고르게 되면 이 template 하나만 받던 자리를
+    /// 풀(pool)로 확장하면 된다.
     /// </summary>
     public static class EnemyCompositionGenerator
     {

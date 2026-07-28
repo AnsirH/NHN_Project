@@ -36,6 +36,10 @@ namespace OutGame.Tests.EditMode
             [TestCharacterId] = new PlayerCharacterData { id = TestCharacterId, skillId = "skill_test" },
         };
 
+        // BuildSetup의 enemyComposition 파라미터는 non-null 검증 외에는 이 테스트 파일의 다른 관심사와
+        // 무관하므로 빈 리스트를 기본값으로 쓰고, 실제로 실려 가는지는 아래 전용 테스트에서 확인한다.
+        private static readonly List<EnemyArmy> NoEnemies = new List<EnemyArmy>();
+
         private RunState run;
         private DeploymentState deployment;
 
@@ -230,7 +234,7 @@ namespace OutGame.Tests.EditMode
             deployment.Place(run.armies[1].instanceId, 0);
 
             BattleSetupData setup = deployment.BuildSetup(
-                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs, NoAugments, Characters);
+                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs, NoAugments, Characters, NoEnemies);
 
             Assert.AreEqual("room_2_0", setup.roomId);
             Assert.AreEqual(RoomType.NormalBattle, setup.roomType);
@@ -264,13 +268,42 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
+        public void BuildSetup_IncludesEnemyComposition()
+        {
+            // 2026-07-29: 적 구성은 아웃게임이 확정해서 §7 계약(BattleSetupData.enemies)에 그대로
+            // 실어 보낸다 — 인게임이 encounterId만으로 별도 재생성할 필요가 없어야 한다.
+            deployment.Place(run.armies[0].instanceId, 0);
+            var enemyComposition = new List<EnemyArmy>
+            {
+                new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.Archer, soldierCount = 20 },
+                new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.None, soldierCount = 15 },
+            };
+
+            BattleSetupData setup = deployment.BuildSetup(
+                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs, NoAugments, Characters,
+                enemyComposition);
+
+            Assert.AreEqual(2, setup.enemies.Count);
+            Assert.AreEqual(ArmyClass.Archer, setup.enemies[0].armyClass);
+            Assert.AreEqual(20, setup.enemies[0].soldierCount);
+        }
+
+        [Test]
+        public void BuildSetup_NullEnemyComposition_Throws()
+        {
+            deployment.Place(run.armies[0].instanceId, 0);
+            Assert.Throws<ArgumentNullException>(() => deployment.BuildSetup(
+                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs, NoAugments, Characters, null));
+        }
+
+        [Test]
         public void BuildSetup_UnknownSelectedCharacter_Throws()
         {
             run.selectedCharacterId = "char_does_not_exist";
             deployment.Place(run.armies[0].instanceId, 0);
 
             Assert.Throws<ArgumentException>(() => deployment.BuildSetup(
-                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs, NoAugments, Characters));
+                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs, NoAugments, Characters, NoEnemies));
         }
 
         [Test]
@@ -283,11 +316,11 @@ namespace OutGame.Tests.EditMode
 
             run.selectedCharacterId = null;
             Assert.Throws<ArgumentException>(() => deployment.BuildSetup(
-                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs, NoAugments, Characters));
+                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs, NoAugments, Characters, NoEnemies));
 
             run.selectedCharacterId = "   ";
             Assert.Throws<ArgumentException>(() => deployment.BuildSetup(
-                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs, NoAugments, Characters));
+                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs, NoAugments, Characters, NoEnemies));
         }
 
         [Test]
@@ -309,7 +342,7 @@ namespace OutGame.Tests.EditMode
 
             BattleSetupData setup = deployment.BuildSetup(
                 "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs,
-                new List<AugmentData> { attackAugment }, Characters);
+                new List<AugmentData> { attackAugment }, Characters, NoEnemies);
 
             DeployedArmy deployed = setup.armies.First(a => a.armyInstanceId == archer);
             Assert.AreEqual(110f, deployed.generalHealth, 1e-3f, "체력은 업그레이드 배율(1.1)만 적용");
@@ -343,7 +376,7 @@ namespace OutGame.Tests.EditMode
             var selectedAugments = new List<AugmentData> { archerSkillAugment, archerSkillAugment };
 
             BattleSetupData setup = deployment.BuildSetup(
-                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs, selectedAugments, Characters);
+                "room_2_0", RoomType.NormalBattle, "enc_default", run, Items, Defs, selectedAugments, Characters, NoEnemies);
 
             DeployedArmy archerDeployed = setup.armies.First(a => a.armyInstanceId == archer);
             Assert.AreEqual(2, archerDeployed.generalSkillUpgradeCount, "같은 스킬 강화 증강을 2번 선택하면 카운트도 2");
@@ -357,7 +390,7 @@ namespace OutGame.Tests.EditMode
         {
             deployment.Place(run.armies[0].instanceId, 0);
             Assert.Throws<ArgumentException>(() => deployment.BuildSetup(
-                "room_0_3", RoomType.Rest, "enc", run, Items, Defs, NoAugments, Characters),
+                "room_0_3", RoomType.Rest, "enc", run, Items, Defs, NoAugments, Characters, NoEnemies),
                 "배치는 전투/보스 방에서만 (§4-8)");
         }
 
@@ -365,7 +398,7 @@ namespace OutGame.Tests.EditMode
         public void BuildSetup_EmptyDeployment_Throws()
         {
             Assert.Throws<InvalidOperationException>(() => deployment.BuildSetup(
-                "room_2_0", RoomType.NormalBattle, "enc", run, Items, Defs, NoAugments, Characters));
+                "room_2_0", RoomType.NormalBattle, "enc", run, Items, Defs, NoAugments, Characters, NoEnemies));
         }
 
         [Test]
@@ -385,7 +418,7 @@ namespace OutGame.Tests.EditMode
             deployment.Place(run.armies[1].instanceId, 3);
 
             List<DeployedArmy> viaHelper = deployment.BuildDeployedArmies(run, Items, Defs, NoAugments);
-            BattleSetupData setup = deployment.BuildSetup("room_2_0", RoomType.NormalBattle, "enc", run, Items, Defs, NoAugments, Characters);
+            BattleSetupData setup = deployment.BuildSetup("room_2_0", RoomType.NormalBattle, "enc", run, Items, Defs, NoAugments, Characters, NoEnemies);
 
             CollectionAssert.AreEqual(
                 setup.armies.Select(a => (a.armyInstanceId, a.slotId, a.soldierCount)),
@@ -408,7 +441,7 @@ namespace OutGame.Tests.EditMode
             deployment.Place(c, 3); // 자기 슬롯 재배치 (no-op)
 
             BattleSetupData setup = deployment.BuildSetup(
-                "room_2_0", RoomType.NormalBattle, "enc", run, Items, Defs, NoAugments, Characters);
+                "room_2_0", RoomType.NormalBattle, "enc", run, Items, Defs, NoAugments, Characters, NoEnemies);
 
             CollectionAssert.AreEqual(
                 new[] { 1, 3, 5 }, setup.armies.Select(x => x.slotId).ToArray());

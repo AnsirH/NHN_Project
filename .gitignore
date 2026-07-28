@@ -125,6 +125,7 @@ CLAUDE.local.md
 /Docs/OutGame/*
 !/Docs/OutGame/초기 기획.md
 !/Docs/OutGame/상세 기획.md
+!/Docs/OutGame/적 데이터 연동 가이드.md
 
 # UI 스크린샷 캡처 (시각 검증 루프 — 개인 도구)
 /ui-captures/

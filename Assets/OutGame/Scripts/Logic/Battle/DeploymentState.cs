@@ -165,10 +165,12 @@ namespace OutGame.Logic.Battle
             IReadOnlyDictionary<string, ItemData> items,
             IReadOnlyDictionary<string, ArmyData> armyDefs,
             IReadOnlyList<AugmentData> selectedAugments,
-            IReadOnlyDictionary<string, PlayerCharacterData> characterDataById)
+            IReadOnlyDictionary<string, PlayerCharacterData> characterDataById,
+            IReadOnlyList<EnemyArmy> enemyComposition)
         {
             if (run == null) throw new ArgumentNullException(nameof(run));
             if (characterDataById == null) throw new ArgumentNullException(nameof(characterDataById));
+            if (enemyComposition == null) throw new ArgumentNullException(nameof(enemyComposition));
             if (roomType != RoomType.NormalBattle && roomType != RoomType.Boss)
                 throw new ArgumentException(
                     $"배치는 전투/보스 방에서만 가능합니다 (§4-8). 요청 타입: {roomType}", nameof(roomType));
@@ -190,6 +192,7 @@ namespace OutGame.Logic.Battle
                 playerCharacterSkillId = character.skillId,
             };
             setup.armies.AddRange(BuildDeployedArmies(run, items, armyDefs, selectedAugments));
+            setup.enemies.AddRange(enemyComposition);
 
             return setup;
         }

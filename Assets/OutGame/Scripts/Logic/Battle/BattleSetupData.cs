@@ -14,8 +14,13 @@ namespace OutGame.Logic.Battle
     {
         public string roomId;              // 방 노드 ID
         public RoomType roomType;          // NormalBattle | Boss
-        public string encounterId;         // RoomEncounterTable 키 (적 구성 — 인게임 협의)
+        public string encounterId;         // 참고용 식별자(§9 RoomEncounterTable) — 실제 적 구성은 아래 enemies에 실려 온다
         public List<DeployedArmy> armies = new List<DeployedArmy>();
+
+        // 2026-07-29 추가: 적 구성은 아웃게임이 encounterId 기준으로 확정해서 그대로 실어 보낸다
+        // (§9 미결이던 RoomEncounterTable 역할을 EnemyCompositionConfig/EnemyCompositionGenerator가
+        // 이미 아웃게임 쪽에서 수행 중 — armies와 동일한 원칙: 인게임이 재계산할 필요 없이 그대로 스폰).
+        public List<EnemyArmy> enemies = new List<EnemyArmy>();
 
         // 캐릭터 선택 화면(§5.2.5)에서 고른 값 — 런 전체에 1번뿐이지만 armies와 같은 자리에서 매
         // 전투마다 다시 실어 보낸다(별도의 "런 시작 시 1회 전달" 채널을 두지 않기 위함). 스킬의

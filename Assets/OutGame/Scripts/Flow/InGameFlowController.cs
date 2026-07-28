@@ -60,8 +60,9 @@ namespace OutGame.Flow
         private RoomType currentBattleRoomType;
         private List<EnemyArmy> currentEnemyComposition;
 
-        // §4-28: RoomEncounterTable 협의 전 임시 대체 — 아웃게임 내부 전용(아이템 드롭 계산용),
-        // §7 인터페이스(BattleSetupData)에는 노출하지 않는다. 위 Asset 필드에서 Awake()에 채워진다.
+        // §4-28: 아웃게임이 확정하는 적 구성 밸런스(§9 RoomEncounterTable 역할) — 아이템 드롭 계산에
+        // 쓰이는 동시에 2026-07-29부터 BattleSetupData.enemies로 §7 계약에도 그대로 실린다.
+        // 위 Asset 필드에서 Awake()에 채워진다.
         private EnemyCompositionConfig enemyCompositionConfig;
         private ItemDropConfig itemDropConfig;
 
@@ -244,11 +245,13 @@ namespace OutGame.Flow
 
         private void OpenBattleRoom(MapNode node)
         {
-            // RoomEncounterTable 협의 전 임시 키(§9) — 적 구성이 정의되면 노드별 실제 값으로 대체
+            // 참고용 식별자(§9 RoomEncounterTable) — 적 구성이 정의되면 노드별 실제 값으로 대체.
+            // 실제 적 구성은 encounterId가 아니라 아래에서 생성해 BattleSetupData.enemies로 직접 전달한다.
             string encounterId = $"enc_{node.roomType}";
-            // §4-28: 적 구성을 미리 생성해둔다 — 순수 아웃게임 내부용(아이템 드롭·전투력 계산),
-            // BattleSetupData에는 안 실음. 스탯 템플릿은 Awake()에서 확정해둔 시작 군대(army_basic)를
-            // 그대로 물려받는다 — ArmyDefinition이 여러 종류가 되면 이 자리를 풀(pool)에서 고르도록 확장.
+            // §4-28: 적 구성을 미리 생성해둔다 — 아이템 드롭·전투력 계산에 쓰이는 동시에, 배치 확정
+            // (BuildSetup) 시점에 이 값 그대로가 BattleSetupData.enemies로 실려 나간다(2026-07-29).
+            // 스탯 템플릿은 Awake()에서 확정해둔 시작 군대(army_basic)를 그대로 물려받는다 —
+            // ArmyDefinition이 여러 종류가 되면 이 자리를 풀(pool)에서 고르도록 확장.
             // 2026-07-26: 난이도 기준을 "층수(node.point.y)"에서 run.powerRoomsVisited(증원·증강·
             // 이벤트 방 통과 횟수)로 교체 — 전투방만 연달아 나오는 런에서 플레이어 보강 없이 적만
             // 계속 세지는 불균형을 막기 위함(§4-28 재설계).
