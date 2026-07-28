@@ -29,6 +29,7 @@ namespace OutGame.Tests.PlayMode
         private ArmyDefinition armyDef;
         private ItemDefinition bowDef;
         private ItemDefinition shieldDef;
+        private PlayerCharacterDefinition characterDef;
         private RunConfig runConfig;
         private static readonly List<EnemyArmy> TestEnemyComposition = new List<EnemyArmy>
         {
@@ -63,6 +64,20 @@ namespace OutGame.Tests.PlayMode
             runConfig = new RunConfig { startingArmyCount = 3, startingArmyDefId = "army_basic" };
             MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
             run = RunStateFactory.Create(map, runConfig);
+
+            // §5.2.5: BuildSetup은 run.selectedCharacterId를 characterDefs 풀에서 찾아야 하므로,
+            // 실제 캐릭터 선택 화면을 거치지 않는 이 테스트에서도 인메모리로 하나 만들어 채워둔다.
+            characterDef = ScriptableObject.CreateInstance<PlayerCharacterDefinition>();
+            SetCharacterField(characterDef, "characterId", "char_test");
+            SetCharacterField(characterDef, "skillId", "skill_test");
+            run.selectedCharacterId = "char_test";
+        }
+
+        private static void SetCharacterField(PlayerCharacterDefinition target, string fieldName, object value)
+        {
+            typeof(PlayerCharacterDefinition)
+                .GetField(fieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .SetValue(target, value);
         }
 
         [TearDown]
@@ -70,6 +85,7 @@ namespace OutGame.Tests.PlayMode
         {
             Object.Destroy(canvasGo);
             Object.Destroy(eventSystemGo);
+            Object.DestroyImmediate(characterDef);
             PlayerPrefs.DeleteKey(ItemBindWarningPopup.SuppressPrefKey);
         }
 
@@ -77,7 +93,7 @@ namespace OutGame.Tests.PlayMode
         {
             panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default",
                 new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0],
-                TestEnemyComposition);
+                new[] { characterDef }, TestEnemyComposition);
         }
 
         // 플레이어 진영(슬롯/카드/드래그앤드롭/아이템장착/업그레이드)은 AllyFormationView가 담당한다
@@ -229,7 +245,7 @@ namespace OutGame.Tests.PlayMode
 
             panel.Open(emptyRun, "room_2_0", RoomType.NormalBattle, "enc_default",
                 new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0],
-                TestEnemyComposition);
+                new PlayerCharacterDefinition[0], TestEnemyComposition);
 
             Button startButton = panel.transform.Find("MainRow/CenterColumn/StartBattleButton").GetComponent<Button>();
             Assert.IsFalse(startButton.interactable, "군대가 하나도 없으면 전투 시작 불가 (§5.7)");
@@ -247,7 +263,7 @@ namespace OutGame.Tests.PlayMode
             Assert.Throws<System.InvalidOperationException>(() =>
                 panel.Open(overCapRun, "room_2_0", RoomType.NormalBattle, "enc_default",
                     new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0],
-                    TestEnemyComposition));
+                    new PlayerCharacterDefinition[0], TestEnemyComposition));
         }
 
         [UnityTest]

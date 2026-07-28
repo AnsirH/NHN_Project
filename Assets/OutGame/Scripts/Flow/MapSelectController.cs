@@ -54,7 +54,7 @@ namespace OutGame.Flow
             RunState run = RunStateFactory.Create(mapState, runConfig.ToData());
 
             RunSessionContext.SetPendingRun(run);
-            LoadSceneAction(SceneNames.InGame);
+            LoadSceneAction(SceneNames.CharacterSelect);
         }
     }
 }

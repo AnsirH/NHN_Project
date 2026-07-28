@@ -119,7 +119,7 @@ namespace OutGame.Tests.PlayMode
                     new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.None, soldierCount = 30 },
                 };
                 panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default", new[] { armyDef }, new[] { bowDef },
-                    runConfig, new AugmentDefinition[0], enemyComposition);
+                    runConfig, new AugmentDefinition[0], new PlayerCharacterDefinition[0], enemyComposition);
 
                 yield return CaptureToFile("ArmyDeploymentPanel_01_initial.png");
 
@@ -274,6 +274,7 @@ namespace OutGame.Tests.PlayMode
 
                 MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
                 RunState run = RunStateFactory.Create(map, new RunConfig());
+                run.selectedCharacterId = "char_1"; // §5.2.5 — FromJson 필수값
                 RunSaveService.Save(run, tempSavePath);
                 mainMenu.SetSavePath(tempSavePath); // 저장 있음 → 이어하기 활성 상태
                 yield return CaptureToFile("MainMenu_02_with_save.png");
@@ -291,6 +292,47 @@ namespace OutGame.Tests.PlayMode
             {
                 Object.Destroy(canvasGo);
                 if (File.Exists(tempSavePath)) File.Delete(tempSavePath);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator Capture_CharacterSelectScreen()
+        {
+            // 2026-07-26 사용자 요청: 맵 선택 다음에 삽입한 캐릭터 선택 화면(§5.2.5) — 좌측 설명/
+            // 스킬 패널, 하단 아이콘 하이라이트/흑백 차이, 화살표 이동 후 상태를 육안 확인.
+            if (Application.isBatchMode)
+            {
+                Assert.Ignore("batchmode에서는 렌더 프레임이 없어 캡처 불가 — 에디터 열림 상태에서만 실행");
+                yield break;
+            }
+
+            yield return SettleGameView();
+
+            var canvasGo = new GameObject("CaptureCanvas", typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler));
+            var eventSystemGo = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
+            try
+            {
+                var canvas = canvasGo.GetComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                var scaler = canvasGo.GetComponent<UnityEngine.UI.CanvasScaler>();
+                scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                scaler.referenceResolution = new Vector2(1920f, 1080f);
+                scaler.matchWidthOrHeight = 0.5f;
+
+                var prefab = Resources.Load<GameObject>("OutGame/CharacterSelectScreen");
+                Assert.IsNotNull(prefab, "CharacterSelectScreen 프리팹 없음 — SceneSetupM7UI.Run() 실행 필요");
+                var controller = Object.Instantiate(prefab, canvasGo.transform).GetComponent<CharacterSelectController>();
+                yield return null; // Start()에서 아이콘 스폰할 시간
+
+                yield return CaptureToFile("CharacterSelect_01_initial.png");
+
+                controller.transform.Find("NavRow/RightArrowButton").GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
+                yield return CaptureToFile("CharacterSelect_02_after_right_arrow.png");
+            }
+            finally
+            {
+                Object.Destroy(canvasGo);
+                Object.Destroy(eventSystemGo);
             }
         }
 

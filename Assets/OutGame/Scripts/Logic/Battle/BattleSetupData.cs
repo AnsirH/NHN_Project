@@ -16,6 +16,13 @@ namespace OutGame.Logic.Battle
         public RoomType roomType;          // NormalBattle | Boss
         public string encounterId;         // RoomEncounterTable 키 (적 구성 — 인게임 협의)
         public List<DeployedArmy> armies = new List<DeployedArmy>();
+
+        // 캐릭터 선택 화면(§5.2.5)에서 고른 값 — 런 전체에 1번뿐이지만 armies와 같은 자리에서 매
+        // 전투마다 다시 실어 보낸다(별도의 "런 시작 시 1회 전달" 채널을 두지 않기 위함). 스킬의
+        // 세부 효과는 인게임 스킬 시스템 책임이라 skillId만 넘긴다(§4-27 generalSkillUpgradeCount와
+        // 동일 원칙).
+        public string playerCharacterId;
+        public string playerCharacterSkillId;
     }
 
     [Serializable]

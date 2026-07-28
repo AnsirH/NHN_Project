@@ -53,7 +53,7 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator SelectMap_SetsPendingRunAndLoadsInGame()
+        public IEnumerator SelectMap_SetsPendingRunAndLoadsCharacterSelect()
         {
             yield return null;
 
@@ -61,7 +61,9 @@ namespace OutGame.Tests.PlayMode
                 .First(b => b.transform.parent.name == "Content");
             entryButton.onClick.Invoke();
 
-            CollectionAssert.AreEqual(new[] { SceneNames.InGame }, loadedScenes);
+            // §5.2.5: 맵 확정 다음은 인게임이 아니라 캐릭터 선택 화면 — 캐릭터 선택 화면이 확정된
+            // RunState에 selectedCharacterId를 채운 뒤 인게임으로 넘긴다.
+            CollectionAssert.AreEqual(new[] { SceneNames.CharacterSelect }, loadedScenes);
             RunState pending = RunSessionContext.ConsumePendingRun();
             Assert.IsNotNull(pending);
             Assert.IsNotEmpty(pending.mapState.nodes);

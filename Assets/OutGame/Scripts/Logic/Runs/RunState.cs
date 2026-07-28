@@ -13,6 +13,13 @@ namespace OutGame.Logic.Runs
     public class RunState
     {
         public MapState mapState;
+
+        // 캐릭터 선택 화면(§5.2.5)에서 채워진다. 정상 플로우라면 항상 값이 있지만, 이 기능 추가 전에
+        // 저장된 런(이어하기)이나 손상된 JSON은 비어 있을 수 있다 — FromJson에서 필수값으로 검증해
+        // "이어하기" 시점에 바로 거부하고, DeploymentState.BuildSetup에도 방어적으로 한 번 더 확인한다
+        // (코드 리뷰 CRITICAL 수정 — 이전엔 FromJson을 통과한 뒤 전투 시작 시점에야 뒤늦게 예외가 났었음).
+        public string selectedCharacterId;
+
         public List<ArmyInstance> armies = new List<ArmyInstance>();
         public List<string> ownedItemIds = new List<string>();
         public int gold; // §4-20: 획득만 1차 구현
@@ -50,7 +57,8 @@ namespace OutGame.Logic.Runs
 
             if (state == null || state.mapState == null || state.mapState.nodes == null
                 || state.mapState.nodes.Count == 0 || state.armies == null || state.ownedItemIds == null
-                || state.visitedEventIds == null || state.deployment == null || state.selectedAugmentIds == null)
+                || state.visitedEventIds == null || state.deployment == null || state.selectedAugmentIds == null
+                || string.IsNullOrEmpty(state.selectedCharacterId))
                 throw new ArgumentException("RunState JSON에 필수 데이터가 없습니다.", nameof(json));
 
             return state;

@@ -4,6 +4,7 @@ using System.Linq;
 using OutGame.Logic.Armies;
 using OutGame.Logic.Augments;
 using OutGame.Logic.Battle;
+using OutGame.Logic.Characters;
 using OutGame.Logic.Items;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
@@ -53,6 +54,7 @@ namespace OutGame.UI.Deployment
 
         private readonly Dictionary<string, ArmyDefinition> armyDefsById = new Dictionary<string, ArmyDefinition>();
         private readonly Dictionary<string, ItemDefinition> itemDefsById = new Dictionary<string, ItemDefinition>();
+        private readonly Dictionary<string, PlayerCharacterDefinition> characterDefsById = new Dictionary<string, PlayerCharacterDefinition>();
         private readonly Dictionary<int, Transform> enemySlotCardContainersById = new Dictionary<int, Transform>();
 
         private RunState run;
@@ -72,6 +74,7 @@ namespace OutGame.UI.Deployment
             IReadOnlyList<ItemDefinition> itemDefs,
             RunConfig runConfigValue,
             IReadOnlyList<AugmentDefinition> augmentDefs,
+            IReadOnlyList<PlayerCharacterDefinition> characterDefs,
             IReadOnlyList<EnemyArmy> enemyCompositionValue)
         {
             if (runState == null) throw new ArgumentNullException(nameof(runState));
@@ -79,6 +82,7 @@ namespace OutGame.UI.Deployment
             if (itemDefs == null) throw new ArgumentNullException(nameof(itemDefs));
             if (runConfigValue == null) throw new ArgumentNullException(nameof(runConfigValue));
             if (augmentDefs == null) throw new ArgumentNullException(nameof(augmentDefs));
+            if (characterDefs == null) throw new ArgumentNullException(nameof(characterDefs));
             if (enemyCompositionValue == null) throw new ArgumentNullException(nameof(enemyCompositionValue));
             ValidateWiring();
 
@@ -92,6 +96,8 @@ namespace OutGame.UI.Deployment
             foreach (ArmyDefinition def in armyDefs) armyDefsById[def.ToData().id] = def;
             itemDefsById.Clear();
             foreach (ItemDefinition def in itemDefs) itemDefsById[def.ToData().id] = def;
+            characterDefsById.Clear();
+            foreach (PlayerCharacterDefinition def in characterDefs) characterDefsById[def.ToData().id] = def;
 
             BuildEnemySlots();
             UpdateEnemyPowerLabel();
@@ -205,10 +211,11 @@ namespace OutGame.UI.Deployment
 
             var armyDataById = armyDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
             var itemDataById = itemDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
+            var characterDataById = characterDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
             List<AugmentData> selectedAugments = allyFormationView.BuildSelectedAugments();
 
             BattleSetupData setup = allyFormationView.Deployment.BuildSetup(
-                roomId, roomType, encounterId, run, itemDataById, armyDataById, selectedAugments);
+                roomId, roomType, encounterId, run, itemDataById, armyDataById, selectedAugments, characterDataById);
             Confirmed?.Invoke(setup);
         }
 

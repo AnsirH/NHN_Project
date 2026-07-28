@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/OutGame/Scenes/MapSelect.unity
     guid: a4ad9eed2eb579646b49309729f240c4
   - enabled: 1
+    path: Assets/OutGame/Scenes/CharacterSelect.unity
+    guid: b03242eb75aa4374baee195b69ccd135
+  - enabled: 1
     path: Assets/OutGame/Scenes/InGame.unity
     guid: 88cd249a890705448ba66794dc1ee209
   - enabled: 1

@@ -5,6 +5,7 @@ namespace OutGame.Flow
     {
         public const string MainMenu = "MainMenu";
         public const string MapSelect = "MapSelect";
+        public const string CharacterSelect = "CharacterSelect";
         public const string InGame = "InGame";
     }
 }

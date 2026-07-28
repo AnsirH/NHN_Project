@@ -48,7 +48,9 @@ namespace OutGame.Tests.PlayMode
         private static RunState NewRun()
         {
             MapState map = new MapGenerator(new MapGenerationConfig(), seed: 5).Generate();
-            return RunStateFactory.Create(map, new RunConfig());
+            RunState run = RunStateFactory.Create(map, new RunConfig());
+            run.selectedCharacterId = "char_1"; // §5.2.5 — FromJson 필수값
+            return run;
         }
 
         [UnityTest]

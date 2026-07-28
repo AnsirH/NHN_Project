@@ -55,6 +55,7 @@ namespace OutGame.Tests.EditMode
         public void ToJson_FromJson_RoundTrip_PreservesEverything()
         {
             RunState original = RunStateFactory.Create(NewMap(), new RunConfig { startingGold = 50 });
+            original.selectedCharacterId = "char_1"; // §5.2.5
             original.ownedItemIds.Add("item_bow");
             original.armies[0].Bind("item_shield");
             original.armies[1].AddBonusSoldiers(6);
@@ -69,6 +70,7 @@ namespace OutGame.Tests.EditMode
             RunState restored = RunState.FromJson(original.ToJson());
 
             Assert.AreEqual(original.gold, restored.gold);
+            Assert.AreEqual(original.selectedCharacterId, restored.selectedCharacterId);
             Assert.AreEqual(original.ownedItemIds, restored.ownedItemIds);
             Assert.AreEqual(original.visitedEventIds, restored.visitedEventIds);
             Assert.AreEqual(original.selectedAugmentIds, restored.selectedAugmentIds);
@@ -98,6 +100,20 @@ namespace OutGame.Tests.EditMode
             Assert.Throws<ArgumentException>(() => RunState.FromJson(""));
             Assert.Throws<ArgumentException>(() => RunState.FromJson("{}"));
             Assert.Throws<ArgumentException>(() => RunState.FromJson("not json"));
+        }
+
+        [Test]
+        public void FromJson_MissingSelectedCharacterId_Throws()
+        {
+            // 코드 리뷰 CRITICAL 수정 — 캐릭터 선택 화면(§5.2.5) 추가 이전에 저장됐거나 손상된 런은
+            // selectedCharacterId가 비어 있을 수 있다. 이걸 여기서 걸러내지 않으면 "이어하기"는
+            // 성공한 것처럼 보이다가 첫 전투 시작 시점에야 DeploymentState.BuildSetup에서 뒤늦게
+            // 예외가 났다 — RunSaveService.Load는 이미 FromJson의 ArgumentException을 "손상된 저장
+            // 파일"로 처리하므로, 여기서 막으면 이어하기 시점에 바로 거부된다.
+            RunState run = RunStateFactory.Create(NewMap(), new RunConfig());
+            Assert.IsTrue(string.IsNullOrEmpty(run.selectedCharacterId), "선행 조건: 생성 직후엔 미선택 상태");
+
+            Assert.Throws<ArgumentException>(() => RunState.FromJson(run.ToJson()));
         }
     }
 }

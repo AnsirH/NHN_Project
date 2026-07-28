@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OutGame.Logic.Armies;
 using OutGame.Logic.Augments;
+using OutGame.Logic.Characters;
 using OutGame.Logic.Items;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
@@ -163,19 +164,30 @@ namespace OutGame.Logic.Battle
             RunState run,
             IReadOnlyDictionary<string, ItemData> items,
             IReadOnlyDictionary<string, ArmyData> armyDefs,
-            IReadOnlyList<AugmentData> selectedAugments)
+            IReadOnlyList<AugmentData> selectedAugments,
+            IReadOnlyDictionary<string, PlayerCharacterData> characterDataById)
         {
+            if (run == null) throw new ArgumentNullException(nameof(run));
+            if (characterDataById == null) throw new ArgumentNullException(nameof(characterDataById));
             if (roomType != RoomType.NormalBattle && roomType != RoomType.Boss)
                 throw new ArgumentException(
                     $"배치는 전투/보스 방에서만 가능합니다 (§4-8). 요청 타입: {roomType}", nameof(roomType));
             if (!CanStartBattle)
                 throw new InvalidOperationException("최소 1개 부대를 배치해야 전투를 시작할 수 있습니다 (§5.7).");
+            if (string.IsNullOrWhiteSpace(run.selectedCharacterId))
+                throw new ArgumentException(
+                    "RunState.selectedCharacterId가 비어 있습니다 — 캐릭터 선택 화면(§5.2.5)을 거치지 않았습니다.", nameof(run));
+            if (!characterDataById.TryGetValue(run.selectedCharacterId, out PlayerCharacterData character))
+                throw new ArgumentException(
+                    $"선택된 캐릭터 '{run.selectedCharacterId}'를 찾을 수 없습니다 (§5.2.5).", nameof(run));
 
             var setup = new BattleSetupData
             {
                 roomId = roomId,
                 roomType = roomType,
                 encounterId = encounterId,
+                playerCharacterId = character.id,
+                playerCharacterSkillId = character.skillId,
             };
             setup.armies.AddRange(BuildDeployedArmies(run, items, armyDefs, selectedAugments));
 

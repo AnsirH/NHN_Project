@@ -5,6 +5,7 @@ using System.Linq;
 using OutGame.Logic.Armies;
 using OutGame.Logic.Augments;
 using OutGame.Logic.Battle;
+using OutGame.Logic.Characters;
 using OutGame.Logic.Events;
 using OutGame.Logic.Items;
 using OutGame.Logic.Maps;
@@ -51,6 +52,7 @@ namespace OutGame.Flow
         private Dictionary<string, ArmyDefinition> armyDefsById;
         private Dictionary<string, ItemDefinition> itemDefsById;
         private Dictionary<string, AugmentDefinition> augmentDefsById;
+        private Dictionary<string, PlayerCharacterDefinition> characterDefsById; // §5.2.5
         private Dictionary<ArmyClass, string> itemIdByClass; // §4-28: 병과→아이템 매핑, Start()에서 한 번만 계산
         private ArmyData enemyTemplate; // §4-28: 적 구성 스탯 템플릿, Start()에서 한 번만 확정
         private string savePath;
@@ -101,6 +103,11 @@ namespace OutGame.Flow
                 throw new InvalidOperationException("증강 정의를 찾을 수 없습니다 — SceneSetupM4Data.Run() 실행 필요 (§4-27)");
             augmentDefsById = augmentPool.ToDictionary(a => a.ToData().id);
 
+            List<PlayerCharacterDefinition> characterPool = Resources.LoadAll<PlayerCharacterDefinition>("OutGame/Data/Characters").ToList();
+            if (characterPool.Count == 0)
+                throw new InvalidOperationException("플레이어 캐릭터 정의를 찾을 수 없습니다 — SceneSetupM7Data.Run() 실행 필요 (§5.2.5)");
+            characterDefsById = characterPool.ToDictionary(c => c.ToData().id);
+
             armyDefsById = Resources.LoadAll<ArmyDefinition>("OutGame/Data")
                 .ToDictionary(a => a.ToData().id);
             itemDefsById = Resources.LoadAll<ItemDefinition>("OutGame/Data")
@@ -121,10 +128,15 @@ namespace OutGame.Flow
             run = pendingRun;
             if (run == null)
             {
-                // MainMenu/MapSelect를 거치지 않고 이 씬을 단독 실행했을 때의 개발용 폴백
+                // MapSelect/캐릭터 선택(§5.2.5)을 거치지 않고 이 씬을 단독 실행했을 때의 개발용 폴백
+                // — 정상 플로우라면 항상 CharacterSelectController가 selectedCharacterId를 채운 뒤 넘어온다.
                 int usedSeed = randomizeSeed ? Environment.TickCount : seed;
                 MapState map = new MapGenerator(new MapGenerationConfig(), usedSeed).Generate();
                 run = RunStateFactory.Create(map, runConfig.ToData());
+                // CharacterSelectController와 동일하게 SortOrder 기준 1번째를 기본값으로 —
+                // Resources.LoadAll/Dictionary 열거 순서는 보장되지 않는다 (코드 리뷰 HIGH 수정).
+                run.selectedCharacterId = characterDefsById.Values
+                    .OrderBy(c => c.SortOrder).First().ToData().id;
             }
             rng = new System.Random(Environment.TickCount);
 
@@ -237,7 +249,7 @@ namespace OutGame.Flow
                 run.powerRoomsVisited, node.roomType, enemyCompositionConfig, enemyTemplate, rng);
             deploymentPanel.Open(run, node.id, node.roomType, encounterId,
                 armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), runConfig.ToData(),
-                augmentDefsById.Values.ToList(), currentEnemyComposition);
+                augmentDefsById.Values.ToList(), characterDefsById.Values.ToList(), currentEnemyComposition);
         }
 
         private void OnBattleSetupConfirmed(BattleSetupData setup)
