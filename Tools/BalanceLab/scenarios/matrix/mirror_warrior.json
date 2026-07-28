@@ -1,0 +1,7 @@
+{
+  "name": "mirror_warrior",
+  "runs": 200,
+  "band": "mirror_general",
+  "left": "@../../armies/Warrior_general.json",
+  "right": "@../../armies/Warrior_general.json"
+}

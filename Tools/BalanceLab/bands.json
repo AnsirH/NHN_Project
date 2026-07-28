@@ -1,0 +1,33 @@
+{
+  "_comment": [
+    "목표 밴드 — 시나리오의 band 태그로 어떤 규칙으로 채점할지 결정한다.",
+    "판정 대상은 좌군(left) 승률. 무승부는 어느 쪽 승률에도 포함되지 않는다.",
+    "role_matchup은 '최대 낙폭 30:70 이내' 규칙을 좌군 승률 30~70%로 표현한 것이다."
+  ],
+  "bands": [
+    {
+      "id": "general_vs_none",
+      "minWinRate": 0.65,
+      "maxWinRate": 0.75,
+      "description": "장군 있는 팀 vs 없는 팀 — 장군의 가치는 분명하되 절대적이지 않아야 한다"
+    },
+    {
+      "id": "mirror_general",
+      "minWinRate": 0.45,
+      "maxWinRate": 0.55,
+      "description": "동급 장군 매치업 — 좌/우 진영 자체의 구조적 유불리가 없어야 한다"
+    },
+    {
+      "id": "role_matchup",
+      "minWinRate": 0.30,
+      "maxWinRate": 0.70,
+      "description": "롤 상성 — 유불리는 있되 일방적이지 않아야 한다 (30:70 이내)"
+    },
+    {
+      "id": "none",
+      "minWinRate": 0.0,
+      "maxWinRate": 1.0,
+      "description": "판정 없음 — 관찰·회귀 확인 전용 시나리오"
+    }
+  ]
+}

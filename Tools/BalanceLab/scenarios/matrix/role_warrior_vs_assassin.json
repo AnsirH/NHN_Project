@@ -1,0 +1,7 @@
+{
+  "name": "role_warrior_vs_assassin",
+  "runs": 200,
+  "band": "role_matchup",
+  "left": "@../../armies/Warrior_general.json",
+  "right": "@../../armies/Assassin_general.json"
+}

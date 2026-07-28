@@ -1,0 +1,10 @@
+{
+  "name": "archer_general_volley_cross",
+  "runs": 100,
+  "left": [
+    { "squadId": "L1", "roleId": "Archer", "generalId": "ArcherGeneral", "soldierCount": 20, "slotX": 0.5, "slotY": 0.5 }
+  ],
+  "right": [
+    { "squadId": "R1", "roleId": "Warrior", "generalId": "", "soldierCount": 30, "slotX": 1.0, "slotY": 0.5 }
+  ]
+}

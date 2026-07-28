@@ -21,10 +21,10 @@ namespace OutGame.Flow
     /// <summary>
     /// 방 그래프 진행 루프 (§3.1: OutGame.unity 안의 한 패널 — "InGame"이라는 이름과 달리 실제
     /// 전투 씬이 아니라 아웃게임 콘텐츠다): 방 그래프 표시 → 노드 선택 → 방문 확정 → 방 타입별
-    /// 패널 → 복귀. 전투/보스 방은 ArmyDeploymentPanel → BattleBridge(M6부터 더미 구현) → 결과
-    /// 처리로 이어진다. 리소스 로딩/이벤트 구독은 Awake()에서 한 번, 런이 준비된 뒤에만 가능한
-    /// 활성화는 <see cref="Begin"/>에서 처리한다(OutGameFlowController가 캐릭터 선택 확정 직후,
-    /// 또는 이어하기로 곧장 호출).
+    /// 패널 → 복귀. 전투/보스 방은 ArmyDeploymentPanel → BattleBridge(§7.4, 실제 전투 씬으로 전환,
+    /// 2026-07-29 실전 연동 완료) → 결과 처리로 이어진다. 리소스 로딩/이벤트 구독은 Awake()에서
+    /// 한 번, 런이 준비된 뒤에만 가능한 활성화는 <see cref="Begin"/>에서 처리한다(OutGameFlowController가
+    /// 캐릭터 선택 확정 직후, 또는 이어하기로 곧장 호출).
     /// </summary>
     public class InGameFlowController : MonoBehaviour
     {
@@ -36,7 +36,6 @@ namespace OutGame.Flow
         [SerializeField] private ArmyDeploymentPanel deploymentPanel;
         [SerializeField] private ArmyFormationPopup armyFormationPopup; // 2026-07-26: 방 그래프의 "진영" 팝업
         [SerializeField] private ItemRewardPopup itemRewardPopup; // 2026-07-26: 전투 승리 아이템 드롭 알림
-        [SerializeField] private DummyBattlePanel battlePanel; // BattleBridge.Implementation의 M6 더미 구현
         [SerializeField] private RoomTypeVisualSet visuals;
         [SerializeField] private RunConfigAsset runConfig;
         [SerializeField] private EnemyCompositionConfigAsset enemyCompositionConfigAsset; // §4-28
@@ -86,7 +85,7 @@ namespace OutGame.Flow
 
             if (mapPanel == null || roomPanel == null || eventPanel == null || restPanel == null
                 || augmentPanel == null || deploymentPanel == null || armyFormationPopup == null
-                || itemRewardPopup == null || battlePanel == null
+                || itemRewardPopup == null
                 || visuals == null || runConfig == null
                 || enemyCompositionConfigAsset == null || itemDropConfigAsset == null)
                 throw new InvalidOperationException(
@@ -154,7 +153,15 @@ namespace OutGame.Flow
 
             // BattleBridge.Implementation은 이 패널이 활성화될 때마다 재등록해야 한다 — Domain Reload가
             // 꺼져 있어도 파괴된 오브젝트의 클로저를 가리키지 않도록 (BattleBridge.cs 참조).
-            BattleBridge.Implementation = battlePanel.Open;
+            //
+            // 인게임 전투 씬 연결(§7.4 핸드오프, 2026-07-29 실전 연동 완료): setup/콜백을 static
+            // 홀더에 보관하고 전투 씬으로 전환한다 — 더미 패널(DummyBattlePanel)은 전투 씬이 없던
+            // 시절의 임시 구현이라 더 이상 쓰지 않는다.
+            BattleBridge.Implementation = (setup, onResult) =>
+            {
+                BattleBridge.SetPendingBattle(setup, onResult);
+                LoadSceneAction(SceneNames.Battle);
+            };
 
             mapPanel.Open(run.mapState);
             mapPanel.SetGold(run.gold); // 2026-07-26: 방 그래프 우측 상단 재화 표시

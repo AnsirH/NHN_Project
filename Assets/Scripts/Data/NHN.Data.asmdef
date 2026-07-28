@@ -1,0 +1,16 @@
+{
+    "name": "NHN.Data",
+    "rootNamespace": "NHN.Data",
+    "references": [
+        "NHN.Simulation"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

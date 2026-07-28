@@ -1,0 +1,19 @@
+{
+    "name": "NHN.Integration",
+    "rootNamespace": "NHN.Integration",
+    "references": [
+        "NHN.Simulation",
+        "NHN.Data",
+        "NHN.Presentation",
+        "OutGame.Logic"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -33,6 +33,7 @@ namespace OutGame.Tests.PlayMode
         [UnityTearDown]
         public IEnumerator TearDown()
         {
+            BattleBridge.ResetToDefault(); // 정적 상태 정리 — 테스트 간 pendingSetup/콜백 오염 방지
             yield return SceneManager.UnloadSceneAsync(SceneNames.OutGame);
         }
 
@@ -41,7 +42,9 @@ namespace OutGame.Tests.PlayMode
 
         /// <summary>OutGame.unity를 얹고 RoomGraphRoot를 활성화한 뒤 테스트용 RunState로 방 그래프에
         /// 진입시킨다 — 씬에 실제 배선된 InGameFlowController(패널·설정 에셋 전부 배선됨)를 그대로
-        /// 쓰되, UI를 거치지 않고 Begin()을 직접 호출해 결정적으로 진입한다.</summary>
+        /// 쓰되, UI를 거치지 않고 Begin()을 직접 호출해 결정적으로 진입한다. LoadSceneAction은
+        /// 가로채서 실제 Battle.unity 로드를 막는다 — 이 테스트는 방 그래프 쪽 배선만 검증하고,
+        /// 전투 결과는 BattleBridge.CompleteBattle(...)로 직접 주입한다(§7.4와 동일한 진입점).</summary>
         private static IEnumerator LoadRoomGraph(int seed, System.Action<InGameFlowController, RunState> onReady)
         {
             yield return SceneManager.LoadSceneAsync(SceneNames.OutGame, LoadSceneMode.Additive);
@@ -49,6 +52,7 @@ namespace OutGame.Tests.PlayMode
 
             InGameFlowController flow = Object.FindFirstObjectByType<InGameFlowController>(FindObjectsInactive.Include);
             flow.gameObject.SetActive(true); // 최초 활성화 — Awake()가 이 시점에 동기 실행됨
+            flow.LoadSceneAction = _ => { }; // 실제 Battle.unity 로드 방지
 
             var runConfigAsset = GetField<RunConfigAsset>(flow, "runConfig");
             MapState map = new MapGenerator(new MapGenerationConfig(), seed).Generate();
@@ -113,7 +117,6 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             var deploymentPanel = GetField<ArmyDeploymentPanel>(flow, "deploymentPanel");
-            var battlePanel = GetField<DummyBattlePanel>(flow, "battlePanel");
             var roomPanel = GetField<DummyRoomPanel>(flow, "roomPanel");
 
             // 군대 보유 상한 = 배치 슬롯 수(§4-7)라 Open() 시점에 이미 전원 자동 배치돼 있다.
@@ -121,11 +124,11 @@ namespace OutGame.Tests.PlayMode
             startButton.onClick.Invoke();
             yield return null;
 
-            Assert.IsTrue(battlePanel.gameObject.activeSelf, "배치 확정 후 더미 전투 패널이 떠야 함");
+            Assert.IsFalse(deploymentPanel.gameObject.activeSelf, "배치 확정 후에는 배치 UI가 닫혀야 함(전투 씬으로 전환)");
             Assert.IsFalse(roomPanel.gameObject.activeSelf, "전투 결과가 나오기 전에는 런 클리어 화면이 뜨면 안 됨");
 
-            var victoryButton = battlePanel.GetComponentsInChildren<Button>(true).First(b => b.name == "VictoryButton");
-            victoryButton.onClick.Invoke();
+            // 실제 Battle.unity 대신 §7.4 콜백을 직접 호출해 전투 승리 결과를 주입한다.
+            BattleBridge.CompleteBattle(new BattleResultData { roomId = boss.id, victory = true });
             yield return null;
 
             Assert.IsTrue(roomPanel.gameObject.activeSelf, "보스 승리 후에는 런 클리어 화면이 떠야 함");
@@ -151,13 +154,11 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             var deploymentPanel = GetField<ArmyDeploymentPanel>(flow, "deploymentPanel");
-            var battlePanel = GetField<DummyBattlePanel>(flow, "battlePanel");
             var startButton = deploymentPanel.GetComponentsInChildren<Button>(true).First(b => b.name == "StartBattleButton");
             startButton.onClick.Invoke();
             yield return null;
 
-            var victoryButton = battlePanel.GetComponentsInChildren<Button>(true).First(b => b.name == "VictoryButton");
-            victoryButton.onClick.Invoke();
+            BattleBridge.CompleteBattle(new BattleResultData { roomId = boss.id, victory = true });
             yield return null;
 
             // 기본 첫 티어 보스 구성(EnemyCompositionConfig.tiers[0].bossComposition)에 기본 병과만
@@ -185,7 +186,6 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             var deploymentPanel = GetField<ArmyDeploymentPanel>(flow, "deploymentPanel");
-            var battlePanel = GetField<DummyBattlePanel>(flow, "battlePanel");
             var roomPanel = GetField<DummyRoomPanel>(flow, "roomPanel");
             var itemRewardPopup = GetField<ItemRewardPopup>(flow, "itemRewardPopup");
 
@@ -193,8 +193,7 @@ namespace OutGame.Tests.PlayMode
             startButton.onClick.Invoke();
             yield return null;
 
-            var victoryButton = battlePanel.GetComponentsInChildren<Button>(true).First(b => b.name == "VictoryButton");
-            victoryButton.onClick.Invoke();
+            BattleBridge.CompleteBattle(new BattleResultData { roomId = boss.id, victory = true });
             yield return null;
 
             Assert.IsTrue(itemRewardPopup.gameObject.activeSelf, "드롭이 있으면 획득 팝업이 떠야 함");
@@ -228,15 +227,13 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             var deploymentPanel = GetField<ArmyDeploymentPanel>(flow, "deploymentPanel");
-            var battlePanel = GetField<DummyBattlePanel>(flow, "battlePanel");
             var itemRewardPopup = GetField<ItemRewardPopup>(flow, "itemRewardPopup");
 
             var startButton = deploymentPanel.GetComponentsInChildren<Button>(true).First(b => b.name == "StartBattleButton");
             startButton.onClick.Invoke();
             yield return null;
 
-            var victoryButton = battlePanel.GetComponentsInChildren<Button>(true).First(b => b.name == "VictoryButton");
-            victoryButton.onClick.Invoke();
+            BattleBridge.CompleteBattle(new BattleResultData { roomId = battleNode.id, victory = true });
             yield return null;
 
             Assert.IsTrue(itemRewardPopup.gameObject.activeSelf, "일반전투 승리 후에도 드롭이 있으면 획득 팝업이 떠야 함");
@@ -265,15 +262,13 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             var deploymentPanel = GetField<ArmyDeploymentPanel>(flow, "deploymentPanel");
-            var battlePanel = GetField<DummyBattlePanel>(flow, "battlePanel");
             var itemRewardPopup = GetField<ItemRewardPopup>(flow, "itemRewardPopup");
 
             var startButton = deploymentPanel.GetComponentsInChildren<Button>(true).First(b => b.name == "StartBattleButton");
             startButton.onClick.Invoke();
             yield return null;
 
-            var victoryButton = battlePanel.GetComponentsInChildren<Button>(true).First(b => b.name == "VictoryButton");
-            victoryButton.onClick.Invoke();
+            BattleBridge.CompleteBattle(new BattleResultData { roomId = battleNode.id, victory = true });
             yield return null;
 
             Assert.IsFalse(itemRewardPopup.gameObject.activeSelf, "드롭이 없으면 획득 팝업이 뜨면 안 됨");
