@@ -8,19 +8,14 @@ namespace OutGame.UI.Deployment
 {
     /// <summary>
     /// 군대 카드 — 목록/슬롯 어디에서든 표시되는 동일 인스턴스 (§5.7).
-    /// 드래그 소스(자기 자신을 슬롯/목록으로 이동)이면서 동시에 아이템 드롭 타깃이다.
+    /// 드래그 소스(자기 자신을 슬롯/목록으로 이동)이면서 동시에 아이템 드롭 타깃이다. 드래그 자체는
+    /// ItemCardView와 공유하는 DraggableCardBase가 담당한다.
     /// </summary>
-    public class ArmyCardView : MonoBehaviour,
-        IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler
+    public class ArmyCardView : DraggableCardBase, IDropHandler, IPointerClickHandler
     {
         [SerializeField] private Image portrait;
         [SerializeField] private Text nameLabel;
         [SerializeField] private Text soldierCountLabel;
-        [SerializeField] private CanvasGroup canvasGroup;
-
-        private Canvas rootCanvas;
-        private Transform dragOriginParent;
-        private int dragOriginSiblingIndex;
 
         public string ArmyInstanceId { get; private set; }
 
@@ -42,8 +37,9 @@ namespace OutGame.UI.Deployment
         {
             if (string.IsNullOrEmpty(armyInstanceId))
                 throw new ArgumentException("armyInstanceId가 비어 있습니다.", nameof(armyInstanceId));
-            if (portrait == null || nameLabel == null || soldierCountLabel == null || canvasGroup == null)
+            if (portrait == null || nameLabel == null || soldierCountLabel == null)
                 throw new InvalidOperationException("ArmyCardView 프리팹의 필드가 배선되지 않았습니다.");
+            ValidateCanvasGroupWired();
 
             ArmyInstanceId = armyInstanceId;
             canvasGroup.blocksRaycasts = interactable;
@@ -59,45 +55,7 @@ namespace OutGame.UI.Deployment
             soldierCountLabel.text = soldierCount.HasValue ? $"{soldierCount.Value}명" : string.Empty;
         }
 
-        private void Awake()
-        {
-            rootCanvas = GetComponentInParent<Canvas>();
-        }
-
-        public void OnBeginDrag(PointerEventData eventData)
-        {
-            dragOriginParent = transform.parent;
-            dragOriginSiblingIndex = transform.GetSiblingIndex();
-
-            transform.SetParent(rootCanvas.transform, worldPositionStays: true);
-            transform.SetAsLastSibling();
-            canvasGroup.blocksRaycasts = false; // 드롭 타깃이 포인터 이벤트를 받도록
-            canvasGroup.alpha = 0.85f;
-        }
-
-        public void OnDrag(PointerEventData eventData)
-        {
-            transform.position = eventData.position;
-        }
-
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            canvasGroup.blocksRaycasts = true;
-            canvasGroup.alpha = 1f;
-
-            // 유효한 드롭 타깃이 처리했다면 패널이 재배치할 것 — 처리 안 됐으면 원래 자리로 복귀
-            if (transform.parent == rootCanvas.transform)
-            {
-                transform.SetParent(dragOriginParent, worldPositionStays: false);
-                transform.SetSiblingIndex(dragOriginSiblingIndex);
-                // worldPositionStays:false는 로컬 위치 "값"을 그대로 유지한다 — 그런데 그 값은 방금까지
-                // OnDrag가 덮어쓴 "루트 캔버스 기준 마우스 좌표"라 원래 부모 스케일과 전혀 안 맞는다.
-                // 명시적으로 리셋해야 카드가 원위치 중앙에 정확히 되돌아온다 (버그 수정).
-                ((RectTransform)transform).anchoredPosition = Vector2.zero;
-            }
-
-            DragEnded?.Invoke(this);
-        }
+        protected override void OnDragEndedInternal() => DragEnded?.Invoke(this);
 
         public void OnDrop(PointerEventData eventData)
         {

@@ -50,6 +50,12 @@ namespace OutGame.UI.Deployment
         private readonly Dictionary<string, ArmyDefinition> armyDefsById = new Dictionary<string, ArmyDefinition>();
         private readonly Dictionary<string, ItemDefinition> itemDefsById = new Dictionary<string, ItemDefinition>();
         private readonly Dictionary<string, AugmentDefinition> augmentDefsById = new Dictionary<string, AugmentDefinition>();
+        // 위 *DefsById와 함께 Open()에서만 채워지는 변환 캐시 — 정의(콘텐츠) 자체는 배치/장착/업그레이드
+        // 중에 바뀌지 않으므로, RefreshLayout() 등 상호작용마다 ToDictionary()로 다시 만들 필요가 없다
+        // (코드 리뷰 MEDIUM 지적 반영).
+        private readonly Dictionary<string, ArmyData> armyDataById = new Dictionary<string, ArmyData>();
+        private readonly Dictionary<string, ItemData> itemDataById = new Dictionary<string, ItemData>();
+        private readonly Dictionary<string, AugmentData> augmentDataById = new Dictionary<string, AugmentData>();
         private readonly Dictionary<int, DeploySlotView> allySlotViewsById = new Dictionary<int, DeploySlotView>();
         private readonly List<int> allySlotPriorityOrder = new List<int>();
 
@@ -88,11 +94,29 @@ namespace OutGame.UI.Deployment
             selectionModeEnabled = selectionMode;
 
             armyDefsById.Clear();
-            foreach (ArmyDefinition def in armyDefs) armyDefsById[def.ToData().id] = def;
+            armyDataById.Clear();
+            foreach (ArmyDefinition def in armyDefs)
+            {
+                ArmyData data = def.ToData();
+                armyDefsById[data.id] = def;
+                armyDataById[data.id] = data;
+            }
             itemDefsById.Clear();
-            foreach (ItemDefinition def in itemDefs) itemDefsById[def.ToData().id] = def;
+            itemDataById.Clear();
+            foreach (ItemDefinition def in itemDefs)
+            {
+                ItemData data = def.ToData();
+                itemDefsById[data.id] = def;
+                itemDataById[data.id] = data;
+            }
             augmentDefsById.Clear();
-            foreach (AugmentDefinition def in augmentDefs) augmentDefsById[def.ToData().id] = def;
+            augmentDataById.Clear();
+            foreach (AugmentDefinition def in augmentDefs)
+            {
+                AugmentData data = def.ToData();
+                augmentDefsById[data.id] = def;
+                augmentDataById[data.id] = data;
+            }
 
             deployment = new DeploymentState(fieldConfig.ToData().GenerateSlots());
             if (run.armies.Count > deployment.SlotCount)
@@ -290,17 +314,13 @@ namespace OutGame.UI.Deployment
                 return;
             }
 
-            var augmentDataById = augmentDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
-            armyInfoPopup.Open(army, def, ToDataDict(itemDefsById), run, runConfig, augmentDataById);
+            armyInfoPopup.Open(army, def, itemDataById, run, runConfig, augmentDataById);
         }
 
         // ── 레이아웃 갱신 ────────────────────────────────────────────
 
         private void RefreshLayout()
         {
-            Dictionary<string, ItemData> itemDataById = ToDataDict(itemDefsById);
-            Dictionary<string, ArmyData> armyDataById = armyDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
-
             foreach (KeyValuePair<string, ArmyCardView> kv in cardsByArmyId)
             {
                 ArmyInstance army = run.GetArmy(kv.Key);
@@ -356,18 +376,12 @@ namespace OutGame.UI.Deployment
                 run.deployment.Add(new ArmySlotAssignment { armyInstanceId = placement.Key, slotId = placement.Value });
         }
 
-        private static Dictionary<string, ItemData> ToDataDict(Dictionary<string, ItemDefinition> defs) =>
-            defs.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
-
         /// <summary>run이 선택한 증강 id들을 AugmentData로 해석 — 전투력 계산(§4-22)에 ArmyInfoPopup과
         /// 동일한 배율을 먹이기 위해 쓴다(2026-07-26). 해석 로직 자체는 AugmentSelectionResolver 공유
         /// (ArmyInfoPopup.Render와 각자 구현하면 어긋날 위험이 있어 코드 리뷰로 추출). public인 이유:
         /// 호스트(ArmyDeploymentPanel)가 BattleSetupData 생성(BuildSetup) 시 같은 리스트를 다시 얻어야
         /// 하는데, 그 계산을 호스트 쪽에서 따로 하면 여기 결과와 어긋날 수 있어 그대로 재사용한다.</summary>
-        public List<AugmentData> BuildSelectedAugments()
-        {
-            Dictionary<string, AugmentData> augmentDataById = augmentDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
-            return AugmentSelectionResolver.Resolve(run.selectedAugmentIds, augmentDataById);
-        }
+        public List<AugmentData> BuildSelectedAugments() =>
+            AugmentSelectionResolver.Resolve(run.selectedAugmentIds, augmentDataById);
     }
 }

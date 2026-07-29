@@ -1,4 +1,3 @@
-using System;
 using OutGame.Logic.Characters;
 using UnityEngine;
 
@@ -42,14 +41,7 @@ namespace OutGame.ScriptableObjects
                 skillDescription = skillDescription,
             };
 
-            try
-            {
-                data.Validate();
-            }
-            catch (ArgumentException e)
-            {
-                throw new InvalidOperationException($"{name}: 설정값이 유효하지 않습니다 — {e.Message}", e);
-            }
+            DefinitionValidation.Validate(name, data.Validate);
 
             return data;
         }

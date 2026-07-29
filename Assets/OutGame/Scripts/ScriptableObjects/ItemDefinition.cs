@@ -27,14 +27,21 @@ namespace OutGame.ScriptableObjects
         public string DisplayName => displayName;
         public string Description => description;
 
-        public ItemData ToData() => new ItemData
+        public ItemData ToData()
         {
-            id = itemId,
-            displayName = displayName,
-            armyClass = armyClass,
-            generalSkillId = generalSkillId,
-            category = category,
-            prerequisiteItemId = prerequisiteItem != null ? prerequisiteItem.itemId : null,
-        };
+            var data = new ItemData
+            {
+                id = itemId,
+                displayName = displayName,
+                armyClass = armyClass,
+                generalSkillId = generalSkillId,
+                category = category,
+                prerequisiteItemId = prerequisiteItem != null ? prerequisiteItem.itemId : null,
+            };
+
+            DefinitionValidation.Validate(name, data.Validate);
+
+            return data;
+        }
     }
 }

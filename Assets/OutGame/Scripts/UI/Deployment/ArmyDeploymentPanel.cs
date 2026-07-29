@@ -56,6 +56,11 @@ namespace OutGame.UI.Deployment
         private readonly Dictionary<string, ArmyDefinition> armyDefsById = new Dictionary<string, ArmyDefinition>();
         private readonly Dictionary<string, ItemDefinition> itemDefsById = new Dictionary<string, ItemDefinition>();
         private readonly Dictionary<string, PlayerCharacterDefinition> characterDefsById = new Dictionary<string, PlayerCharacterDefinition>();
+        // 위 *DefsById와 함께 Open()에서만 채워지는 변환 캐시 — UpdateEnemyPowerLabel()/OnStartBattleClicked()
+        // 둘 다 같은 변환을 다시 만들 필요가 없다(코드 리뷰 MEDIUM 지적 반영).
+        private readonly Dictionary<string, ArmyData> armyDataById = new Dictionary<string, ArmyData>();
+        private readonly Dictionary<string, ItemData> itemDataById = new Dictionary<string, ItemData>();
+        private readonly Dictionary<string, PlayerCharacterData> characterDataById = new Dictionary<string, PlayerCharacterData>();
         private readonly Dictionary<int, Transform> enemySlotCardContainersById = new Dictionary<int, Transform>();
 
         private RunState run;
@@ -94,11 +99,29 @@ namespace OutGame.UI.Deployment
             enemyComposition = enemyCompositionValue;
 
             armyDefsById.Clear();
-            foreach (ArmyDefinition def in armyDefs) armyDefsById[def.ToData().id] = def;
+            armyDataById.Clear();
+            foreach (ArmyDefinition def in armyDefs)
+            {
+                ArmyData data = def.ToData();
+                armyDefsById[data.id] = def;
+                armyDataById[data.id] = data;
+            }
             itemDefsById.Clear();
-            foreach (ItemDefinition def in itemDefs) itemDefsById[def.ToData().id] = def;
+            itemDataById.Clear();
+            foreach (ItemDefinition def in itemDefs)
+            {
+                ItemData data = def.ToData();
+                itemDefsById[data.id] = def;
+                itemDataById[data.id] = data;
+            }
             characterDefsById.Clear();
-            foreach (PlayerCharacterDefinition def in characterDefs) characterDefsById[def.ToData().id] = def;
+            characterDataById.Clear();
+            foreach (PlayerCharacterDefinition def in characterDefs)
+            {
+                PlayerCharacterData data = def.ToData();
+                characterDefsById[data.id] = def;
+                characterDataById[data.id] = data;
+            }
 
             BuildEnemySlots();
             UpdateEnemyPowerLabel();
@@ -211,9 +234,6 @@ namespace OutGame.UI.Deployment
         {
             if (!allyFormationView.Deployment.CanStartBattle) return;
 
-            var armyDataById = armyDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
-            var itemDataById = itemDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
-            var characterDataById = characterDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
             List<AugmentData> selectedAugments = allyFormationView.BuildSelectedAugments();
 
             BattleSetupData setup = allyFormationView.Deployment.BuildSetup(
@@ -230,7 +250,6 @@ namespace OutGame.UI.Deployment
         /// </summary>
         private void UpdateEnemyPowerLabel()
         {
-            var armyDataById = armyDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
             BattlePowerConfig power = powerConfig.ToData();
 
             // EnemyArmy는 DeployedArmy의 armyDefId/armyClass/soldierCount에만 대응 개념이 있다 —

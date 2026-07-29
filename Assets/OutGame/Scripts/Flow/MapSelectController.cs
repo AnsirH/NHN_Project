@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
@@ -30,13 +31,12 @@ namespace OutGame.Flow
                 throw new InvalidOperationException("MapSelectController의 mapListContainer/mapEntryPrefab이 배선되지 않았습니다.");
 
             if (runConfig == null)
-                runConfig = Resources.Load<RunConfigAsset>("OutGame/Data/RunConfig_Default");
+                runConfig = Resources.Load<RunConfigAsset>(ResourcePaths.RunConfigDefault);
             if (runConfig == null)
-                throw new InvalidOperationException("RunConfigAsset(OutGame/Data/RunConfig_Default)을 찾을 수 없습니다.");
+                throw new InvalidOperationException($"RunConfigAsset({ResourcePaths.RunConfigDefault})을 찾을 수 없습니다.");
 
-            MapDefinition[] maps = Resources.LoadAll<MapDefinition>("OutGame/Data/Maps");
-            if (maps.Length == 0)
-                throw new InvalidOperationException("MapDefinition을 찾을 수 없습니다 — SceneSetupM5Data.Run() 실행 필요");
+            List<MapDefinition> maps = ResourcePool.LoadAllOrThrow<MapDefinition>(
+                ResourcePaths.Maps, "MapDefinition을 찾을 수 없습니다 — SceneSetupM5Data.Run() 실행 필요");
 
             foreach (MapDefinition map in maps.OrderBy(m => m.DisplayName))
             {

@@ -75,13 +75,13 @@ namespace OutGame.Flow
         private void LoadResourcePools()
         {
             if (visuals == null)
-                visuals = Resources.Load<RoomTypeVisualSet>("OutGame/RoomTypeVisuals"); // 배선 누락 대비 폴백
+                visuals = Resources.Load<RoomTypeVisualSet>(ResourcePaths.RoomTypeVisuals); // 배선 누락 대비 폴백
             if (runConfig == null)
-                runConfig = Resources.Load<RunConfigAsset>("OutGame/Data/RunConfig_Default");
+                runConfig = Resources.Load<RunConfigAsset>(ResourcePaths.RunConfigDefault);
             if (enemyCompositionConfigAsset == null)
-                enemyCompositionConfigAsset = Resources.Load<EnemyCompositionConfigAsset>("OutGame/Data/EnemyCompositionConfig_Default");
+                enemyCompositionConfigAsset = Resources.Load<EnemyCompositionConfigAsset>(ResourcePaths.EnemyCompositionConfigDefault);
             if (itemDropConfigAsset == null)
-                itemDropConfigAsset = Resources.Load<ItemDropConfigAsset>("OutGame/Data/ItemDropConfig_Default");
+                itemDropConfigAsset = Resources.Load<ItemDropConfigAsset>(ResourcePaths.ItemDropConfigDefault);
 
             if (mapPanel == null || roomPanel == null || eventPanel == null || restPanel == null
                 || augmentPanel == null || deploymentPanel == null || armyFormationPopup == null
@@ -96,25 +96,22 @@ namespace OutGame.Flow
             enemyCompositionConfig = enemyCompositionConfigAsset.ToConfig();
             itemDropConfig = itemDropConfigAsset.ToConfig();
 
-            List<EventDefinition> eventPool = Resources.LoadAll<EventDefinition>("OutGame/Data/Events").ToList();
-            if (eventPool.Count == 0)
-                throw new InvalidOperationException("이벤트 정의를 찾을 수 없습니다 — SceneSetupM4Data.Run() 실행 필요");
+            List<EventDefinition> eventPool = ResourcePool.LoadAllOrThrow<EventDefinition>(
+                ResourcePaths.Events, "이벤트 정의를 찾을 수 없습니다 — SceneSetupM4Data.Run() 실행 필요");
             eventDataPool = eventPool.Select(e => e.ToData()).ToList(); // 한 번만 변환해 캐시 (매 방문마다 재파싱 방지)
             eventDefsById = eventPool.ToDictionary(e => e.ToData().id);
 
-            List<AugmentDefinition> augmentPool = Resources.LoadAll<AugmentDefinition>("OutGame/Data/Augments").ToList();
-            if (augmentPool.Count == 0)
-                throw new InvalidOperationException("증강 정의를 찾을 수 없습니다 — SceneSetupM4Data.Run() 실행 필요 (§4-27)");
+            List<AugmentDefinition> augmentPool = ResourcePool.LoadAllOrThrow<AugmentDefinition>(
+                ResourcePaths.Augments, "증강 정의를 찾을 수 없습니다 — SceneSetupM4Data.Run() 실행 필요 (§4-27)");
             augmentDefsById = augmentPool.ToDictionary(a => a.ToData().id);
 
-            List<PlayerCharacterDefinition> characterPool = Resources.LoadAll<PlayerCharacterDefinition>("OutGame/Data/Characters").ToList();
-            if (characterPool.Count == 0)
-                throw new InvalidOperationException("플레이어 캐릭터 정의를 찾을 수 없습니다 — SceneSetupM7Data.Run() 실행 필요 (§5.2.5)");
+            List<PlayerCharacterDefinition> characterPool = ResourcePool.LoadAllOrThrow<PlayerCharacterDefinition>(
+                ResourcePaths.Characters, "플레이어 캐릭터 정의를 찾을 수 없습니다 — SceneSetupM7Data.Run() 실행 필요 (§5.2.5)");
             characterDefsById = characterPool.ToDictionary(c => c.ToData().id);
 
-            armyDefsById = Resources.LoadAll<ArmyDefinition>("OutGame/Data")
+            armyDefsById = Resources.LoadAll<ArmyDefinition>(ResourcePaths.Data)
                 .ToDictionary(a => a.ToData().id);
-            itemDefsById = Resources.LoadAll<ItemDefinition>("OutGame/Data")
+            itemDefsById = Resources.LoadAll<ItemDefinition>(ResourcePaths.Data)
                 .ToDictionary(i => i.ToData().id);
             // §4-28: 병과→아이템 매핑은 런 도중 안 바뀌므로 승리마다 다시 만들지 않고 한 번만 캐시.
             itemIdByClass = ItemEquipService.ResolveItemIdByClass(itemDefsById.Values.Select(d => d.ToData()));

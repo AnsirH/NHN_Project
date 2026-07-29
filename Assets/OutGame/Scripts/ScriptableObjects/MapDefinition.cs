@@ -35,14 +35,7 @@ namespace OutGame.ScriptableObjects
             if (string.IsNullOrWhiteSpace(displayName))
                 throw new InvalidOperationException($"{name}: displayName이 비어 있습니다.");
 
-            try
-            {
-                generationConfig.Validate();
-            }
-            catch (ArgumentException e)
-            {
-                throw new InvalidOperationException($"{name}: 생성 설정이 유효하지 않습니다 — {e.Message}", e);
-            }
+            DefinitionValidation.Validate(name, generationConfig.Validate);
 
             return generationConfig.Clone();
         }

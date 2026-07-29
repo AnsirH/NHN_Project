@@ -57,14 +57,7 @@ namespace OutGame.ScriptableObjects
                 soldierDefense = soldierDefense,
             };
 
-            try
-            {
-                data.Validate();
-            }
-            catch (System.ArgumentException e)
-            {
-                throw new System.InvalidOperationException($"{name}: 설정값이 유효하지 않습니다 — {e.Message}", e);
-            }
+            DefinitionValidation.Validate(name, data.Validate);
 
             return data;
         }

@@ -26,18 +26,14 @@ namespace OutGame.UI
             completeButton.onClick.AddListener(OnCompleteClicked);
         }
 
-        public void ShowRunClear()
-        {
-            titleText.text = "런 클리어!";
-            bodyText.text = "보스를 물리쳤습니다. 메인 메뉴로 돌아갑니다.";
-            gameObject.SetActive(true);
-            PanelTransitions.FadeIn(gameObject);
-        }
+        public void ShowRunClear() => Show("런 클리어!", "보스를 물리쳤습니다. 메인 메뉴로 돌아갑니다.");
 
-        public void ShowDefeat()
+        public void ShowDefeat() => Show("패배", "부대가 전멸했습니다. 런이 종료됩니다.");
+
+        private void Show(string title, string body)
         {
-            titleText.text = "패배";
-            bodyText.text = "부대가 전멸했습니다. 런이 종료됩니다.";
+            titleText.text = title;
+            bodyText.text = body;
             gameObject.SetActive(true);
             PanelTransitions.FadeIn(gameObject);
         }

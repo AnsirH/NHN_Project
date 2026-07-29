@@ -51,11 +51,9 @@ namespace OutGame.Flow
                 || iconViews == null || iconViews.Length == 0)
                 throw new InvalidOperationException("CharacterSelectController의 필드가 배선되지 않았습니다.");
 
-            characters = Resources.LoadAll<PlayerCharacterDefinition>("OutGame/Data/Characters")
+            characters = ResourcePool.LoadAllOrThrow<PlayerCharacterDefinition>(
+                    ResourcePaths.Characters, "PlayerCharacterDefinition을 찾을 수 없습니다 — SceneSetupM7Data.Run() 실행 필요 (§5.2.5)")
                 .OrderBy(c => c.SortOrder).ToList();
-            if (characters.Count == 0)
-                throw new InvalidOperationException(
-                    "PlayerCharacterDefinition을 찾을 수 없습니다 — SceneSetupM7Data.Run() 실행 필요 (§5.2.5)");
             if (characters.Count != iconViews.Length)
                 throw new InvalidOperationException(
                     $"캐릭터 정의 개수({characters.Count})와 화면에 미리 배치된 아이콘 슬롯 수({iconViews.Length})가 " +

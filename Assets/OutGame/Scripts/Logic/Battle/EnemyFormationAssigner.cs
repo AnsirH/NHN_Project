@@ -48,10 +48,17 @@ namespace OutGame.Logic.Battle
 
             var usedSlotIds = new HashSet<int>();
             var result = new List<(EnemyArmy, SlotDefinition)>(composition.Count);
+            // 같은 병과(=같은 구역)를 가진 적이 여러 마리면 후보 슬롯 목록은 매번 같으므로 병과별로
+            // 한 번만 계산해 재사용한다 — columns는 이 호출 안에서 고정이라 병과만으로 캐시 키가 된다.
+            var candidatesByClass = new Dictionary<ArmyClass, List<SlotDefinition>>();
             foreach (EnemyArmy enemy in sortedComposition)
             {
-                IReadOnlyList<int> zone = ColumnZoneOf(enemy.armyClass, columns);
-                List<SlotDefinition> candidates = SlotPriorityOrder.ByColumnPriority(slots, columns, zone);
+                IReadOnlyList<int> zone = ColumnZoneOf(enemy.armyClass, columns); // 계산 자체는 가벼워 매번 다시 구해도 무방 — 캐시 대상은 아래 ByColumnPriority뿐
+                if (!candidatesByClass.TryGetValue(enemy.armyClass, out List<SlotDefinition> candidates))
+                {
+                    candidates = SlotPriorityOrder.ByColumnPriority(slots, columns, zone);
+                    candidatesByClass[enemy.armyClass] = candidates;
+                }
                 int chosenIndex = candidates.FindIndex(s => !usedSlotIds.Contains(s.slotId));
                 if (chosenIndex < 0)
                     throw new ArgumentException(
