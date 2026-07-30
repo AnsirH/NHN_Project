@@ -52,10 +52,10 @@ namespace NHN.Integration
         /// 결과 반환과 복귀. 아웃게임 씬이 살아 있는지에 따라 두 경로로 갈린다:
         ///
         /// · **additive** (아웃게임 씬 유지): 결과 콜백이 유효하므로 그대로 전달하고 전투 씬만 내린다.
-        /// · **씬 교체** (아웃게임 씬 파괴): 아웃게임의 결과 핸들러가 자기 씬 오브젝트(방 패널·팝업 등)를
-        ///   참조하기 때문에 콜백을 그대로 호출하면 파괴된 참조 예외가 난다. 아웃게임 쪽에
-        ///   "복귀 후 결과 소비" 처리가 생기기 전까지는 결과를 전달하지 않고 경고만 남긴다 —
-        ///   전투 실행 자체를 검증하는 단계에서는 이 경로로도 충분하다.
+        /// · **씬 교체** (아웃게임 씬 파괴, 기본 경로): 아웃게임의 결과 핸들러가 자기 씬 오브젝트를
+        ///   참조하므로 콜백을 직접 부를 수 없다 — 대신 결과를 정적 홀더에 보관하고 아웃게임 씬을
+        ///   다시 로드한다 (§7.4 복귀, 2026-07-30). 복귀한 아웃게임이 보관해둔 런과 함께 결과를 소비해
+        ///   패배(세이브 삭제→패배 화면→메인 메뉴) / 승리(보상 팝업→맵 그래프 갱신+저장)로 이어간다.
         /// </summary>
         private void CompleteAndReturn(BattleResultData result)
         {
@@ -67,10 +67,9 @@ namespace NHN.Integration
                 return;
             }
 
-            Debug.LogWarning(
-                $"[연동] 전투 종료 (victory={result.victory}) — 아웃게임 씬('{OutGameSceneName}')이 이미 내려가 " +
-                "결과를 전달하지 않았다. 씬 교체 방식으로 복귀까지 연결하려면 아웃게임 쪽에 " +
-                "'복귀 후 결과 소비' 처리가 필요하다 (또는 전투 씬을 additive로 로드).");
+            Debug.Log($"[연동] 전투 종료 (victory={result.victory}) — 아웃게임 씬('{OutGameSceneName}')으로 복귀");
+            BattleBridge.SetPendingResult(result);
+            SceneManager.LoadScene(OutGameSceneName);
         }
     }
 }

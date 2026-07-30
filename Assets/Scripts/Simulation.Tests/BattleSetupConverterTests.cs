@@ -178,6 +178,23 @@ namespace NHN.Simulation.Tests
             Assert.AreEqual(0, output.Count, "빈 적 목록은 encounterId 폴백 경로를 위해 그대로 비워둔다");
         }
 
+        /// <summary>
+        /// §7.4 복귀 경로: 씬 교체 전투에서 인게임이 결과를 보관하면 복귀한 아웃게임이 정확히 한 번
+        /// 소비한다 — 두 번 나오면 다음 전투 결과와 섞이고, 리셋 후 남으면 테스트 간 오염이 생긴다.
+        /// </summary>
+        [Test]
+        public void BattleBridge_PendingResult_RoundTripsExactlyOnce()
+        {
+            var result = new BattleResultData { roomId = "room-9", victory = true };
+            BattleBridge.SetPendingResult(result);
+            Assert.AreSame(result, BattleBridge.ConsumePendingResult(), "보관한 결과가 그대로 나와야 한다");
+            Assert.IsNull(BattleBridge.ConsumePendingResult(), "소비는 1회 — 다음 전투와 섞이면 안 된다");
+
+            BattleBridge.SetPendingResult(result);
+            BattleBridge.ResetToDefault();
+            Assert.IsNull(BattleBridge.ConsumePendingResult(), "ResetToDefault는 보관 결과도 비워야 한다");
+        }
+
         [Test]
         public void StableSeed_IsDeterministic_PerRoom()
         {

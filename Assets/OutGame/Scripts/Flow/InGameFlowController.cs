@@ -59,6 +59,13 @@ namespace OutGame.Flow
         private RoomType currentBattleRoomType;
         private List<EnemyArmy> currentEnemyComposition;
 
+        // 씬 교체 전투(§7.4)의 복귀 컨텍스트 — 이 컨트롤러는 전투 씬 로드와 함께 파괴되므로,
+        // OnBattleResult가 쓰는 인스턴스 필드(방 종류·적 구성)를 씬 전환을 살아남는 정적으로 따로
+        // 보관했다가 복귀한 새 인스턴스의 Begin()이 복원한다. 런 자체는 RunSessionContext(이어하기와
+        // 같은 경로)로, 결과는 BattleBridge.SetPendingResult(인게임이 채움)로 나른다.
+        private static RoomType pendingReturnRoomType;
+        private static List<EnemyArmy> pendingReturnEnemies;
+
         // §4-28: 아웃게임이 확정하는 적 구성 밸런스(§9 RoomEncounterTable 역할) — 아이템 드롭 계산에
         // 쓰이는 동시에 2026-07-29부터 BattleSetupData.enemies로 §7 계약에도 그대로 실린다.
         // 위 Asset 필드에서 Awake()에 채워진다.
@@ -156,12 +163,28 @@ namespace OutGame.Flow
             // 시절의 임시 구현이라 더 이상 쓰지 않는다.
             BattleBridge.Implementation = (setup, onResult) =>
             {
+                // 씬 교체를 살아남을 복귀 컨텍스트(2026-07-30): 배치 화면에서 쓴 골드·방문 표시까지
+                // 담긴 현재 런과, 결과 처리에 필요한 방 종류·적 구성을 보관한다 — 복귀 시 Begin이 소비.
+                RunSessionContext.SetPendingRun(run);
+                pendingReturnRoomType = setup.roomType;
+                pendingReturnEnemies = setup.enemies;
                 BattleBridge.SetPendingBattle(setup, onResult);
                 LoadSceneAction(SceneNames.Battle);
             };
 
             mapPanel.Open(run.mapState);
             mapPanel.SetGold(run.gold); // 2026-07-26: 방 그래프 우측 상단 재화 표시
+
+            // 씬 교체 전투에서 복귀한 경우(§7.4): 파괴 전 보관해둔 컨텍스트를 복원하고 기존 결과 경로를
+            // 그대로 태운다 — 패배: 세이브 삭제+패배 화면→메인 메뉴, 승리: 보상 팝업→맵 갱신+저장.
+            BattleResultData returnedResult = BattleBridge.ConsumePendingResult();
+            if (returnedResult != null)
+            {
+                currentBattleRoomType = pendingReturnRoomType;
+                currentEnemyComposition = pendingReturnEnemies;
+                pendingReturnEnemies = null;
+                OnBattleResult(returnedResult);
+            }
         }
 
         private void OnDestroy()
@@ -275,6 +298,11 @@ namespace OutGame.Flow
 
         private void OnBattleResult(BattleResultData result)
         {
+            // additive 경로(아웃게임 씬 생존)로 결과가 직접 오면 씬 교체 대비로 보관해둔 런이 소비되지
+            // 않고 남는다 — 다음 OutGame 씬 진입이 그 잔존 런으로 방 그래프에 직행하지 않도록 비운다.
+            // (씬 교체 경로에서는 복귀 시 OutGameFlowController.Start가 이미 소비해 null이라 무해하다.)
+            RunSessionContext.ConsumePendingRun();
+
             if (!result.victory)
             {
                 runEnded = true;
