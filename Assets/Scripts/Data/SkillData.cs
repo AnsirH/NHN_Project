@@ -32,13 +32,16 @@ namespace NHN.Data
 
         [Header("뷰 (스킬 색 = 이펙트/조준 표시 색)")]
         [SerializeField] private Color skillColor = Color.white;
+        [Tooltip("HUD 버튼 라벨 — 비우면 에셋 이름 사용")]
+        [SerializeField] private string displayName;
 
         public Color SkillColor => skillColor;
 
         public SkillDefinition ToDefinition()
         {
             return new SkillDefinition(
-                name, cooldown, radius, damage,
+                string.IsNullOrEmpty(displayName) ? name : displayName,
+                cooldown, radius, damage,
                 appliesStatus, statusDuration, statusMagnitude,
                 zoneDuration, targetsAllies);
         }

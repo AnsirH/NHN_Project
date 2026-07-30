@@ -100,6 +100,8 @@ namespace NHN.Presentation.Battle
         private Material _stealthMaterial;
 
         // 플레이어 스킬 뷰 상태
+        /// <summary>현재 적용된 스킬 구성 원본 — 같은 구성 재적용(Restart)을 건너뛰기 위한 참조 비교용.</summary>
+        private SkillData[] _activeSkillAssets;
         private SkillDefinition[] _skillDefinitions;
         private Color[] _skillColors;
         private int _armedSkillSlot = -1;
@@ -158,26 +160,39 @@ namespace NHN.Presentation.Battle
             _baseMaterial = unitPrefab.GetComponentInChildren<Renderer>().sharedMaterial;
             _stealthMaterial = CreateStealthMaterial(_baseMaterial);
 
-            int skillCount = playerSkills == null ? 0 : playerSkills.Length;
-            _skillDefinitions = new SkillDefinition[skillCount];
-            _skillColors = new Color[skillCount];
-            for (int s = 0; s < skillCount; s++)
-            {
-                _skillDefinitions[s] = playerSkills[s].ToDefinition();
-                _skillColors[s] = playerSkills[s].SkillColor;
-            }
+            ApplySkillLoadout(playerSkills);
             if (worldCamera == null)
             {
                 worldCamera = Camera.main; // 초기화 시점 1회 조회
             }
             CreateSkillFxObjects();
+            StartBattle();
+        }
 
+        /// <summary>
+        /// 활성 스킬 구성(시뮬 정의 + HUD 라벨·색)을 적용한다. 씬 기본은 인스펙터 전체 목록이고,
+        /// 연동 경로는 캐릭터 선택으로 거른 목록을 전투 시작마다 다시 적용한다 (초기화 경로 — 틱 루프 아님).
+        /// </summary>
+        private void ApplySkillLoadout(SkillData[] skills)
+        {
+            if (_activeSkillAssets == skills)
+            {
+                return; // Restart 등 같은 구성 재적용은 건너뛴다
+            }
+            _activeSkillAssets = skills;
+            int skillCount = skills == null ? 0 : skills.Length;
+            _skillDefinitions = new SkillDefinition[skillCount];
+            _skillColors = new Color[skillCount];
+            for (int s = 0; s < skillCount; s++)
+            {
+                _skillDefinitions[s] = skills[s].ToDefinition();
+                _skillColors[s] = skills[s].SkillColor;
+            }
             hud.Initialize(this, _skillDefinitions);
             for (int s = 0; s < skillCount; s++)
             {
                 hud.SetSkillColor(s, _skillColors[s]);
             }
-            StartBattle();
         }
 
         /// <summary>HUD Restart 버튼에서도 호출된다 — 연동 요청이 있으면 같은 요청을 재실행한다 (결과 콜백은 1회만).</summary>
@@ -219,6 +234,8 @@ namespace NHN.Presentation.Battle
         private void StartRequestBattle(BattleRequest request, Action<BattleOutcome> onFinished)
         {
             _onFinished = onFinished;
+            // 캐릭터가 스킬을 결정한다 (§5.2.5) — 해석 실패·미전달이면 전체 스킬 폴백.
+            ApplySkillLoadout(BattleRequestBuilder.SelectPlayerSkills(request.playerSkillId, catalog, playerSkills));
             _playerSquadIds.Clear();
             _viewSquadsA.Clear();
             _viewSquadsB.Clear();

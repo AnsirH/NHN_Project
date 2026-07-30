@@ -40,6 +40,12 @@ namespace NHN.Presentation.Battle
             {
                 _buttonGraphics[s] = skillButtons[s].targetGraphic;
                 _skillColors[s] = Color.white;
+                // 라벨은 스킬 데이터가 정본 — 씬 텍스트는 자리표시자다. 캐릭터 선택으로 스킬이
+                // 1종으로 제한되면 같은 버튼(슬롯 0)에 다른 스킬이 올 수 있어 매번 다시 쓴다.
+                if (s < skills.Length)
+                {
+                    skillLabels[s].text = skills[s].SkillName;
+                }
                 _readyLabels[s] = skillLabels[s].text;
                 _shownCooldownTenths[s] = int.MinValue;
             }

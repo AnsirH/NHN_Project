@@ -17,7 +17,10 @@ armies[]: armyDefId, armyClass, equippedItemId, generalSkillId,
 enemies[]: armyDefId, armyClass, soldierCount   // 아웃게임 확정 적 구성 (2026-07-29 추가)
           // 적 스탯·배치 좌표는 인게임 책임: 스탯 = .asset 원형값(적은 업그레이드·증강 없음),
           // 배치 = 커넥터의 병과별 진형 규칙 (전사·기본 전선 / 사냥꾼 / 암살자 / 궁수 후방)
-playerCharacterId, playerCharacterSkillId       // §5.2.5 — 아직 인게임이 읽지 않음 (스킬 4종 공용)
+playerCharacterId, playerCharacterSkillId       // §5.2.5 — 캐릭터가 플레이어 스킬을 결정 (2026-07-30 연결)
+          // skillId(가칭 skill_char_1~4) → 스킬 에셋 매핑은 BattleCatalog.playerSkillMap (SO 데이터):
+          // char_1=번개, char_2=독구름, char_3=힐 장판, char_4=전투 함성. 해석되면 그 스킬 1종만
+          // 사용 가능, 미전달·미등록이면 전체 4종 폴백(씬 단독 실행·BalanceLab·키 불일치 안전망)
 ```
 
 **최종 스탯이 직접 전달된다** (2026-07-26 확정 — 계산 로직이 두 곳에 흩어지는 위험을 없애기 위해

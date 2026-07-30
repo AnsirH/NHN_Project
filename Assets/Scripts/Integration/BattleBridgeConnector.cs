@@ -40,7 +40,8 @@ namespace NHN.Integration
 
             Debug.Log($"[연동] 전투 시작 — room={setup.roomId} ({setup.roomType}), " +
                       $"encounter={setup.encounterId}, 아군 {setup.armies.Count}분대, " +
-                      $"적 {setup.enemies.Count}분대 (아웃게임 확정 구성)");
+                      $"적 {setup.enemies.Count}분대 (아웃게임 확정 구성), " +
+                      $"캐릭터={setup.playerCharacterId}, 스킬={setup.playerCharacterSkillId}");
             battleRunner.RunBattle(BattleSetupConverter.ToBattleRequest(setup), outcome =>
             {
                 CompleteAndReturn(BattleSetupConverter.ToResultData(setup.roomId, outcome));

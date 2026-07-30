@@ -26,6 +26,13 @@ namespace NHN.Data
         /// 커넥터의 진형 규칙이 정한다. 비어 있으면 encounterId 폴백 경로를 쓴다.
         /// </summary>
         public List<SquadRequest> enemySquads = new List<SquadRequest>();
+
+        /// <summary>
+        /// 선택한 플레이어 캐릭터의 스킬 (계약 playerCharacterSkillId, §5.2.5 — 캐릭터당 정확히 1개).
+        /// BattleCatalog.ResolveSkill로 해석해 그 스킬만 사용 가능하게 제한한다.
+        /// 비었거나 미등록이면(씬 단독 실행·BalanceLab·키 불일치) 전체 스킬을 쓴다 — 전투가 죽지 않게 관대한 폴백.
+        /// </summary>
+        public string playerSkillId;
     }
 
     [Serializable]

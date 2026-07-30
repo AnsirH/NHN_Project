@@ -28,6 +28,8 @@ namespace NHN.Integration
             {
                 encounterId = setup.encounterId,
                 seed = StableSeed(setup.roomId), // 방마다 결정론적 시드 — 같은 방 재도전은 같은 전개
+                // 캐릭터가 스킬을 결정한다 (§5.2.5 — 캐릭터당 1개). 해석은 BattleCatalog 몫.
+                playerSkillId = setup.playerCharacterSkillId,
             };
             foreach (DeployedArmy army in setup.armies)
             {

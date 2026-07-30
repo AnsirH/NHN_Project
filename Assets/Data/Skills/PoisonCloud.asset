@@ -20,3 +20,4 @@ MonoBehaviour:
   statusMagnitude: 6
   zoneDuration: 6
   skillColor: {r: 0.35, g: 0.9, b: 0.3, a: 1}
+  displayName: 독구름

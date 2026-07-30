@@ -134,6 +134,41 @@ namespace NHN.Simulation.Tests
             Assert.AreEqual(0.5f, output[2].slotY, 1e-3f, "후방 1분대 → 중앙");
         }
 
+        /// <summary>
+        /// §5.2.5: 캐릭터가 스킬을 결정한다 — 계약 skillId(가칭 skill_char_1~4)가 요청에 실리고,
+        /// 카탈로그 매핑을 거쳐 스킬 1종으로 제한된다. 미전달·미등록이면 전체 스킬 폴백.
+        /// </summary>
+        [Test]
+        public void PlayerCharacterSkill_RestrictsLoadout_WithLenientFallback()
+        {
+            var catalog = AssetDatabase.LoadAssetAtPath<BattleCatalog>("Assets/Data/BattleCatalog.asset");
+            Assert.IsNotNull(catalog);
+
+            // 계약 → 요청 복사
+            var setup = new BattleSetupData { roomId = "room-1", playerCharacterSkillId = "skill_char_3" };
+            Assert.AreEqual("skill_char_3", BattleSetupConverter.ToBattleRequest(setup).playerSkillId);
+
+            // 카탈로그 매핑 (char_1~4 → 번개/독구름/힐 장판/전투 함성 순 — 2026-07-30 확정)
+            Assert.AreEqual("Lightning", catalog.ResolveSkill("skill_char_1").name);
+            Assert.AreEqual("PoisonCloud", catalog.ResolveSkill("skill_char_2").name);
+            Assert.AreEqual("HealZone", catalog.ResolveSkill("skill_char_3").name);
+            Assert.AreEqual("WarCry", catalog.ResolveSkill("skill_char_4").name);
+            Assert.IsNull(catalog.ResolveSkill(null), "미전달은 null — 호출자가 전체 폴백");
+            Assert.IsNull(catalog.ResolveSkill("skill_unknown"), "미등록도 null(경고 로그) — 전투가 죽지 않게");
+
+            // 로드아웃 선택: 해석되면 1종, 아니면 전체
+            var all = new[]
+            {
+                AssetDatabase.LoadAssetAtPath<SkillData>("Assets/Data/Skills/Lightning.asset"),
+                AssetDatabase.LoadAssetAtPath<SkillData>("Assets/Data/Skills/HealZone.asset"),
+            };
+            SkillData[] restricted = BattleRequestBuilder.SelectPlayerSkills("skill_char_3", catalog, all);
+            Assert.AreEqual(1, restricted.Length, "캐릭터 스킬 1종으로 제한되어야 한다");
+            Assert.AreEqual("HealZone", restricted[0].name);
+            Assert.AreSame(all, BattleRequestBuilder.SelectPlayerSkills(null, catalog, all), "미전달 → 전체 스킬");
+            Assert.AreSame(all, BattleRequestBuilder.SelectPlayerSkills("skill_unknown", catalog, all), "미등록 → 전체 스킬");
+        }
+
         [Test]
         public void EmptyOrNullEnemies_LeaveEnemySquadsEmpty_ForFallbackPath()
         {

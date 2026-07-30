@@ -21,3 +21,4 @@ MonoBehaviour:
   zoneDuration: 5
   targetsAllies: 1
   skillColor: {r: 0.4, g: 1, b: 0.7, a: 1}
+  displayName: 힐 장판

@@ -21,3 +21,4 @@ MonoBehaviour:
   zoneDuration: 0
   targetsAllies: 1
   skillColor: {r: 1, g: 0.6, b: 0.2, a: 1}
+  displayName: 전투 함성
