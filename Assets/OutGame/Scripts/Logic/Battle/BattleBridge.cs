@@ -22,6 +22,7 @@ namespace OutGame.Logic.Battle
         private static Action<BattleSetupData, Action<BattleResultData>> implementation = DefaultImplementation;
         private static BattleSetupData pendingSetup;
         private static Action<BattleResultData> pendingCallback;
+        private static BattleResultData pendingResult;
 
         public static Action<BattleSetupData, Action<BattleResultData>> Implementation
         {
@@ -79,12 +80,32 @@ namespace OutGame.Logic.Battle
             callback(result);
         }
 
+        /// <summary>
+        /// 씬 교체 방식 전투의 복귀 경로 (§7.4, 2026-07-30): 아웃게임 씬이 이미 파괴돼
+        /// <see cref="CompleteBattle"/>의 콜백을 부를 수 없을 때, 인게임이 결과를 여기 보관하고
+        /// 아웃게임 씬을 다시 로드한다 — 복귀한 아웃게임(InGameFlowController.Begin)이
+        /// <see cref="ConsumePendingResult"/>로 이어받아 기존 결과 처리 경로를 그대로 탄다.
+        /// </summary>
+        public static void SetPendingResult(BattleResultData result)
+        {
+            pendingResult = result ?? throw new ArgumentNullException(nameof(result));
+        }
+
+        /// <summary>보관된 전투 결과를 꺼내며 즉시 비운다(다음 전투와 섞이는 것 방지) — 없으면 null(일반 진입).</summary>
+        public static BattleResultData ConsumePendingResult()
+        {
+            BattleResultData result = pendingResult;
+            pendingResult = null;
+            return result;
+        }
+
         /// <summary>Implementation과 보관된 대기 상태를 전부 기본값으로 되돌린다 — 테스트 간 정적 상태 격리용.</summary>
         public static void ResetToDefault()
         {
             Implementation = DefaultImplementation;
             pendingSetup = null;
             pendingCallback = null;
+            pendingResult = null;
         }
 
         private static void DefaultImplementation(BattleSetupData setup, Action<BattleResultData> onResult) =>

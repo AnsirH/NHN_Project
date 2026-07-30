@@ -119,6 +119,21 @@ namespace NHN.Data
             return new ArmyDefinition(squads);
         }
 
+        /// <summary>
+        /// 캐릭터 선택에 따른 플레이어 스킬 제한 (§5.2.5 — 캐릭터당 스킬 1개).
+        /// skillId가 해석되면 그 스킬 1종만, 비었거나 미등록이면 전체 목록 폴백
+        /// (씬 단독 실행·BalanceLab·키 불일치에도 전투가 죽지 않게 — ResolveRole 폴백과 동일 원칙).
+        /// </summary>
+        public static SkillData[] SelectPlayerSkills(string playerSkillId, BattleCatalog catalog, SkillData[] allSkills)
+        {
+            if (string.IsNullOrEmpty(playerSkillId) || catalog == null)
+            {
+                return allSkills;
+            }
+            SkillData selected = catalog.ResolveSkill(playerSkillId);
+            return selected != null ? new[] { selected } : allSkills;
+        }
+
         /// <summary>종료된 시뮬에서 아웃게임 계약 형태의 결과를 집계한다 (victory + 분대별 생존 병사 수).</summary>
         public static BattleOutcome BuildOutcome(BattleSimulation sim, IReadOnlyList<string> playerSquadIds)
         {

@@ -43,8 +43,12 @@ namespace NHN.Data
 
         [Header("뷰 (가독성 1:1:1 — 롤:실루엣:색)")]
         [SerializeField] private Color roleColor = Color.white;
+        [Tooltip("유닛 3D 모델 프리팹 — 비우면 기본 캡슐 프리팹 사용 (뷰 전용, 시뮬 무관)")]
+        [SerializeField] private GameObject viewPrefab;
 
         public Color RoleColor => roleColor;
+
+        public GameObject ViewPrefab => viewPrefab;
 
         public float UnitRadius => unitRadius;
 

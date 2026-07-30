@@ -12,10 +12,27 @@ namespace NHN.Data
     [Serializable]
     public sealed class BattleRequest
     {
-        /// <summary>적 구성 키 — EncounterTable에서 해석 (계약상 적 구성 정의는 인게임 책임).</summary>
+        /// <summary>
+        /// 적 구성 참고 식별자 (로그·디버깅용). 2026-07-29부터 실제 적 구성은 enemySquads에 실려 오고,
+        /// 이 키로 EncounterTable을 조회하는 것은 enemySquads가 비었을 때(씬 단독 실행·BalanceLab)의 폴백이다.
+        /// </summary>
         public string encounterId;
         public int seed;
         public List<SquadRequest> playerSquads = new List<SquadRequest>();
+
+        /// <summary>
+        /// 적 분대 구성 — 아웃게임이 확정한 병과·병사 수(BattleSetupData.enemies)를 커넥터가 변환해 채운다.
+        /// 적은 업그레이드·증강이 없어 스탯 필드는 비워두며(.asset 값 사용), 배치 좌표는 인게임 책임이라
+        /// 커넥터의 진형 규칙이 정한다. 비어 있으면 encounterId 폴백 경로를 쓴다.
+        /// </summary>
+        public List<SquadRequest> enemySquads = new List<SquadRequest>();
+
+        /// <summary>
+        /// 선택한 플레이어 캐릭터의 스킬 (계약 playerCharacterSkillId, §5.2.5 — 캐릭터당 정확히 1개).
+        /// BattleCatalog.ResolveSkill로 해석해 그 스킬만 사용 가능하게 제한한다.
+        /// 비었거나 미등록이면(씬 단독 실행·BalanceLab·키 불일치) 전체 스킬을 쓴다 — 전투가 죽지 않게 관대한 폴백.
+        /// </summary>
+        public string playerSkillId;
     }
 
     [Serializable]

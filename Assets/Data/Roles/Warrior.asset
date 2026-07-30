@@ -28,3 +28,4 @@ MonoBehaviour:
   projectileSpeed: 0
   projectileArcHeight: 2
   roleColor: {r: 0.75, g: 0.75, b: 0.85, a: 1}
+  viewPrefab: {fileID: 192706388443738694, guid: 57745393c0a7c3f43be5a7b43c017e8f, type: 3}
