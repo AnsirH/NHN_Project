@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5826ef07ed253ac45bf7f900f9359c22
+guid: 6b3aa08660a7ef341aeb21677b247c7e
 ModelImporter:
   serializedVersion: 24501
   internalIDToNameTable: []
@@ -7,7 +7,7 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: material_0_Pbr
+      name: m_body
     second: {fileID: 2100000, guid: c88ded7ee71e14b4f94980949b37a891, type: 2}
   materials:
     materialImportMode: 2
