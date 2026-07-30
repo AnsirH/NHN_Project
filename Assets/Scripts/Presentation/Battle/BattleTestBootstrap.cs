@@ -91,13 +91,44 @@ namespace NHN.Presentation.Battle
         private GameObject[] _unitObjects;
         private Transform[] _unitTransforms;
         private bool[] _unitVisible;
-        private Renderer[] _unitRenderers;
         private Color[] _unitColors;
         private bool[] _unitStealthShown;
         /// <summary>표시 중인 상태이상 마스크 캐시 — 변화가 있는 프레임에만 색을 갱신한다.</summary>
         private byte[] _unitStatusShown;
         private Material _baseMaterial;
         private Material _stealthMaterial;
+
+        // 롤별 3D 모델 뷰 (RoleData.viewPrefab — 비면 기본 캡슐 프리팹):
+        // 프리팹마다 풀을 따로 두고, 전투 시작 시 실제 분대 구성 수량만큼만 프리웜한다
+        // (상한 기준 프리웜은 모델 5종 × MaxUnits라 낭비가 너무 큼).
+        private readonly Dictionary<GameObject, GameObjectPool> _unitPoolsByPrefab =
+            new Dictionary<GameObject, GameObjectPool>();
+        /// <summary>전투 시작 시 프리팹별 수요 집계 버퍼 (매 전투 재사용 — 틱 루프 밖).</summary>
+        private readonly Dictionary<GameObject, int> _poolDemand = new Dictionary<GameObject, int>();
+        /// <summary>유닛 인덱스 → 꺼내온 풀 — 사망/정리 시 올바른 풀로 되돌린다.</summary>
+        private GameObjectPool[] _unitSourcePools;
+
+        /// <summary>
+        /// 풀 인스턴스별 렌더러·머티리얼 캐시. 모델 프리팹은 렌더러가 여러 개(몸체+모자+무기)라
+        /// 은신 스왑 복원에 원본 머티리얼 배열이 필요하고, 스폰마다 GetComponentsInChildren를
+        /// 다시 돌지 않도록 인스턴스 수명 동안 1회만 만든다.
+        /// </summary>
+        private sealed class UnitViewCache
+        {
+            public Renderer[] Renderers;
+            public Material[][] OriginalMaterials;
+            public Material[][] StealthMaterials;
+        }
+
+        private readonly Dictionary<GameObject, UnitViewCache> _viewCaches =
+            new Dictionary<GameObject, UnitViewCache>();
+        private UnitViewCache[] _unitViewSets;
+
+        // 팀별 바라보는 방향 — 진행 방향(적진 ±X)과 카메라(-Z에서 내려다봄)를 절충한 3/4 사선.
+        // 정면(±90)으로 두면 클레이 모델의 얇은 옆면(두께 0.26)만 보여 실루엣이 죽는다.
+        // 모델 프리팹의 정면은 +Z 기준 (캡슐은 회전 무의미라 영향 없음).
+        private static readonly Quaternion TeamAFacing = Quaternion.Euler(0f, -135f, 0f);
+        private static readonly Quaternion TeamBFacing = Quaternion.Euler(0f, 135f, 0f);
 
         // 플레이어 스킬 뷰 상태
         /// <summary>현재 적용된 스킬 구성 원본 — 같은 구성 재적용(Restart)을 건너뛰기 위한 참조 비교용.</summary>
@@ -150,7 +181,8 @@ namespace NHN.Presentation.Battle
             _unitObjects = new GameObject[maxUnits];
             _unitTransforms = new Transform[maxUnits];
             _unitVisible = new bool[maxUnits];
-            _unitRenderers = new Renderer[maxUnits];
+            _unitViewSets = new UnitViewCache[maxUnits];
+            _unitSourcePools = new GameObjectPool[maxUnits];
             _unitColors = new Color[maxUnits];
             _unitStealthShown = new bool[maxUnits];
             _unitStatusShown = new byte[maxUnits];
@@ -262,9 +294,59 @@ namespace NHN.Presentation.Battle
             hud.Clear();
 
             // 유닛 인덱스는 (A군 분대 순서 → B군 분대 순서) — ArmyDefinition의 계약과 동일하게 순회한다.
+            PrewarmUnitPools();
             int unitIndex = 0;
             SpawnArmyViews(_viewSquadsA, isTeamB: false, ref unitIndex);
             SpawnArmyViews(_viewSquadsB, isTeamB: true, ref unitIndex);
+        }
+
+        /// <summary>롤의 뷰 프리팹 — 미지정 롤(또는 롤 없음)은 기본 캡슐 프리팹 폴백.</summary>
+        private GameObject ViewPrefabOf(RoleData role)
+        {
+            return role != null && role.ViewPrefab != null ? role.ViewPrefab : unitPrefab;
+        }
+
+        private GameObjectPool GetUnitPool(GameObject prefab)
+        {
+            if (prefab == unitPrefab)
+            {
+                return _unitPool;
+            }
+            if (!_unitPoolsByPrefab.TryGetValue(prefab, out GameObjectPool pool))
+            {
+                pool = new GameObjectPool(prefab, unitContainer, 0);
+                _unitPoolsByPrefab[prefab] = pool;
+            }
+            return pool;
+        }
+
+        /// <summary>
+        /// 이번 전투의 분대 구성으로 프리팹별 필요 수량을 집계해 부족분만 프리웜한다 —
+        /// 전투 시작(초기화) 경로라 Instantiate 허용, 틱 루프에서는 풀 Get/Release만 쓴다.
+        /// </summary>
+        private void PrewarmUnitPools()
+        {
+            _poolDemand.Clear();
+            TallyPoolDemand(_viewSquadsA);
+            TallyPoolDemand(_viewSquadsB);
+            foreach (KeyValuePair<GameObject, int> demand in _poolDemand)
+            {
+                GetUnitPool(demand.Key).EnsureCapacity(demand.Value);
+            }
+        }
+
+        private void TallyPoolDemand(List<BattleRequestBuilder.SquadAssets> squads)
+        {
+            for (int s = 0; s < squads.Count; s++)
+            {
+                GameObject prefab = ViewPrefabOf(squads[s].Role);
+                if (prefab == unitPrefab)
+                {
+                    continue; // 기본 풀은 Awake에서 상한만큼 프리웜돼 있다
+                }
+                _poolDemand.TryGetValue(prefab, out int count);
+                _poolDemand[prefab] = count + squads[s].Count + (squads[s].General != null ? 1 : 0);
+            }
         }
 
         private static void AppendViewSquads(SquadSetup[] setups, List<BattleRequestBuilder.SquadAssets> target)
@@ -357,10 +439,11 @@ namespace NHN.Presentation.Battle
                 }
                 if (!_sim.IsAlive(i))
                 {
-                    _unitPool.Release(_unitObjects[i]);
+                    _unitSourcePools[i].Release(_unitObjects[i]);
                     _unitObjects[i] = null;
                     _unitTransforms[i] = null;
-                    _unitRenderers[i] = null;
+                    _unitViewSets[i] = null;
+                    _unitSourcePools[i] = null;
                     _unitVisible[i] = false;
                     continue;
                 }
@@ -418,8 +501,6 @@ namespace NHN.Presentation.Battle
         {
             _unitStealthShown[unitIndex] = stealthed;
             _unitStatusShown[unitIndex] = statusMask;
-            Renderer renderer = _unitRenderers[unitIndex];
-            renderer.sharedMaterial = stealthed ? _stealthMaterial : _baseMaterial;
 
             Color color = _unitColors[unitIndex];
             if ((statusMask & StunMask) != 0)
@@ -451,8 +532,17 @@ namespace NHN.Presentation.Battle
                 color = Color.Lerp(color, ResistTint, StatusTintStrength);
             }
             color.a = stealthed ? StealthAlpha : 1f;
+
+            // 모델 프리팹은 렌더러가 여러 개(몸체+모자+무기) — 전 슬롯을 은신/원본 배열로 스왑하고
+            // 틴트를 각각 적용한다. 상태 변화 프레임에만 호출되므로 루프 비용은 무시 가능.
+            UnitViewCache view = _unitViewSets[unitIndex];
             _propertyBlock.SetColor(BaseColorId, color);
-            renderer.SetPropertyBlock(_propertyBlock);
+            for (int r = 0; r < view.Renderers.Length; r++)
+            {
+                Renderer renderer = view.Renderers[r];
+                renderer.sharedMaterials = stealthed ? view.StealthMaterials[r] : view.OriginalMaterials[r];
+                renderer.SetPropertyBlock(_propertyBlock);
+            }
         }
 
         /// <summary>기본 재질의 투명(URP Lit Transparent) 변형을 런타임에 1개 생성 — 은신 유닛이 공유한다.</summary>
@@ -512,38 +602,66 @@ namespace NHN.Presentation.Battle
                     // 같은 롤이 양 진영에 있을 때를 위한 팀 구분 톤 다운.
                     color = Color.Lerp(color, Color.black, 0.35f);
                 }
-                float scale = squad.Role.UnitRadius / 0.5f; // 프리팹 캡슐 기본 반경 0.5 기준
+                float scale = squad.Role.UnitRadius / 0.5f; // 뷰 프리팹 표준 크기(반경 0.5 = 키 1) 기준
+                GameObjectPool pool = GetUnitPool(ViewPrefabOf(squad.Role));
+                Quaternion facing = isTeamB ? TeamBFacing : TeamAFacing;
 
                 for (int k = 0; k < squad.Count; k++)
                 {
-                    SpawnUnitView(unitIndex++, color, scale);
+                    SpawnUnitView(unitIndex++, color, scale, pool, facing);
                 }
 
                 if (squad.General != null)
                 {
-                    // 장군 뷰: 크기 배율 + 금색 혼합 — 병사와 즉시 구분 (기획 §4).
+                    // 장군 뷰: 크기 배율 + 금색 혼합 — 병사와 즉시 구분 (기획 §4). 모델은 병과와 공유.
                     // 시뮬의 분대 내 유닛 순서(병사 → 장군)와 일치해야 한다 (ArmyDefinition 계약).
                     Color generalColor = Color.Lerp(color, GeneralHighlight, 0.5f);
-                    SpawnUnitView(unitIndex++, generalColor, squad.General.UnitRadius / 0.5f);
+                    SpawnUnitView(unitIndex++, generalColor, squad.General.UnitRadius / 0.5f, pool, facing);
                 }
             }
         }
 
-        private void SpawnUnitView(int unitIndex, Color color, float scale)
+        private void SpawnUnitView(int unitIndex, Color color, float scale, GameObjectPool pool, Quaternion facing)
         {
-            GameObject unit = _unitPool.Get();
+            GameObject unit = pool.Get();
             _unitObjects[unitIndex] = unit;
+            _unitSourcePools[unitIndex] = pool;
             _unitTransforms[unitIndex] = unit.transform;
             _unitVisible[unitIndex] = true;
 
             // 초기화 시점 1회 조회 — Update에서는 캐시만 사용.
-            _unitRenderers[unitIndex] = unit.GetComponentInChildren<Renderer>();
+            _unitViewSets[unitIndex] = GetViewCache(unit);
             _unitColors[unitIndex] = color;
             // 재질·색을 함께 리셋 — 풀 재사용 시 이전 은신 재질/틴트가 남지 않도록 항상 호출.
             ApplyUnitVisual(unitIndex, _sim.IsStealthed(unitIndex), ComputeStatusMask(unitIndex));
 
             unit.transform.localScale = Vector3.one * scale;
+            unit.transform.localRotation = facing;
             unit.transform.localPosition = SimViewMapper.ToWorld(_sim.GetPosition(unitIndex));
+        }
+
+        /// <summary>인스턴스별 렌더러·머티리얼 캐시 조회 — 처음 보는 인스턴스만 1회 구축한다.</summary>
+        private UnitViewCache GetViewCache(GameObject unit)
+        {
+            if (_viewCaches.TryGetValue(unit, out UnitViewCache cache))
+            {
+                return cache;
+            }
+            Renderer[] renderers = unit.GetComponentsInChildren<Renderer>(true);
+            var originals = new Material[renderers.Length][];
+            var stealths = new Material[renderers.Length][];
+            for (int r = 0; r < renderers.Length; r++)
+            {
+                originals[r] = renderers[r].sharedMaterials;
+                stealths[r] = new Material[originals[r].Length];
+                for (int m = 0; m < stealths[r].Length; m++)
+                {
+                    stealths[r][m] = _stealthMaterial;
+                }
+            }
+            cache = new UnitViewCache { Renderers = renderers, OriginalMaterials = originals, StealthMaterials = stealths };
+            _viewCaches.Add(unit, cache);
+            return cache;
         }
 
         private void ReleaseAllViews()
@@ -556,10 +674,11 @@ namespace NHN.Presentation.Battle
             {
                 if (_unitObjects[i] != null)
                 {
-                    _unitPool.Release(_unitObjects[i]);
+                    _unitSourcePools[i].Release(_unitObjects[i]);
                     _unitObjects[i] = null;
                     _unitTransforms[i] = null;
-                    _unitRenderers[i] = null;
+                    _unitViewSets[i] = null;
+                    _unitSourcePools[i] = null;
                     _unitVisible[i] = false;
                 }
             }
