@@ -118,7 +118,21 @@ namespace NHN.Presentation.Battle
             public Renderer[] Renderers;
             public Material[][] OriginalMaterials;
             public Material[][] StealthMaterials;
+            /// <summary>모델 프리팹의 애니메이터 — 리깅 없는 프리팹(기본 몸체·캡슐)은 null.</summary>
+            public Animator Animator;
         }
+
+        /// <summary>사망 애니메이션을 보여준 뒤 풀로 되돌리기까지의 시간 (Die 클립 앞부분만 사용).</summary>
+        private const float DeathLingerSeconds = 1.6f;
+        private static readonly int SpeedParamId = Animator.StringToHash("Speed");
+        private static readonly int DieParamId = Animator.StringToHash("Die");
+        private static readonly int IdleStateId = Animator.StringToHash("Idle");
+
+        /// <summary>이동속도 산출용 직전 프레임 위치 — Idle/Run 전환은 뷰가 위치 변화로 판단한다.</summary>
+        private Vector3[] _unitPrevPositions;
+        /// <summary>사망 연출 중(시뮬에서는 이미 죽음) — 타이머가 끝나면 풀로 반환.</summary>
+        private bool[] _unitDying;
+        private float[] _unitDeathTimers;
 
         private readonly Dictionary<GameObject, UnitViewCache> _viewCaches =
             new Dictionary<GameObject, UnitViewCache>();
@@ -183,6 +197,9 @@ namespace NHN.Presentation.Battle
             _unitVisible = new bool[maxUnits];
             _unitViewSets = new UnitViewCache[maxUnits];
             _unitSourcePools = new GameObjectPool[maxUnits];
+            _unitPrevPositions = new Vector3[maxUnits];
+            _unitDying = new bool[maxUnits];
+            _unitDeathTimers = new float[maxUnits];
             _unitColors = new Color[maxUnits];
             _unitStealthShown = new bool[maxUnits];
             _unitStatusShown = new byte[maxUnits];
@@ -437,14 +454,31 @@ namespace NHN.Presentation.Battle
                 {
                     continue;
                 }
+                if (_unitDying[i])
+                {
+                    // 사망 연출 중 — 자리 고정, 타이머가 끝나면 풀로 반환.
+                    _unitDeathTimers[i] -= Time.deltaTime;
+                    if (_unitDeathTimers[i] <= 0f)
+                    {
+                        ReleaseUnitView(i);
+                    }
+                    continue;
+                }
                 if (!_sim.IsAlive(i))
                 {
-                    _unitSourcePools[i].Release(_unitObjects[i]);
-                    _unitObjects[i] = null;
-                    _unitTransforms[i] = null;
-                    _unitViewSets[i] = null;
-                    _unitSourcePools[i] = null;
-                    _unitVisible[i] = false;
+                    Animator animator = _unitViewSets[i].Animator;
+                    if (animator != null)
+                    {
+                        // 애니메이터가 있으면 즉시 제거하지 않고 사망 클립을 잠깐 보여준다.
+                        animator.SetFloat(SpeedParamId, 0f);
+                        animator.SetTrigger(DieParamId);
+                        _unitDying[i] = true;
+                        _unitDeathTimers[i] = DeathLingerSeconds;
+                    }
+                    else
+                    {
+                        ReleaseUnitView(i);
+                    }
                     continue;
                 }
 
@@ -455,8 +489,29 @@ namespace NHN.Presentation.Battle
                     ApplyUnitVisual(i, stealthed, statusMask);
                 }
 
-                _unitTransforms[i].localPosition = SimViewMapper.ToWorld(_sim.GetInterpolatedPosition(i, alpha));
+                Vector3 position = SimViewMapper.ToWorld(_sim.GetInterpolatedPosition(i, alpha));
+                Animator unitAnimator = _unitViewSets[i].Animator;
+                if (unitAnimator != null && Time.deltaTime > 0.0001f)
+                {
+                    // Idle/Run 전환은 뷰가 위치 변화(속도)로 판단 — 시뮬에 뷰 전용 API를 요구하지 않는다.
+                    unitAnimator.SetFloat(
+                        SpeedParamId, (position - _unitPrevPositions[i]).magnitude / Time.deltaTime);
+                }
+                _unitPrevPositions[i] = position;
+                _unitTransforms[i].localPosition = position;
             }
+        }
+
+        /// <summary>유닛 뷰를 풀로 되돌리고 인덱스 상태를 정리한다 (사망·전투 정리 공용).</summary>
+        private void ReleaseUnitView(int unitIndex)
+        {
+            _unitSourcePools[unitIndex].Release(_unitObjects[unitIndex]);
+            _unitObjects[unitIndex] = null;
+            _unitTransforms[unitIndex] = null;
+            _unitViewSets[unitIndex] = null;
+            _unitSourcePools[unitIndex] = null;
+            _unitVisible[unitIndex] = false;
+            _unitDying[unitIndex] = false;
         }
 
         private byte ComputeStatusMask(int unitIndex)
@@ -637,7 +692,19 @@ namespace NHN.Presentation.Battle
 
             unit.transform.localScale = Vector3.one * scale;
             unit.transform.localRotation = facing;
-            unit.transform.localPosition = SimViewMapper.ToWorld(_sim.GetPosition(unitIndex));
+            Vector3 spawnPosition = SimViewMapper.ToWorld(_sim.GetPosition(unitIndex));
+            unit.transform.localPosition = spawnPosition;
+
+            // 풀 재사용 대비 리셋 — 이전 수명의 사망 연출 상태가 남지 않도록.
+            _unitPrevPositions[unitIndex] = spawnPosition;
+            _unitDying[unitIndex] = false;
+            Animator animator = _unitViewSets[unitIndex].Animator;
+            if (animator != null)
+            {
+                animator.ResetTrigger(DieParamId);
+                animator.SetFloat(SpeedParamId, 0f);
+                animator.Play(IdleStateId, 0, 0f);
+            }
         }
 
         /// <summary>인스턴스별 렌더러·머티리얼 캐시 조회 — 처음 보는 인스턴스만 1회 구축한다.</summary>
@@ -659,7 +726,13 @@ namespace NHN.Presentation.Battle
                     stealths[r][m] = _stealthMaterial;
                 }
             }
-            cache = new UnitViewCache { Renderers = renderers, OriginalMaterials = originals, StealthMaterials = stealths };
+            cache = new UnitViewCache
+            {
+                Renderers = renderers,
+                OriginalMaterials = originals,
+                StealthMaterials = stealths,
+                Animator = unit.GetComponentInChildren<Animator>(true), // 리깅 없는 프리팹은 null
+            };
             _viewCaches.Add(unit, cache);
             return cache;
         }
@@ -674,12 +747,7 @@ namespace NHN.Presentation.Battle
             {
                 if (_unitObjects[i] != null)
                 {
-                    _unitSourcePools[i].Release(_unitObjects[i]);
-                    _unitObjects[i] = null;
-                    _unitTransforms[i] = null;
-                    _unitViewSets[i] = null;
-                    _unitSourcePools[i] = null;
-                    _unitVisible[i] = false;
+                    ReleaseUnitView(i);
                 }
             }
             for (int p = 0; p < _projVisibleCount; p++)
