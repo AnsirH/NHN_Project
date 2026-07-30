@@ -1,8 +1,7 @@
-# 아웃게임(dev) 연동 가이드 — 인게임 선행 준비 완료 상태
+# 아웃게임(dev) 연동 가이드 — 연동 완료 상태
 
-> 갱신: 2026-07-26 (아웃게임 계약 §7 확정본 반영)
-> 목적: dev 머지 시 **커넥터 파일 1개 활성화 + 전투 씬 배선**만으로 연결이 끝나도록 준비해둔 상태의 문서.
-> 아웃게임 계약 원본은 `Docs/OutGame/상세 기획.md` §7 (머지 후 접근 가능).
+> 갱신: 2026-07-30 (적 구성 계약 `enemies` 반영 — 연동 실동작 확인 완료)
+> 아웃게임 계약 원본은 `Docs/OutGame/상세 기획.md` §7, 적 구성은 `Docs/OutGame/적 데이터 연동 가이드.md`.
 
 ---
 
@@ -10,11 +9,15 @@
 
 ### 입력 `BattleSetupData`
 ```
-roomId, roomType(NormalBattle|Boss), encounterId
+roomId, roomType(NormalBattle|Boss), encounterId   // encounterId는 2026-07-29부터 참고용 — 조회 키 아님
 armies[]: armyDefId, armyClass, equippedItemId, generalSkillId,
           soldierCount,   // 증원 반영 최종 병력
           upgradeLevel,   // 0~5
           slotId, slotX, slotY   // 진영 내 정규화 0~1
+enemies[]: armyDefId, armyClass, soldierCount   // 아웃게임 확정 적 구성 (2026-07-29 추가)
+          // 적 스탯·배치 좌표는 인게임 책임: 스탯 = .asset 원형값(적은 업그레이드·증강 없음),
+          // 배치 = 커넥터의 병과별 진형 규칙 (전사·기본 전선 / 사냥꾼 / 암살자 / 궁수 후방)
+playerCharacterId, playerCharacterSkillId       // §5.2.5 — 아직 인게임이 읽지 않음 (스킬 4종 공용)
 ```
 
 **최종 스탯이 직접 전달된다** (2026-07-26 확정 — 계산 로직이 두 곳에 흩어지는 위험을 없애기 위해
@@ -72,7 +75,7 @@ roomId, victory, survivals[]{ armyInstanceId, survivedSoldierCount }
 |---|---|---|
 | `BattleRequest`/`BattleOutcome` | Scripts/Data/BattleRequest.cs | 계약 대응 인게임 DTO |
 | `BattleCatalog` (SO) | Assets/Data/BattleCatalog.asset | roleId/generalId → 에셋 해석 (3D 모델 매핑도 이 자리) |
-| `EncounterTable` (SO) | Assets/Data/EncounterTable.asset | encounterId → 적 구성 (적 구성 출처는 협의 중) |
+| `EncounterTable` (SO) | Assets/Data/EncounterTable.asset | 폴백 전용 — `enemies`가 비었을 때(씬 단독 실행·BalanceLab)만 사용 |
 | `BattleTestBootstrap.RunBattle(request, onFinished)` | Scripts/Presentation/Battle | 전투 1판 실행 + 결과 콜백 1회 |
 | `RoleDefinition.WithStats(...)` | Scripts/Simulation/Battle | 인게임 속성(.asset) + 전달 스탯 결합 |
 | `GeneralDefinition.WithSkillUpgrades(...)` | Scripts/Simulation/Battle | 스킬 강화 횟수 → 충전 필요량 감소 |
@@ -84,38 +87,35 @@ roomId, victory, survivals[]{ armyInstanceId, survivedSoldierCount }
 
 ---
 
-## 4. 연결 상태 (2026-07-26)
+## 4. 연결 상태 (2026-07-30)
 
-**인게임 쪽은 완료됐다.**
+**연동 완료 — 실동작 확인됨** (OutGame 씬 → 맵/캐릭터 선택 → 전투 방 → 배치 확정 → Battle 씬에서
+아웃게임 확정 적 구성으로 전투 실행·종료까지 플레이 검증).
 
 | 항목 | 상태 |
 |---|---|
 | `Assets/Scripts/Integration/` + `NHN.Integration` asmdef (참조: NHN.Simulation/Data/Presentation, OutGame.Logic) | ✅ |
-| `BattleBridgeConnector` (씬 배선: 핸드오프 수신 → 전투 → 결과 반환 → 복귀) | ✅ |
-| `BattleSetupConverter` (순수 변환: 계약 → 요청, 결과 → 계약) + 단위 테스트 4종 | ✅ |
-| **전투 씬 `Assets/Scenes/Battle.unity`** — 커넥터 배치·배선 완료, 단독 실행도 동작 | ✅ |
-| `EditorBuildSettings` 씬 목록 (MainMenu/MapSelect/InGame/**Battle**/StressTest/SampleScene) | ✅ |
-
-**남은 한 줄 — 아웃게임 쪽 라우팅 전환** (동료 담당):
-`InGameFlowController.Start()`의 `BattleBridge.Implementation = battlePanel.Open;`를 아래로 바꾸면 연결이 완성된다.
-```csharp
-BattleBridge.Implementation = (setup, onResult) =>
-{
-    BattleBridge.SetPendingBattle(setup, onResult);
-    SceneManager.LoadScene("Battle");
-};
-```
-이 줄이 더미 패널을 가리키는 동안에도 인게임 쪽은 아무 문제 없이 대기한다(전투 씬 단독 실행 모드).
+| `BattleBridgeConnector` (핸드오프 수신 → 전투 → additive면 결과 반환, 씬 교체면 경고) | ✅ |
+| `BattleSetupConverter` (계약 → 요청, 결과 → 계약, 적 구성 → 분대+진형) + 단위 테스트 | ✅ |
+| 전투 씬 `Assets/Scenes/Battle.unity` — 커넥터 배선 완료, 단독 실행도 동작 | ✅ |
+| 아웃게임 라우팅 (`BattleBridge.Implementation` → `SceneNames.Battle` 전환) — 동료 쪽에서 정식 채택 | ✅ |
+| 적 구성: `enemies` 수신 → 병과별 진형 배치 → `.asset` 스탯으로 전투 구성 | ✅ |
+| 씬 이름: 하드코딩 제거, 공유 상수 `SceneNames`(OutGame.Logic) 참조 | ✅ |
 
 ---
 
-## 5. 남은 협의 1건
+## 5. 협의 이력·남은 항목
 
-- ~~증강 id 전달~~ → **해소**: 증강 배율이 최종 스탯에 이미 반영돼 오므로 id를 받을 필요가 없어졌다.
-  스킬 강화만 `generalSkillUpgradeCount`로 별도 전달되며, 그 해석은 인게임이 정했다(위 §1).
-- **적 구성(encounterId) 출처** — 인게임 `EncounterTable`(현재) vs 아웃게임 생성기(난이도 커브 티어) 중
-   어느 쪽을 정본으로 할지. 아웃게임이 정본이 되면 적 군대도 `armyDefId`+`upgradeLevel` 형태로
-   넘겨주면 되고, 인게임은 같은 재구성 경로를 그대로 쓴다.
+- ~~증강 id 전달~~ → **해소**: 증강 배율이 최종 스탯에 이미 반영돼 온다. 스킬 강화만
+  `generalSkillUpgradeCount`로 전달되며 해석(충전 필요량 감소)은 인게임이 정했다(위 §1).
+- ~~적 구성(encounterId) 출처~~ → **해소 (2026-07-29)**: 아웃게임이 정본. 확정 구성이
+  `enemies`(병과·병사 수)로 실려 오고, 스탯·배치는 인게임 책임으로 확정됐다
+  (`Docs/OutGame/적 데이터 연동 가이드.md`). `EncounterTable`은 폴백 전용으로 강등.
+- **전투 후 복귀** (아웃게임 몫): 씬 교체 방식이라 전투 종료 시 아웃게임 씬이 이미 파괴돼 결과를
+  전달하지 못한다 — "복귀 후 결과 소비" 처리가 생기면 커넥터의 additive 분기가 그대로 동작한다.
+- **스탯 스케일 조율** (§9 밸런스): 아군은 아웃게임 최종 스탯(병사 50HP대), 적은 인게임 `.asset`
+  원형(병사 80HP대)이라 현재 적이 구조적으로 강하다. 전투 스탯 확정 후 함께 조율 필요
+  (실측: 기본 3분대 vs 기본 2분대에서 아군 전멸).
 
 ## 6. 인게임 쪽 정리 이력
 

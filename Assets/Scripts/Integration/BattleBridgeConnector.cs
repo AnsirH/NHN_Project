@@ -6,6 +6,7 @@
 // 씬 전환은 §7.4 핸드오프: 아웃게임이 SetPendingBattle → 전투 씬 로드 →
 // 이 스크립트가 ConsumePendingSetup → 전투 → CompleteBattle → 아웃게임 씬 복귀.
 using NHN.Presentation.Battle;
+using OutGame.Flow;
 using OutGame.Logic.Battle;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,8 +20,12 @@ namespace NHN.Integration
     /// </summary>
     public sealed class BattleBridgeConnector : MonoBehaviour
     {
-        /// <summary>아웃게임 진입점 씬 이름 (복귀 대상 / additive 여부 판정 기준).</summary>
-        private const string OutGameSceneName = "InGame";
+        /// <summary>
+        /// 아웃게임 씬 이름 (복귀 대상 / additive 여부 판정 기준) — 문자열 하드코딩 대신 공유 상수를
+        /// 참조한다. 2026-07-29 씬 통합으로 실제 이름이 InGame → OutGame으로 바뀐 것을 리터럴이
+        /// 조용히 놓친 전례가 있다 (적 데이터 연동 가이드).
+        /// </summary>
+        private const string OutGameSceneName = SceneNames.OutGame;
 
         [SerializeField] private BattleTestBootstrap battleRunner;
 
@@ -34,7 +39,8 @@ namespace NHN.Integration
             }
 
             Debug.Log($"[연동] 전투 시작 — room={setup.roomId} ({setup.roomType}), " +
-                      $"encounter={setup.encounterId}, 분대 {setup.armies.Count}개");
+                      $"encounter={setup.encounterId}, 아군 {setup.armies.Count}분대, " +
+                      $"적 {setup.enemies.Count}분대 (아웃게임 확정 구성)");
             battleRunner.RunBattle(BattleSetupConverter.ToBattleRequest(setup), outcome =>
             {
                 CompleteAndReturn(BattleSetupConverter.ToResultData(setup.roomId, outcome));

@@ -92,6 +92,57 @@ namespace NHN.Simulation.Tests
             }
         }
 
+        /// <summary>
+        /// 2026-07-29 계약: 적 구성은 아웃게임이 확정해 enemies로 실어 보낸다 (병과·병사 수만 —
+        /// 스탯·배치는 인게임 책임). 변환이 스탯을 비워 .asset 폴백을 타는지, 진형 규칙이
+        /// 병과별 깊이·측면 균등 분산을 지키는지 확인한다.
+        /// </summary>
+        [Test]
+        public void Enemies_MapToEnemySquads_WithClassFormationAndAssetStats()
+        {
+            var enemies = new List<EnemyArmy>
+            {
+                new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.Warrior, soldierCount = 10 },
+                new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.None, soldierCount = 8 },
+                new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.Archer, soldierCount = 6 },
+            };
+            var output = new List<SquadRequest>();
+            BattleSetupConverter.AddEnemySquads(output, enemies);
+
+            Assert.AreEqual(3, output.Count);
+
+            // 병과 → 롤/장군 매핑은 아군과 동일 규칙 (None → 노멀 병사 + 노멀 장군)
+            Assert.AreEqual("Warrior", output[0].roleId);
+            Assert.IsNull(output[1].roleId, "None은 노멀 병사 폴백");
+            Assert.AreEqual("NormalGeneral", output[1].generalId);
+            Assert.AreEqual("Archer", output[2].roleId);
+            Assert.AreEqual(10, output[0].soldierCount);
+
+            // 스탯은 비워 .asset 원형값을 쓴다 — 적은 업그레이드·증강이 없다
+            foreach (SquadRequest squad in output)
+            {
+                Assert.IsFalse(squad.HasSoldierStats, "적 분대는 스탯 미전달 → .asset 폴백이어야 한다");
+                Assert.IsFalse(squad.HasGeneralStats);
+            }
+
+            // 진형: 전사·기본은 전선(1.0)에서 측면 균등 분산, 궁수는 후방(0.2) 단독 중앙
+            Assert.AreEqual(1f, output[0].slotX, 1e-3f, "전사는 전선");
+            Assert.AreEqual(1f, output[1].slotX, 1e-3f, "기본도 전선");
+            Assert.AreEqual(1f / 3f, output[0].slotY, 1e-3f, "전선 2분대 → 1/3, 2/3 분산");
+            Assert.AreEqual(2f / 3f, output[1].slotY, 1e-3f);
+            Assert.AreEqual(0.2f, output[2].slotX, 1e-3f, "궁수는 후방");
+            Assert.AreEqual(0.5f, output[2].slotY, 1e-3f, "후방 1분대 → 중앙");
+        }
+
+        [Test]
+        public void EmptyOrNullEnemies_LeaveEnemySquadsEmpty_ForFallbackPath()
+        {
+            var output = new List<SquadRequest>();
+            BattleSetupConverter.AddEnemySquads(output, null);
+            BattleSetupConverter.AddEnemySquads(output, new List<EnemyArmy>());
+            Assert.AreEqual(0, output.Count, "빈 적 목록은 encounterId 폴백 경로를 위해 그대로 비워둔다");
+        }
+
         [Test]
         public void StableSeed_IsDeterministic_PerRoom()
         {
@@ -121,16 +172,25 @@ namespace NHN.Simulation.Tests
                 roomId = "room-42",
                 encounterId = "enc_NormalBattle",
                 armies = new List<DeployedArmy> { SampleArmy() },
+                enemies = new List<EnemyArmy>
+                {
+                    new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.None, soldierCount = 12 },
+                    new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.Archer, soldierCount = 6 },
+                },
             };
 
             BattleRequest request = BattleSetupConverter.ToBattleRequest(setup);
             Assert.AreEqual("enc_NormalBattle", request.encounterId);
             Assert.AreEqual(1, request.playerSquads.Count);
+            Assert.AreEqual(2, request.enemySquads.Count, "아웃게임 확정 적 구성이 요청에 실려야 한다");
 
             var squadIds = new List<string>();
             ArmyDefinition player = BattleRequestBuilder.BuildPlayerArmy(request, catalog, config, null, squadIds);
-            ArmyDefinition enemy = BattleRequestBuilder.BuildEnemyArmy(
-                request.encounterId, table, catalog, config, null);
+            // 부트스트랩(RunBattle)과 같은 분기: enemySquads가 정본, 비었을 때만 EncounterTable 폴백.
+            ArmyDefinition enemy = request.enemySquads.Count > 0
+                ? BattleRequestBuilder.BuildSquads(request.enemySquads, catalog, config, null, null)
+                : BattleRequestBuilder.BuildEnemyArmy(request.encounterId, table, catalog, config, null);
+            Assert.AreEqual(12 + 1 + 6 + 1, enemy.TotalUnits, "적 = 기본 12+장군 + 궁수 6+장군이어야 한다");
             var sim = new BattleSimulation(config, player, enemy, request.seed);
 
             // 전달 스탯이 실제 유닛에 반영됐는지 (분대 첫 병사 = 인덱스 0)

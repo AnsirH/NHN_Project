@@ -225,8 +225,12 @@ namespace NHN.Presentation.Battle
             BattleConfig battleConfig = config.ToConfig();
             ArmyDefinition playerArmy = BattleRequestBuilder.BuildPlayerArmy(
                 request, catalog, battleConfig, _viewSquadsA, _playerSquadIds);
-            ArmyDefinition enemyArmy = BattleRequestBuilder.BuildEnemyArmy(
-                request.encounterId, encounterTable, catalog, battleConfig, _viewSquadsB);
+            // 적 구성: 아웃게임이 실어 보낸 enemySquads가 정본(2026-07-29 계약), 비어 있으면(씬 단독
+            // 실행·연동 스모크) encounterId로 EncounterTable을 조회하는 기존 폴백을 쓴다.
+            ArmyDefinition enemyArmy = request.enemySquads.Count > 0
+                ? BattleRequestBuilder.BuildSquads(request.enemySquads, catalog, battleConfig, _viewSquadsB, null)
+                : BattleRequestBuilder.BuildEnemyArmy(
+                    request.encounterId, encounterTable, catalog, battleConfig, _viewSquadsB);
             BeginBattle(new BattleSimulation(battleConfig, playerArmy, enemyArmy, request.seed, _skillDefinitions));
         }
 
