@@ -101,6 +101,14 @@ namespace NHN.Simulation.Battle
         private readonly float[] _critPending;
         private readonly int[] _queryBuffer;
 
+        // ── 뷰 전용 전투 이벤트 (공격/치명타/피격 연출용) ──
+        // 시뮬 상태에는 아무 영향이 없다: 결과·RNG 소비·틱 순서 불변 (결정론 유지, BalanceLab 무관).
+        // 고정 버퍼에 쌓기만 하고(틱 루프 무할당) 소비는 뷰 책임 — 헤드리스(CLI)처럼 아무도 안 읽으면
+        // 상한에서 조용히 멈출 뿐이다. 한 프레임에 여러 틱이 돌 수 있어 시뮬은 스스로 비우지 않는다.
+        private const int ViewEventCapacity = 2048;
+        private readonly ViewEvent[] _viewEvents = new ViewEvent[ViewEventCapacity];
+        private int _viewEventCount;
+
         /// <summary>상태이상 공용 시스템 — 부정 5종 + 긍정 효과 전부 이 하나가 처리 (불변조건 5).</summary>
         private readonly StatusEffectSystem _statusEffects;
 
@@ -251,6 +259,41 @@ namespace NHN.Simulation.Battle
 
         /// <summary>Finished가 true일 때만 유효.</summary>
         public BattleResult Result => _result;
+
+        /// <summary>뷰 전용 전투 이벤트 종류 — 애니메이션 트리거에 1:1 대응한다.</summary>
+        public enum ViewEventType : byte
+        {
+            Attack,     // 일반 공격 실행 (근접 타격/투사체 발사 시점)
+            CritAttack, // 치명타 공격 실행
+            Damaged,    // 직접 피해를 받음 (도트 제외 — 매 틱 반복이라 피격 모션 스팸이 된다)
+        }
+
+        public readonly struct ViewEvent
+        {
+            public readonly int Unit;
+            public readonly ViewEventType Type;
+
+            public ViewEvent(int unit, ViewEventType type)
+            {
+                Unit = unit;
+                Type = type;
+            }
+        }
+
+        public int ViewEventCount => _viewEventCount;
+
+        public ViewEvent GetViewEvent(int index) => _viewEvents[index];
+
+        /// <summary>이번 프레임의 이벤트를 소비한 뒤 뷰가 호출한다 — 시뮬은 스스로 비우지 않는다.</summary>
+        public void ClearViewEvents() => _viewEventCount = 0;
+
+        private void EmitViewEvent(int unit, ViewEventType type)
+        {
+            if (_viewEventCount < _viewEvents.Length)
+            {
+                _viewEvents[_viewEventCount++] = new ViewEvent(unit, type);
+            }
+        }
 
         public int ProjectileCount => _projectileCount;
 
@@ -572,6 +615,7 @@ namespace NHN.Simulation.Battle
                 // 피해 계산 순서: [일반 피해 × 방어력 감쇠] + [도트(감쇠 없음)] → 표식/방진/패시브 배율.
                 if (damage > 0f)
                 {
+                    EmitViewEvent(i, ViewEventType.Damaged); // 직접 피해만 — 정산 시점 = 실제 맞는 순간
                     damage *= _config.DefenseDamping(_roles[_roleIndices[i]].Defense);
                 }
                 damage += dotDamage;
@@ -655,7 +699,9 @@ namespace NHN.Simulation.Battle
                 _stealthRemaining[attacker] = 0f; // 첫 공격으로 은신 해제
             }
 
-            float damage = role.AttackDamage * RollCritMultiplier(attacker, role) * OutgoingDamageMultiplier(attacker);
+            float critMultiplier = RollCritMultiplier(attacker, role);
+            float damage = role.AttackDamage * critMultiplier * OutgoingDamageMultiplier(attacker);
+            EmitViewEvent(attacker, critMultiplier > 1f ? ViewEventType.CritAttack : ViewEventType.Attack);
 
             int attackerSquad = _squadIndices[attacker];
             AddCharge(attackerSquad, ChargeCondition.SquadAttacks, 1f);
