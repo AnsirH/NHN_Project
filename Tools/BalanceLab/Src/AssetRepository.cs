@@ -101,7 +101,9 @@ namespace BalanceLab
                 c.GetFloat("defenseK"),
                 c.GetFloat("critMultiplier"),
                 c.GetFloat("skillUpgradeChargeReduction"),
-                c.GetFloat("minChargeRequiredRatio"));
+                c.GetFloat("minChargeRequiredRatio"),
+                c.GetFloat("separationOverlapRatio"),
+                c.GetFloat("separationStrength"));
         }
 
         /// <summary>

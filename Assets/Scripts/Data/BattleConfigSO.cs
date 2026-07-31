@@ -38,6 +38,12 @@ namespace NHN.Data
         [Tooltip("충전 필요량 하한 비율 (0.4 = 기본값의 40%까지만 줄어든다 — 발동이 소음이 되지 않게)")]
         [SerializeField] private float minChargeRequiredRatio = 0.4f;
 
+        [Header("겹침 분리 (밀집 전투 감각 — 미니워리어즈식 부분 겹침)")]
+        [Tooltip("분리가 시작되는 거리 비율 (반경 합 기준). 1 = 닿는 즉시(하드), 0.65 = 35% 겹침 허용")]
+        [SerializeField] private float separationOverlapRatio = 0.75f;
+        [Tooltip("틱당 겹침 해소 비율. 1 = 즉시 전량(튕김), 0.2 = 서서히 — 밀림·떨림 완화")]
+        [SerializeField] private float separationStrength = 0.25f;
+
         [Header("배치 슬롯 변환 (정규화 0~1 → anchor, DeploymentGrid)")]
         [Tooltip("slotX 0(후방)~1(전선)이 펼쳐지는 깊이 범위")]
         [SerializeField] private float deploymentDepth = 10f;
@@ -58,7 +64,8 @@ namespace NHN.Data
                 maxUnits, maxProjectiles, maxSkillZones, frontLineOffsetX,
                 deploymentDepth, deploymentHalfWidth,
                 defenseK, critMultiplier,
-                skillUpgradeChargeReduction, minChargeRequiredRatio);
+                skillUpgradeChargeReduction, minChargeRequiredRatio,
+                separationOverlapRatio, separationStrength);
         }
     }
 }

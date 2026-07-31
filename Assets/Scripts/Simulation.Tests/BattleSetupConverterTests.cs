@@ -207,6 +207,54 @@ namespace NHN.Simulation.Tests
             Assert.AreEqual(0, BattleSetupConverter.StableSeed(null));
         }
 
+        /// <summary>
+        /// 뷰 전용 전투 이벤트(공격/치명타/피격): 전투가 돌면 이벤트가 쌓이고, 유닛 인덱스가 유효하며,
+        /// 소비(Clear) 후 비워지는지 — 애니메이션 트리거 연결의 시뮬 쪽 계약을 검증한다.
+        /// </summary>
+        [Test]
+        public void Simulation_EmitsViewEvents_ForAttacksAndDamage()
+        {
+            var catalog = AssetDatabase.LoadAssetAtPath<BattleCatalog>("Assets/Data/BattleCatalog.asset");
+            var table = AssetDatabase.LoadAssetAtPath<EncounterTable>("Assets/Data/EncounterTable.asset");
+            var configAsset = AssetDatabase.LoadAssetAtPath<BattleConfigSO>("Assets/Data/BattleConfig.asset");
+            BattleConfig config = configAsset.ToConfig();
+
+            var request = new BattleRequest { encounterId = "enc_NormalBattle", seed = 7 };
+            request.playerSquads.Add(new SquadRequest
+            {
+                squadId = "ev-1", roleId = "Warrior", generalId = "WarriorGeneral",
+                soldierCount = 10, slotX = 1f, slotY = 0.5f,
+            });
+            ArmyDefinition player = BattleRequestBuilder.BuildPlayerArmy(request, catalog, config, null, null);
+            ArmyDefinition enemy = BattleRequestBuilder.BuildEnemyArmy(
+                request.encounterId, table, catalog, config, null);
+            var sim = new BattleSimulation(config, player, enemy, request.seed);
+
+            bool sawAttack = false, sawDamaged = false;
+            int safetyTicks = 200_000;
+            while (!sim.Finished && safetyTicks-- > 0 && !(sawAttack && sawDamaged))
+            {
+                sim.Tick();
+                for (int e = 0; e < sim.ViewEventCount; e++)
+                {
+                    BattleSimulation.ViewEvent viewEvent = sim.GetViewEvent(e);
+                    Assert.That(viewEvent.Unit, Is.InRange(0, sim.UnitCount - 1), "이벤트 유닛 인덱스는 유효 범위");
+                    if (viewEvent.Type != BattleSimulation.ViewEventType.Damaged)
+                    {
+                        sawAttack = true;
+                    }
+                    else
+                    {
+                        sawDamaged = true;
+                    }
+                }
+                sim.ClearViewEvents();
+            }
+            Assert.IsTrue(sawAttack, "전투 중 공격 이벤트가 나와야 한다");
+            Assert.IsTrue(sawDamaged, "전투 중 피격 이벤트가 나와야 한다");
+            Assert.AreEqual(0, sim.ViewEventCount, "Clear 후에는 비어 있어야 한다");
+        }
+
         /// <summary>변환 결과가 실제로 전투를 구성하고, 결과가 계약 형태로 되돌아오는지 (왕복 확인).</summary>
         [Test]
         public void ConvertedSetup_RunsBattle_AndResultMapsBack()

@@ -37,6 +37,17 @@ namespace NHN.Simulation.Battle
         /// 강화가 쌓여도 액티브가 매 순간 터지는 소음이 되지 않게 막는다 (기획 §6 이벤트 희소성).
         /// </summary>
         public readonly float MinChargeRequiredRatio;
+        /// <summary>
+        /// 겹침 분리가 시작되는 거리 비율 (반경 합 기준). 1 = 닿는 즉시 분리(하드 제약),
+        /// 0.65 = 반경 합의 65% 안까지 파고들어야 분리 — 부분 겹침 허용으로 난전에서
+        /// 뒷줄이 앞줄을 밀어내는 현상을 줄인다 (미니워리어즈식 밀집 전투).
+        /// </summary>
+        public readonly float SeparationOverlapRatio;
+        /// <summary>
+        /// 틱당 겹침 해소 비율. 1 = 즉시 전량 해소(튕김), 0.2 = 남은 겹침의 20%씩 서서히 —
+        /// 밀집 시 떨림·밀림 없이 부드럽게 자리를 잡는다.
+        /// </summary>
+        public readonly float SeparationStrength;
 
         public BattleConfig(
             int ticksPerSecond, float arenaHalfWidth, float arenaHalfHeight,
@@ -44,10 +55,13 @@ namespace NHN.Simulation.Battle
             int maxUnits, int maxProjectiles, int maxSkillZones, float frontLineOffsetX,
             float deploymentDepth, float deploymentHalfWidth,
             float defenseK, float critMultiplier,
-            float skillUpgradeChargeReduction, float minChargeRequiredRatio)
+            float skillUpgradeChargeReduction, float minChargeRequiredRatio,
+            float separationOverlapRatio, float separationStrength)
         {
             SkillUpgradeChargeReduction = skillUpgradeChargeReduction;
             MinChargeRequiredRatio = minChargeRequiredRatio;
+            SeparationOverlapRatio = separationOverlapRatio;
+            SeparationStrength = separationStrength;
             TicksPerSecond = ticksPerSecond;
             ArenaHalfWidth = arenaHalfWidth;
             ArenaHalfHeight = arenaHalfHeight;

@@ -124,8 +124,14 @@ namespace NHN.Presentation.Battle
 
         /// <summary>사망 애니메이션을 보여준 뒤 풀로 되돌리기까지의 시간 (Die 클립 앞부분만 사용).</summary>
         private const float DeathLingerSeconds = 1.6f;
+        /// <summary>이동 방향 회전 속도(도/초)와 회전을 시작하는 최소 이동 속도(유닛/초) — 뷰 표현 상수.</summary>
+        private const float UnitTurnDegreesPerSecond = 540f;
+        private const float TurnSpeedThreshold = 0.5f;
         private static readonly int SpeedParamId = Animator.StringToHash("Speed");
         private static readonly int DieParamId = Animator.StringToHash("Die");
+        private static readonly int AttackParamId = Animator.StringToHash("Attack");
+        private static readonly int CritParamId = Animator.StringToHash("Crit");
+        private static readonly int HitParamId = Animator.StringToHash("Hit");
         private static readonly int IdleStateId = Animator.StringToHash("Idle");
 
         /// <summary>이동속도 산출용 직전 프레임 위치 — Idle/Run 전환은 뷰가 위치 변화로 판단한다.</summary>
@@ -419,7 +425,12 @@ namespace NHN.Presentation.Battle
                 _accumulator %= tickDeltaTime;
             }
 
-            float alpha = _accumulator / tickDeltaTime;
+            ConsumeViewEvents();
+
+            // 종료 후에는 보간하지 않는다: Tick()이 종료 가드로 이전 위치를 더 갱신하지 않아
+            // (이전 ≠ 현재)가 영구히 남고, alpha가 매 틱 주기 0→1을 반복하며 그 사이를
+            // 왕복 보간해 생존 유닛이 부들부들 떨리는 현상이 생긴다 — 현재 위치 고정으로 해결.
+            float alpha = _sim.Finished ? 1f : _accumulator / tickDeltaTime;
             SyncUnitViews(alpha);
             SyncProjectileViews(alpha);
             HandleSkillInput();
@@ -444,6 +455,42 @@ namespace NHN.Presentation.Battle
                     callback(BattleRequestBuilder.BuildOutcome(_sim, _playerSquadIds));
                 }
             }
+        }
+
+        /// <summary>
+        /// 시뮬이 이번 프레임 동안 쌓은 전투 이벤트(공격/치명타/피격)를 애니메이터 트리거로 옮긴다.
+        /// 시뮬은 스스로 비우지 않으므로(한 프레임 다중 틱 누적) 소비 후 여기서 비운다.
+        /// </summary>
+        private void ConsumeViewEvents()
+        {
+            int count = _sim.ViewEventCount;
+            for (int e = 0; e < count; e++)
+            {
+                BattleSimulation.ViewEvent viewEvent = _sim.GetViewEvent(e);
+                int unit = viewEvent.Unit;
+                if (!_unitVisible[unit] || _unitDying[unit])
+                {
+                    continue; // 이미 정리됐거나 사망 연출 중 — 트리거가 Die를 덮지 않게
+                }
+                Animator animator = _unitViewSets[unit].Animator;
+                if (animator == null)
+                {
+                    continue; // 리깅 없는 프리팹(캡슐 폴백)
+                }
+                switch (viewEvent.Type)
+                {
+                    case BattleSimulation.ViewEventType.Attack:
+                        animator.SetTrigger(AttackParamId);
+                        break;
+                    case BattleSimulation.ViewEventType.CritAttack:
+                        animator.SetTrigger(CritParamId);
+                        break;
+                    case BattleSimulation.ViewEventType.Damaged:
+                        animator.SetTrigger(HitParamId);
+                        break;
+                }
+            }
+            _sim.ClearViewEvents();
         }
 
         private void SyncUnitViews(float alpha)
@@ -490,12 +537,27 @@ namespace NHN.Presentation.Battle
                 }
 
                 Vector3 position = SimViewMapper.ToWorld(_sim.GetInterpolatedPosition(i, alpha));
-                Animator unitAnimator = _unitViewSets[i].Animator;
-                if (unitAnimator != null && Time.deltaTime > 0.0001f)
+                float deltaTime = Time.deltaTime;
+                if (deltaTime > 0.0001f)
                 {
+                    Vector3 delta = position - _unitPrevPositions[i];
+                    float speed = delta.magnitude / deltaTime;
                     // Idle/Run 전환은 뷰가 위치 변화(속도)로 판단 — 시뮬에 뷰 전용 API를 요구하지 않는다.
-                    unitAnimator.SetFloat(
-                        SpeedParamId, (position - _unitPrevPositions[i]).magnitude / Time.deltaTime);
+                    Animator unitAnimator = _unitViewSets[i].Animator;
+                    if (unitAnimator != null)
+                    {
+                        unitAnimator.SetFloat(SpeedParamId, speed);
+                    }
+                    // 이동 방향으로 부드럽게 회전 — 밀림·분리 같은 미세 이동(문턱 미만)에는 돌지 않아
+                    // 난전에서 방향이 파닥거리지 않는다. 멈추면 마지막 방향을 유지한다.
+                    delta.y = 0f;
+                    if (speed > TurnSpeedThreshold && delta.sqrMagnitude > 1e-8f)
+                    {
+                        _unitTransforms[i].localRotation = Quaternion.RotateTowards(
+                            _unitTransforms[i].localRotation,
+                            Quaternion.LookRotation(delta),
+                            UnitTurnDegreesPerSecond * deltaTime);
+                    }
                 }
                 _unitPrevPositions[i] = position;
                 _unitTransforms[i].localPosition = position;
@@ -702,6 +764,9 @@ namespace NHN.Presentation.Battle
             if (animator != null)
             {
                 animator.ResetTrigger(DieParamId);
+                animator.ResetTrigger(AttackParamId);
+                animator.ResetTrigger(CritParamId);
+                animator.ResetTrigger(HitParamId);
                 animator.SetFloat(SpeedParamId, 0f);
                 animator.Play(IdleStateId, 0, 0f);
             }
