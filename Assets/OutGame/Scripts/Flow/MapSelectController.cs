@@ -10,15 +10,15 @@ using UnityEngine;
 namespace OutGame.Flow
 {
     /// <summary>
-    /// 맵 선택 (§5.2): MapDefinition 목록 표시 → 선택 시 런 생성 후 <see cref="MapConfirmed"/> 발생.
+    /// 맵 선택 (§5.2): 지도 이미지 위 고정된 3개 지점(mapPointSlots)에 MapDefinition을 순서대로
+    /// 배정하고, 나머지 지점은 잠금 표시한다. 선택 시 런 생성 후 <see cref="MapConfirmed"/> 발생.
     /// OutGame.unity 안의 한 패널(§3.1 씬 통합) — OutGameFlowController가 활성화하면
-    /// Awake()에서 목록을 채우고, 선택 결과는 씬 전환이 아니라 이벤트로 다음 패널(캐릭터 선택)에
-    /// 전달된다. 1차는 에셋 1개뿐이지만 목록 순회 구조로 구현해 복수 맵을 전제한다.
+    /// Awake()에서 지점을 채우고, 선택 결과는 씬 전환이 아니라 이벤트로 다음 패널(캐릭터 선택)에
+    /// 전달된다. 1차는 에셋 1개뿐이라 지점 1개만 활성화되고 나머지 2개는 "준비 중"으로 표시된다.
     /// </summary>
     public class MapSelectController : MonoBehaviour
     {
-        [SerializeField] private RectTransform mapListContainer;
-        [SerializeField] private MapEntryView mapEntryPrefab;
+        [SerializeField] private MapEntryView[] mapPointSlots;
         [SerializeField] private RunConfigAsset runConfig;
 
         /// <summary>맵이 확정되어 RunState가 만들어졌을 때 발생 — OutGameFlowController가 구독해
@@ -27,8 +27,8 @@ namespace OutGame.Flow
 
         private void Awake()
         {
-            if (mapListContainer == null || mapEntryPrefab == null)
-                throw new InvalidOperationException("MapSelectController의 mapListContainer/mapEntryPrefab이 배선되지 않았습니다.");
+            if (mapPointSlots == null || mapPointSlots.Length == 0)
+                throw new InvalidOperationException("MapSelectController의 mapPointSlots가 배선되지 않았습니다.");
 
             if (runConfig == null)
                 runConfig = Resources.Load<RunConfigAsset>(ResourcePaths.RunConfigDefault);
@@ -37,11 +37,19 @@ namespace OutGame.Flow
 
             List<MapDefinition> maps = ResourcePool.LoadAllOrThrow<MapDefinition>(
                 ResourcePaths.Maps, "MapDefinition을 찾을 수 없습니다 — SceneSetupM5Data.Run() 실행 필요");
+            List<MapDefinition> ordered = maps.OrderBy(m => m.DisplayName).ToList();
 
-            foreach (MapDefinition map in maps.OrderBy(m => m.DisplayName))
+            for (int i = 0; i < mapPointSlots.Length; i++)
             {
-                MapEntryView entry = Instantiate(mapEntryPrefab, mapListContainer);
-                entry.Bind(map, () => OnMapSelected(map));
+                if (i < ordered.Count)
+                {
+                    MapDefinition map = ordered[i];
+                    mapPointSlots[i].Bind(map, () => OnMapSelected(map));
+                }
+                else
+                {
+                    mapPointSlots[i].ShowLocked();
+                }
             }
         }
 

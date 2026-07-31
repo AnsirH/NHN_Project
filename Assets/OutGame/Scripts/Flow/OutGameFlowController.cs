@@ -1,4 +1,5 @@
 using System;
+using OutGame.Logic.Audio;
 using OutGame.Logic.Runs;
 using UnityEngine;
 
@@ -8,8 +9,9 @@ namespace OutGame.Flow
     /// OutGame.unity 루트 코디네이터 (§3.1 씬 통합): 맵 선택 → 캐릭터 선택 → 방 그래프 세 패널을
     /// 활성화 토글로 전환시킨다. 이전에는 셋이 각자 씬이라 RunSessionContext(정적 필드)로 넘겼지만,
     /// 이제 같은 씬 안의 형제 GameObject라 확정된 RunState를 이벤트 인자로 직접 전달한다.
-    /// RunSessionContext는 "메인메뉴→아웃게임" 경계(이어하기)에서만 여전히 쓰인다 — 그 소비 지점이
-    /// 바로 이 클래스의 Start().
+    /// RunSessionContext는 씬 교체 전투(§7.4) 복귀 컨텍스트 전달에 여전히 쓰인다 — 그 소비 지점이
+    /// 바로 이 클래스의 Start(). 환경 설정은 2026-07-31부터 PausePopup(ESC/뒤로가기로 토글)을 거쳐서만
+    /// 열 수 있다 — 이 컨트롤러가 직접 관여하지 않는 자기 완결형 컴포넌트.
     /// </summary>
     public class OutGameFlowController : MonoBehaviour
     {
@@ -22,6 +24,10 @@ namespace OutGame.Flow
             if (mapSelectPanel == null || characterSelectPanel == null || roomGraphController == null)
                 throw new InvalidOperationException("OutGameFlowController의 필드가 배선되지 않았습니다.");
 
+            // MainMenu를 거치지 않고 OutGame.unity가 곧장 열리는 경로(테스트 등)에 대비한 방어적 적용
+            // (MainMenuController.Awake()와 동일 이유).
+            AudioListener.volume = SoundSettings.MasterVolume;
+
             mapSelectPanel.MapConfirmed += OnMapConfirmed;
             characterSelectPanel.CharacterConfirmed += OnCharacterConfirmed;
         }
@@ -33,7 +39,8 @@ namespace OutGame.Flow
 
             if (pendingRun != null)
             {
-                // "이어하기" — 맵/캐릭터 선택이 이미 끝난 런이라 방 그래프로 곧장 진입한다.
+                // 씬 교체 전투(§7.4)에서 복귀한 경우 — 맵/캐릭터 선택이 이미 끝난 런이라 방 그래프로
+                // 곧장 진입한다(2026-07-30: 메인 메뉴 "이어하기" 제거 이후 이 경로의 유일한 발생지).
                 ShowOnly(roomGraphController.gameObject);
                 roomGraphController.Begin(pendingRun);
             }

@@ -25,6 +25,11 @@ namespace OutGame.Tests.PlayMode
         [SetUp]
         public void SetUp()
         {
+            // 이전 픽스처(예: ArmyDeploymentPanelPlayTests)가 PanelTransitions.FadeIn()으로 건 DOTween
+            // 트윈을 TearDown에서 죽이지 않은 채 CanvasGroup을 파괴하면, 그 트윈이 다음 틱에 이미
+            // 파괴된 CanvasGroup을 건드려 여기서 엉뚱하게 실패로 잡힌다 — 픽스처 시작 전 방어적으로 정리.
+            DG.Tweening.DOTween.KillAll();
+
             canvasGo = new GameObject("TestCanvas", typeof(Canvas), typeof(CanvasScaler));
             canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
 
@@ -57,7 +62,7 @@ namespace OutGame.Tests.PlayMode
             Assert.AreEqual(4, icons.Length, "PlayerCharacterDefinition 4종 (§5.2.5) → 아이콘 4개");
 
             Text nameText = controller.transform.Find("InfoCard/NameText").GetComponent<Text>();
-            Assert.AreEqual("캐릭터 1", nameText.text, "sortOrder 0번(캐릭터 1)이 초기 선택돼야 함");
+            Assert.AreEqual("독 캐릭터", nameText.text, "sortOrder 0번이 초기 선택돼야 함");
         }
 
         [UnityTest]
@@ -68,7 +73,7 @@ namespace OutGame.Tests.PlayMode
             controller.transform.Find("NavRow/RightArrowButton").GetComponent<Button>().onClick.Invoke();
 
             Text nameText = controller.transform.Find("InfoCard/NameText").GetComponent<Text>();
-            Assert.AreEqual("캐릭터 2", nameText.text);
+            Assert.AreEqual("전기 캐릭터", nameText.text);
         }
 
         [UnityTest]
@@ -79,7 +84,7 @@ namespace OutGame.Tests.PlayMode
             controller.transform.Find("NavRow/LeftArrowButton").GetComponent<Button>().onClick.Invoke();
 
             Text nameText = controller.transform.Find("InfoCard/NameText").GetComponent<Text>();
-            Assert.AreEqual("캐릭터 4", nameText.text, "좌우 화살표는 순환 이동해야 함");
+            Assert.AreEqual("회복 캐릭터", nameText.text, "좌우 화살표는 순환 이동해야 함");
         }
 
         [UnityTest]
@@ -91,7 +96,7 @@ namespace OutGame.Tests.PlayMode
             icons[2].GetComponent<Button>().onClick.Invoke();
 
             Text nameText = controller.transform.Find("InfoCard/NameText").GetComponent<Text>();
-            Assert.AreEqual("캐릭터 3", nameText.text);
+            Assert.AreEqual("강화 캐릭터", nameText.text);
         }
 
         [UnityTest]
