@@ -40,7 +40,7 @@ namespace NHN.Data
 
         [Header("겹침 분리 (밀집 전투 감각 — 미니워리어즈식 부분 겹침)")]
         [Tooltip("분리가 시작되는 거리 비율 (반경 합 기준). 1 = 닿는 즉시(하드), 0.65 = 35% 겹침 허용")]
-        [SerializeField] private float separationOverlapRatio = 0.85f;
+        [SerializeField] private float separationOverlapRatio = 0.75f;
         [Tooltip("틱당 겹침 해소 비율. 1 = 즉시 전량(튕김), 0.2 = 서서히 — 밀림·떨림 완화")]
         [SerializeField] private float separationStrength = 0.25f;
 
