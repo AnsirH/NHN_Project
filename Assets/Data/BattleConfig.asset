@@ -23,6 +23,8 @@ MonoBehaviour:
   retargetInterval: 0.4
   projectileImpactRadius: 0.6
   maxBattleSeconds: 180
+  separationOverlapRatio: 0.85
+  separationStrength: 0.25
   deploymentDepth: 10
   deploymentHalfWidth: 14
   defenseK: 50

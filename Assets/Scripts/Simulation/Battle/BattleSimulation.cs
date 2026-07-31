@@ -663,16 +663,21 @@ namespace NHN.Simulation.Battle
                         continue;
                     }
 
-                    float contactDistance = role.UnitRadius + _roles[_roleIndices[j]].UnitRadius;
+                    // 부분 겹침 허용: 반경 합 × 비율 안까지 파고들어야 분리를 시작하고,
+                    // 남은 겹침도 틱당 일정 비율만 해소한다 — 하드 제약(닿는 즉시 전량 분리)이
+                    // 난전에서 만들던 밀림·튕김을 없애고 밀집 전투를 허용한다 (수치는 BattleConfig).
+                    float separationDistance =
+                        (role.UnitRadius + _roles[_roleIndices[j]].UnitRadius) * _config.SeparationOverlapRatio;
                     Vector2 delta = _positions[j] - _positions[i];
                     float distance = delta.Length();
-                    if (distance >= contactDistance)
+                    if (distance >= separationDistance)
                     {
                         continue;
                     }
 
                     Vector2 normal = distance > 1e-5f ? delta / distance : new Vector2(1f, 0f);
-                    Vector2 separation = normal * ((contactDistance - distance) * 0.5f);
+                    Vector2 separation =
+                        normal * ((separationDistance - distance) * 0.5f * _config.SeparationStrength);
                     _positions[i] = ClampToArena(_positions[i] - separation);
                     _positions[j] = ClampToArena(_positions[j] + separation);
                 }

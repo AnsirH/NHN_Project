@@ -260,10 +260,13 @@ namespace NHN.Simulation.Tests
                     new GeneralDefinition(Elite(assassin), SquadPassive.AttackPercent, 0.15f,
                         ChargeCondition.SquadKills, 4f, GimmickEffect.SquadRestealthCrit, 2f, 2f, 0f, 1f),
                     archer, 20),
-                // 사냥 선포: 충전 4초 + 적 30 — 전투가 2주기(8초) 이상 지속되도록.
+                // 사냥 선포: 충전 3초 + 적 30 — 전투가 2주기(6초) 이상 지속되도록.
+                // (부분 겹침 도입(separationOverlapRatio)으로 밀집 교전이 빨라져 4초 주기로는
+                //  2회째 전에 전투가 끝난다 — 이 테스트는 충전 메커니즘 검증용이라 주기를 재튜닝했다.
+                //  실제 발동 빈도 밸런스는 HunterGeneral.asset의 chargeRequired가 소유한다.)
                 ("사냥 선포(시간 경과)", hunter, 15,
                     new GeneralDefinition(Elite(hunter, hpMultiplier: 10f), SquadPassive.AttackPercent, 0.15f,
-                        ChargeCondition.TimeElapsed, 4f, GimmickEffect.MarkStrongestEnemy, 1.5f, 0f, 6f, 1f),
+                        ChargeCondition.TimeElapsed, 3f, GimmickEffect.MarkStrongestEnemy, 1.5f, 0f, 6f, 1f),
                     warrior, 30),
             };
 
