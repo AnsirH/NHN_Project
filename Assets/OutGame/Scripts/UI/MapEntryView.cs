@@ -25,8 +25,24 @@ namespace OutGame.UI
             nameText.text = mapDef.DisplayName;
             difficultyText.text = mapDef.DifficultyLabel;
 
+            button.interactable = true;
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() => onSelected());
+        }
+
+        /// <summary>지도 위 지점에 배치됐지만 아직 연결된 MapDefinition이 없는 경우(§5.2 3지점 배치,
+        /// 1개만 활성) — 클릭 불가 상태로 "준비 중"만 표시한다.</summary>
+        public void ShowLocked(string label = "준비 중")
+        {
+            if (thumbnail == null || nameText == null || difficultyText == null || button == null)
+                throw new InvalidOperationException("MapEntryView 프리팹의 필드가 배선되지 않았습니다.");
+
+            thumbnail.enabled = false;
+            nameText.text = label;
+            difficultyText.text = string.Empty;
+
+            button.interactable = false;
+            button.onClick.RemoveAllListeners();
         }
     }
 }
