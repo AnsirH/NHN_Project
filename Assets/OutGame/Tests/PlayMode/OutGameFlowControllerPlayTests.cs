@@ -45,6 +45,14 @@ namespace OutGame.Tests.PlayMode
         private static InGameFlowController RoomGraph() =>
             Object.FindFirstObjectByType<InGameFlowController>(FindObjectsInactive.Include);
 
+        private static readonly string[] MapPointNames =
+            { "MapPoint_1_SmallCastle", "MapPoint_2_CentralCastle", "MapPoint_3_Fortress" };
+
+        private static Button ActiveMapPointButton(MapSelectController mapSelect) =>
+            MapPointNames
+                .Select(name => mapSelect.transform.Find(name).GetComponent<Button>())
+                .First(b => b.interactable);
+
         private static RunState NewRun()
         {
             MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
@@ -81,8 +89,7 @@ namespace OutGame.Tests.PlayMode
             yield return LoadScene();
 
             MapSelectController mapSelect = MapSelect();
-            Button entryButton = mapSelect.GetComponentsInChildren<Button>()
-                .First(b => b.transform.parent.name == "Content");
+            Button entryButton = ActiveMapPointButton(mapSelect);
             entryButton.onClick.Invoke();
             yield return null;
 
@@ -96,8 +103,7 @@ namespace OutGame.Tests.PlayMode
         {
             yield return LoadScene();
 
-            MapSelect().GetComponentsInChildren<Button>()
-                .First(b => b.transform.parent.name == "Content").onClick.Invoke();
+            ActiveMapPointButton(MapSelect()).onClick.Invoke();
             yield return null;
 
             CharacterSelectController characterSelect = CharacterSelect();

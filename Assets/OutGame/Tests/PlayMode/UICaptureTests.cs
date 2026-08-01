@@ -256,7 +256,6 @@ namespace OutGame.Tests.PlayMode
             yield return SettleGameView(); // 직전 테스트가 남긴 캔버스 잔상 제거
 
             var canvasGo = new GameObject("CaptureCanvas", typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler));
-            string tempSavePath = Path.Combine(Path.GetTempPath(), $"capture_save_{System.Guid.NewGuid():N}.json");
             try
             {
                 var canvas = canvasGo.GetComponent<Canvas>();
@@ -269,15 +268,7 @@ namespace OutGame.Tests.PlayMode
                 var mainMenuPrefab = Resources.Load<GameObject>("OutGame/MainMenuScreen");
                 Assert.IsNotNull(mainMenuPrefab, "MainMenuScreen 프리팹 없음 — SceneSetupM5UI.Run() 실행 필요");
                 var mainMenu = Object.Instantiate(mainMenuPrefab, canvasGo.transform).GetComponent<MainMenuController>();
-                mainMenu.SetSavePath(tempSavePath); // 저장 없음 → 이어하기 비활성 상태
-                yield return CaptureToFile("MainMenu_01_no_save.png");
-
-                MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
-                RunState run = RunStateFactory.Create(map, new RunConfig());
-                run.selectedCharacterId = "char_1"; // §5.2.5 — FromJson 필수값
-                RunSaveService.Save(run, tempSavePath);
-                mainMenu.SetSavePath(tempSavePath); // 저장 있음 → 이어하기 활성 상태
-                yield return CaptureToFile("MainMenu_02_with_save.png");
+                yield return CaptureToFile("MainMenu_01.png"); // 2026-07-30: 이어하기 제거로 저장 유무 캡처 구분 없음
 
                 Object.Destroy(mainMenu.gameObject);
                 yield return null;
@@ -291,7 +282,6 @@ namespace OutGame.Tests.PlayMode
             finally
             {
                 Object.Destroy(canvasGo);
-                if (File.Exists(tempSavePath)) File.Delete(tempSavePath);
             }
         }
 

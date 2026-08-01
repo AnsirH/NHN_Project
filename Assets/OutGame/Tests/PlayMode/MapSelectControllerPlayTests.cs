@@ -42,13 +42,18 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Start_SpawnsOneEntryPerMapDefinition()
+        public IEnumerator Start_BindsOneSlotAndLocksTheRest()
         {
             yield return null;
 
-            var entries = controller.GetComponentsInChildren<Button>()
-                .Where(b => b.transform.parent.name == "Content").ToArray();
-            Assert.AreEqual(1, entries.Length, "MapDefinition_Default 1개 → 항목 1개 (§5.2: 1차는 맵 1개)");
+            var mapPointNames = new[] { "MapPoint_1_SmallCastle", "MapPoint_2_CentralCastle", "MapPoint_3_Fortress" };
+            var slotButtons = mapPointNames
+                .Select(name => controller.transform.Find(name).GetComponent<Button>())
+                .ToArray();
+
+            Assert.AreEqual(3, slotButtons.Length, "지도 위 3지점이 모두 배치돼 있어야 함");
+            Assert.AreEqual(1, slotButtons.Count(b => b.interactable),
+                "MapDefinition_Default 1개 → 3지점 중 1개만 활성화 (§5.2: 1차는 맵 1개, 나머지는 잠금)");
         }
 
         [UnityTest]
@@ -56,8 +61,10 @@ namespace OutGame.Tests.PlayMode
         {
             yield return null;
 
-            var entryButton = controller.GetComponentsInChildren<Button>()
-                .First(b => b.transform.parent.name == "Content");
+            var mapPointNames = new[] { "MapPoint_1_SmallCastle", "MapPoint_2_CentralCastle", "MapPoint_3_Fortress" };
+            var entryButton = mapPointNames
+                .Select(name => controller.transform.Find(name).GetComponent<Button>())
+                .First(b => b.interactable);
             entryButton.onClick.Invoke();
 
             // §3.1 씬 통합: 맵 확정은 씬 전환이 아니라 MapConfirmed 이벤트로 알린다 —

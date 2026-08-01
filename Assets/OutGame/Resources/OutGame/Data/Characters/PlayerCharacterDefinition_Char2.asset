@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: PlayerCharacterDefinition_Char2
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.PlayerCharacterDefinition
   characterId: char_2
-  displayName: "\uCE90\uB9AD\uD130 2"
+  displayName: "\uC804\uAE30 \uCE90\uB9AD\uD130"
   description: "\uC124\uBA85 \uC900\uBE44 \uC911 \u2014 \uCD94\uD6C4 \uAE30\uD68D/\uC544\uD2B8
     \uC790\uC0B0 \uD655\uC815 \uC2DC \uAD50\uCCB4 \uC608\uC815."
-  portrait: {fileID: 0}
+  portrait: {fileID: 21300000, guid: 7e57216fd1f21114fadb0e6d80ed0602, type: 3}
   skillId: skill_char_2
   skillName: "\uC2A4\uD0AC 2 (\uAC00\uCE6D)"
   skillDescription: "\uC2A4\uD0AC \uD6A8\uACFC \uC900\uBE44 \uC911 \u2014 \uC138\uBD80
