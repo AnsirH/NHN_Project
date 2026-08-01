@@ -66,6 +66,31 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
+        public void Generate_EachEntry_CopiesTemplateFinalStats()
+        {
+            // 2026-08-02: 적도 아군(DeployedArmy)과 대칭으로 최종 스탯을 계약에 실어 보낸다 —
+            // 지금은 배율 없이 template(ArmyDefinition_Basic) 원본값을 그대로 옮긴다.
+            var template = new ArmyData
+            {
+                id = "army_basic",
+                generalHealth = 111f, generalAttack = 22f, generalDefense = 33f,
+                generalCritRate = 7f, generalMoveSpeed = 88f,
+                soldierHealth = 44f, soldierAttack = 5f, soldierDefense = 6f,
+            };
+            var config = SingleTierConfig(new DifficultyTier { minCounter = 0, enemyCount = 3 });
+            var result = EnemyCompositionGenerator.Generate(0, RoomType.NormalBattle, config, template, new Random(1));
+
+            Assert.IsTrue(result.TrueForAll(e => e.generalHealth == 111f));
+            Assert.IsTrue(result.TrueForAll(e => e.generalAttack == 22f));
+            Assert.IsTrue(result.TrueForAll(e => e.generalDefense == 33f));
+            Assert.IsTrue(result.TrueForAll(e => e.generalCritRate == 7f));
+            Assert.IsTrue(result.TrueForAll(e => e.generalMoveSpeed == 88f));
+            Assert.IsTrue(result.TrueForAll(e => e.soldierHealth == 44f));
+            Assert.IsTrue(result.TrueForAll(e => e.soldierAttack == 5f));
+            Assert.IsTrue(result.TrueForAll(e => e.soldierDefense == 6f));
+        }
+
+        [Test]
         public void Generate_NormalBattle_UsesMatchingTierEnemyCount()
         {
             var config = new EnemyCompositionConfig

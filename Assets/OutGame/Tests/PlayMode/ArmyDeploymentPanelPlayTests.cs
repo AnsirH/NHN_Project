@@ -226,6 +226,26 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Open_WritesFormationSlotBackOntoEnemyArmy()
+        {
+            // 2026-08-02: 화면 배치용으로 계산한 EnemyFormationAssigner 결과를 버리지 않고
+            // EnemyArmy.slotId/slotX/slotY에 그대로 기록해야 한다 — BuildSetup()이 §7 계약으로
+            // 내보내는 좌표가 화면에 보이는 배치와 항상 같아야 하기 때문.
+            OpenPanel();
+            yield return null;
+
+            foreach (EnemyArmy enemy in TestEnemyComposition)
+            {
+                Assert.Greater(enemy.slotX, 0f, $"{enemy.armyClass} 슬롯 X좌표가 채워지지 않음");
+                Assert.Greater(enemy.slotY, 0f, $"{enemy.armyClass} 슬롯 Y좌표가 채워지지 않음");
+            }
+
+            var distinctSlotIds = TestEnemyComposition.Select(e => e.slotId).Distinct().ToList();
+            Assert.AreEqual(TestEnemyComposition.Count, distinctSlotIds.Count,
+                "서로 다른 적 부대는 서로 다른 슬롯에 배치되어야 함");
+        }
+
+        [UnityTest]
         public IEnumerator Open_ComputesRealEnemyPowerFromComposition()
         {
             // §4-28: 적도 아군과 동일한 전투력 공식(§4-22)으로 계산돼야 한다 — 더 이상 "-" 고정 아님.

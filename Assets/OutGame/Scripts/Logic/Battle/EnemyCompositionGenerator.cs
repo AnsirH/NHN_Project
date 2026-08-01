@@ -45,11 +45,21 @@ namespace OutGame.Logic.Battle
 
             return classes.Select(cls =>
             {
+                // 스탯은 지금은 배율 없이 template(현재 army_basic = ArmyDefinition_Basic) 원본값을
+                // 그대로 옮긴다 — 병과·난이도별 배율은 별도 밸런싱 작업에서 추가 예정(2026-08-02).
                 var enemy = new EnemyArmy
                 {
                     armyDefId = template.id,
                     armyClass = cls,
                     soldierCount = template.baseSoldierCount,
+                    generalHealth = template.generalHealth,
+                    generalAttack = template.generalAttack,
+                    generalDefense = template.generalDefense,
+                    generalCritRate = template.generalCritRate,
+                    generalMoveSpeed = template.generalMoveSpeed,
+                    soldierHealth = template.soldierHealth,
+                    soldierAttack = template.soldierAttack,
+                    soldierDefense = template.soldierDefense,
                 };
                 enemy.Validate(); // 잘못된 template(빈 id, 음수 baseSoldierCount 등)을 조용히 넘기지 않는다.
                 return enemy;

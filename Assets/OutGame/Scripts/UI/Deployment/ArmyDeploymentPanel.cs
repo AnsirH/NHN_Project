@@ -197,9 +197,10 @@ namespace OutGame.UI.Deployment
 
             // 적 진영 — 아군과 똑같은 크기의 격자를 항상 전부 만들고(§5.7 "플레이어 진영처럼"), 그 위에
             // §4-28 생성된 구성을 EnemyFormationAssigner로 배치한다. 유닛 표시는 아군과 동일한
-            // ArmyCardView를 재사용한다(2026-07-26 사용자 요청 — 진영 간 UI 통일). 이 구성은 여기서는
-            // 표시용으로만 쓰이지만, BuildSetup() 시점엔 동일한 enemyComposition이 그대로 §7 계약에
-            // 실려 나간다 — 화면에 보이는 것과 실제 전투에 스폰되는 것이 항상 같다.
+            // ArmyCardView를 재사용한다(2026-07-26 사용자 요청 — 진영 간 UI 통일). 아래에서 계산한
+            // 슬롯 좌표는 화면 렌더링뿐 아니라 각 EnemyArmy.slotId/slotX/slotY에도 그대로 기록되므로
+            // (2026-08-02), BuildSetup() 시점에 §7 계약으로 나가는 좌표가 화면에 보이는 배치와
+            // 항상 일치한다 — 별도로 재계산하지 않는다.
             foreach (SlotDefinition slot in slots)
             {
                 Image slotBackground = Instantiate(enemySlotPrefab, enemySlotContainer);
@@ -215,6 +216,14 @@ namespace OutGame.UI.Deployment
             var assignments = EnemyFormationAssigner.Assign(enemyComposition, slots, fieldData.columns);
             foreach ((EnemyArmy enemy, SlotDefinition slot) in assignments)
             {
+                // 화면 표시뿐 아니라 BuildSetup()이 그대로 실어 보낼 좌표이기도 하다 — enemyComposition은
+                // 참조 타입 리스트라 여기서 채운 값이 §7 계약(BattleSetupData.enemies)까지 그대로
+                // 이어진다(2026-08-02, 예전엔 여기서 계산만 하고 버려서 화면 배치와 실제 전투 스폰
+                // 위치가 별개로 재계산됐었다).
+                enemy.slotId = slot.slotId;
+                enemy.slotX = slot.x;
+                enemy.slotY = slot.y;
+
                 if (!enemySlotCardContainersById.TryGetValue(slot.slotId, out Transform container)) continue;
 
                 ArmyCardView card = Instantiate(armyCardPrefab, container);
