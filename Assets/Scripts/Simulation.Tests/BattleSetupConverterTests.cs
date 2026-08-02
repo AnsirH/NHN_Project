@@ -93,45 +93,61 @@ namespace NHN.Simulation.Tests
         }
 
         /// <summary>
-        /// 2026-07-29 계약: 적 구성은 아웃게임이 확정해 enemies로 실어 보낸다 (병과·병사 수만 —
-        /// 스탯·배치는 인게임 책임). 변환이 스탯을 비워 .asset 폴백을 타는지, 진형 규칙이
-        /// 병과별 깊이·측면 균등 분산을 지키는지 확인한다.
+        /// 2026-08-02 계약: EnemyArmy에도 최종 스탯·배치 좌표가 실려 온다 — 아군과 동일하게
+        /// 재계산·자체 진형 없이 그대로 복사되는지 확인한다 (배치 화면 = 실제 전투 보장).
+        /// roleId/generalId만 병과에서 인게임이 매핑한다 (에셋 선택 — 인게임 소유).
         /// </summary>
         [Test]
-        public void Enemies_MapToEnemySquads_WithClassFormationAndAssetStats()
+        public void Enemies_MapToEnemySquads_CopyingStatsAndSlots()
         {
             var enemies = new List<EnemyArmy>
             {
-                new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.Warrior, soldierCount = 10 },
-                new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.None, soldierCount = 8 },
-                new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.Archer, soldierCount = 6 },
+                new EnemyArmy
+                {
+                    armyDefId = "army_warrior", armyClass = ArmyClass.Warrior, soldierCount = 10,
+                    upgradeLevel = 2, slotId = 3, slotX = 1f, slotY = 0.4f,
+                    generalHealth = 150f, generalAttack = 15f, generalDefense = 5f,
+                    generalCritRate = 7f, generalMoveSpeed = 100f,
+                    soldierHealth = 60f, soldierAttack = 6f, soldierDefense = 2f,
+                },
+                new EnemyArmy
+                {
+                    armyDefId = "army_none", armyClass = ArmyClass.None, soldierCount = 8,
+                    slotX = 0.5f, slotY = 0.75f,
+                    generalHealth = 100f, generalAttack = 10f, generalDefense = 0f,
+                    generalCritRate = 0f, generalMoveSpeed = 90f,
+                    soldierHealth = 50f, soldierAttack = 5f, soldierDefense = 0f,
+                },
             };
             var output = new List<SquadRequest>();
             BattleSetupConverter.AddEnemySquads(output, enemies);
 
-            Assert.AreEqual(3, output.Count);
+            Assert.AreEqual(2, output.Count);
 
             // 병과 → 롤/장군 매핑은 아군과 동일 규칙 (None → 노멀 병사 + 노멀 장군)
             Assert.AreEqual("Warrior", output[0].roleId);
             Assert.IsNull(output[1].roleId, "None은 노멀 병사 폴백");
             Assert.AreEqual("NormalGeneral", output[1].generalId);
-            Assert.AreEqual("Archer", output[2].roleId);
             Assert.AreEqual(10, output[0].soldierCount);
 
-            // 스탯은 비워 .asset 원형값을 쓴다 — 적은 업그레이드·증강이 없다
-            foreach (SquadRequest squad in output)
-            {
-                Assert.IsFalse(squad.HasSoldierStats, "적 분대는 스탯 미전달 → .asset 폴백이어야 한다");
-                Assert.IsFalse(squad.HasGeneralStats);
-            }
+            // 배치 좌표 그대로 복사 — 배치 화면(EnemyFormationAssigner)과 실제 스폰이 일치해야 한다
+            Assert.AreEqual(1f, output[0].slotX, 1e-3f);
+            Assert.AreEqual(0.4f, output[0].slotY, 1e-3f);
+            Assert.AreEqual(0.5f, output[1].slotX, 1e-3f);
+            Assert.AreEqual(0.75f, output[1].slotY, 1e-3f);
 
-            // 진형: 전사·기본은 전선(1.0)에서 측면 균등 분산, 궁수는 후방(0.2) 단독 중앙
-            Assert.AreEqual(1f, output[0].slotX, 1e-3f, "전사는 전선");
-            Assert.AreEqual(1f, output[1].slotX, 1e-3f, "기본도 전선");
-            Assert.AreEqual(1f / 3f, output[0].slotY, 1e-3f, "전선 2분대 → 1/3, 2/3 분산");
-            Assert.AreEqual(2f / 3f, output[1].slotY, 1e-3f);
-            Assert.AreEqual(0.2f, output[2].slotX, 1e-3f, "궁수는 후방");
-            Assert.AreEqual(0.5f, output[2].slotY, 1e-3f, "후방 1분대 → 중앙");
+            // 최종 스탯 그대로 복사 (아군 ToSquadRequest와 동일 원칙)
+            Assert.IsTrue(output[0].HasSoldierStats, "이제 적도 스탯이 전달된다 (2026-08-02)");
+            Assert.IsTrue(output[0].HasGeneralStats);
+            Assert.AreEqual(60f, output[0].maxHp, 1e-3f);
+            Assert.AreEqual(6f, output[0].attackDamage, 1e-3f);
+            Assert.AreEqual(2f, output[0].defense, 1e-3f);
+            Assert.AreEqual(150f, output[0].generalMaxHp, 1e-3f);
+            Assert.AreEqual(15f, output[0].generalAttackDamage, 1e-3f);
+            Assert.AreEqual(5f, output[0].generalDefense, 1e-3f);
+            Assert.AreEqual(7f, output[0].critChancePercent, 1e-3f, "치명타는 장군·유닛 공유, 퍼센트 그대로");
+            Assert.AreEqual(100f * 0.035f, output[0].moveSpeed, 1e-3f, "이동속도는 인게임 단위 환산");
+            Assert.AreEqual(0, output[0].generalSkillUpgradeCount, "적은 스킬 강화 증강이 없다");
         }
 
         /// <summary>
@@ -274,8 +290,20 @@ namespace NHN.Simulation.Tests
                 armies = new List<DeployedArmy> { SampleArmy() },
                 enemies = new List<EnemyArmy>
                 {
-                    new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.None, soldierCount = 12 },
-                    new EnemyArmy { armyDefId = "army_basic", armyClass = ArmyClass.Archer, soldierCount = 6 },
+                    new EnemyArmy
+                    {
+                        armyDefId = "army_none", armyClass = ArmyClass.None, soldierCount = 12,
+                        slotX = 1f, slotY = 0.5f,
+                        generalHealth = 120f, generalAttack = 12f, generalMoveSpeed = 100f,
+                        soldierHealth = 55f, soldierAttack = 5f,
+                    },
+                    new EnemyArmy
+                    {
+                        armyDefId = "army_archer", armyClass = ArmyClass.Archer, soldierCount = 6,
+                        slotX = 0.3f, slotY = 0.5f,
+                        generalHealth = 130f, generalAttack = 14f, generalMoveSpeed = 100f,
+                        soldierHealth = 45f, soldierAttack = 7f,
+                    },
                 },
             };
 
@@ -296,6 +324,8 @@ namespace NHN.Simulation.Tests
             // 전달 스탯이 실제 유닛에 반영됐는지 (분대 첫 병사 = 인덱스 0)
             Assert.AreEqual(180f, sim.GetHp(0), 1e-3f, "병사 체력은 전달값이어야 한다");
             Assert.AreEqual(1300f, sim.GetHp(sim.GetGeneralUnit(0)), 1e-3f, "장군 체력은 전달값이어야 한다");
+            // 적 유닛도 전달 스탯 (2026-08-02) — 유닛 순서는 A군 전체 다음이 B군: 병사 24+장군 1 = 25번부터 적
+            Assert.AreEqual(55f, sim.GetHp(25), 1e-3f, "적 병사 체력도 전달값이어야 한다 (.asset 폴백 아님)");
 
             int safetyTicks = 1_000_000;
             while (!sim.Finished && safetyTicks-- > 0)
