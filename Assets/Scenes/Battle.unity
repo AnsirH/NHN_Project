@@ -341,7 +341,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 8, y: 1, z: 6}
+  m_LocalScale: {x: 6, y: 1, z: 4}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1157,10 +1157,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: NHN.Presentation::NHN.Presentation.Battle.BattleCameraController
   minDistance: 8
-  maxDistance: 45
+  maxDistance: 30
   wheelZoomStep: 3
-  boundsHalfX: 42
-  boundsHalfZ: 32
+  boundsHalfX: 32
+  boundsHalfZ: 22
   doubleTapSeconds: 0.3
 --- !u!1 &1074498340
 GameObject:
