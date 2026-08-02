@@ -574,6 +574,11 @@ namespace NHN.Presentation.Battle
                     if (animator != null)
                     {
                         // 애니메이터가 있으면 즉시 제거하지 않고 사망 클립을 잠깐 보여준다.
+                        // 죽기 직전 걸려 있던 트리거를 반드시 비운다 — 남아 있으면 AnyState 전이가
+                        // Die 상태의 시체를 공격/피격 자세로 다시 끄집어낸다 (죽다 벌떡 일어나는 버그).
+                        animator.ResetTrigger(AttackParamId);
+                        animator.ResetTrigger(CritParamId);
+                        animator.ResetTrigger(HitParamId);
                         animator.SetFloat(SpeedParamId, 0f);
                         animator.SetTrigger(DieParamId);
                         _unitDying[i] = true;
