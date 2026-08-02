@@ -53,8 +53,13 @@ namespace NHN.Presentation.Battle
         private static readonly Color AttackUpTint = new Color(1f, 0.68f, 0.1f);
         private static readonly Color HealTint = new Color(0.5f, 1f, 0.6f);
         private static readonly Color ResistTint = new Color(0.55f, 0.75f, 1f);
-        /// <summary>장군 하이라이트 — 롤 색에 금색 혼합으로 병사와 즉시 구분 (기획 §4).</summary>
+        /// <summary>장군 하이라이트 — 금색 혼합으로 병사와 즉시 구분 (기획 §4).</summary>
         private static readonly Color GeneralHighlight = new Color(1f, 0.85f, 0.25f);
+        /// <summary>
+        /// 적군 틴트 (진한 회색, 2026-08-02 사용자 결정). 병과 구분은 모델(투구·후드·갑옷·무기)이
+        /// 담당하므로 색은 피아 식별만 한다 — 아군은 클레이 원색(무틴트).
+        /// </summary>
+        private static readonly Color EnemyTint = new Color(0.42f, 0.42f, 0.42f);
 
         [Serializable]
         private struct SquadSetup
@@ -728,12 +733,9 @@ namespace NHN.Presentation.Battle
             for (int s = 0; s < squads.Count; s++)
             {
                 BattleRequestBuilder.SquadAssets squad = squads[s];
-                Color color = squad.Role.RoleColor;
-                if (isTeamB)
-                {
-                    // 같은 롤이 양 진영에 있을 때를 위한 팀 구분 톤 다운.
-                    color = Color.Lerp(color, Color.black, 0.35f);
-                }
+                // 병과 구분은 모델이 담당 — 색은 피아 식별만: 아군 원색, 적군 진한 회색.
+                // (롤 색 틴트는 캡슐 시절의 병과 구분 수단이라 모델 도입 후 제거, 2026-08-02)
+                Color color = isTeamB ? EnemyTint : Color.white;
                 float scale = squad.Role.UnitRadius / 0.5f; // 뷰 프리팹 표준 크기(반경 0.5 = 키 1) 기준
                 GameObjectPool pool = GetUnitPool(ViewPrefabOf(squad.Role));
                 Quaternion facing = isTeamB ? TeamBFacing : TeamAFacing;
