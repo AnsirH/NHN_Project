@@ -1157,10 +1157,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: NHN.Presentation::NHN.Presentation.Battle.BattleCameraController
   minDistance: 8
-  maxDistance: 30
+  maxDistance: 26
   wheelZoomStep: 3
-  boundsHalfX: 32
-  boundsHalfZ: 22
+  boundsHalfX: 22
+  boundsHalfZ: 14
   doubleTapSeconds: 0.3
 --- !u!1 &1074498340
 GameObject:
