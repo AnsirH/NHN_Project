@@ -164,11 +164,11 @@ namespace NHN.Simulation.Tests
             var setup = new BattleSetupData { roomId = "room-1", playerCharacterSkillId = "skill_char_3" };
             Assert.AreEqual("skill_char_3", BattleSetupConverter.ToBattleRequest(setup).playerSkillId);
 
-            // 카탈로그 매핑 (char_1~4 → 번개/독구름/힐 장판/전투 함성 순 — 2026-07-30 확정)
-            Assert.AreEqual("Lightning", catalog.ResolveSkill("skill_char_1").name);
-            Assert.AreEqual("PoisonCloud", catalog.ResolveSkill("skill_char_2").name);
-            Assert.AreEqual("HealZone", catalog.ResolveSkill("skill_char_3").name);
-            Assert.AreEqual("WarCry", catalog.ResolveSkill("skill_char_4").name);
+            // 카탈로그 매핑 (char_1~4 → 독구름/번개/전투 함성/힐 장판 순 — 2026-08-03 사용자 확정)
+            Assert.AreEqual("PoisonCloud", catalog.ResolveSkill("skill_char_1").name);
+            Assert.AreEqual("Lightning", catalog.ResolveSkill("skill_char_2").name);
+            Assert.AreEqual("WarCry", catalog.ResolveSkill("skill_char_3").name);
+            Assert.AreEqual("HealZone", catalog.ResolveSkill("skill_char_4").name);
             Assert.IsNull(catalog.ResolveSkill(null), "미전달은 null — 호출자가 전체 폴백");
             Assert.IsNull(catalog.ResolveSkill("skill_unknown"), "미등록도 null(경고 로그) — 전투가 죽지 않게");
 
@@ -178,7 +178,7 @@ namespace NHN.Simulation.Tests
                 AssetDatabase.LoadAssetAtPath<SkillData>("Assets/Data/Skills/Lightning.asset"),
                 AssetDatabase.LoadAssetAtPath<SkillData>("Assets/Data/Skills/HealZone.asset"),
             };
-            SkillData[] restricted = BattleRequestBuilder.SelectPlayerSkills("skill_char_3", catalog, all);
+            SkillData[] restricted = BattleRequestBuilder.SelectPlayerSkills("skill_char_4", catalog, all);
             Assert.AreEqual(1, restricted.Length, "캐릭터 스킬 1종으로 제한되어야 한다");
             Assert.AreEqual("HealZone", restricted[0].name);
             Assert.AreSame(all, BattleRequestBuilder.SelectPlayerSkills(null, catalog, all), "미전달 → 전체 스킬");

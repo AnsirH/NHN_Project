@@ -27,10 +27,10 @@ MonoBehaviour:
   normalRole: {fileID: 11400000, guid: e1f7d04a8b5c1367de9f3a20b46c85d1, type: 2}
   playerSkillMap:
   - skillId: skill_char_1
-    skill: {fileID: 11400000, guid: 9f4e2a7c3b1d84f4e8a95d0c6e21b4a8, type: 2}
-  - skillId: skill_char_2
     skill: {fileID: 11400000, guid: c8d13b5e9a2f74c4d907e6b18f35a2c1, type: 2}
+  - skillId: skill_char_2
+    skill: {fileID: 11400000, guid: 9f4e2a7c3b1d84f4e8a95d0c6e21b4a8, type: 2}
   - skillId: skill_char_3
-    skill: {fileID: 11400000, guid: f18a26fa89ea68142b0b64dc5113a29a, type: 2}
-  - skillId: skill_char_4
     skill: {fileID: 11400000, guid: 6ed9c6d263f13214792fc220c901bf3c, type: 2}
+  - skillId: skill_char_4
+    skill: {fileID: 11400000, guid: f18a26fa89ea68142b0b64dc5113a29a, type: 2}

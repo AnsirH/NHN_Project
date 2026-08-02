@@ -21,7 +21,7 @@ enemies[]: armyDefId, armyClass, soldierCount, upgradeLevel,   // 아웃게임 �
           // 병과에서 인게임이 매핑 (에셋 선택 — 인게임 소유). 상세: Docs/OutGame/적 데이터 연동 가이드.md
 playerCharacterId, playerCharacterSkillId       // §5.2.5 — 캐릭터가 플레이어 스킬을 결정 (2026-07-30 연결)
           // skillId(가칭 skill_char_1~4) → 스킬 에셋 매핑은 BattleCatalog.playerSkillMap (SO 데이터):
-          // char_1=번개, char_2=독구름, char_3=힐 장판, char_4=전투 함성. 해석되면 그 스킬 1종만
+          // char_1=독구름, char_2=번개, char_3=전투 함성, char_4=힐 장판. 해석되면 그 스킬 1종만
           // 사용 가능, 미전달·미등록이면 전체 4종 폴백(씬 단독 실행·BalanceLab·키 불일치 안전망)
 ```
 
