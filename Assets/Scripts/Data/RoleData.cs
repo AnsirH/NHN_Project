@@ -52,6 +52,9 @@ namespace NHN.Data
 
         public float UnitRadius => unitRadius;
 
+        /// <summary>뷰 전용 조회 — 공격 애니메이션 재생 속도를 공격 주기에 동기화하는 데 쓴다.</summary>
+        public float AttackInterval => attackInterval;
+
         public RoleDefinition ToDefinition()
         {
             return new RoleDefinition(
