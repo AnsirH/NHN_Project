@@ -23,4 +23,4 @@ MonoBehaviour:
   skillColor: {r: 0.35, g: 0.9, b: 0.3, a: 1}
   displayName: "\uB3C5\uAD6C\uB984"
   castEffectPrefab: {fileID: 6526302276393259002, guid: a31b19a6882e43542a87b5a65fb7870c, type: 3}
-  castEffectBaseRadius: 3
+  castEffectBaseRadius: 4
