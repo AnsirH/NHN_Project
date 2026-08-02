@@ -19,5 +19,8 @@ MonoBehaviour:
   statusDuration: 1.5
   statusMagnitude: 0
   zoneDuration: 0
+  targetsAllies: 0
   skillColor: {r: 1, g: 0.95, b: 0.4, a: 1}
-  displayName: 번개
+  displayName: "\uBC88\uAC1C"
+  castEffectPrefab: {fileID: 8974203713140315807, guid: 709b0bd6b0b625249a98409dd7a87343, type: 3}
+  castEffectBaseRadius: 2.5

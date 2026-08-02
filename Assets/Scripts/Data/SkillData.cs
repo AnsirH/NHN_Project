@@ -34,8 +34,16 @@ namespace NHN.Data
         [SerializeField] private Color skillColor = Color.white;
         [Tooltip("HUD 버튼 라벨 — 비우면 에셋 이름 사용")]
         [SerializeField] private string displayName;
+        [Tooltip("시전 지점에 재생할 파티클 프리팹 — 비우면 기존 디스크 표시만 사용")]
+        [SerializeField] private GameObject castEffectPrefab;
+        [Tooltip("이펙트 프리팹이 기본 크기로 덮는 반경(월드 유닛) — 스킬 반경에 맞춰 스케일하는 기준")]
+        [SerializeField] private float castEffectBaseRadius = 2.5f;
 
         public Color SkillColor => skillColor;
+
+        public GameObject CastEffectPrefab => castEffectPrefab;
+
+        public float CastEffectBaseRadius => castEffectBaseRadius;
 
         public SkillDefinition ToDefinition()
         {

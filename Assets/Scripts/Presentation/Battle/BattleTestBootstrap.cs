@@ -153,6 +153,19 @@ namespace NHN.Presentation.Battle
         // 플레이어 스킬 뷰 상태
         /// <summary>현재 적용된 스킬 구성 원본 — 같은 구성 재적용(Restart)을 건너뛰기 위한 참조 비교용.</summary>
         private SkillData[] _activeSkillAssets;
+
+        // 스킬 시전 이펙트 (SkillData.castEffectPrefab — 비면 기존 디스크만):
+        // 슬롯당 소형 링 풀을 전투 시작(로드아웃 적용) 시 프리웜 — 전투 중 Instantiate 금지 규칙 준수.
+        // 장판 스킬은 장판 지속시간만큼 재생 후 정지, 즉발 스킬은 고정 시간 재생. 정지 후에는
+        // 파티클 잔향이 자연 소멸할 시간을 주고 비활성화한다.
+        private const int SkillFxPerSlot = 2;
+        private const float InstantFxSeconds = 2.5f;
+        private const float FxFadeTailSeconds = 1.5f;
+        private GameObject[,] _skillFxObjects;
+        private ParticleSystem[,] _skillFxParticles;
+        private float[,] _skillFxRemainings;
+        private bool[,] _skillFxStopping;
+        private int[] _skillFxNext;
         private SkillDefinition[] _skillDefinitions;
         private Color[] _skillColors;
         private int _armedSkillSlot = -1;
@@ -243,6 +256,7 @@ namespace NHN.Presentation.Battle
                 _skillDefinitions[s] = skills[s].ToDefinition();
                 _skillColors[s] = skills[s].SkillColor;
             }
+            RebuildSkillFxPools(skills, skillCount);
             hud.Initialize(this, _skillDefinitions);
             for (int s = 0; s < skillCount; s++)
             {
@@ -436,6 +450,7 @@ namespace NHN.Presentation.Battle
             HandleSkillInput();
             SyncZoneViews();
             UpdateFlashFx(Time.deltaTime);
+            UpdateSkillFx(Time.deltaTime);
             hud.SyncSkills(_sim, _armedSkillSlot);
 
             if (_sim.Finished && !_resultShown)
@@ -886,6 +901,7 @@ namespace NHN.Presentation.Battle
                 && _sim.TryCastSkill(_armedSkillSlot, SimViewMapper.ToSim(groundPoint)))
             {
                 SpawnCastFlash(_armedSkillSlot, groundPoint, skill.Radius);
+                PlaySkillFx(_armedSkillSlot, groundPoint, skill);
                 _armedSkillSlot = -1;
                 _aimIndicator.gameObject.SetActive(false);
             }
@@ -943,6 +959,125 @@ namespace NHN.Presentation.Battle
             {
                 _flashRemainings[f] = 0f;
                 _flashTransforms[f].gameObject.SetActive(false);
+            }
+            if (_skillFxObjects != null)
+            {
+                for (int s = 0; s < _skillFxObjects.GetLength(0); s++)
+                {
+                    for (int r = 0; r < SkillFxPerSlot; r++)
+                    {
+                        _skillFxRemainings[s, r] = 0f;
+                        if (_skillFxObjects[s, r] != null)
+                        {
+                            _skillFxObjects[s, r].SetActive(false);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 로드아웃 변경 시 시전 이펙트 링 풀 재구축 (전투 시작 경로 — Instantiate/Destroy 허용).
+        /// 프리팹이 없는 스킬은 슬롯을 비워두고 기존 디스크 표시만 쓴다.
+        /// </summary>
+        private void RebuildSkillFxPools(SkillData[] skills, int skillCount)
+        {
+            if (_skillFxObjects != null)
+            {
+                for (int s = 0; s < _skillFxObjects.GetLength(0); s++)
+                {
+                    for (int r = 0; r < SkillFxPerSlot; r++)
+                    {
+                        if (_skillFxObjects[s, r] != null)
+                        {
+                            Destroy(_skillFxObjects[s, r]);
+                        }
+                    }
+                }
+            }
+            _skillFxObjects = new GameObject[skillCount, SkillFxPerSlot];
+            _skillFxParticles = new ParticleSystem[skillCount, SkillFxPerSlot];
+            _skillFxRemainings = new float[skillCount, SkillFxPerSlot];
+            _skillFxStopping = new bool[skillCount, SkillFxPerSlot];
+            _skillFxNext = new int[skillCount];
+            for (int s = 0; s < skillCount; s++)
+            {
+                GameObject prefab = skills[s].CastEffectPrefab;
+                if (prefab == null)
+                {
+                    continue;
+                }
+                // 스킬 반경에 맞춰 스케일 — 프리팹의 기본 반경은 에셋이 알고 있다.
+                float scale = _skillDefinitions[s].Radius / Mathf.Max(skills[s].CastEffectBaseRadius, 0.01f);
+                for (int r = 0; r < SkillFxPerSlot; r++)
+                {
+                    GameObject fx = Instantiate(prefab, transform);
+                    fx.name = $"SkillFx_{skills[s].name}_{r}";
+                    fx.transform.localScale = Vector3.one * scale;
+                    fx.SetActive(false);
+                    _skillFxObjects[s, r] = fx;
+                    _skillFxParticles[s, r] = fx.GetComponentInChildren<ParticleSystem>(true);
+                }
+            }
+        }
+
+        /// <summary>시전 순간 이펙트 재생 — 장판 스킬은 장판 지속시간, 즉발은 고정 시간.</summary>
+        private void PlaySkillFx(int slot, Vector3 groundPoint, in SkillDefinition skill)
+        {
+            if (_skillFxObjects == null || slot >= _skillFxObjects.GetLength(0) || _skillFxObjects[slot, 0] == null)
+            {
+                return;
+            }
+            int r = _skillFxNext[slot];
+            _skillFxNext[slot] = (r + 1) % SkillFxPerSlot;
+            GameObject fx = _skillFxObjects[slot, r];
+            fx.transform.position = groundPoint + new Vector3(0f, 0.05f, 0f);
+            fx.SetActive(true);
+            ParticleSystem particle = _skillFxParticles[slot, r];
+            if (particle != null)
+            {
+                particle.Clear(true);
+                particle.Play(true);
+            }
+            _skillFxRemainings[slot, r] = skill.ZoneDuration > 0f ? skill.ZoneDuration : InstantFxSeconds;
+            _skillFxStopping[slot, r] = false;
+        }
+
+        /// <summary>재생 시간 만료 → 방출 정지 → 잔향 소멸 후 비활성 (매 프레임, 무할당).</summary>
+        private void UpdateSkillFx(float deltaTime)
+        {
+            if (_skillFxObjects == null)
+            {
+                return;
+            }
+            for (int s = 0; s < _skillFxObjects.GetLength(0); s++)
+            {
+                for (int r = 0; r < SkillFxPerSlot; r++)
+                {
+                    if (_skillFxRemainings[s, r] <= 0f || _skillFxObjects[s, r] == null)
+                    {
+                        continue;
+                    }
+                    _skillFxRemainings[s, r] -= deltaTime;
+                    if (_skillFxRemainings[s, r] > 0f)
+                    {
+                        continue;
+                    }
+                    if (!_skillFxStopping[s, r])
+                    {
+                        _skillFxStopping[s, r] = true;
+                        _skillFxRemainings[s, r] = FxFadeTailSeconds;
+                        if (_skillFxParticles[s, r] != null)
+                        {
+                            _skillFxParticles[s, r].Stop(true, ParticleSystemStopBehavior.StopEmitting);
+                        }
+                    }
+                    else
+                    {
+                        _skillFxRemainings[s, r] = 0f;
+                        _skillFxObjects[s, r].SetActive(false);
+                    }
+                }
             }
         }
 
