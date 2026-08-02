@@ -17,7 +17,7 @@ MonoBehaviour:
   defense: 0
   critChancePercent: 0
   attackInterval: 1.1
-  attackRange: 6
+  attackRange: 1.2
   moveSpeed: 3.2
   unitRadius: 0.45
   positionFilter: 0
@@ -25,7 +25,7 @@ MonoBehaviour:
   movePattern: 0
   moveParamA: 0
   moveParamB: 1
-  projectileSpeed: 14
+  projectileSpeed: 0
   projectileArcHeight: 0.8
   roleColor: {r: 1, g: 0.6, b: 0.15, a: 1}
   viewPrefab: {fileID: 8040072477810646663, guid: 09217c5f390ea254ab6dda070c3e6657, type: 3}

@@ -767,6 +767,15 @@ namespace NHN.Presentation.Battle
                 // 포물선: 발사 높이에서 착탄점(바닥)으로 + 정점 높이 arcHeight의 아치.
                 position.y = Mathf.Lerp(ProjectileLaunchHeight, 0f, t) + 4f * state.ArcHeight * t * (1f - t);
                 _projTransforms[p].localPosition = position;
+
+                // 화살 프리팹 대응 — 비행 방향(경로 미분)으로 기수를 돌린다: 수평은 발사→착탄 벡터,
+                // 수직은 위 포물선 식의 t 미분. 구체였을 땐 무의미했지만 회전 자체는 무해하다.
+                Vector3 direction = end - start;
+                direction.y = (0f - ProjectileLaunchHeight) + 4f * state.ArcHeight * (1f - 2f * t);
+                if (direction.sqrMagnitude > 1e-6f)
+                {
+                    _projTransforms[p].localRotation = Quaternion.LookRotation(direction);
+                }
             }
         }
 
