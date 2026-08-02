@@ -49,11 +49,13 @@ namespace OutGame.Flow
         private List<EventData> eventDataPool;
         private Dictionary<string, EventDefinition> eventDefsById;
         private Dictionary<string, ArmyDefinition> armyDefsById;
+        private Dictionary<string, ArmyData> armyDataById;
         private Dictionary<string, ItemDefinition> itemDefsById;
         private Dictionary<string, AugmentDefinition> augmentDefsById;
+        private Dictionary<string, AugmentData> augmentDataById;
         private Dictionary<string, PlayerCharacterDefinition> characterDefsById; // §5.2.5
         private Dictionary<ArmyClass, string> itemIdByClass; // §4-28: 병과→아이템 매핑, Awake()에서 한 번만 계산
-        private ArmyData enemyTemplate; // §4-28: 적 구성 스탯 템플릿, Awake()에서 한 번만 확정
+        private Dictionary<string, EnemyPresetData> presetsById; // 2026-08-02: 적 프리셋 조각 풀
         private string savePath;
         private bool runEnded;
         private RoomType currentBattleRoomType;
@@ -118,19 +120,17 @@ namespace OutGame.Flow
 
             armyDefsById = Resources.LoadAll<ArmyDefinition>(ResourcePaths.Data)
                 .ToDictionary(a => a.ToData().id);
+            armyDataById = armyDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
             itemDefsById = Resources.LoadAll<ItemDefinition>(ResourcePaths.Data)
                 .ToDictionary(i => i.ToData().id);
             // §4-28: 병과→아이템 매핑은 런 도중 안 바뀌므로 승리마다 다시 만들지 않고 한 번만 캐시.
             itemIdByClass = ItemEquipService.ResolveItemIdByClass(itemDefsById.Values.Select(d => d.ToData()));
+            augmentDataById = augmentDefsById.ToDictionary(kv => kv.Key, kv => kv.Value.ToData());
 
-            // §4-28: 적 구성의 스탯 템플릿 — 매 전투방 진입마다 다시 찾지 않도록 한 번만 확정,
-            // 여기서 실패하면(다른 dict 조회들과 달리) 조용히 넘어가지 않고 바로 fail-fast.
-            string startingArmyDefId = runConfig.ToData().startingArmyDefId;
-            if (!armyDefsById.TryGetValue(startingArmyDefId, out ArmyDefinition startingArmyDef))
-                throw new InvalidOperationException(
-                    $"RunConfig.startingArmyDefId('{startingArmyDefId}')에 해당하는 ArmyDefinition을 찾을 수 없습니다 " +
-                    "— 적 구성 스탯 템플릿으로 쓸 수 없습니다.");
-            enemyTemplate = startingArmyDef.ToData();
+            // 2026-08-02: 적 프리셋 조각 풀 — EnemyPresetEditorWindow로 만든 에셋을 전부 로드.
+            List<EnemyPresetDefinition> presetPool = ResourcePool.LoadAllOrThrow<EnemyPresetDefinition>(
+                ResourcePaths.EnemyPresets, "적 프리셋 정의를 찾을 수 없습니다 — 최소 1개 이상 만들어야 합니다 (EnemyPresetEditorWindow)");
+            presetsById = presetPool.ToDictionary(p => p.ToData().presetId, p => p.ToData());
 
             savePath = RunSaveService.DefaultPath;
         }
@@ -277,13 +277,15 @@ namespace OutGame.Flow
             string encounterId = $"enc_{node.roomType}";
             // §4-28: 적 구성을 미리 생성해둔다 — 아이템 드롭·전투력 계산에 쓰이는 동시에, 배치 확정
             // (BuildSetup) 시점에 이 값 그대로가 BattleSetupData.enemies로 실려 나간다(2026-07-29).
-            // 스탯 템플릿은 Awake()에서 확정해둔 시작 군대(army_basic)를 그대로 물려받는다 —
-            // ArmyDefinition이 여러 종류가 되면 이 자리를 풀(pool)에서 고르도록 확장.
+            // 2026-08-02: 개발자가 만들어둔 프리셋 조각(presetsById)을 등급 가중치로 조합한다 —
+            // 최종 스탯은 아군과 동일한 ArmyStatCalculator 공식으로 계산되므로 armyDataById/
+            // augmentDataById가 필요하다.
             // 2026-07-26: 난이도 기준을 "층수(node.point.y)"에서 run.powerRoomsVisited(증원·증강·
             // 이벤트 방 통과 횟수)로 교체 — 전투방만 연달아 나오는 런에서 플레이어 보강 없이 적만
             // 계속 세지는 불균형을 막기 위함(§4-28 재설계).
             currentEnemyComposition = EnemyCompositionGenerator.Generate(
-                run.powerRoomsVisited, node.roomType, enemyCompositionConfig, enemyTemplate, rng);
+                run.powerRoomsVisited, node.roomType, enemyCompositionConfig, presetsById,
+                armyDataById, augmentDataById, rng);
             deploymentPanel.Open(run, node.id, node.roomType, encounterId,
                 armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), runConfig.ToData(),
                 augmentDefsById.Values.ToList(), characterDefsById.Values.ToList(), currentEnemyComposition);

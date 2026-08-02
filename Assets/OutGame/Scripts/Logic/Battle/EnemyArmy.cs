@@ -18,8 +18,12 @@ namespace OutGame.Logic.Battle
         public ArmyClass armyClass;
         public int soldierCount;
 
-        // 최종 스탯 (DeployedArmy와 동일한 의미 — 현재는 배율 없이 ArmyData 원본값을 그대로 옮긴
-        // 것. 병과·난이도별 배율은 별도 밸런싱 작업에서 추가 예정).
+        // DifficultyTier.enemyPowerLevel을 담는 참고용 필드 — DeployedArmy.upgradeLevel과 같은
+        // 역할(전투력 재계산 등에 재사용). 최종 스탯 계산엔 이미 반영됨(2026-08-02).
+        public int upgradeLevel;
+
+        // 최종 스탯 (DeployedArmy와 동일한 의미 — 업그레이드(난이도) + 병과 보너스 배율이 이미
+        // 반영된 값, 2026-08-02).
         public float generalHealth, generalAttack, generalDefense;
         public float generalCritRate, generalMoveSpeed;
         public float soldierHealth, soldierAttack, soldierDefense;

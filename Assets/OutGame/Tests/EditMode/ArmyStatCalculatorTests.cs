@@ -6,7 +6,8 @@ using OutGame.Logic.Augments;
 
 namespace OutGame.Tests.EditMode
 {
-    /// <summary>군대 업그레이드+증강 합산 스탯 배율 검증 (§4-26, §4-27).</summary>
+    /// <summary>군대 업그레이드+증강 합산 스탯 배율 검증 (§4-26, §4-27). 병과 차이는 2026-08-02부터
+    /// 여기서 배율로 얹지 않는다 — 병과별 authored ArmyDefinition(ClassArmyDefinitions)을 직접 쓴다.</summary>
     public class ArmyStatCalculatorTests
     {
         [Test]

@@ -220,17 +220,15 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
-        public void Assign_ReservedClass_Throws()
+        public void Assign_UndefinedClass_Throws()
         {
-            // Cavalry/Spearman은 미사용 예약(§4-25) — 조용히 "구역 없음"으로 넘기지 않고 즉시 예외로
-            // 드러나야 한다(코드 리뷰 HIGH 지적 반영: bossComposition 등에 실수로 들어가도 티가 나야 함).
-            var composition = new List<EnemyArmy> { Enemy(ArmyClass.Cavalry) };
+            // 4병과(Warrior/Hunter/Assassin/Archer) + None 외의 값은 정의된 적이 없다 — 조용히
+            // "구역 없음"으로 넘기지 않고 즉시 예외로 드러나야 한다(코드 리뷰 HIGH 지적 반영:
+            // bossComposition 등에 실수로 들어가도 티가 나야 함). enum 캐스트로 임의의 미정의
+            // 값을 만들어 확인한다.
+            var composition = new List<EnemyArmy> { Enemy((ArmyClass)999) };
             Assert.Throws<ArgumentException>(() =>
                 EnemyFormationAssigner.Assign(composition, Grid(columns: 4, rows: 7), columns: 4));
-
-            var spearmanComposition = new List<EnemyArmy> { Enemy(ArmyClass.Spearman) };
-            Assert.Throws<ArgumentException>(() =>
-                EnemyFormationAssigner.Assign(spearmanComposition, Grid(columns: 4, rows: 7), columns: 4));
         }
 
         [Test]

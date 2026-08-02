@@ -15,34 +15,56 @@ MonoBehaviour:
   config:
     tiers:
     - minCounter: 0
-      enemyCount: 2
-      baseWeight: 1
-      archerWeight: 0
-      warriorWeight: 0
-      hunterWeight: 0
-      assassinWeight: 0
-      bossComposition: 0b0000000000000000000000
+      presetCount: 2
+      gradeWeights:
+      - grade: 1
+        weight: 1
+      bossPresetIds:
+      - preset_warrior_g1
+      - preset_none_g1
+      - preset_none_g1
     - minCounter: 2
-      enemyCount: 4
-      baseWeight: 1
-      archerWeight: 1
-      warriorWeight: 1
-      hunterWeight: 0
-      assassinWeight: 0
-      bossComposition: 0b0000000b000000010000000100000000000000
+      presetCount: 3
+      gradeWeights:
+      - grade: 1
+        weight: 1
+      - grade: 2
+        weight: 1
+      bossPresetIds:
+      - preset_warrior_g1
+      - preset_archer_g1
+      - preset_archer_g1
+      - preset_none_g1
     - minCounter: 4
-      enemyCount: 6
-      baseWeight: 1
-      archerWeight: 1
-      warriorWeight: 1
-      hunterWeight: 1
-      assassinWeight: 0
-      bossComposition: 0b0000000b00000001000000010000000c0000000c00000000000000
+      presetCount: 4
+      gradeWeights:
+      - grade: 1
+        weight: 1
+      - grade: 2
+        weight: 1
+      - grade: 3
+        weight: 1
+      bossPresetIds:
+      - preset_warrior_g1
+      - preset_archer_g1
+      - preset_hunter_g1
+      - preset_hunter_g1
+      - preset_none_g1
     - minCounter: 6
-      enemyCount: 9
-      baseWeight: 1
-      archerWeight: 1
-      warriorWeight: 1
-      hunterWeight: 1
-      assassinWeight: 1
-      bossComposition: 0b0000000b00000001000000010000000c0000000c0000000d0000000d00000000000000
+      presetCount: 5
+      gradeWeights:
+      - grade: 1
+        weight: 1
+      - grade: 2
+        weight: 1
+      - grade: 3
+        weight: 1
+      - grade: 4
+        weight: 1
+      bossPresetIds:
+      - preset_warrior_g1
+      - preset_archer_g1
+      - preset_hunter_g1
+      - preset_assassin_g1
+      - preset_assassin_g1
+      - preset_none_g1

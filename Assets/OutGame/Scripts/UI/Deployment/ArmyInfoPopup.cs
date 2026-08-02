@@ -117,8 +117,8 @@ namespace OutGame.UI.Deployment
         private void Render()
         {
             ArmyData data = armyDef.ToData();
-            string displayName = ItemEquipService.ResolveDisplayName(army, data.displayName, itemDataById);
-            ArmyClass armyClass = ItemEquipService.ResolveClass(army, itemDataById);
+            string displayName = ItemEquipService.ResolveDisplayName(army, data.displayName);
+            ArmyClass armyClass = ItemEquipService.ResolveClass(army);
             // 장군·유닛 스탯 모두 업그레이드 + 증강(아이템/공통) 합산 — 같은 군대·같은 병과이므로 배율도
             // 동일하다(2026-07-26 사용자 확정). 각자 계산하지 않도록 공용 헬퍼 하나로 통일.
             List<AugmentData> selectedAugments = AugmentSelectionResolver.Resolve(run.selectedAugmentIds, augmentDataById);

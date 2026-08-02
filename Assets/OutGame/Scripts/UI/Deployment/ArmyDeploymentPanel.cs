@@ -261,17 +261,19 @@ namespace OutGame.UI.Deployment
         {
             BattlePowerConfig power = powerConfig.ToData();
 
-            // EnemyArmy는 DeployedArmy의 armyDefId/armyClass/soldierCount에만 대응 개념이 있다 —
-            // 나머지(슬롯 위치 등)는 생성된 적에게 의미가 없어 기본값으로 두며, BattlePowerCalculator는
-            // 그 필드들을 아예 읽지 않으므로 안전하다.
+            // EnemyArmy는 DeployedArmy의 armyDefId/armyClass/soldierCount/upgradeLevel에 대응 개념이
+            // 있다 — 나머지(슬롯 위치 등)는 생성된 적에게 의미가 없어 기본값으로 두며,
+            // BattlePowerCalculator는 그 필드들을 아예 읽지 않으므로 안전하다. upgradeLevel은
+            // EnemyCompositionGenerator가 DifficultyTier.enemyPowerLevel을 그대로 옮겨둔 값이라
+            // (2026-08-02), 배치 화면 전투력도 난이도·병과 보너스를 실제로 반영해서 보여준다.
             List<DeployedArmy> enemyDeployed = enemyComposition.Select(enemy => new DeployedArmy
             {
                 armyDefId = enemy.armyDefId,
                 armyClass = enemy.armyClass,
                 soldierCount = enemy.soldierCount,
+                upgradeLevel = enemy.upgradeLevel,
             }).ToList();
-            // 적은 업그레이드/증강 개념이 없으므로(§4-28) 빈 목록을 넘긴다 — DeployedArmy.upgradeLevel도
-            // 기본값 0이라 배율은 항상 1.0으로 계산된다.
+            // 적은 증강 개념이 없으므로(§4-28) 빈 목록을 넘긴다 — 난이도 배율은 위 upgradeLevel로 반영됨.
             float enemyPower = BattlePowerCalculator.Calculate(enemyDeployed, power, armyDataById, new List<AugmentData>());
             enemyPowerLabel.text = $"전투력: {enemyPower:0}";
         }

@@ -86,9 +86,9 @@ namespace OutGame.Logic.Battle
                 case ArmyClass.Archer: return 3;
                 case ArmyClass.None: return 4;
                 default:
-                    // Cavalry/Spearman 등 예약 병과 — 조용히 "구역 없음 취급"으로 넘기면 나중에
-                    // bossComposition 등에 실수로 들어가도 티가 안 난다(§4-22/§4-28의 다른 config들과
-                    // 동일하게 throw, not silently degrade 원칙 — 코드 리뷰 HIGH 지적 반영).
+                    // 정의되지 않은 병과 — 조용히 "구역 없음 취급"으로 넘기면 나중에 bossComposition
+                    // 등에 실수로 들어가도 티가 안 난다(§4-22/§4-28의 다른 config들과 동일하게
+                    // throw, not silently degrade 원칙 — 코드 리뷰 HIGH 지적 반영).
                     throw new ArgumentException($"{armyClass} 병과의 배치 우선순위가 아직 정의되지 않았습니다.");
             }
         }

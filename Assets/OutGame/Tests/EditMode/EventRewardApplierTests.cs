@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using OutGame.Logic.Armies;
 using OutGame.Logic.Events;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
@@ -26,19 +27,19 @@ namespace OutGame.Tests.EditMode
         {
             var skipped = EventRewardApplier.Apply(run, new List<RewardGrant>
             {
-                new RewardGrant { type = RewardType.Army, armyDefId = "army_basic" },
+                new RewardGrant { type = RewardType.Army, armyClass = ArmyClass.Warrior },
             }, DefaultMaxArmyCount);
 
             Assert.AreEqual(2, run.armies.Count);
             Assert.IsTrue(run.armies.Select(a => a.instanceId).Distinct().Count() == 2, "instanceId 유일해야 함");
-            Assert.AreEqual("army_basic", run.armies[1].armyDefId);
+            Assert.AreEqual(ArmyClass.Warrior, run.armies[1].armyClass);
             Assert.IsEmpty(skipped);
         }
 
         [Test]
         public void Apply_ArmyReward_AtCap_SkipsGrantAndReportsIt()
         {
-            var reward = new RewardGrant { type = RewardType.Army, armyDefId = "army_basic" };
+            var reward = new RewardGrant { type = RewardType.Army, armyClass = ArmyClass.Warrior };
 
             var skipped = EventRewardApplier.Apply(run, new List<RewardGrant> { reward }, maxArmyCount: 1);
 
@@ -52,7 +53,7 @@ namespace OutGame.Tests.EditMode
         {
             var skipped = EventRewardApplier.Apply(run, new List<RewardGrant>
             {
-                new RewardGrant { type = RewardType.Army, armyDefId = "army_basic" },
+                new RewardGrant { type = RewardType.Army, armyClass = ArmyClass.Warrior },
             }, maxArmyCount: 2);
 
             Assert.AreEqual(2, run.armies.Count);

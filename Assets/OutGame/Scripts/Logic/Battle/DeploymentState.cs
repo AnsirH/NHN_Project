@@ -114,11 +114,13 @@ namespace OutGame.Logic.Battle
                 ArmyInstance army = run.GetArmy(armyInstanceId);
                 if (army == null)
                     throw new ArgumentException($"RunState에 없는 부대가 배치돼 있습니다: {armyInstanceId}");
-                if (!armyDefs.TryGetValue(army.armyDefId, out ArmyData def))
-                    throw new ArgumentException($"정의되지 않은 ArmyDefinition: {army.armyDefId}");
+
+                string armyDefId = ClassArmyDefinitions.DefIdFor(army.armyClass);
+                if (!armyDefs.TryGetValue(armyDefId, out ArmyData def))
+                    throw new ArgumentException($"정의되지 않은 ArmyDefinition: {armyDefId}");
 
                 ItemData item = ItemEquipService.ResolveItem(army, items);
-                ArmyClass armyClass = item?.armyClass ?? ArmyClass.None;
+                ArmyClass armyClass = army.armyClass;
                 (float x, float y) = slotPositions[slotId];
 
                 // 장군·유닛 최종 스탯(§7.1) — ArmyInfoPopup/BattlePowerCalculator와 동일한
@@ -131,7 +133,7 @@ namespace OutGame.Logic.Battle
                 result.Add(new DeployedArmy
                 {
                     armyInstanceId = armyInstanceId,
-                    armyDefId = army.armyDefId,
+                    armyDefId = armyDefId,
                     armyClass = armyClass,
                     equippedItemId = army.EquippedItemId,
                     generalSkillId = item?.generalSkillId,

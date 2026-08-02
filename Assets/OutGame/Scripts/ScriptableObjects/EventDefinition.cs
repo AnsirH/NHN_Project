@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OutGame.Logic.Armies;
 using OutGame.Logic.Events;
 using UnityEngine;
 
@@ -63,21 +64,19 @@ namespace OutGame.ScriptableObjects
         public class RewardEntry
         {
             public RewardType type;
-            public ArmyDefinition armyDef;
+            public ArmyClass armyClass = ArmyClass.None;
             public ItemDefinition itemDef;
             [Min(0)] public int goldAmount;
 
             public RewardGrant ToData()
             {
-                if (type == RewardType.Army && armyDef == null)
-                    throw new InvalidOperationException("보상 type=Army인데 armyDef가 배정되지 않았습니다.");
                 if (type == RewardType.Item && itemDef == null)
                     throw new InvalidOperationException("보상 type=Item인데 itemDef가 배정되지 않았습니다.");
 
                 return new RewardGrant
                 {
                     type = type,
-                    armyDefId = armyDef != null ? armyDef.ToData().id : null,
+                    armyClass = armyClass,
                     itemId = itemDef != null ? itemDef.ToData().id : null,
                     goldAmount = goldAmount,
                 };

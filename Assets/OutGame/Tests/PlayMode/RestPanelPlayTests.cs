@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using OutGame.Logic.Armies;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
@@ -26,8 +27,10 @@ namespace OutGame.Tests.PlayMode
         private GameObject eventSystemGo;
         private RestPanel panel;
         private RunState run;
-        private ArmyDefinition armyDef;
+        private ArmyDefinition armyDefNone;
+        private ArmyDefinition armyDefArcher;
         private ItemDefinition bowDef;
+        private Dictionary<string, OutGame.Logic.Items.ItemData> itemDataById;
 
         [SetUp]
         public void SetUp()
@@ -40,13 +43,16 @@ namespace OutGame.Tests.PlayMode
             Assert.IsNotNull(prefab, "RestPanel 프리팹 없음 — SceneSetupM4UI.Run() 실행 필요");
             panel = Object.Instantiate(prefab, canvasGo.transform).GetComponent<RestPanel>();
 
-            armyDef = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
-            Assert.IsNotNull(armyDef);
+            armyDefNone = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_army_none");
+            Assert.IsNotNull(armyDefNone, "army_none 정의 없음 — CreateClassArmyDefinitions.Run() 실행 필요");
+            armyDefArcher = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_army_archer");
+            Assert.IsNotNull(armyDefArcher, "army_archer 정의 없음 — CreateClassArmyDefinitions.Run() 실행 필요");
             bowDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Bow");
             Assert.IsNotNull(bowDef);
+            itemDataById = new Dictionary<string, OutGame.Logic.Items.ItemData> { [bowDef.ToData().id] = bowDef.ToData() };
 
             MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
-            run = RunStateFactory.Create(map, new RunConfig { startingArmyCount = 2, startingArmyDefId = "army_basic" });
+            run = RunStateFactory.Create(map, new RunConfig { startingArmyCount = 2 });
         }
 
         [TearDown]
@@ -57,8 +63,8 @@ namespace OutGame.Tests.PlayMode
         }
 
         private void OpenPanel() =>
-            panel.Open(run, new RunConfig { startingArmyCount = 2, startingArmyDefId = "army_basic" },
-                new[] { armyDef }, new[] { bowDef }, new AugmentDefinition[0]);
+            panel.Open(run, new RunConfig { startingArmyCount = 2 },
+                new[] { armyDefNone, armyDefArcher }, new[] { bowDef }, new AugmentDefinition[0]);
 
         private ArmyCardView[] Cards() =>
             panel.GetComponentInChildren<AllyFormationView>().GetComponentsInChildren<ArmyCardView>(includeInactive: true);
@@ -93,7 +99,7 @@ namespace OutGame.Tests.PlayMode
             // 배치 UI와 동일하게 병과 반영 이름이 나와야 한다 (§2 용어) — 각자 계산해서 한쪽만 반영됐던
             // 회귀 버그 재발 방지 (2026-07-19).
             run.ownedItemIds.Add("item_bow");
-            OutGame.Logic.Items.ItemEquipService.Equip(run, run.armies[0].instanceId, "item_bow");
+            OutGame.Logic.Items.ItemEquipService.Equip(run, run.armies[0].instanceId, "item_bow", itemDataById);
 
             OpenPanel();
             yield return null;
@@ -179,7 +185,7 @@ namespace OutGame.Tests.PlayMode
             // 저장 데이터), AllyFormationView는 카드를 대체 이름으로 그냥 그려버려서 예전 목록
             // UI처럼 옵션에서 빠지지 않는다 — 클릭해도 조용히 무시되는 그리드만 남는 소프트락이
             // 재현되면 안 된다.
-            panel.Open(run, new RunConfig { startingArmyCount = 2, startingArmyDefId = "army_basic" },
+            panel.Open(run, new RunConfig { startingArmyCount = 2 },
                 new ArmyDefinition[0], new[] { bowDef }, new AugmentDefinition[0]);
             yield return null;
 

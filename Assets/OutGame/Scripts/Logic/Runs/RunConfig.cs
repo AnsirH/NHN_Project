@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using OutGame.Logic.Armies;
 
 namespace OutGame.Logic.Runs
 {
@@ -9,7 +10,7 @@ namespace OutGame.Logic.Runs
     [Serializable]
     public class RunConfig
     {
-        public string startingArmyDefId = "army_basic";
+        public ArmyClass startingArmyClass = ArmyClass.None;
         public int startingArmyCount = 3;
         public int startingGold = 0;
         public int battleVictoryGold = 20; // §4-20/§9: 전투 승리 시 재화 획득 — 수치는 밸런스 튜닝 전 초안
@@ -24,8 +25,6 @@ namespace OutGame.Logic.Runs
 
         public void Validate()
         {
-            if (string.IsNullOrWhiteSpace(startingArmyDefId))
-                throw new ArgumentException("startingArmyDefId가 비어 있습니다.");
             if (startingArmyCount < 1)
                 throw new ArgumentException($"startingArmyCount는 1 이상이어야 합니다. 현재: {startingArmyCount}");
             if (startingGold < 0)

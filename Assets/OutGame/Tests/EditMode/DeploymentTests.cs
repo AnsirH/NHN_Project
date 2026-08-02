@@ -24,7 +24,8 @@ namespace OutGame.Tests.EditMode
 
         private static readonly Dictionary<string, ArmyData> Defs = new Dictionary<string, ArmyData>
         {
-            ["army_basic"] = new ArmyData { id = "army_basic", baseSoldierCount = 30, generalPower = 10f },
+            ["army_none"] = new ArmyData { id = "army_none", baseSoldierCount = 30, generalPower = 10f },
+            ["army_archer"] = new ArmyData { id = "army_archer", baseSoldierCount = 30, generalPower = 10f },
         };
 
         private static readonly List<AugmentData> NoAugments = new List<AugmentData>();
@@ -227,7 +228,7 @@ namespace OutGame.Tests.EditMode
         {
             run.ownedItemIds.Add("item_bow");
             string archer = run.armies[0].instanceId;
-            ItemEquipService.Equip(run, archer, "item_bow");
+            ItemEquipService.Equip(run, archer, "item_bow", Items);
             run.armies[0].bonusSoldierCount = 6;
 
             deployment.Place(archer, 4);
@@ -244,7 +245,7 @@ namespace OutGame.Tests.EditMode
             Assert.AreEqual("skill_test", setup.playerCharacterSkillId, "캐릭터의 스킬 id만 전달 (세부 효과는 인게임 책임)");
 
             DeployedArmy deployed = setup.armies.First(a => a.armyInstanceId == archer);
-            Assert.AreEqual("army_basic", deployed.armyDefId);
+            Assert.AreEqual("army_archer", deployed.armyDefId);
             Assert.AreEqual(ArmyClass.Archer, deployed.armyClass);
             Assert.AreEqual("item_bow", deployed.equippedItemId);
             Assert.AreEqual("skill_volley", deployed.generalSkillId, "병과 부여 시 장군 스킬 전달 (§4-23)");
@@ -331,7 +332,7 @@ namespace OutGame.Tests.EditMode
             string archer = run.armies[0].instanceId;
             run.armies[0].IncrementUpgradeLevel(); // 레벨 1 → 배율 1.1
             run.ownedItemIds.Add("item_bow");
-            ItemEquipService.Equip(run, archer, "item_bow");
+            ItemEquipService.Equip(run, archer, "item_bow", Items);
             deployment.Place(archer, 0);
 
             var attackAugment = new AugmentData
@@ -361,7 +362,7 @@ namespace OutGame.Tests.EditMode
             // 횟수만 DeployedArmy.generalSkillUpgradeCount로 전달한다(2026-07-26 사용자 확정).
             run.ownedItemIds.Add("item_bow");
             string archer = run.armies[0].instanceId;
-            ItemEquipService.Equip(run, archer, "item_bow");
+            ItemEquipService.Equip(run, archer, "item_bow", Items);
             deployment.Place(archer, 4);
             deployment.Place(run.armies[1].instanceId, 0); // 기본 군대(궁수 스킬 강화 대상 아님)
 

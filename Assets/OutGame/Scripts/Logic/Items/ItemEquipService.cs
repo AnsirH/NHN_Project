@@ -20,16 +20,20 @@ namespace OutGame.Logic.Items
             return run.ownedItemIds.Contains(itemId);
         }
 
-        /// <summary>부여 실행 — 보유 목록에서 제거되고 부대에 귀속된다. 불가 시 InvalidOperationException.</summary>
-        public static void Equip(RunState run, string armyInstanceId, string itemId)
+        /// <summary>부여 실행 — 보유 목록에서 제거되고 부대에 귀속된다. 병과도 이 아이템 기준으로 확정된다.
+        /// 불가 시 InvalidOperationException.</summary>
+        public static void Equip(RunState run, string armyInstanceId, string itemId, IReadOnlyDictionary<string, ItemData> items)
         {
+            if (items == null) throw new ArgumentNullException(nameof(items));
             if (!CanEquip(run, armyInstanceId, itemId))
                 throw new InvalidOperationException(
                     $"아이템을 부여할 수 없습니다: army={armyInstanceId}, item={itemId} " +
                     "(부대가 없거나 이미 아이템 보유, 또는 미보유 아이템)");
+            if (!items.TryGetValue(itemId, out ItemData item))
+                throw new ArgumentException($"정의되지 않은 아이템입니다: {itemId}", nameof(itemId));
 
             ArmyInstance army = run.GetArmy(armyInstanceId);
-            army.Bind(itemId);
+            army.Bind(itemId, item.armyClass);
             run.ownedItemIds.Remove(itemId);
         }
 
@@ -47,12 +51,9 @@ namespace OutGame.Logic.Items
             return item;
         }
 
-        /// <summary>부여된 아이템으로 병과를 판정한다. 아이템 없으면 None.</summary>
-        public static ArmyClass ResolveClass(ArmyInstance army, IReadOnlyDictionary<string, ItemData> items)
-        {
-            ItemData item = ResolveItem(army, items);
-            return item?.armyClass ?? ArmyClass.None;
-        }
+        /// <summary>부대의 병과 — Bind() 시점에 확정돼 저장된 값을 그대로 반환한다(2026-08-02, 더 이상
+        /// 아이템에서 매번 재유도하지 않음).</summary>
+        public static ArmyClass ResolveClass(ArmyInstance army) => army.armyClass;
 
         /// <summary>
         /// 병과의 한국어 표시명 (§2 용어: 활→궁수, 검+방패→전사, 도끼→사냥꾼, 단검→암살자).
@@ -73,10 +74,9 @@ namespace OutGame.Logic.Items
         /// 기본 군대 + 활 = 궁수 군대). 이름을 표시하는 화면(배치 UI, 증원 방 등)이 전부 이 메서드로
         /// 통일해야 한다 — 각자 계산하면 한쪽만 고치고 다른 쪽을 놓치기 쉽다(2026-07-19 실제로 발생).
         /// </summary>
-        public static string ResolveDisplayName(
-            ArmyInstance army, string baseDisplayName, IReadOnlyDictionary<string, ItemData> items)
+        public static string ResolveDisplayName(ArmyInstance army, string baseDisplayName)
         {
-            ArmyClass armyClass = ResolveClass(army, items);
+            ArmyClass armyClass = ResolveClass(army);
             return armyClass == ArmyClass.None ? baseDisplayName : $"{ClassDisplayName(armyClass)} 군대";
         }
 

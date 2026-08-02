@@ -1,3 +1,4 @@
+using OutGame.Logic.Armies;
 using OutGame.Logic.Runs;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace OutGame.ScriptableObjects
     [CreateAssetMenu(menuName = "OutGame/Run Config", fileName = "RunConfig")]
     public class RunConfigAsset : ScriptableObject
     {
-        [SerializeField] private ArmyDefinition startingArmy;
+        [SerializeField] private ArmyClass startingArmyClass = ArmyClass.None;
         [SerializeField, Min(1)] private int startingArmyCount = 3;
         [SerializeField, Min(0)] private int startingGold = 0;
         [SerializeField, Min(0)] private int battleVictoryGold = 20; // §4-20/§9: 초안값
@@ -18,13 +19,9 @@ namespace OutGame.ScriptableObjects
 
         public RunConfig ToData()
         {
-            if (startingArmy == null)
-                throw new System.InvalidOperationException(
-                    $"{name}: startingArmy(ArmyDefinition)가 배정되지 않았습니다.");
-
             var data = new RunConfig
             {
-                startingArmyDefId = startingArmy.ToData().id,
+                startingArmyClass = startingArmyClass,
                 startingArmyCount = startingArmyCount,
                 startingGold = startingGold,
                 battleVictoryGold = battleVictoryGold,

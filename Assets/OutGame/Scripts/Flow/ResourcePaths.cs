@@ -13,6 +13,8 @@ namespace OutGame.Flow
     {
         public const string RunConfigDefault = "OutGame/Data/RunConfig_Default";
         public const string EnemyCompositionConfigDefault = "OutGame/Data/EnemyCompositionConfig_Default";
+        public const string PresetGradeConfigDefault = "OutGame/Data/PresetGradeConfig_Default";
+        public const string EnemyPresets = "OutGame/Data/EnemyPresets";
         public const string ItemDropConfigDefault = "OutGame/Data/ItemDropConfig_Default";
         public const string RoomTypeVisuals = "OutGame/RoomTypeVisuals";
         public const string Maps = "OutGame/Data/Maps";

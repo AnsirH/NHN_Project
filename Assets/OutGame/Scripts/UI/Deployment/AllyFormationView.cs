@@ -284,13 +284,14 @@ namespace OutGame.UI.Deployment
             string itemName = itemDefsById.TryGetValue(itemId, out ItemDefinition itemDef)
                 ? itemDef.DisplayName
                 : itemId;
-            string armyName = armyDefsById.TryGetValue(army.armyDefId, out ArmyDefinition armyDef)
+            string armyDefId = ClassArmyDefinitions.DefIdFor(army.armyClass);
+            string armyName = armyDefsById.TryGetValue(armyDefId, out ArmyDefinition armyDef)
                 ? armyDef.ToData().displayName
-                : army.armyDefId;
+                : armyDefId;
 
             bindWarningPopup.ShowOrConfirmImmediately(itemName, armyName, () =>
             {
-                ItemEquipService.Equip(run, army.instanceId, itemId);
+                ItemEquipService.Equip(run, army.instanceId, itemId, itemDataById);
                 inventoryPopup.Rebuild(run.ownedItemIds, itemDefsById);
                 RefreshLayout();
             });
@@ -308,9 +309,9 @@ namespace OutGame.UI.Deployment
 
             ArmyInstance army = run.GetArmy(card.ArmyInstanceId);
             if (army == null) return; // 방어적 — 카드는 항상 살아있는 부대에만 존재해야 함
-            if (!armyDefsById.TryGetValue(army.armyDefId, out ArmyDefinition def))
+            if (!armyDefsById.TryGetValue(ClassArmyDefinitions.DefIdFor(army.armyClass), out ArmyDefinition def))
             {
-                Debug.LogWarning($"[AllyFormationView] armyDefId '{army.armyDefId}'에 대한 ArmyDefinition을 찾을 수 없어 정보 팝업을 열지 못했습니다.");
+                Debug.LogWarning($"[AllyFormationView] 병과 '{army.armyClass}'에 대한 ArmyDefinition을 찾을 수 없어 정보 팝업을 열지 못했습니다.");
                 return;
             }
 
@@ -341,10 +342,10 @@ namespace OutGame.UI.Deployment
                     ((RectTransform)kv.Value.transform).anchoredPosition = Vector2.zero;
                 }
 
-                armyDefsById.TryGetValue(army.armyDefId, out ArmyDefinition def);
+                armyDefsById.TryGetValue(ClassArmyDefinitions.DefIdFor(army.armyClass), out ArmyDefinition def);
                 Sprite portrait = def != null ? def.Portrait : null;
-                string baseDisplayName = def != null ? def.ToData().displayName : army.armyDefId;
-                string displayName = ItemEquipService.ResolveDisplayName(army, baseDisplayName, itemDataById);
+                string baseDisplayName = def != null ? def.ToData().displayName : army.armyClass.ToString();
+                string displayName = ItemEquipService.ResolveDisplayName(army, baseDisplayName);
                 // 진영 카드에 병사 수도 표시한다(2026-07-26 사용자 요청 — 이전엔 이름이 병과를
                 // 나타낸다는 이유로 뺐었는데(§2 용어: 기본 군대 + 활 = 궁수 군대), 사용자가 다시
                 // 켜기로 확정).
