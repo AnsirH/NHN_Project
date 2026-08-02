@@ -174,6 +174,9 @@ namespace NHN.Presentation.Battle
         private SkillDefinition[] _skillDefinitions;
         private Color[] _skillColors;
         private int _armedSkillSlot = -1;
+        /// <summary>시전 후보 터치 진행 중 (문턱 안에서 눌린 상태) — 드래그로 판정되면 취소된다.</summary>
+        private bool _castPressActive;
+        private Vector2 _castPressStart;
         private Transform _aimIndicator;
         private Renderer _aimRenderer;
         private Transform[] _zoneDiscs;
@@ -899,13 +902,29 @@ namespace NHN.Presentation.Battle
             aimColor.a = AimAlpha;
             SetDiscColor(_aimRenderer, aimColor);
 
-            if (pointer.press.wasPressedThisFrame && !IsPointerOverUi()
-                && _sim.TryCastSkill(_armedSkillSlot, SimViewMapper.ToSim(groundPoint)))
+            // 시전은 "탭"(누른 자리에서 거의 움직이지 않고 뗌)에서만 — 드래그는 카메라 팬이다.
+            // 문턱은 BattleCameraController.DragThresholdPixels 공유 (2026-08-02 카메라 조작 설계).
+            if (pointer.press.wasPressedThisFrame && !IsPointerOverUi())
             {
-                SpawnCastFlash(_armedSkillSlot, groundPoint, skill.Radius);
-                PlaySkillFx(_armedSkillSlot, groundPoint, skill);
-                _armedSkillSlot = -1;
-                _aimIndicator.gameObject.SetActive(false);
+                _castPressActive = true;
+                _castPressStart = screenPosition;
+            }
+            if (_castPressActive
+                && (screenPosition - _castPressStart).sqrMagnitude
+                    > BattleCameraController.DragThresholdPixels * BattleCameraController.DragThresholdPixels)
+            {
+                _castPressActive = false; // 문턱 초과 — 팬으로 판정, 이번 터치의 시전은 취소
+            }
+            if (pointer.press.wasReleasedThisFrame && _castPressActive)
+            {
+                _castPressActive = false;
+                if (_sim.TryCastSkill(_armedSkillSlot, SimViewMapper.ToSim(groundPoint)))
+                {
+                    SpawnCastFlash(_armedSkillSlot, groundPoint, skill.Radius);
+                    PlaySkillFx(_armedSkillSlot, groundPoint, skill);
+                    _armedSkillSlot = -1;
+                    _aimIndicator.gameObject.SetActive(false);
+                }
             }
         }
 
