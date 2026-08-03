@@ -39,20 +39,11 @@ namespace NHN.Integration
             return request;
         }
 
-        // ── 적 진형 깊이 (병과 → slotX, 1 = 전선) ──
-        // 계약상 적 배치 좌표는 인게임 책임 (적 데이터 연동 가이드 2026-07-29). 아웃게임 배치 화면의
-        // 구역 규칙(EnemyFormationAssigner: 전사·사냥꾼 앞열, 암살자 중간, 궁수 후열, 기본 앞부터)과
-        // 같은 어휘를 쓰되, 값은 인게임 전투 감각에 맞춘 진형 상수다 — 전투력 밸런스 수치가 아니라
-        // 배치 레이아웃이라 SO로 빼지 않았다 (튜닝 대상이 되면 BattleConfig로 승격).
-        private const float FrontDepth = 1f;    // 전사·기본 — 최전선 벽
-        private const float MidFrontDepth = 0.8f; // 사냥꾼 — 전사 바로 뒤
-        private const float MidDepth = 0.55f;   // 암살자 — 중간(측면 침투 전 대기)
-        private const float BackDepth = 0.2f;   // 궁수 — 최후방
-
         /// <summary>
-        /// 아웃게임이 확정한 적 구성(병과·병사 수)을 분대 요청으로 변환한다. 스탯 필드는 채우지 않는다 —
-        /// 적은 업그레이드·증강이 없어 인게임 .asset 원형값이 곧 최종값이다 (HasSoldierStats=false 경로).
-        /// 좌표는 병과별 깊이 + 같은 깊이 안에서 계약 목록 순서대로 균등 분산(결정론적).
+        /// 아웃게임이 확정한 적 구성을 분대 요청으로 변환한다 — 아군(ToSquadRequest)과 동일 원칙
+        /// (2026-08-02 계약: EnemyArmy에 최종 스탯·배치 좌표가 실려 온다. 재계산·자체 진형 없이
+        /// 그대로 복사 — 배치 화면(EnemyFormationAssigner)에 보이는 위치·수치가 곧 실제 전투다).
+        /// roleId/generalId만 병과에서 인게임이 매핑한다 (스탯이 아니라 에셋 선택이므로 인게임 소유).
         /// </summary>
         public static void AddEnemySquads(List<SquadRequest> output, IReadOnlyList<EnemyArmy> enemies)
         {
@@ -60,43 +51,33 @@ namespace NHN.Integration
             {
                 return;
             }
-
-            // 같은 깊이(열)에 몇 분대가 서는지 먼저 세어 측면(slotY)을 균등 분산한다.
-            var depthCounts = new Dictionary<float, int>();
-            for (int i = 0; i < enemies.Count; i++)
-            {
-                float depth = ClassToDepth(enemies[i].armyClass);
-                depthCounts.TryGetValue(depth, out int count);
-                depthCounts[depth] = count + 1;
-            }
-
-            var depthFilled = new Dictionary<float, int>();
             for (int i = 0; i < enemies.Count; i++)
             {
                 EnemyArmy enemy = enemies[i];
-                float depth = ClassToDepth(enemy.armyClass);
-                depthFilled.TryGetValue(depth, out int filled);
-                depthFilled[depth] = filled + 1;
                 output.Add(new SquadRequest
                 {
                     squadId = $"{enemy.armyDefId}#{i}", // 결과 집계엔 안 쓰이지만 로그·디버깅 식별용
                     roleId = MapClassToRoleId(enemy.armyClass),
                     generalId = MapClassToGeneralId(enemy.armyClass),
                     soldierCount = enemy.soldierCount,
-                    slotX = depth,
-                    slotY = (filled + 1) / (float)(depthCounts[depth] + 1), // K개면 1/(K+1)..K/(K+1) 균등
-                });
-            }
-        }
+                    slotX = enemy.slotX,
+                    slotY = enemy.slotY,
 
-        private static float ClassToDepth(ArmyClass armyClass)
-        {
-            switch (armyClass)
-            {
-                case ArmyClass.Hunter: return MidFrontDepth;
-                case ArmyClass.Assassin: return MidDepth;
-                case ArmyClass.Archer: return BackDepth;
-                default: return FrontDepth; // Warrior·None(기본) — 전선
+                    // 최종 스탯 — 난이도·병과 배율이 이미 반영된 값이라 그대로 쓴다 (아군과 동일).
+                    maxHp = enemy.soldierHealth,
+                    attackDamage = enemy.soldierAttack,
+                    defense = enemy.soldierDefense,
+                    generalMaxHp = enemy.generalHealth,
+                    generalAttackDamage = enemy.generalAttack,
+                    generalDefense = enemy.generalDefense,
+
+                    // 치명타·이동속도는 장군·유닛 공유 + 이동속도만 인게임 단위 환산 (아군과 동일).
+                    critChancePercent = enemy.generalCritRate,
+                    moveSpeed = enemy.generalMoveSpeed * MoveSpeedScale,
+
+                    // 적은 장군 스킬 강화 증강 개념이 없다 — 0 = 강화 없음.
+                    generalSkillUpgradeCount = 0,
+                });
             }
         }
 

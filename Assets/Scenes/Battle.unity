@@ -1588,7 +1588,7 @@ MonoBehaviour:
     anchor: {x: 10, y: 14}
     general: {fileID: 11400000, guid: c4f8b71d3e6a2049ba5d0c83f19e47a6, type: 2}
   unitPrefab: {fileID: 4582019088113186296, guid: ea7981cabfd47104594597af455cdcc6, type: 3}
-  projectilePrefab: {fileID: 4657482087938105218, guid: efba51f553aba4c44a62df74d542c49a, type: 3}
+  projectilePrefab: {fileID: 113079276425827183, guid: 218ab638fc7a3a743956ac3f76e25975, type: 3}
   unitContainer: {fileID: 826664986}
   projectileContainer: {fileID: 873619520}
   hud: {fileID: 852406431}

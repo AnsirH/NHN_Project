@@ -14,12 +14,14 @@ armies[]: armyDefId, armyClass, equippedItemId, generalSkillId,
           soldierCount,   // 증원 반영 최종 병력
           upgradeLevel,   // 0~5
           slotId, slotX, slotY   // 진영 내 정규화 0~1
-enemies[]: armyDefId, armyClass, soldierCount   // 아웃게임 확정 적 구성 (2026-07-29 추가)
-          // 적 스탯·배치 좌표는 인게임 책임: 스탯 = .asset 원형값(적은 업그레이드·증강 없음),
-          // 배치 = 커넥터의 병과별 진형 규칙 (전사·기본 전선 / 사냥꾼 / 암살자 / 궁수 후방)
+enemies[]: armyDefId, armyClass, soldierCount, upgradeLevel,   // 아웃게임 확정 적 구성 (2026-07-29 추가)
+          general/soldier 최종 스탯, slotId, slotX, slotY      // 2026-08-02: 스탯·배치 좌표도 실려 온다
+          // 아군(DeployedArmy)과 동일 원칙 — 커넥터가 재계산·자체 진형 없이 그대로 복사한다.
+          // 배치 화면(EnemyFormationAssigner)에 보이는 위치·수치 = 실제 전투. roleId/generalId만
+          // 병과에서 인게임이 매핑 (에셋 선택 — 인게임 소유). 상세: Docs/OutGame/적 데이터 연동 가이드.md
 playerCharacterId, playerCharacterSkillId       // §5.2.5 — 캐릭터가 플레이어 스킬을 결정 (2026-07-30 연결)
           // skillId(가칭 skill_char_1~4) → 스킬 에셋 매핑은 BattleCatalog.playerSkillMap (SO 데이터):
-          // char_1=번개, char_2=독구름, char_3=힐 장판, char_4=전투 함성. 해석되면 그 스킬 1종만
+          // char_1=독구름, char_2=번개, char_3=전투 함성, char_4=힐 장판. 해석되면 그 스킬 1종만
           // 사용 가능, 미전달·미등록이면 전체 4종 폴백(씬 단독 실행·BalanceLab·키 불일치 안전망)
 ```
 
@@ -120,9 +122,10 @@ roomId, victory, survivals[]{ armyInstanceId, survivedSoldierCount }
   `InGameFlowController.Begin`이 소비해 기존 `OnBattleResult` 경로를 그대로 탄다.
   **패배**: 세이브 삭제 → 패배 화면 → [완료] → 메인 메뉴. **승리**: 보상(골드·아이템 팝업) →
   맵 그래프 갱신 + 저장 → 런 계속 (보스 승리면 런 클리어 → 메인 메뉴). 양쪽 다 플레이 실측 확인.
-- **스탯 스케일 조율** (§9 밸런스): 아군은 아웃게임 최종 스탯(병사 50HP대), 적은 인게임 `.asset`
-  원형(병사 80HP대)이라 현재 적이 구조적으로 강하다. 전투 스탯 확정 후 함께 조율 필요
-  (실측: 기본 3분대 vs 기본 2분대에서 아군 전멸).
+- ~~스탯 스케일 조율~~ → **구조적 문제는 해소 (2026-08-02)**: 적도 아웃게임이 계산한 최종 스탯을
+  실어 보내므로(EnemyArmy 계약 확장) 아군·적이 같은 스케일이 됐다. 인게임 `.asset` 스탯은 씬 단독
+  실행·BalanceLab 폴백 전용. 개별 수치 밸런스는 §9대로 플레이 테스트로 계속 조율(아웃게임
+  ArmyDefinition_army_* 에셋 소유).
 
 ## 6. 인게임 쪽 정리 이력
 
