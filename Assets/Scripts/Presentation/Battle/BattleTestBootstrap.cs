@@ -125,6 +125,9 @@ namespace NHN.Presentation.Battle
             public Material[][] StealthMaterials;
             /// <summary>모델 프리팹의 애니메이터 — 리깅 없는 프리팹(기본 몸체·캡슐)은 null.</summary>
             public Animator Animator;
+            /// <summary>공격/치명타 클립 길이 — 재생 속도를 공격 주기에 동기화하기 위한 값.</summary>
+            public float AttackClipLength;
+            public float CritClipLength;
         }
 
         /// <summary>사망 애니메이션을 보여준 뒤 풀로 되돌리기까지의 시간 (Die 클립 앞부분만 사용).</summary>
@@ -137,7 +140,19 @@ namespace NHN.Presentation.Battle
         private static readonly int AttackParamId = Animator.StringToHash("Attack");
         private static readonly int CritParamId = Animator.StringToHash("Crit");
         private static readonly int HitParamId = Animator.StringToHash("Hit");
+        private static readonly int AttackSpeedParamId = Animator.StringToHash("AttackSpeed");
+        private static readonly int CritSpeedParamId = Animator.StringToHash("CritSpeed");
         private static readonly int IdleStateId = Animator.StringToHash("Idle");
+        private static readonly int AttackStateId = Animator.StringToHash("Attack");
+        private static readonly int CritStateId = Animator.StringToHash("Crit");
+
+        /// <summary>
+        /// 시뮬 종료 후 결과 표시·복귀 콜백까지의 연출 유예 — 마지막 유닛의 사망 애니메이션
+        /// (DeathLingerSeconds)이 끝나기 전에 전투가 끝나버리는 어색함을 막는다.
+        /// </summary>
+        private const float FinishGraceSeconds = 2f;
+        private bool _finishGraceStarted;
+        private float _finishGraceRemaining;
 
         /// <summary>이동속도 산출용 직전 프레임 위치 — Idle/Run 전환은 뷰가 위치 변화로 판단한다.</summary>
         private Vector3[] _unitPrevPositions;
@@ -334,6 +349,7 @@ namespace NHN.Presentation.Battle
             _sim = sim;
             _accumulator = 0f;
             _resultShown = false;
+            _finishGraceStarted = false;
             _armedSkillSlot = -1;
             ResetSkillFxViews();
             hud.Clear();
@@ -463,6 +479,18 @@ namespace NHN.Presentation.Battle
 
             if (_sim.Finished && !_resultShown)
             {
+                // 연출 유예: 마지막 사망 애니메이션이 끝난 뒤에 결과를 알리고 복귀 콜백을 보낸다.
+                if (!_finishGraceStarted)
+                {
+                    _finishGraceStarted = true;
+                    _finishGraceRemaining = FinishGraceSeconds;
+                }
+                _finishGraceRemaining -= Time.deltaTime;
+                if (_finishGraceRemaining > 0f)
+                {
+                    return;
+                }
+
                 _resultShown = true;
                 BattleResult result = _sim.Result;
                 string winner = result.Winner == 0 ? "A군 승리"
@@ -509,7 +537,13 @@ namespace NHN.Presentation.Battle
                         animator.SetTrigger(CritParamId);
                         break;
                     case BattleSimulation.ViewEventType.Damaged:
-                        animator.SetTrigger(HitParamId);
+                        // 공격 스윙 중에는 피격 모션이 끼어들지 않는다 — 난전에서 피격이 매 순간
+                        // 들어와 스윙이 계속 끊기는 어색함 방지 (공격 > 피격 우선순위).
+                        AnimatorStateInfo current = animator.GetCurrentAnimatorStateInfo(0);
+                        if (current.shortNameHash != AttackStateId && current.shortNameHash != CritStateId)
+                        {
+                            animator.SetTrigger(HitParamId);
+                        }
                         break;
                 }
             }
@@ -540,6 +574,11 @@ namespace NHN.Presentation.Battle
                     if (animator != null)
                     {
                         // 애니메이터가 있으면 즉시 제거하지 않고 사망 클립을 잠깐 보여준다.
+                        // 죽기 직전 걸려 있던 트리거를 반드시 비운다 — 남아 있으면 AnyState 전이가
+                        // Die 상태의 시체를 공격/피격 자세로 다시 끄집어낸다 (죽다 벌떡 일어나는 버그).
+                        animator.ResetTrigger(AttackParamId);
+                        animator.ResetTrigger(CritParamId);
+                        animator.ResetTrigger(HitParamId);
                         animator.SetFloat(SpeedParamId, 0f);
                         animator.SetTrigger(DieParamId);
                         _unitDying[i] = true;
@@ -728,6 +767,15 @@ namespace NHN.Presentation.Battle
                 // 포물선: 발사 높이에서 착탄점(바닥)으로 + 정점 높이 arcHeight의 아치.
                 position.y = Mathf.Lerp(ProjectileLaunchHeight, 0f, t) + 4f * state.ArcHeight * t * (1f - t);
                 _projTransforms[p].localPosition = position;
+
+                // 화살 프리팹 대응 — 비행 방향(경로 미분)으로 기수를 돌린다: 수평은 발사→착탄 벡터,
+                // 수직은 위 포물선 식의 t 미분. 구체였을 땐 무의미했지만 회전 자체는 무해하다.
+                Vector3 direction = end - start;
+                direction.y = (0f - ProjectileLaunchHeight) + 4f * state.ArcHeight * (1f - 2f * t);
+                if (direction.sqrMagnitude > 1e-6f)
+                {
+                    _projTransforms[p].localRotation = Quaternion.LookRotation(direction);
+                }
             }
         }
 
@@ -742,10 +790,11 @@ namespace NHN.Presentation.Battle
                 float scale = squad.Role.UnitRadius / 0.5f; // 뷰 프리팹 표준 크기(반경 0.5 = 키 1) 기준
                 GameObjectPool pool = GetUnitPool(ViewPrefabOf(squad.Role));
                 Quaternion facing = isTeamB ? TeamBFacing : TeamAFacing;
+                float attackInterval = squad.Role.AttackInterval;
 
                 for (int k = 0; k < squad.Count; k++)
                 {
-                    SpawnUnitView(unitIndex++, color, scale, pool, facing);
+                    SpawnUnitView(unitIndex++, color, scale, pool, facing, attackInterval);
                 }
 
                 if (squad.General != null)
@@ -753,12 +802,14 @@ namespace NHN.Presentation.Battle
                     // 장군 뷰: 크기 배율 + 금색 혼합 — 병사와 즉시 구분 (기획 §4). 모델은 병과와 공유.
                     // 시뮬의 분대 내 유닛 순서(병사 → 장군)와 일치해야 한다 (ArmyDefinition 계약).
                     Color generalColor = Color.Lerp(color, GeneralHighlight, 0.5f);
-                    SpawnUnitView(unitIndex++, generalColor, squad.General.UnitRadius / 0.5f, pool, facing);
+                    SpawnUnitView(
+                        unitIndex++, generalColor, squad.General.UnitRadius / 0.5f, pool, facing, attackInterval);
                 }
             }
         }
 
-        private void SpawnUnitView(int unitIndex, Color color, float scale, GameObjectPool pool, Quaternion facing)
+        private void SpawnUnitView(
+            int unitIndex, Color color, float scale, GameObjectPool pool, Quaternion facing, float attackInterval)
         {
             GameObject unit = pool.Get();
             _unitObjects[unitIndex] = unit;
@@ -788,6 +839,19 @@ namespace NHN.Presentation.Battle
                 animator.ResetTrigger(CritParamId);
                 animator.ResetTrigger(HitParamId);
                 animator.SetFloat(SpeedParamId, 0f);
+                // 스윙 1회 = 공격 1회 동기화: 클립을 끝까지 재생하되 속도를 공격 주기에 맞춘다.
+                UnitViewCache view = _unitViewSets[unitIndex];
+                if (attackInterval > 0f)
+                {
+                    if (view.AttackClipLength > 0f)
+                    {
+                        animator.SetFloat(AttackSpeedParamId, view.AttackClipLength / attackInterval);
+                    }
+                    if (view.CritClipLength > 0f)
+                    {
+                        animator.SetFloat(CritSpeedParamId, view.CritClipLength / attackInterval);
+                    }
+                }
                 animator.Play(IdleStateId, 0, 0f);
             }
         }
@@ -818,6 +882,25 @@ namespace NHN.Presentation.Battle
                 StealthMaterials = stealths,
                 Animator = unit.GetComponentInChildren<Animator>(true), // 리깅 없는 프리팹은 null
             };
+            if (cache.Animator != null)
+            {
+                // 공격/치명타 클립 길이 — 재생 속도를 공격 주기에 맞추기 위해 1회 조회.
+                // 오버라이드 컨트롤러는 원본 클립 이름("Attack"/"Crit")으로 교체본을 돌려준다.
+                var overrides = cache.Animator.runtimeAnimatorController as AnimatorOverrideController;
+                if (overrides != null)
+                {
+                    cache.AttackClipLength = overrides["Attack"] != null ? overrides["Attack"].length : 0f;
+                    cache.CritClipLength = overrides["Crit"] != null ? overrides["Crit"].length : 0f;
+                }
+                else
+                {
+                    foreach (var clip in cache.Animator.runtimeAnimatorController.animationClips)
+                    {
+                        if (clip.name == "Attack") cache.AttackClipLength = clip.length;
+                        else if (clip.name == "Crit") cache.CritClipLength = clip.length;
+                    }
+                }
+            }
             _viewCaches.Add(unit, cache);
             return cache;
         }

@@ -87,7 +87,6 @@ namespace OutGame.UI
             }
 
             gameObject.SetActive(true);
-            PanelTransitions.FadeIn(gameObject);
         }
 
         private void OnArmySelected(string armyInstanceId)

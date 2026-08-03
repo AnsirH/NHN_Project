@@ -22,6 +22,7 @@ namespace OutGame.Flow
         public const string Augments = "OutGame/Data/Augments";
         public const string Characters = "OutGame/Data/Characters";
         public const string Data = "OutGame/Data"; // ArmyDefinition/ItemDefinition 공용 루트
+        public const string MapLineMaterial = "OutGame/Materials/MapLine";
     }
 
     /// <summary>

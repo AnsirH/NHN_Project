@@ -47,7 +47,6 @@ namespace OutGame.UI
         public void Show()
         {
             panelRoot.SetActive(true);
-            PanelTransitions.FadeIn(panelRoot);
         }
 
         public void Hide() => panelRoot.SetActive(false);

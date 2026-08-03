@@ -43,11 +43,6 @@ namespace OutGame.Tests.PlayMode
         [TearDown]
         public void TearDown()
         {
-            // ChoicePanelBase.Open()이 PanelTransitions.FadeIn()으로 건 DOTween 트윈이 테스트 종료
-            // 시점에도 아직 살아있을 수 있다 — 죽이지 않고 CanvasGroup을 파괴하면 다음 틱에 그 트윈이
-            // 이미 파괴된 CanvasGroup을 건드려 바로 다음 픽스처(실행 순서상 CharacterSelectControllerPlayTests)에서
-            // 엉뚱하게 실패로 잡힌다(실제 발생, 2026-07-30).
-            DG.Tweening.DOTween.KillAll();
             Object.Destroy(canvasGo);
         }
 

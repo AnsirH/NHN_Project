@@ -138,7 +138,6 @@ namespace OutGame.UI.Deployment
             SyncFromAllyFormation();
 
             gameObject.SetActive(true);
-            PanelTransitions.FadeIn(gameObject);
         }
 
         /// <summary>

@@ -33,7 +33,6 @@ namespace OutGame.UI
                 SpawnChoiceButton($"{option.displayName}\n{option.description}", () => OnAugmentSelected(option));
 
             gameObject.SetActive(true);
-            PanelTransitions.FadeIn(gameObject);
         }
 
         private void OnAugmentSelected(AugmentData augment)

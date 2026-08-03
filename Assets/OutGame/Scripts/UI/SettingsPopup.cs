@@ -35,7 +35,6 @@ namespace OutGame.UI
             volumeSlider.SetValueWithoutNotify(SoundSettings.MasterVolume);
             gameObject.SetActive(true);
             transform.SetAsLastSibling(); // 다른 팝업 위에 항상 뜨도록
-            PanelTransitions.FadeIn(gameObject);
         }
 
         public void Hide() => gameObject.SetActive(false);
