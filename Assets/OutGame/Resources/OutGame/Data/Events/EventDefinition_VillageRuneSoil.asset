@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7893b1a0715f4c44498cf519e61fe537, type: 3}
+  m_Name: EventDefinition_VillageRuneSoil
+  m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.EventDefinition
+  eventId: evt_village_rune_soil
+  illustration: {fileID: 0}
+  bodyText: 약탈로 무너진 마을 바닥 아래, 룬의 기운이 옅게 남은 흙이 드러났다. 마을이 세워지기 훨씬 전부터, 이 땅에 배어 있던 것이다.
+  choices:
+  - choiceText: 흙을 빚어 부대로 세운다
+    rewards:
+    - type: 1
+      armyClass: 0
+      itemDef: {fileID: 0}
+      goldAmount: 0
+    resultText: 흙에 손을 얹자, 오래 잠들어 있던 힘이 서서히 사람의 형상을 빚어냈다.
+  - choiceText: 건드리지 않고 지나간다
+    rewards:
+    - type: 3
+      armyClass: 0
+      itemDef: {fileID: 0}
+      goldAmount: 20
+    resultText: 무너진 곳간 틈에서, 챙겨 가지 못한 옛 재화 몇 닢을 발견했다.

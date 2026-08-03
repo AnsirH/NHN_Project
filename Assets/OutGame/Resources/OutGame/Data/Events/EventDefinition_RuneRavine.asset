@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7893b1a0715f4c44498cf519e61fe537, type: 3}
+  m_Name: EventDefinition_RuneRavine
+  m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.EventDefinition
+  eventId: evt_rune_ravine
+  illustration: {fileID: 0}
+  bodyText: 룬 전쟁의 격전지였다는 협곡. 그 바닥의 흙이 스스로 사람의 형상을 빚어낼 만큼, 룬의 기운이 짙게 남아 있다.
+  choices:
+  - choiceText: 기운을 끌어와 형상을 완성한다
+    rewards:
+    - type: 1
+      armyClass: 0
+      itemDef: {fileID: 0}
+      goldAmount: 0
+    resultText: 손을 대자, 흙이 스스로 자세를 고쳐 세웠다.
+  - choiceText: 그대로 두고 지나간다
+    rewards:
+    - type: 3
+      armyClass: 0
+      itemDef: {fileID: 0}
+      goldAmount: 20
+    resultText: 협곡을 벗어나는 길, 반쯤 흙에 묻힌 옛 룬 조각 몇 개를 주웠다.

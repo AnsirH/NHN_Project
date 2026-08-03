@@ -14,23 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.EventDefinition
   eventId: evt_battlefield_remains
   illustration: {fileID: 0}
-  bodyText: "\uC9C0\uB09C \uC804\uD22C\uC758 \uD754\uC801\uC774 \uB0A8\uC740 \uB4E4\uD310.
-    \uBD80\uC11C\uC9C4 \uB9C8\uCC28 \uC0AC\uC774\uB85C \uC544\uC9C1 \uC4F8\uB9CC\uD55C
-    \uC7A5\uBE44\uAC00 \uBCF4\uC778\uB2E4."
+  bodyText: 지난 전투의 흔적이 남은 들판. 부서진 마차 사이로, 아직 쓸만한 장비 몇 점이 흙에 반쯤 파묻혀 있다.
   choices:
-  - choiceText: "\uD65C\uC744 \uC218\uC2B5\uD55C\uB2E4"
+  - choiceText: 도끼를 수습한다
     rewards:
     - type: 2
-      armyDef: {fileID: 0}
-      itemDef: {fileID: 11400000, guid: 69f7fb86cb054f14bb8ff5bbb6981409, type: 2}
+      armyClass: 0
+      itemDef: {fileID: 11400000, guid: e15897dd52ccba1574c6c7a0d7d5decf, type: 2}
       goldAmount: 0
-    resultText: "\uBD80\uB7EC\uC9C0\uC9C0 \uC54A\uC740 \uD65C \uD558\uB098\uB97C
-      \uC218\uC2B5\uD588\uB2E4."
-  - choiceText: "\uBC29\uD328\uB97C \uC218\uC2B5\uD55C\uB2E4"
+    resultText: 흙을 털어내자, 이가 나가지 않은 도끼 한 자루가 나왔다. 누구의 것이었는지는, 이제 아무도 답할 수 없다.
+  - choiceText: 단검을 수습한다
     rewards:
     - type: 2
-      armyDef: {fileID: 0}
+      armyClass: 0
+      itemDef: {fileID: 11400000, guid: aee08893f5754a90729addca8e31ed1d, type: 2}
+      goldAmount: 0
+    resultText: 흙을 털어내자, 녹슬지 않은 단검 한 자루가 나왔다. 누구의 것이었는지는, 이제 아무도 답할 수 없다.
+  - choiceText: 검과 방패를 수습한다
+    rewards:
+    - type: 2
+      armyClass: 0
       itemDef: {fileID: 11400000, guid: 61d51b3066726404b810295714b8b94d, type: 2}
       goldAmount: 0
-    resultText: "\uC774\uAC00 \uB098\uAC00\uC9C0 \uC54A\uC740 \uBC29\uD328 \uD558\uB098\uAC00
-      \uB0A8\uC544 \uC788\uC5C8\uB2E4."
+    resultText: 흙을 털어내자, 부서지지 않은 방패 하나가 나왔다. 누구의 것이었는지는, 이제 아무도 답할 수 없다.

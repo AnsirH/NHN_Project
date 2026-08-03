@@ -14,21 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.EventDefinition
   eventId: evt_traveling_merchant
   illustration: {fileID: 0}
-  bodyText: "\uC0C1\uC778\uC774 \uC218\uB808\uB97C \uC138\uC6B0\uACE0 \uB9D0\uC744
-    \uAC74\uB2E4. \"\uB9C8\uC9C0\uB9C9 \uBB3C\uAC74\uC785\uB2C8\uB2E4. \uD558\uB098\uB9CC
-    \uAC00\uC838\uAC00\uC2DC\uC8E0.\""
+  bodyText: '흙 묻은 수레를 끄는 상인이 있다. 실려 있는 것들은 하나같이 전장에서 건너온 물건들이다. "마지막입니다. 하나만 가져가시죠."'
   choices:
-  - choiceText: "\uD65C\uC744 \uBC1B\uB294\uB2E4"
+  - choiceText: 활을 받는다
     rewards:
     - type: 2
-      armyDef: {fileID: 0}
+      armyClass: 0
       itemDef: {fileID: 11400000, guid: 69f7fb86cb054f14bb8ff5bbb6981409, type: 2}
       goldAmount: 0
-    resultText: "\uC0C1\uC778\uC5D0\uAC8C\uC11C \uD65C\uC744 \uAC74\uB124\uBC1B\uC558\uB2E4."
-  - choiceText: "\uBC29\uD328\uB97C \uBC1B\uB294\uB2E4"
+    resultText: 활시위가 팽팽하다 — 누군가 매일 손질해온 흔적이다.
+  - choiceText: 검과 방패를 받는다
     rewards:
     - type: 2
-      armyDef: {fileID: 0}
+      armyClass: 0
       itemDef: {fileID: 11400000, guid: 61d51b3066726404b810295714b8b94d, type: 2}
       goldAmount: 0
-    resultText: "\uC0C1\uC778\uC5D0\uAC8C\uC11C \uBC29\uD328\uB97C \uAC74\uB124\uBC1B\uC558\uB2E4."
+    resultText: 방패에 새겨진 흠집들이, 그 방패가 지나온 전장들을 말해준다.
+  - choiceText: 도끼를 받는다
+    rewards:
+    - type: 2
+      armyClass: 0
+      itemDef: {fileID: 11400000, guid: e15897dd52ccba1574c6c7a0d7d5decf, type: 2}
+      goldAmount: 0
+    resultText: 도끼날은 무디지만, 자루를 쥔 손자국만은 선명하게 남아 있다.
