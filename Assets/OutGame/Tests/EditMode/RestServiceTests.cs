@@ -11,7 +11,7 @@ namespace OutGame.Tests.EditMode
     {
         private static ArmyData Def(int baseSoldiers) =>
             new ArmyData { id = "army_basic", baseSoldierCount = baseSoldiers, maxSoldierCount = baseSoldiers * 2 };
-        private static ArmyInstance NewArmy() => new ArmyInstance { instanceId = Guid.NewGuid().ToString(), armyDefId = "army_basic" };
+        private static ArmyInstance NewArmy() => new ArmyInstance { instanceId = Guid.NewGuid().ToString() };
 
         [Test]
         public void Reinforce_DefaultPercent_Adds20PercentOfBase()

@@ -33,7 +33,7 @@ namespace OutGame.Logic.Events
                         run.armies.Add(new Runs.ArmyInstance
                         {
                             instanceId = Guid.NewGuid().ToString(),
-                            armyDefId = reward.armyDefId,
+                            armyClass = reward.armyClass,
                         });
                         break;
                     case RewardType.Item:

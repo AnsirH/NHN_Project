@@ -173,11 +173,11 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
-        public void WeightOf_ReservedClass_Throws()
+        public void WeightOf_UndefinedClass_Throws()
         {
-            Assert.Throws<System.ArgumentException>(() => new BattlePowerConfig().WeightOf(ArmyClass.Spearman));
-            Assert.Throws<System.ArgumentException>(() => new BattlePowerConfig().WeightOf(ArmyClass.Cavalry),
-                "Cavalry는 2026-07-19부로 미사용 예약으로 격하됨 (§4-25)");
+            // 4병과(Warrior/Hunter/Assassin/Archer) + None 외의 값은 정의된 적이 없다 — enum 캐스트로
+            // 임의의 미정의 값을 만들어 default 분기가 조용히 넘어가지 않고 던지는지 확인한다.
+            Assert.Throws<System.ArgumentException>(() => new BattlePowerConfig().WeightOf((ArmyClass)999));
         }
     }
 }

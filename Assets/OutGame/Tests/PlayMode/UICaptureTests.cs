@@ -102,14 +102,17 @@ namespace OutGame.Tests.PlayMode
                 var panel = Object.Instantiate(prefab, canvasGo.transform).GetComponent<ArmyDeploymentPanel>();
 
                 var armyDef = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
+                var armyDefNone = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_army_none");
                 var bowDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Bow");
 
-                var runConfig = new RunConfig { startingArmyCount = 3, startingArmyDefId = "army_basic" };
+                var runConfig = new RunConfig { startingArmyCount = 3 };
                 MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
                 RunState run = RunStateFactory.Create(map, runConfig);
                 run.ownedItemIds.Add("item_bow");
 
                 // 2026-07-26 4병과 확장(§4-30) — 스크린샷에 전 병과 배치 구역이 다 보이도록 5종 전부 포함.
+                // 이 목록은 EnemyCompositionGenerator를 거치지 않은 손수 작성 데이터라 armyDefId="army_basic"
+                // 리터럴을 그대로 쓴다(2026-08-02 이후에도 유효 — armyDataById에 army_basic만 있으면 됨).
                 var enemyComposition = new System.Collections.Generic.List<OutGame.Logic.Battle.EnemyArmy>
                 {
                     new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.Archer, soldierCount = 30 },
@@ -118,7 +121,7 @@ namespace OutGame.Tests.PlayMode
                     new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.Assassin, soldierCount = 30 },
                     new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.None, soldierCount = 30 },
                 };
-                panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default", new[] { armyDef }, new[] { bowDef },
+                panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default", new[] { armyDef, armyDefNone }, new[] { bowDef },
                     runConfig, new AugmentDefinition[0], new PlayerCharacterDefinition[0], enemyComposition);
 
                 yield return CaptureToFile("ArmyDeploymentPanel_01_initial.png");
@@ -189,7 +192,7 @@ namespace OutGame.Tests.PlayMode
                 scaler.matchWidthOrHeight = 0.5f;
 
                 MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
-                RunState run = RunStateFactory.Create(map, new RunConfig { startingArmyCount = 2, startingArmyDefId = "army_basic" });
+                RunState run = RunStateFactory.Create(map, new RunConfig { startingArmyCount = 2 });
 
                 // EventPanel — 초기 상태 + 선택 후 결과 상태
                 var eventPrefab = Resources.Load<GameObject>("OutGame/EventPanel");
@@ -208,12 +211,12 @@ namespace OutGame.Tests.PlayMode
                 // RestPanel — 초기 상태(진영 그리드) + 카드 클릭 후 결과 상태 (2026-07-26: 증원 대상
                 // 선택을 배치 화면과 동일한 진영 그리드로 교체 — 카드 클릭 즉시 증원)
                 var restPrefab = Resources.Load<GameObject>("OutGame/RestPanel");
-                var armyDef = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
+                var armyDefNone = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_army_none");
                 var restPanel = Object.Instantiate(restPrefab, canvasGo.transform).GetComponent<RestPanel>();
                 restPanel.Open(
                     run,
-                    new RunConfig { startingArmyCount = 2, startingArmyDefId = "army_basic" },
-                    new[] { armyDef },
+                    new RunConfig { startingArmyCount = 2 },
+                    new[] { armyDefNone },
                     new ItemDefinition[0],
                     new OutGame.ScriptableObjects.AugmentDefinition[0]);
                 yield return CaptureToFile("RestPanel_01_initial.png");
@@ -398,16 +401,16 @@ namespace OutGame.Tests.PlayMode
                 Assert.IsNotNull(prefab, "ArmyFormationPopup 프리팹 없음 — SceneSetupM3UI.Run() 실행 필요");
                 var popup = Object.Instantiate(prefab, canvasGo.transform).GetComponent<ArmyFormationPopup>();
 
-                var armyDef = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
+                var armyDefNone = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_army_none");
                 var bowDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Bow");
 
-                var runConfig = new RunConfig { startingArmyCount = 3, startingArmyDefId = "army_basic" };
+                var runConfig = new RunConfig { startingArmyCount = 3 };
                 MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
                 RunState run = RunStateFactory.Create(map, runConfig);
                 run.ownedItemIds.Add("item_bow");
                 run.gold = 500;
 
-                popup.Open(run, runConfig, new[] { armyDef }, new[] { bowDef }, new AugmentDefinition[0]);
+                popup.Open(run, runConfig, new[] { armyDefNone }, new[] { bowDef }, new AugmentDefinition[0]);
 
                 yield return CaptureToFile("ArmyFormationPopup_01_initial.png");
 

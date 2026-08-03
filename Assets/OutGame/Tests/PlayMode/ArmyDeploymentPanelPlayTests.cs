@@ -26,7 +26,10 @@ namespace OutGame.Tests.PlayMode
         private GameObject eventSystemGo;
         private ArmyDeploymentPanel panel;
         private RunState run;
-        private ArmyDefinition armyDef;
+        private ArmyDefinition armyDefBasic;
+        private ArmyDefinition armyDefNone;
+        private ArmyDefinition armyDefArcher;
+        private ArmyDefinition armyDefWarrior;
         private ItemDefinition bowDef;
         private ItemDefinition shieldDef;
         private PlayerCharacterDefinition characterDef;
@@ -54,14 +57,24 @@ namespace OutGame.Tests.PlayMode
             Assert.IsNotNull(prefab, "ArmyDeploymentPanel 프리팹이 없음 — SceneSetupM3UI.Run() 실행 필요");
             panel = Object.Instantiate(prefab, canvasGo.transform).GetComponent<ArmyDeploymentPanel>();
 
-            armyDef = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
+            // TestEnemyComposition은 EnemyCompositionGenerator를 거치지 않고 직접 손으로 만든
+            // EnemyArmy 목록이라 armyDefId="army_basic" 리터럴을 그대로 쓴다 — 그래서 army_basic도
+            // 계속 로드해둔다. 플레이어 진영은 병과별 정의(army_none/army_archer/army_warrior, 2026-08-02)가
+            // 필요하다 — 기본(None), 아이템 장착(item_bow→Archer, item_shield→Warrior) 케이스를 커버.
+            armyDefBasic = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
+            armyDefNone = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_army_none");
+            armyDefArcher = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_army_archer");
+            armyDefWarrior = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_army_warrior");
             bowDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Bow");
             shieldDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Shield");
-            Assert.IsNotNull(armyDef);
+            Assert.IsNotNull(armyDefBasic);
+            Assert.IsNotNull(armyDefNone, "army_none 정의 없음 — CreateClassArmyDefinitions.Run() 실행 필요");
+            Assert.IsNotNull(armyDefArcher, "army_archer 정의 없음 — CreateClassArmyDefinitions.Run() 실행 필요");
+            Assert.IsNotNull(armyDefWarrior, "army_warrior 정의 없음 — CreateClassArmyDefinitions.Run() 실행 필요");
             Assert.IsNotNull(bowDef);
             Assert.IsNotNull(shieldDef);
 
-            runConfig = new RunConfig { startingArmyCount = 3, startingArmyDefId = "army_basic" };
+            runConfig = new RunConfig { startingArmyCount = 3 };
             MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
             run = RunStateFactory.Create(map, runConfig);
 
@@ -92,7 +105,7 @@ namespace OutGame.Tests.PlayMode
         private void OpenPanel()
         {
             panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default",
-                new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0],
+                new[] { armyDefBasic, armyDefNone, armyDefArcher, armyDefWarrior }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0],
                 new[] { characterDef }, TestEnemyComposition);
         }
 
@@ -264,7 +277,7 @@ namespace OutGame.Tests.PlayMode
             var emptyRun = new RunState { mapState = map };
 
             panel.Open(emptyRun, "room_2_0", RoomType.NormalBattle, "enc_default",
-                new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0],
+                new[] { armyDefBasic, armyDefNone, armyDefArcher, armyDefWarrior }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0],
                 new PlayerCharacterDefinition[0], TestEnemyComposition);
 
             Button startButton = panel.transform.Find("MainRow/CenterColumn/StartBattleButton").GetComponent<Button>();
@@ -278,11 +291,11 @@ namespace OutGame.Tests.PlayMode
             // 많은 군대를 보유하게 만들어 config 불일치(§4-7) 방어 로직을 검증한다.
             MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
             RunState overCapRun = RunStateFactory.Create(map,
-                new RunConfig { startingArmyCount = 30, maxArmyCount = 30, startingArmyDefId = "army_basic" });
+                new RunConfig { startingArmyCount = 30, maxArmyCount = 30 });
 
             Assert.Throws<System.InvalidOperationException>(() =>
                 panel.Open(overCapRun, "room_2_0", RoomType.NormalBattle, "enc_default",
-                    new[] { armyDef }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0],
+                    new[] { armyDefBasic, armyDefNone, armyDefArcher, armyDefWarrior }, new[] { bowDef, shieldDef }, runConfig, new AugmentDefinition[0],
                     new PlayerCharacterDefinition[0], TestEnemyComposition));
         }
 
@@ -432,7 +445,7 @@ namespace OutGame.Tests.PlayMode
             yield return null;
             panel.Close();
 
-            var newArmy = new ArmyInstance { instanceId = "army_new_extra", armyDefId = "army_basic" };
+            var newArmy = new ArmyInstance { instanceId = "army_new_extra" };
             run.armies.Add(newArmy);
 
             OpenPanel();
@@ -736,7 +749,7 @@ namespace OutGame.Tests.PlayMode
 
             Text soldierCountLabel = infoPopup.transform
                 .Find("Window/BodyRow/ArmyColumn/SoldierPreview/SoldierCountLabel").GetComponent<Text>();
-            Assert.AreEqual($"30/{armyDef.ToData().maxSoldierCount}명", soldierCountLabel.text);
+            Assert.AreEqual($"30/{armyDefNone.ToData().maxSoldierCount}명", soldierCountLabel.text);
         }
 
         [UnityTest]

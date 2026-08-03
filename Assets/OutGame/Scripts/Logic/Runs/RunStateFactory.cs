@@ -25,7 +25,7 @@ namespace OutGame.Logic.Runs
                 run.armies.Add(new ArmyInstance
                 {
                     instanceId = Guid.NewGuid().ToString(),
-                    armyDefId = config.startingArmyDefId,
+                    armyClass = config.startingArmyClass,
                 });
             }
 

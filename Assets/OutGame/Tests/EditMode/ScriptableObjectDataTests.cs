@@ -95,37 +95,17 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
-        public void RunConfigAsset_ToData_WithoutStartingArmy_Throws()
-        {
-            var so = ScriptableObject.CreateInstance<RunConfigAsset>();
-            try
-            {
-                Assert.Throws<System.InvalidOperationException>(() => so.ToData());
-            }
-            finally
-            {
-                Object.DestroyImmediate(so);
-            }
-        }
-
-        [Test]
         public void RunConfigAsset_ToData_MapsBattleVictoryGoldDefault()
         {
-            var armySo = ScriptableObject.CreateInstance<ArmyDefinition>();
             var runConfigSo = ScriptableObject.CreateInstance<RunConfigAsset>();
             try
             {
-                var field = typeof(RunConfigAsset).GetField("startingArmy",
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                field.SetValue(runConfigSo, armySo);
-
                 var data = runConfigSo.ToData();
                 Assert.AreEqual(20, data.battleVictoryGold, "§9 초안값 — 밸런스 튜닝 전까지 20");
                 Assert.AreEqual(28, data.maxArmyCount, "§4-7 — BattleFieldConfig 기본 4×7과 일치하는 기본값");
             }
             finally
             {
-                Object.DestroyImmediate(armySo);
                 Object.DestroyImmediate(runConfigSo);
             }
         }
@@ -133,11 +113,9 @@ namespace OutGame.Tests.EditMode
         [Test]
         public void RunConfigAsset_ToData_MaxArmyCountBelowStartingArmyCount_Throws()
         {
-            var armySo = ScriptableObject.CreateInstance<ArmyDefinition>();
             var runConfigSo = ScriptableObject.CreateInstance<RunConfigAsset>();
             try
             {
-                SetField(runConfigSo, "startingArmy", armySo);
                 SetField(runConfigSo, "startingArmyCount", 5);
                 SetField(runConfigSo, "maxArmyCount", 3);
 
@@ -145,7 +123,6 @@ namespace OutGame.Tests.EditMode
             }
             finally
             {
-                Object.DestroyImmediate(armySo);
                 Object.DestroyImmediate(runConfigSo);
             }
         }
@@ -168,7 +145,7 @@ namespace OutGame.Tests.EditMode
                 EnemyCompositionConfig data = so.ToConfig();
                 Assert.AreEqual(4, data.tiers.Count);
                 Assert.AreEqual(0, data.tiers[0].minCounter);
-                Assert.AreEqual(9, data.tiers[data.tiers.Count - 1].enemyCount, "마지막 티어가 maxEnemyCount 역할(9)을 해야 함");
+                Assert.AreEqual(5, data.tiers[data.tiers.Count - 1].presetCount, "마지막 티어가 최고 난이도(프리셋 5개 조합)여야 함");
             }
             finally
             {
@@ -183,9 +160,9 @@ namespace OutGame.Tests.EditMode
             try
             {
                 EnemyCompositionConfig data = so.ToConfig();
-                data.tiers[0].enemyCount = 999;
+                data.tiers[0].presetCount = 999;
 
-                Assert.AreNotEqual(999, so.ToConfig().tiers[0].enemyCount, "반환값 변형이 에셋에 영향을 주면 안 됨");
+                Assert.AreNotEqual(999, so.ToConfig().tiers[0].presetCount, "반환값 변형이 에셋에 영향을 주면 안 됨");
             }
             finally
             {

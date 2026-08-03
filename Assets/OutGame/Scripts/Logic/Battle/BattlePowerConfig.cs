@@ -26,8 +26,8 @@ namespace OutGame.Logic.Battle
                 case ArmyClass.Hunter: return hunterWeight;
                 case ArmyClass.Assassin: return assassinWeight;
                 default:
-                    // Cavalry/Spearman 등 예약 병과 — 계수 미정 상태로 조용히 baseWeight를
-                    // 쓰면 활성화 버그를 못 알아챈다 (§4-23 확장 시 반드시 계수 추가 필요).
+                    // 정의되지 않은 병과 — 계수 미정 상태로 조용히 baseWeight를 쓰면 버그를
+                    // 못 알아챈다(§4-23 확장 시 반드시 계수 추가 필요).
                     throw new ArgumentException(
                         $"{armyClass} 병과의 전투력 계수가 아직 정의되지 않았습니다 — BattlePowerConfig 확장 필요");
             }

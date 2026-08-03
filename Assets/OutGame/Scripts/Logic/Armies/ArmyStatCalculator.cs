@@ -5,17 +5,19 @@ using OutGame.Logic.Augments;
 namespace OutGame.Logic.Armies
 {
     /// <summary>
-    /// 군대 업그레이드(§4-26) + 증강(§4-27) 효과를 합산한 최종 스탯 배율. 스탯을 표시·계산하는
-    /// 모든 곳이 이 헬퍼 하나를 공유해야 한다 — 각자 계산하면 한쪽만 고치고 다른 쪽을 놓치는
-    /// 불일치 버그가 난다(2026-07-19, 배치 UI와 증원 방이 각자 계산하다 어긋났던 사례와 동일 원칙;
-    /// 2026-07-26, BattlePowerCalculator가 이 헬퍼를 안 써서 업그레이드가 전투력에 반영 안 되던
-    /// 사례로 재발 — 그래서 army 대신 upgradeLevel(int)만 받도록 낮춰 Runs 의존 없이도 재사용 가능하게 함).
+    /// 군대 업그레이드(§4-26) + 증강(§4-27) 효과를 합산한 최종 스탯 배율. 스탯을 표시·계산하는 모든
+    /// 곳이 이 헬퍼 하나를 공유해야 한다 — 각자 계산하면 한쪽만 고치고 다른 쪽을 놓치는 불일치 버그가
+    /// 난다(2026-07-19, 배치 UI와 증원 방이 각자 계산하다 어긋났던 사례와 동일 원칙; 2026-07-26,
+    /// BattlePowerCalculator가 이 헬퍼를 안 써서 업그레이드가 전투력에 반영 안 되던 사례로 재발 —
+    /// 그래서 army 대신 upgradeLevel(int)만 받도록 낮춰 Runs 의존 없이도 재사용 가능하게 함). 병과
+    /// 차이는 더 이상 여기서 배율로 얹지 않는다(2026-08-02) — 병과마다 authored 값을 담은
+    /// ArmyDefinition(ClassArmyDefinitions.DefIdFor)을 직접 쓴다.
     /// </summary>
     public static class ArmyStatCalculator
     {
         /// <summary>
-        /// 업그레이드 배율(1 + 레벨×10%)에, 이 병과·스탯에 적용되는 증강의 statBoostPercent를 전부
-        /// 가산한다. StatAugment는 병과 무관 전군 적용, ItemAugment는 targetArmyClass가 일치할 때만.
+        /// 업그레이드 배율(1 + 레벨×10%)에, 이 병과·스탯에 적용되는 증강의 statBoostPercent를 가산한다.
+        /// StatAugment는 병과 무관 전군 적용, ItemAugment는 targetArmyClass가 일치할 때만.
         /// GeneralSkillUpgrade 타입 증강은 수치가 없으므로(§4-23과 동일 원칙 — 인게임 책임) 대상에서 제외.
         /// </summary>
         public static float GetStatMultiplier(

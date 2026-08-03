@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using OutGame.Logic.Armies;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
 
@@ -16,12 +17,12 @@ namespace OutGame.Tests.EditMode
         [Test]
         public void Create_GivesStartingArmiesWithUniqueIds()
         {
-            var config = new RunConfig { startingArmyCount = 3, startingArmyDefId = "army_basic" };
+            var config = new RunConfig { startingArmyCount = 3, startingArmyClass = ArmyClass.Warrior };
             RunState run = RunStateFactory.Create(NewMap(), config);
 
             Assert.AreEqual(3, run.armies.Count);
             Assert.AreEqual(3, run.armies.Select(a => a.instanceId).Distinct().Count(), "instanceId는 유일해야 함");
-            Assert.IsTrue(run.armies.All(a => a.armyDefId == "army_basic"));
+            Assert.IsTrue(run.armies.All(a => a.armyClass == ArmyClass.Warrior));
             Assert.IsTrue(run.armies.All(a => !a.HasItem), "시작 군대는 아이템 없음 (§4-13)");
             Assert.IsTrue(run.armies.All(a => a.bonusSoldierCount == 0));
         }
@@ -57,7 +58,7 @@ namespace OutGame.Tests.EditMode
             RunState original = RunStateFactory.Create(NewMap(), new RunConfig { startingGold = 50 });
             original.selectedCharacterId = "char_1"; // §5.2.5
             original.ownedItemIds.Add("item_bow");
-            original.armies[0].Bind("item_shield");
+            original.armies[0].Bind("item_shield", ArmyClass.Warrior);
             original.armies[1].AddBonusSoldiers(6);
             original.visitedEventIds.Add("evt_recruit_deserters");
             original.visitedEventIds.Add("evt_old_armory");

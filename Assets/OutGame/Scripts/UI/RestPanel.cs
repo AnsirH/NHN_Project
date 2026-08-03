@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OutGame.Logic.Armies;
 using OutGame.Logic.Augments;
 using OutGame.Logic.Items;
 using OutGame.Logic.Rest;
@@ -68,12 +69,12 @@ namespace OutGame.UI
             resultPopupRoot.SetActive(false);
 
             // 선택 가능한 군대가 없으면 소프트락 방지 — 그리드를 열지 않고 바로 나갈 수 있게 한다.
-            // 단순히 run.armies가 비었을 때뿐 아니라, 보유 군대 전부가 armyDefId 정의 누락으로 실제
-            // 증원 불가능한 경우도 포함해야 한다(예전 목록 UI는 이런 군대를 아예 옵션에서 뺐지만,
-            // AllyFormationView는 정의가 없어도 카드를 대체 이름으로 그려서 그냥 보여준다 — 클릭해도
-            // OnArmySelected가 조용히 무시하므로, 이 조건이 없으면 진행 불가능한 그리드만 남는
-            // 소프트락이 재현된다 — 코드 리뷰로 발견).
-            bool hasReinforceableArmy = run.armies.Any(a => armyDefsById.ContainsKey(a.armyDefId));
+            // 단순히 run.armies가 비었을 때뿐 아니라, 보유 군대 전부가 병과별 ArmyDefinition 정의
+            // 누락으로 실제 증원 불가능한 경우도 포함해야 한다(예전 목록 UI는 이런 군대를 아예
+            // 옵션에서 뺐지만, AllyFormationView는 정의가 없어도 카드를 대체 이름으로 그려서 그냥
+            // 보여준다 — 클릭해도 OnArmySelected가 조용히 무시하므로, 이 조건이 없으면 진행 불가능한
+            // 그리드만 남는 소프트락이 재현된다 — 코드 리뷰로 발견).
+            bool hasReinforceableArmy = run.armies.Any(a => armyDefsById.ContainsKey(ClassArmyDefinitions.DefIdFor(a.armyClass)));
             if (!hasReinforceableArmy)
             {
                 allyFormationView.gameObject.SetActive(false);
@@ -99,15 +100,15 @@ namespace OutGame.UI
             if (resultPopupRoot.activeSelf) return;
 
             ArmyInstance army = run.GetArmy(armyInstanceId);
-            if (army == null || !armyDefsById.TryGetValue(army.armyDefId, out ArmyDefinition def))
+            if (army == null || !armyDefsById.TryGetValue(ClassArmyDefinitions.DefIdFor(army.armyClass), out ArmyDefinition def))
             {
-                Debug.LogWarning($"[RestPanel] armyDefId에 대한 ArmyDefinition을 찾을 수 없어 증원할 수 없습니다: {armyInstanceId}");
+                Debug.LogWarning($"[RestPanel] 병과에 대한 ArmyDefinition을 찾을 수 없어 증원할 수 없습니다: {armyInstanceId}");
                 return;
             }
 
             var data = def.ToData();
             int added = RestService.Reinforce(army, data);
-            string displayName = ItemEquipService.ResolveDisplayName(army, data.displayName, itemDataById);
+            string displayName = ItemEquipService.ResolveDisplayName(army, data.displayName);
 
             // 진영 그리드는 그대로 보여준 채(사용자 확정) 그 위에 결과 팝업만 띄운다 — 그리드를
             // 숨기지 않는다.

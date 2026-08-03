@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b20f0b7030cf5ef4bbd7a7e3e36fc04a, type: 3}
+  m_Name: preset_archer_g1
+  m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.EnemyPresetDefinition
+  data:
+    presetId: preset_archer_g1
+    displayName: "\uAD81\uC218 \uC18C\uB300 (1\uB4F1\uAE09)"
+    grade: 1
+    units:
+    - armyClass: 1
+      soldierCount: 10
+      upgradeLevel: 0
+      selectedAugmentIds: []

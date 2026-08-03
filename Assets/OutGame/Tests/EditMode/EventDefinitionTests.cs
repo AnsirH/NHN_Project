@@ -105,25 +105,17 @@ namespace OutGame.Tests.EditMode
         [Test]
         public void ChoiceEntry_MultipleArmyRewards_Throws()
         {
-            var armySo = ScriptableObject.CreateInstance<ArmyDefinition>();
-            try
+            var choice = new EventDefinition.ChoiceEntry
             {
-                var choice = new EventDefinition.ChoiceEntry
+                choiceText = "선택지",
+                rewards = new System.Collections.Generic.List<EventDefinition.RewardEntry>
                 {
-                    choiceText = "선택지",
-                    rewards = new System.Collections.Generic.List<EventDefinition.RewardEntry>
-                    {
-                        new EventDefinition.RewardEntry { type = RewardType.Army, armyDef = armySo },
-                        new EventDefinition.RewardEntry { type = RewardType.Army, armyDef = armySo },
-                    },
-                };
+                    new EventDefinition.RewardEntry { type = RewardType.Army, armyClass = OutGame.Logic.Armies.ArmyClass.Warrior },
+                    new EventDefinition.RewardEntry { type = RewardType.Army, armyClass = OutGame.Logic.Armies.ArmyClass.Archer },
+                },
+            };
 
-                Assert.Throws<System.InvalidOperationException>(() => choice.ToData());
-            }
-            finally
-            {
-                Object.DestroyImmediate(armySo);
-            }
+            Assert.Throws<System.InvalidOperationException>(() => choice.ToData());
         }
 
         [Test]
@@ -141,13 +133,6 @@ namespace OutGame.Tests.EditMode
 
             // Gold 2개는 허용 — Army 2개일 때만 제한됨을 대조 확인
             Assert.DoesNotThrow(() => choice.ToData());
-        }
-
-        [Test]
-        public void RewardEntry_ArmyTypeWithoutArmyDef_Throws()
-        {
-            var entry = new EventDefinition.RewardEntry { type = RewardType.Army, armyDef = null };
-            Assert.Throws<System.InvalidOperationException>(() => entry.ToData());
         }
 
         [Test]
