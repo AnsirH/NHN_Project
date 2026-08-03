@@ -90,10 +90,13 @@ namespace OutGame.Tests.PlayMode
 
             var deploymentPanel = GetField<ArmyDeploymentPanel>(flow, "deploymentPanel");
             var roomPanel = GetField<DummyRoomPanel>(flow, "roomPanel");
+            var mapPanel = GetField<RoomMapPanel>(flow, "mapPanel");
 
             Assert.IsTrue(deploymentPanel.gameObject.activeSelf,
                 "보스 노드 선택 시 배치 UI가 열려야 함 (전투 없이 즉시 클리어되면 안 됨)");
             Assert.IsFalse(roomPanel.gameObject.activeSelf, "전투 전에는 런 클리어 화면이 뜨면 안 됨");
+            Assert.IsFalse(mapPanel.gameObject.activeSelf,
+                "배치 UI(65% 반투명 dim 배경)가 뜬 동안 방 그래프가 뒤로 겹쳐 보이면 안 됨 (2026-08-04 사용자 리포트)");
         }
 
         [UnityTest]
@@ -132,6 +135,9 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             Assert.IsTrue(roomPanel.gameObject.activeSelf, "보스 승리 후에는 런 클리어 화면이 떠야 함");
+            var mapPanel = GetField<RoomMapPanel>(flow, "mapPanel");
+            Assert.IsFalse(mapPanel.gameObject.activeSelf,
+                "런 클리어 화면(65% 반투명 dim 배경) 뒤로 방 그래프가 겹쳐 보이면 안 됨 (2026-08-04 사용자 리포트)");
         }
 
         [UnityTest]
@@ -272,6 +278,44 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             Assert.IsFalse(itemRewardPopup.gameObject.activeSelf, "드롭이 없으면 획득 팝업이 뜨면 안 됨");
+        }
+
+        [UnityTest]
+        public IEnumerator NormalBattleVictory_HidesMapDuringFlow_ShowsMapAgainAfterReturn()
+        {
+            // 2026-08-04 사용자 리포트: 방 선택→배치→전투 종료로 넘어갈 때 패널 활성화/비활성화가
+            // 잘 안 됐다 — mapPanel을 한 번도 닫지 않아 이벤트/휴식/증강/배치/보상/런종료 패널의
+            // 65% 반투명 dim 배경 뒤로 방 그래프가 계속 겹쳐 보이던 문제. 방 선택 시 닫히고,
+            // 일반전투(비보스) 승리로 방 그래프에 복귀할 때 다시 보여야 한다.
+            InGameFlowController flow = null;
+            RunState run = null;
+            yield return LoadRoomGraph(1, (f, r) => { flow = f; run = r; });
+            var itemDropConfig = GetField<ItemDropConfig>(flow, "itemDropConfig");
+            itemDropConfig.archerDropChance = 0f;
+            itemDropConfig.warriorDropChance = 0f;
+            itemDropConfig.hunterDropChance = 0f;
+            itemDropConfig.assassinDropChance = 0f;
+
+            var mapPanel = GetField<RoomMapPanel>(flow, "mapPanel");
+            Assert.IsTrue(mapPanel.gameObject.activeSelf, "전투 전에는 방 그래프가 보여야 함");
+
+            MapNode battleNode = MapProgress.GetSelectableNodes(run.mapState).First(n => n.roomType == RoomType.NormalBattle);
+            typeof(InGameFlowController).GetMethod("OnRoomSelected", Priv).Invoke(flow, new object[] { battleNode });
+            yield return null;
+
+            Assert.IsFalse(mapPanel.gameObject.activeSelf, "방을 선택하면 방 그래프가 닫혀야 함");
+
+            var deploymentPanel = GetField<ArmyDeploymentPanel>(flow, "deploymentPanel");
+            var startButton = deploymentPanel.GetComponentsInChildren<Button>(true).First(b => b.name == "StartBattleButton");
+            startButton.onClick.Invoke();
+            yield return null;
+
+            Assert.IsFalse(mapPanel.gameObject.activeSelf, "배치 확정 후(전투 중)에도 방 그래프는 닫혀 있어야 함");
+
+            BattleBridge.CompleteBattle(new BattleResultData { roomId = battleNode.id, victory = true });
+            yield return null;
+
+            Assert.IsTrue(mapPanel.gameObject.activeSelf, "일반전투 승리 후 방 그래프로 복귀하면 다시 보여야 함");
         }
     }
 }

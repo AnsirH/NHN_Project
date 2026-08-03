@@ -35,7 +35,6 @@ namespace OutGame.UI
             titleText.text = title;
             bodyText.text = body;
             gameObject.SetActive(true);
-            PanelTransitions.FadeIn(gameObject);
         }
 
         public void Hide() => gameObject.SetActive(false);

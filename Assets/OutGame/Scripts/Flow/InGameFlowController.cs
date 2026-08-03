@@ -225,6 +225,12 @@ namespace OutGame.Flow
             MapProgress.Visit(run.mapState, node.point);
             mapPanel.Refresh();
 
+            // 방 그래프는 진영 팝업(OnFormationRequested)에서만 의도적으로 dim 배경 뒤에 계속 보이게
+            // 둔다 — 실제 방 콘텐츠(이벤트/휴식/증강/전투)로 넘어갈 때는 65% 반투명 dim 배경 뒤로
+            // 그래프가 그대로 겹쳐 보이던 문제가 있었다(2026-08-04 사용자 리포트) — 방 처리가 끝나
+            // OnRoomCompleted가 부를 때까지 확실히 닫아둔다.
+            mapPanel.Close();
+
             // 주의: MapProgress.HasVisitedBoss는 보스 "방문" 여부이지 "승리" 여부가 아니다.
             // 런 클리어는 보스 전투에서 승리했을 때만 성립하므로(OnBattleResult), 여기서 미리 판정하지 않는다.
 
@@ -305,6 +311,11 @@ namespace OutGame.Flow
             // (씬 교체 경로에서는 복귀 시 OutGameFlowController.Start가 이미 소비해 null이라 무해하다.)
             RunSessionContext.ConsumePendingRun();
 
+            // 씬 교체 복귀 경로(Begin())는 이 시점에 mapPanel을 이미 다시 열어둔 상태다 — 아이템 획득
+            // 팝업/런 종료 화면도 dim 배경 뒤로 방 그래프가 겹쳐 보이지 않도록 확실히 닫는다
+            // (2026-08-04, OnRoomSelected의 mapPanel.Close()와 동일한 이유).
+            mapPanel.Close();
+
             if (!result.victory)
             {
                 runEnded = true;
@@ -364,6 +375,7 @@ namespace OutGame.Flow
                 return;
             }
 
+            mapPanel.Show(); // OnRoomSelected/OnBattleResult에서 닫아둔 방 그래프를 다시 보여준다
             mapPanel.Refresh();
             mapPanel.SetGold(run.gold); // 이벤트/전투 보상으로 바뀐 골드를 방 그래프 복귀 시 반영
             SaveProgress();

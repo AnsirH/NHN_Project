@@ -25,11 +25,6 @@ namespace OutGame.Tests.PlayMode
         [SetUp]
         public void SetUp()
         {
-            // 이전 픽스처(예: ArmyDeploymentPanelPlayTests)가 PanelTransitions.FadeIn()으로 건 DOTween
-            // 트윈을 TearDown에서 죽이지 않은 채 CanvasGroup을 파괴하면, 그 트윈이 다음 틱에 이미
-            // 파괴된 CanvasGroup을 건드려 여기서 엉뚱하게 실패로 잡힌다 — 픽스처 시작 전 방어적으로 정리.
-            DG.Tweening.DOTween.KillAll();
-
             canvasGo = new GameObject("TestCanvas", typeof(Canvas), typeof(CanvasScaler));
             canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
 

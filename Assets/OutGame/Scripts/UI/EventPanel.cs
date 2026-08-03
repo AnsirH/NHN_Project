@@ -46,7 +46,6 @@ namespace OutGame.UI
                 SpawnChoiceButton(choice.choiceText, () => OnChoiceSelected(choice));
 
             gameObject.SetActive(true);
-            PanelTransitions.FadeIn(gameObject);
         }
 
         private void OnChoiceSelected(EventChoiceData choice)
