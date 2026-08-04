@@ -12,5 +12,7 @@ namespace OutGame.Flow
         public const string OutGame = "OutGame";
         /// <summary>인게임 전투 씬 (§7.4 — 배치 확정 시 전환, 인게임 개발자 담당).</summary>
         public const string Battle = "Battle";
+        /// <summary>인게임 진입 로딩 씬 (2026-08-04) — OutGame → Battle 사이에 거치는 중계 씬.</summary>
+        public const string Loading = "Loading";
     }
 }

@@ -12,6 +12,7 @@ namespace OutGame.UI.Deployment
     {
         [SerializeField] private Image background;
         [SerializeField] private RectTransform cardContainer;
+        [SerializeField] private GameObject emptyIndicator; // 빈 슬롯 초록 체크(2026-08-05, 배치 가능 표시)
 
         public int SlotId { get; private set; }
         public RectTransform CardContainer => cardContainer;
@@ -24,11 +25,15 @@ namespace OutGame.UI.Deployment
 
         public void Initialize(int slotId)
         {
-            if (background == null || cardContainer == null)
+            if (background == null || cardContainer == null || emptyIndicator == null)
                 throw new InvalidOperationException("DeploySlotView 프리팹의 필드가 배선되지 않았습니다.");
 
             SlotId = slotId;
         }
+
+        /// <summary>occupied=false면 빈 슬롯 체크 표시를 보여준다(§ 사용자 확정 — 적 진영은 이 메서드를
+        /// 호출하지 않아 항상 빈 상태로 표시).</summary>
+        public void SetOccupied(bool occupied) => emptyIndicator.SetActive(!occupied);
 
         public void OnDrop(PointerEventData eventData)
         {

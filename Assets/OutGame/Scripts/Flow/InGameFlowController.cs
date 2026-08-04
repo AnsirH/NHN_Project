@@ -169,7 +169,10 @@ namespace OutGame.Flow
                 pendingReturnRoomType = setup.roomType;
                 pendingReturnEnemies = setup.enemies;
                 BattleBridge.SetPendingBattle(setup, onResult);
-                LoadSceneAction(SceneNames.Battle);
+                // 로딩 씬을 한 단계 거쳐 Battle로 전환한다(2026-08-04) — Loading 씬이 LoadingHandoff에서
+                // 대상 씬 이름을 꺼내 비동기로 이어받는다.
+                LoadingHandoff.SetTarget(SceneNames.Battle);
+                LoadSceneAction(SceneNames.Loading);
             };
 
             mapPanel.Open(run.mapState);
@@ -300,7 +303,9 @@ namespace OutGame.Flow
         private void OnBattleSetupConfirmed(BattleSetupData setup)
         {
             currentBattleRoomType = setup.roomType;
-            deploymentPanel.Close();
+            // 배치 패널을 여기서 미리 닫지 않는다(2026-08-04, 사용자 리포트) — Close() 직후 씬 전환이
+            // 일어나기까지 한 프레임 정도 패널이 사라진 빈 OutGame 화면(스카이박스)이 비쳐 보였다.
+            // 곧바로 Loading 씬으로 전환되며 이 씬 자체가 파괴되므로 따로 닫아둘 필요가 없다.
             BattleBridge.StartBattle(setup, OnBattleResult);
         }
 

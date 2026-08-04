@@ -30,21 +30,22 @@ namespace OutGame.UI.Deployment
     /// ArmyCardView를 재사용하되 interactable=false로 표시 전용 처리한다(2026-07-26 사용자 요청).
     /// 이 구성은 표시·전투력·드롭 계산뿐 아니라 2026-07-29부터 BuildSetup()을 통해 실제 전투 스폰
     /// 데이터(BattleSetupData.enemies)로도 그대로 전달된다(§9 RoomEncounterTable 참고).
-    /// 중앙 축: 적 버프 표시(1차 "없음") → [전투 시작] → [아이템] → [프리셋](비활성).
+    /// 중앙 축: 적 버프 표시(1차 "없음") → [전투 시작] → [아이템].
     /// </summary>
     public class ArmyDeploymentPanel : MonoBehaviour
     {
         [Header("구조 참조")]
         [SerializeField] private RectTransform enemySlotContainer;
+        [SerializeField] private RectTransform enemyConnectorLayer; // 슬롯 격자 연결 트랙 레이어(2026-08-05)
         [SerializeField] private Text enemyPowerLabel;
         [SerializeField] private Text enemyBuffLabel;
         [SerializeField] private Button startBattleButton;
-        [SerializeField] private Button presetButton; // §4-17: 배치만, 항상 비활성
         [SerializeField] private CurrencyDisplay currencyDisplay; // 2026-07-26: 상단 바 재화 표시
 
         [Header("요소 프리팹")]
         [SerializeField] private ArmyCardView armyCardPrefab; // 적 카드 표시용(interactable=false)
         [SerializeField] private Image enemySlotPrefab;
+        [SerializeField] private Image connectorPrefab;
 
         [Header("플레이어 진영")]
         [SerializeField] private AllyFormationView allyFormationView;
@@ -127,7 +128,6 @@ namespace OutGame.UI.Deployment
             UpdateEnemyPowerLabel();
 
             enemyBuffLabel.text = "없음"; // §4-21: 1차는 표시 영역만
-            presetButton.interactable = false; // §4-17
 
             allyFormationView.Open(run, runConfigValue, armyDefs, itemDefs, augmentDefs);
             // AllyFormationView.Changed 구독(Awake)에만 기대지 않고 최초 1회는 직접 동기화한다 —
@@ -141,10 +141,12 @@ namespace OutGame.UI.Deployment
         }
 
         /// <summary>
-        /// 패널을 닫는다 — 전투 시작 확정 직후(InGameFlowController.OnBattleSetupConfirmed) 호출된다.
-        /// 플레이어 진영 팝업들은 AllyFormationView의 자식이라 부모(이 패널)가 비활성화되면 화면에서는
-        /// 같이 사라지지만 각자의 activeSelf는 그대로 남아, 다음 방에서 패널이 다시 열릴 때 그대로
-        /// 재노출될 수 있다(2026-07-26 사용자 지적) — AllyFormationView.Close()로 명시적으로 닫는다.
+        /// 패널을 닫는다. 플레이어 진영 팝업들은 AllyFormationView의 자식이라 부모(이 패널)가
+        /// 비활성화되면 화면에서는 같이 사라지지만 각자의 activeSelf는 그대로 남아, 다음에 패널이
+        /// 다시 열릴 때 그대로 재노출될 수 있다(2026-07-26 사용자 지적) — AllyFormationView.Close()로
+        /// 명시적으로 닫는다. 2026-08-04: 전투 시작 확정 시점(OnBattleSetupConfirmed)에는 더 이상
+        /// 호출하지 않는다 — Loading 씬으로 곧장 전환되며 이 씬 자체가 파괴되므로 미리 닫으면 전환
+        /// 직전 한 프레임 정도 빈 화면(스카이박스)이 비쳐 보였다.
         /// </summary>
         public void Close()
         {
@@ -154,11 +156,11 @@ namespace OutGame.UI.Deployment
 
         private void ValidateWiring()
         {
-            if (enemySlotContainer == null || enemyPowerLabel == null
-                || enemyBuffLabel == null || startBattleButton == null || presetButton == null
+            if (enemySlotContainer == null || enemyConnectorLayer == null || enemyPowerLabel == null
+                || enemyBuffLabel == null || startBattleButton == null
                 || currencyDisplay == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 구조 참조가 배선되지 않았습니다.");
-            if (armyCardPrefab == null || enemySlotPrefab == null)
+            if (armyCardPrefab == null || enemySlotPrefab == null || connectorPrefab == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 요소 프리팹이 배선되지 않았습니다.");
             if (allyFormationView == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 allyFormationView가 배선되지 않았습니다.");
@@ -203,6 +205,7 @@ namespace OutGame.UI.Deployment
             foreach (SlotDefinition slot in slots)
             {
                 Image slotBackground = Instantiate(enemySlotPrefab, enemySlotContainer);
+
                 Transform cardContainer = slotBackground.transform.Find("CardContainer");
                 if (cardContainer == null)
                 {
@@ -211,6 +214,11 @@ namespace OutGame.UI.Deployment
                 }
                 enemySlotCardContainersById[slot.slotId] = cardContainer;
             }
+
+            // 슬롯 격자 연결 트랙(2026-08-05, 참고 이미지 — 적 진영도 아군과 동일한 스타일로 통일).
+            FormationSlotGridBuilder.BuildConnectors(
+                enemyConnectorLayer, connectorPrefab, enemySlotContainer.GetComponent<GridLayoutGroup>(),
+                fieldData.rows, fieldData.columns);
 
             var assignments = EnemyFormationAssigner.Assign(enemyComposition, slots, fieldData.columns);
             foreach ((EnemyArmy enemy, SlotDefinition slot) in assignments)
@@ -230,13 +238,10 @@ namespace OutGame.UI.Deployment
                 // interactable=false로 드래그/클릭/아이템 드롭을 막으므로 이 값은 식별용으로만 쓰인다.
                 card.Initialize($"enemy_{slot.slotId}", interactable: false);
                 armyDefsById.TryGetValue(enemy.armyDefId, out ArmyDefinition def);
-                card.SetDisplay(EnemyClassLabel(enemy.armyClass), def != null ? def.Portrait : null);
+                card.SetDisplay(def != null ? def.Portrait : null);
                 ((RectTransform)card.transform).anchoredPosition = Vector2.zero;
             }
         }
-
-        private static string EnemyClassLabel(ArmyClass armyClass) =>
-            armyClass == ArmyClass.None ? "기본" : ItemEquipService.ClassDisplayName(armyClass);
 
         private void OnStartBattleClicked()
         {

@@ -34,6 +34,7 @@ namespace OutGame.Tests.PlayMode
         public IEnumerator TearDown()
         {
             BattleBridge.ResetToDefault(); // 정적 상태 정리 — 테스트 간 pendingSetup/콜백 오염 방지
+            LoadingHandoff.ResetToDefault(); // 정적 상태 정리 — 테스트 간 대상 씬 오염 방지
             yield return SceneManager.UnloadSceneAsync(SceneNames.OutGame);
         }
 
@@ -127,7 +128,11 @@ namespace OutGame.Tests.PlayMode
             startButton.onClick.Invoke();
             yield return null;
 
-            Assert.IsFalse(deploymentPanel.gameObject.activeSelf, "배치 확정 후에는 배치 UI가 닫혀야 함(전투 씬으로 전환)");
+            // 2026-08-04: 배치 확정 시점에 패널을 미리 닫지 않는다 — Loading 씬 전환 직전 스카이박스가
+            // 비쳐 보이던 사용자 리포트 원인이라 제거했다. 실제 게임에서는 곧바로 씬이 통째로 바뀌며
+            // 사라지므로(LoadSceneAction이 실제 씬 전환을 하는 경우), 여기서는 활성 상태가 유지된다.
+            Assert.IsTrue(deploymentPanel.gameObject.activeSelf,
+                "배치 확정 직후에는 패널을 미리 닫지 않는다 — 실제 씬 전환이 처리를 대신함");
             Assert.IsFalse(roomPanel.gameObject.activeSelf, "전투 결과가 나오기 전에는 런 클리어 화면이 뜨면 안 됨");
 
             // 실제 Battle.unity 대신 §7.4 콜백을 직접 호출해 전투 승리 결과를 주입한다.
@@ -278,6 +283,31 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             Assert.IsFalse(itemRewardPopup.gameObject.activeSelf, "드롭이 없으면 획득 팝업이 뜨면 안 됨");
+        }
+
+        [UnityTest]
+        public IEnumerator StartBattleButton_RequestsLoadingSceneAndSetsHandoffToBattle()
+        {
+            // 2026-08-04: Battle로 직행하던 것을 Loading 씬을 한 단계 거치도록 바꿨다 — 배치 확정
+            // 시점에 실제로 Loading이 요청되고, LoadingHandoff에 Battle이 담기는지 검증한다.
+            InGameFlowController flow = null;
+            RunState run = null;
+            yield return LoadRoomGraph(1, (f, r) => { flow = f; run = r; });
+
+            string requestedScene = null;
+            flow.LoadSceneAction = name => requestedScene = name;
+
+            MapNode battleNode = MapProgress.GetSelectableNodes(run.mapState).First(n => n.roomType == RoomType.NormalBattle);
+            typeof(InGameFlowController).GetMethod("OnRoomSelected", Priv).Invoke(flow, new object[] { battleNode });
+            yield return null;
+
+            var deploymentPanel = GetField<ArmyDeploymentPanel>(flow, "deploymentPanel");
+            var startButton = deploymentPanel.GetComponentsInChildren<Button>(true).First(b => b.name == "StartBattleButton");
+            startButton.onClick.Invoke();
+            yield return null;
+
+            Assert.AreEqual(SceneNames.Loading, requestedScene, "전투 시작 시 Battle로 직행하지 않고 Loading 씬을 거쳐야 함");
+            Assert.AreEqual(SceneNames.Battle, LoadingHandoff.ConsumeTarget(), "Loading 씬이 이어받을 대상은 Battle이어야 함");
         }
 
         [UnityTest]

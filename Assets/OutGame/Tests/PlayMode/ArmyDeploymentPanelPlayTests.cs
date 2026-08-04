@@ -112,7 +112,7 @@ namespace OutGame.Tests.PlayMode
         // 플레이어 진영(슬롯/카드/드래그앤드롭/아이템장착/업그레이드)은 AllyFormationView가 담당한다
         // (2026-07-26 추출) — private 메서드 리플렉션 호출은 이제 이 컴포넌트를 대상으로 한다.
         private AllyFormationView AllyFormationView() =>
-            panel.transform.Find("MainRow/AllyColumn").GetComponent<AllyFormationView>();
+            panel.transform.Find("MainRow/AllyFormationPanel").GetComponent<AllyFormationView>();
 
         // OnItemDroppedOnCard는 처리를 한 프레임 늦추므로(코드 리뷰 CRITICAL 수정 — 드래그 종료 처리와의
         // 경합 방지), 테스트에서도 반드시 private 메서드를 호출한 뒤 프레임을 흘려보내야 결과가 반영된다.
@@ -133,7 +133,7 @@ namespace OutGame.Tests.PlayMode
         // 적 진영도 아군과 동일한 ArmyCardView를 재사용하므로(2026-07-26), panel 전체를 뒤지면 적
         // 카드까지 섞여 나온다 — 실제 보유 군대 카드만 필요한 테스트는 반드시 아군 격자로 범위를 좁힌다.
         private ArmyCardView[] AllyCards() =>
-            panel.transform.Find("MainRow/AllyColumn/SlotGrid").GetComponentsInChildren<ArmyCardView>(includeInactive: true);
+            panel.transform.Find("MainRow/AllyFormationPanel/SlotGrid").GetComponentsInChildren<ArmyCardView>(includeInactive: true);
 
         // 자동 배치가 이제 slotId 오름차순이 아니라 "가운데 전방" 기준점에서부터 채워지므로
         // (2026-07-26 사용자 확정), slotId가 가장 낮은 슬롯이 더 이상 항상 점유돼 있다는 보장이 없다 —
@@ -188,7 +188,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            Transform allySlotGrid = panel.transform.Find("MainRow/AllyColumn/SlotGrid");
+            Transform allySlotGrid = panel.transform.Find("MainRow/AllyFormationPanel/SlotGrid");
             Transform enemySlotGrid = panel.transform.Find("MainRow/EnemyColumn/SlotGrid");
             Assert.IsNotNull(enemySlotGrid, "적 진영 슬롯 컨테이너가 있어야 함");
             Assert.AreEqual(allySlotGrid.childCount, enemySlotGrid.childCount,
@@ -196,11 +196,12 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Open_EnemySlotsShowClassNamesOnlyForGeneratedUnits()
+        public IEnumerator Open_EnemySlotsGenerateOneCardPerEnemyAndHideSoldierCount()
         {
             // 2026-07-26 사용자 요청: 적 진영도 아군과 동일한 ArmyCardView로 표시하되, 병사 수는
-            // 어느 진영도 표시하지 않는다(뱃지/카운트 필드 자체를 제거) — 빈 슬롯은 배경만 있고
-            // 카드 자체가 없어야 한다(구성 개수만큼만 카드 생성).
+            // 어느 진영도 표시하지 않는다 — 빈 슬롯은 배경만 있고 카드 자체가 없어야 한다(구성
+            // 개수만큼만 카드 생성). 2026-08-05: 카드에서 이름 텍스트 자체가 없어져 이름 검증은
+            // 더 이상 의미가 없다 — 카드 개수/병사 수 숨김만 검증한다.
             OpenPanel();
             yield return null;
 
@@ -208,8 +209,32 @@ namespace OutGame.Tests.PlayMode
             var enemyCards = enemySlotGrid.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
             Assert.AreEqual(TestEnemyComposition.Count, enemyCards.Length, "생성된 적 구성 개수만큼만 카드가 있어야 함");
 
-            var names = enemyCards.Select(card => card.transform.Find("NameLabel").GetComponent<Text>().text).ToList();
-            CollectionAssert.AreEquivalent(new[] { "궁수", "전사", "기본" }, names);
+            foreach (ArmyCardView card in enemyCards)
+            {
+                Text soldierCountLabel = card.transform.Find("SoldierCountLabel").GetComponent<Text>();
+                Assert.IsFalse(soldierCountLabel.gameObject.activeSelf, "적 카드는 병사 수를 표시하면 안 됨");
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator Open_EmptyAllySlotsShowCheckmark_OccupiedSlotsHideIt()
+        {
+            // 2026-08-05 사용자 요청(참고: 전투 전 정비(배치) 스크린샷) — 아군 진영의 빈 슬롯은 배치
+            // 가능함을 초록 체크로 표시하고, 카드가 있는 슬롯은 가려지므로 꺼져 있어야 한다.
+            OpenPanel();
+            yield return null;
+
+            var allySlots = panel.transform.Find("MainRow/AllyFormationPanel/SlotGrid")
+                .GetComponentsInChildren<DeploySlotView>(includeInactive: true);
+            Assert.IsTrue(allySlots.Length > TestEnemyComposition.Count, "빈 슬롯이 있어야 검증 가능(슬롯 수 > 보유 군대 수)");
+
+            foreach (DeploySlotView slot in allySlots)
+            {
+                bool occupied = slot.CardContainer.GetComponentInChildren<ArmyCardView>() != null;
+                bool checkmarkActive = slot.transform.Find("EmptyIndicator").gameObject.activeSelf;
+                Assert.AreNotEqual(occupied, checkmarkActive,
+                    $"슬롯 {slot.SlotId}: 점유 여부({occupied})와 체크 표시({checkmarkActive})가 반대여야 함");
+            }
         }
 
         [UnityTest]
@@ -231,8 +256,12 @@ namespace OutGame.Tests.PlayMode
             }
 
             var enemyCards = enemySlotGrid.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
-            ArmyCardView warrior = enemyCards.First(c => c.transform.Find("NameLabel").GetComponent<Text>().text == "전사");
-            ArmyCardView archer = enemyCards.First(c => c.transform.Find("NameLabel").GetComponent<Text>().text == "궁수");
+            // 카드에 이름 텍스트가 없으므로(2026-08-05) ArmyInstanceId("enemy_{slotId}")로 원래
+            // EnemyArmy(및 그 armyClass)와 역상관해 어떤 카드가 어떤 병과인지 식별한다.
+            EnemyArmy warriorEnemy = TestEnemyComposition.First(e => e.armyClass == ArmyClass.Warrior);
+            EnemyArmy archerEnemy = TestEnemyComposition.First(e => e.armyClass == ArmyClass.Archer);
+            ArmyCardView warrior = enemyCards.First(c => c.ArmyInstanceId == $"enemy_{warriorEnemy.slotId}");
+            ArmyCardView archer = enemyCards.First(c => c.ArmyInstanceId == $"enemy_{archerEnemy.slotId}");
 
             Assert.Less(ColumnOf(warrior), ColumnOf(archer),
                 "전사 카드의 열 인덱스가 궁수보다 낮아야(더 앞열이어야) 함");
@@ -458,16 +487,6 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Open_BuildsPresetButtonDisabled()
-        {
-            OpenPanel();
-            yield return null;
-
-            Button presetButton = panel.transform.Find("MainRow/CenterColumn/PresetButton").GetComponent<Button>();
-            Assert.IsFalse(presetButton.interactable, "프리셋은 §4-17에 따라 항상 비활성");
-        }
-
-        [UnityTest]
         public IEnumerator ItemDrop_OnBasicArmy_EquipsAfterSuppressedConfirm()
         {
             // 억제 플래그를 미리 켜서(§5.6: 다시 표시 안 함) 팝업 없이 즉시 부여되는 경로를 검증
@@ -483,13 +502,6 @@ namespace OutGame.Tests.PlayMode
 
             Assert.IsTrue(run.GetArmy(cardView.ArmyInstanceId).HasItem, "아이템이 부여됐어야 함");
             Assert.IsFalse(run.ownedItemIds.Contains("item_bow"), "귀속된 아이템은 보유 목록에서 제거");
-
-            // 병과가 생기면 이름 자체가 바뀌어야 한다 (§2 용어: 기본 군대 + 활 = 궁수 군대). 이름이 이미
-            // 병과를 나타내므로 별도 뱃지는 아예 존재하지 않는다(2026-07-26 사용자 확정 — 카운트/뱃지
-            // 필드 완전 제거).
-            Text nameLabel = cardView.transform.Find("NameLabel").GetComponent<Text>();
-            Assert.AreEqual("궁수 군대", nameLabel.text);
-            Assert.IsNull(cardView.transform.Find("ClassBadge"), "ClassBadge 필드는 완전히 제거돼야 함");
         }
 
         [UnityTest]
