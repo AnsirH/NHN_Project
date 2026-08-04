@@ -359,6 +359,8 @@ namespace NHN.Presentation.Battle
             _armedSkillSlot = -1;
             ResetSkillFxViews();
             hud.Clear();
+            // 재시작은 테스트 실행(인스펙터 구성) 전용 — 실전(아웃게임 연동)은 복귀 흐름이 담당한다.
+            hud.SetRestartVisible(_activeRequest == null);
 
             // 유닛 인덱스는 (A군 분대 순서 → B군 분대 순서) — ArmyDefinition의 계약과 동일하게 순회한다.
             PrewarmUnitPools();
