@@ -28,14 +28,19 @@ namespace NHN.Simulation.Battle
             private readonly int _excludeIndex;
             private readonly bool _hasPriority;
             private readonly TargetPriority _priority;
+            /// <summary>집중 대상 적 분대 (NoTarget = 제한 없음) — 분대 단위 타게팅(2026-08-04).</summary>
+            private readonly int _focusSquad;
 
-            public AliveEnemyFilter(BattleSimulation sim, byte targetTeam, int excludeIndex, bool hasPriority, TargetPriority priority)
+            public AliveEnemyFilter(
+                BattleSimulation sim, byte targetTeam, int excludeIndex,
+                bool hasPriority, TargetPriority priority, int focusSquad)
             {
                 _sim = sim;
                 _targetTeam = targetTeam;
                 _excludeIndex = excludeIndex;
                 _hasPriority = hasPriority;
                 _priority = priority;
+                _focusSquad = focusSquad;
             }
 
             public bool Accept(int unitIndex)
@@ -44,6 +49,10 @@ namespace NHN.Simulation.Battle
                     || !_sim._alives[unitIndex]
                     || _sim._teams[unitIndex] != _targetTeam
                     || _sim._stealthRemaining[unitIndex] > 0f)
+                {
+                    return false;
+                }
+                if (_focusSquad != NoTarget && _sim._squadIndices[unitIndex] != _focusSquad)
                 {
                     return false;
                 }
@@ -117,6 +126,13 @@ namespace NHN.Simulation.Battle
         private readonly byte[] _squadTeams;
         /// <summary>분대 장군의 유닛 인덱스. NoTarget = 장군 없는 분대.</summary>
         private readonly int[] _squadGeneralUnits;
+        // 분대 단위 집중 타게팅 (2026-08-04): 분대마다 중심점이 가장 가까운 적 분대를 정하고
+        // 소속 유닛은 그 분대의 유닛만 노린다 — 한 분대가 반으로 갈라져 흩어지는 것을 막는다.
+        // NoTarget = 살아있는 적 분대 없음 (유닛 타게팅은 무제한 폴백).
+        private readonly int[] _squadFocusEnemies;
+        private readonly Vector2[] _squadCentroids;
+        private readonly int[] _squadAliveCounts;
+
         /// <summary>액티브 충전 게이지. 장군 사망 시 0으로 소멸 (기획 §6 사망 규칙).</summary>
         private readonly float[] _squadCharges;
         private readonly int[] _squadActivationCounts;
@@ -223,6 +239,9 @@ namespace NHN.Simulation.Battle
             _squadCharges = new float[_squadCount];
             _squadActivationCounts = new int[_squadCount];
             _squadLastActivationTimes = new float[_squadCount];
+            _squadFocusEnemies = new int[_squadCount];
+            _squadCentroids = new Vector2[_squadCount];
+            _squadAliveCounts = new int[_squadCount];
 
             _roles = BuildRoleTable(armyA, armyB);
 
@@ -244,6 +263,7 @@ namespace NHN.Simulation.Battle
 
             // 최초 타겟 즉시 배정 + 재탐색 시차 균등 배분
             _grid.Rebuild(_positions, _unitCount);
+            UpdateSquadFocus();
             for (int i = 0; i < _unitCount; i++)
             {
                 _targets[i] = SelectTarget(i);
@@ -503,7 +523,9 @@ namespace NHN.Simulation.Battle
                 AddCharge(s, ChargeCondition.TimeElapsed, dt);
             }
 
-            // 1) 재탐색: 타겟 무효(사망/은신)는 즉시 재선택, 주기 도래 시엔 교전 유지 규칙 적용
+            // 1) 재탐색: 타겟 무효(사망/은신)는 즉시 재선택, 주기 도래 시엔 교전 유지 규칙 적용.
+            //    분대 집중 대상(분대 단위 타게팅)은 매 틱 여기서 한 번 갱신한다.
+            UpdateSquadFocus();
             for (int i = 0; i < _unitCount; i++)
             {
                 if (!_alives[i])
@@ -1069,7 +1091,8 @@ namespace NHN.Simulation.Battle
             int currentRank = PriorityRank(currentTarget, priorities);
             for (int p = 0; p < currentRank; p++)
             {
-                int candidate = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: true, priorities[p]), role.PositionFilter);
+                // 우선순위 기믹은 분대 집중을 무시한다 (SelectTarget과 동일한 규칙).
+                int candidate = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: true, priorities[p], NoTarget), role.PositionFilter);
                 if (candidate != NoTarget)
                 {
                     return candidate;
@@ -1117,23 +1140,86 @@ namespace NHN.Simulation.Battle
             }
         }
 
-        /// <summary>타겟팅 2단계: ① 위치 필터 → ② 우선순위 목록 순서로 후보를 좁힌다. 실패 시 우선순위 없이 재시도.</summary>
+        /// <summary>
+        /// 분대의 집중 대상 적 분대 갱신 — 살아있는 유닛의 중심점끼리 가장 가까운 적 분대를 고른다
+        /// (동률은 낮은 인덱스, 결정론 유지). 유닛 타게팅은 이 분대 안에서만 후보를 찾아
+        /// 분대가 반으로 갈라져 흩어지지 않는다 (2026-08-04 사용자 결정).
+        /// </summary>
+        private void UpdateSquadFocus()
+        {
+            for (int s = 0; s < _squadCount; s++)
+            {
+                _squadCentroids[s] = Vector2.Zero;
+                _squadAliveCounts[s] = 0;
+            }
+            for (int i = 0; i < _unitCount; i++)
+            {
+                if (!_alives[i])
+                {
+                    continue;
+                }
+                int s = _squadIndices[i];
+                _squadCentroids[s] += _positions[i];
+                _squadAliveCounts[s]++;
+            }
+            for (int s = 0; s < _squadCount; s++)
+            {
+                if (_squadAliveCounts[s] > 0)
+                {
+                    _squadCentroids[s] /= _squadAliveCounts[s];
+                }
+            }
+            for (int s = 0; s < _squadCount; s++)
+            {
+                _squadFocusEnemies[s] = NoTarget;
+                if (_squadAliveCounts[s] == 0)
+                {
+                    continue;
+                }
+                float best = float.MaxValue;
+                for (int e = 0; e < _squadCount; e++)
+                {
+                    if (_squadTeams[e] == _squadTeams[s] || _squadAliveCounts[e] == 0)
+                    {
+                        continue;
+                    }
+                    float distanceSquared = Vector2.DistanceSquared(_squadCentroids[s], _squadCentroids[e]);
+                    if (distanceSquared < best)
+                    {
+                        best = distanceSquared;
+                        _squadFocusEnemies[s] = e;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 타겟팅: ① 우선순위 목록(중독·표식 기믹)은 적군 전체에서 찾는다 — 의도된 분대 이탈이라
+        /// 집중 제한을 받지 않는다. ② 기본 위치 필터는 분대 집중 대상 안에서만 골라
+        /// 분대가 반으로 갈라지지 않게 하고, 못 찾으면(전원 은신 등) 제한 없이 폴백.
+        /// </summary>
         private int SelectTarget(int unitIndex)
         {
             RoleDefinition role = _roles[_roleIndices[unitIndex]];
             byte enemyTeam = _teams[unitIndex] == TeamA ? TeamB : TeamA;
+            int focusSquad = _squadFocusEnemies[_squadIndices[unitIndex]];
 
             TargetPriority[] priorities = role.Priorities;
             for (int p = 0; p < priorities.Length; p++)
             {
-                int candidate = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: true, priorities[p]), role.PositionFilter);
+                int candidate = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: true, priorities[p], NoTarget), role.PositionFilter);
                 if (candidate != NoTarget)
                 {
                     return candidate;
                 }
             }
 
-            return FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default), role.PositionFilter);
+            int fallback = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, focusSquad), role.PositionFilter);
+            if (fallback != NoTarget || focusSquad == NoTarget)
+            {
+                return fallback;
+            }
+            return FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, NoTarget), role.PositionFilter);
         }
 
         private int FindByPositionFilter(int unitIndex, in AliveEnemyFilter filter, PositionFilter positionFilter)

@@ -130,8 +130,9 @@ namespace NHN.Presentation.Battle
             public float CritClipLength;
         }
 
-        /// <summary>사망 애니메이션을 보여준 뒤 풀로 되돌리기까지의 시간 (Die 클립 앞부분만 사용).</summary>
-        private const float DeathLingerSeconds = 1.6f;
+        /// <summary>사망 애니메이션을 보여준 뒤 풀로 되돌리기까지의 시간 (Die 클립 앞부분만 사용).
+        /// 컨트롤러의 Die 상태 재생 속도 2배와 세트 — 빠르게 쓰러지고 빠르게 치운다 (2026-08-04).</summary>
+        private const float DeathLingerSeconds = 0.9f;
         /// <summary>이동 방향 회전 속도(도/초)와 회전을 시작하는 최소 이동 속도(유닛/초) — 뷰 표현 상수.</summary>
         private const float UnitTurnDegreesPerSecond = 540f;
         private const float TurnSpeedThreshold = 0.5f;
@@ -150,7 +151,7 @@ namespace NHN.Presentation.Battle
         /// 시뮬 종료 후 결과 표시·복귀 콜백까지의 연출 유예 — 마지막 유닛의 사망 애니메이션
         /// (DeathLingerSeconds)이 끝나기 전에 전투가 끝나버리는 어색함을 막는다.
         /// </summary>
-        private const float FinishGraceSeconds = 2f;
+        private const float FinishGraceSeconds = 1.2f;
         private bool _finishGraceStarted;
         private float _finishGraceRemaining;
 
@@ -747,7 +748,8 @@ namespace NHN.Presentation.Battle
 
         private void SyncProjectileViews(float alpha)
         {
-            int activeCount = _sim.ProjectileCount;
+            // 종료 후에는 투사체를 모두 내린다 — 시뮬 틱이 멈춰 화살이 공중에 얼어붙기 때문.
+            int activeCount = _sim.Finished ? 0 : _sim.ProjectileCount;
 
             for (int p = _projVisibleCount; p < activeCount; p++)
             {
