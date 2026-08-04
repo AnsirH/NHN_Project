@@ -130,8 +130,9 @@ namespace NHN.Presentation.Battle
             public float CritClipLength;
         }
 
-        /// <summary>사망 애니메이션을 보여준 뒤 풀로 되돌리기까지의 시간 (Die 클립 앞부분만 사용).</summary>
-        private const float DeathLingerSeconds = 1.6f;
+        /// <summary>사망 애니메이션을 보여준 뒤 풀로 되돌리기까지의 시간 (Die 클립 앞부분만 사용).
+        /// 컨트롤러의 Die 상태 재생 속도 2배와 세트 — 빠르게 쓰러지고 빠르게 치운다 (2026-08-04).</summary>
+        private const float DeathLingerSeconds = 0.9f;
         /// <summary>이동 방향 회전 속도(도/초)와 회전을 시작하는 최소 이동 속도(유닛/초) — 뷰 표현 상수.</summary>
         private const float UnitTurnDegreesPerSecond = 540f;
         private const float TurnSpeedThreshold = 0.5f;
@@ -150,7 +151,7 @@ namespace NHN.Presentation.Battle
         /// 시뮬 종료 후 결과 표시·복귀 콜백까지의 연출 유예 — 마지막 유닛의 사망 애니메이션
         /// (DeathLingerSeconds)이 끝나기 전에 전투가 끝나버리는 어색함을 막는다.
         /// </summary>
-        private const float FinishGraceSeconds = 2f;
+        private const float FinishGraceSeconds = 1.2f;
         private bool _finishGraceStarted;
         private float _finishGraceRemaining;
 
@@ -192,6 +193,11 @@ namespace NHN.Presentation.Battle
         /// <summary>시전 후보 터치 진행 중 (문턱 안에서 눌린 상태) — 드래그로 판정되면 취소된다.</summary>
         private bool _castPressActive;
         private Vector2 _castPressStart;
+        /// <summary>
+        /// 드래그 시전 진행 중인 슬롯 (모바일 UX, 2026-08-04): 스킬 버튼을 누른 채 전장으로 끌어와
+        /// 놓으면 그 지점에 즉시 시전한다. 버튼 위에서 그대로 떼면 기존 탭-탭(무장→전장 탭) 방식.
+        /// </summary>
+        private int _dragCastSlot = -1;
         private Transform _aimIndicator;
         private Renderer _aimRenderer;
         private Transform[] _zoneDiscs;
@@ -353,6 +359,8 @@ namespace NHN.Presentation.Battle
             _armedSkillSlot = -1;
             ResetSkillFxViews();
             hud.Clear();
+            // 재시작은 테스트 실행(인스펙터 구성) 전용 — 실전(아웃게임 연동)은 복귀 흐름이 담당한다.
+            hud.SetRestartVisible(_activeRequest == null);
 
             // 유닛 인덱스는 (A군 분대 순서 → B군 분대 순서) — ArmyDefinition의 계약과 동일하게 순회한다.
             PrewarmUnitPools();
@@ -742,7 +750,8 @@ namespace NHN.Presentation.Battle
 
         private void SyncProjectileViews(float alpha)
         {
-            int activeCount = _sim.ProjectileCount;
+            // 종료 후에는 투사체를 모두 내린다 — 시뮬 틱이 멈춰 화살이 공중에 얼어붙기 때문.
+            int activeCount = _sim.Finished ? 0 : _sim.ProjectileCount;
 
             for (int p = _projVisibleCount; p < activeCount; p++)
             {
@@ -950,14 +959,37 @@ namespace NHN.Presentation.Battle
         /// 무장 상태의 조준 표시(포인터 아래 스킬 반경 링)와 전장 탭 시전.
         /// 입력은 여기(Presentation)서 받아 TryCastSkill로 틱 정렬 명령만 주입한다 — 시뮬 결정론 유지.
         /// </summary>
+        /// <summary>스킬 버튼 눌림(릴리즈 아님) 알림 — 드래그 시전 시작 후보. HUD가 호출한다.</summary>
+        public void OnSkillButtonPressed(int slot)
+        {
+            if (_sim == null || _sim.Finished || slot < 0 || slot >= _skillDefinitions.Length)
+            {
+                return;
+            }
+            if (_sim.GetSkillCooldownRemaining(slot) > 0f)
+            {
+                return;
+            }
+            _dragCastSlot = slot;
+        }
+
         private void HandleSkillInput()
         {
-            if (_armedSkillSlot < 0 || _sim.Finished)
+            if (_sim.Finished)
             {
-                if (_sim.Finished)
-                {
-                    _armedSkillSlot = -1;
-                }
+                _armedSkillSlot = -1;
+                _dragCastSlot = -1;
+            }
+
+            // ── 드래그 시전 (버튼에서 눌러 전장으로 끌어와 놓기) — 무장 방식보다 우선 처리 ──
+            if (_dragCastSlot >= 0)
+            {
+                HandleDragCast();
+                return;
+            }
+
+            if (_armedSkillSlot < 0)
+            {
                 if (_aimIndicator.gameObject.activeSelf)
                 {
                     _aimIndicator.gameObject.SetActive(false);
@@ -1008,6 +1040,53 @@ namespace NHN.Presentation.Battle
                     _armedSkillSlot = -1;
                     _aimIndicator.gameObject.SetActive(false);
                 }
+            }
+        }
+
+        /// <summary>
+        /// 드래그 시전: 버튼을 누른 채 전장으로 끌면 조준 링을 따라 보여주고, 놓는 순간 그 지점에
+        /// 즉시 시전한다. 버튼(UI) 위에서 그대로 놓으면 시전하지 않는다 — 그 경우 Button.onClick이
+        /// 기존 탭-탭 무장(ToggleArmSkill)을 처리한다.
+        /// </summary>
+        private void HandleDragCast()
+        {
+            Pointer pointer = Pointer.current;
+            if (pointer == null)
+            {
+                _dragCastSlot = -1;
+                return;
+            }
+            Vector2 screenPosition = pointer.position.ReadValue();
+            SkillDefinition skill = _skillDefinitions[_dragCastSlot];
+            bool overUi = IsPointerOverUi();
+            bool hasGround = TryGetGroundPoint(screenPosition, out Vector3 groundPoint);
+
+            if (pointer.press.isPressed)
+            {
+                if (!overUi && hasGround)
+                {
+                    _aimIndicator.gameObject.SetActive(true);
+                    _aimIndicator.position = groundPoint + Vector3.up * AimDiscY;
+                    _aimIndicator.localScale = new Vector3(skill.Radius * 2f, DiscThickness, skill.Radius * 2f);
+                    Color aimColor = _skillColors[_dragCastSlot];
+                    aimColor.a = AimAlpha;
+                    SetDiscColor(_aimRenderer, aimColor);
+                }
+                else if (_aimIndicator.gameObject.activeSelf)
+                {
+                    _aimIndicator.gameObject.SetActive(false);
+                }
+                return;
+            }
+
+            int slot = _dragCastSlot;
+            _dragCastSlot = -1;
+            _aimIndicator.gameObject.SetActive(false);
+            if (!overUi && hasGround && _sim.TryCastSkill(slot, SimViewMapper.ToSim(groundPoint)))
+            {
+                SpawnCastFlash(slot, groundPoint, skill.Radius);
+                PlaySkillFx(slot, groundPoint, skill);
+                _armedSkillSlot = -1; // 무장 중이었다면 함께 소비 — 이중 시전 방지
             }
         }
 
@@ -1251,10 +1330,13 @@ namespace NHN.Presentation.Battle
 
         private Transform CreateDisc(string discName, out Renderer renderer)
         {
-            var disc = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            disc.name = discName;
-            Destroy(disc.GetComponent<Collider>());
-            renderer = disc.GetComponent<Renderer>();
+            // CreatePrimitive를 쓰지 않는다: 프리미티브는 콜라이더를 붙이는데, 이 프로젝트는 Unity
+            // 물리를 안 써서 IL2CPP 빌드가 콜라이더 클래스를 스트리핑한다 — 기기에서
+            // "Can't add component because class 'CapsuleCollider' doesn't exist!"로 생성이 실패했다.
+            // 내장 실린더 메시 + 렌더러만 직접 구성하면 콜라이더가 아예 개입하지 않는다.
+            var disc = new GameObject(discName);
+            disc.AddComponent<MeshFilter>().sharedMesh = Resources.GetBuiltinResource<Mesh>("Cylinder.fbx");
+            renderer = disc.AddComponent<MeshRenderer>();
             renderer.sharedMaterial = _stealthMaterial; // 공유 투명 재질 + 프로퍼티 블록 색
             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             disc.transform.SetParent(transform, false);
