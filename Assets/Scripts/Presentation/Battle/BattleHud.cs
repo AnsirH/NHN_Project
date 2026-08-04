@@ -1,6 +1,7 @@
 using NHN.Simulation.Battle;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace NHN.Presentation.Battle
@@ -38,6 +39,17 @@ namespace NHN.Presentation.Battle
             _shownCooldownTenths = new int[skillButtons.Length];
             for (int s = 0; s < skillButtons.Length; s++)
             {
+                // 드래그 시전용 눌림 알림 — onClick은 릴리즈에만 발화해서 별도 훅이 필요하다
+                // (모바일 UX: 버튼을 누른 채 전장으로 끌어와 놓으면 즉시 시전, 2026-08-04).
+                if (skillButtons[s].GetComponent<EventTrigger>() == null)
+                {
+                    var trigger = skillButtons[s].gameObject.AddComponent<EventTrigger>();
+                    var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+                    int slot = s;
+                    entry.callback.AddListener(_ => _bootstrap.OnSkillButtonPressed(slot));
+                    trigger.triggers.Add(entry);
+                }
+
                 _buttonGraphics[s] = skillButtons[s].targetGraphic;
                 _skillColors[s] = Color.white;
                 // 라벨은 스킬 데이터가 정본 — 씬 텍스트는 자리표시자다. 캐릭터 선택으로 스킬이

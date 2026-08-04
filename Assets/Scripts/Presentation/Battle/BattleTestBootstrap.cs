@@ -192,6 +192,11 @@ namespace NHN.Presentation.Battle
         /// <summary>시전 후보 터치 진행 중 (문턱 안에서 눌린 상태) — 드래그로 판정되면 취소된다.</summary>
         private bool _castPressActive;
         private Vector2 _castPressStart;
+        /// <summary>
+        /// 드래그 시전 진행 중인 슬롯 (모바일 UX, 2026-08-04): 스킬 버튼을 누른 채 전장으로 끌어와
+        /// 놓으면 그 지점에 즉시 시전한다. 버튼 위에서 그대로 떼면 기존 탭-탭(무장→전장 탭) 방식.
+        /// </summary>
+        private int _dragCastSlot = -1;
         private Transform _aimIndicator;
         private Renderer _aimRenderer;
         private Transform[] _zoneDiscs;
@@ -950,14 +955,37 @@ namespace NHN.Presentation.Battle
         /// 무장 상태의 조준 표시(포인터 아래 스킬 반경 링)와 전장 탭 시전.
         /// 입력은 여기(Presentation)서 받아 TryCastSkill로 틱 정렬 명령만 주입한다 — 시뮬 결정론 유지.
         /// </summary>
+        /// <summary>스킬 버튼 눌림(릴리즈 아님) 알림 — 드래그 시전 시작 후보. HUD가 호출한다.</summary>
+        public void OnSkillButtonPressed(int slot)
+        {
+            if (_sim == null || _sim.Finished || slot < 0 || slot >= _skillDefinitions.Length)
+            {
+                return;
+            }
+            if (_sim.GetSkillCooldownRemaining(slot) > 0f)
+            {
+                return;
+            }
+            _dragCastSlot = slot;
+        }
+
         private void HandleSkillInput()
         {
-            if (_armedSkillSlot < 0 || _sim.Finished)
+            if (_sim.Finished)
             {
-                if (_sim.Finished)
-                {
-                    _armedSkillSlot = -1;
-                }
+                _armedSkillSlot = -1;
+                _dragCastSlot = -1;
+            }
+
+            // ── 드래그 시전 (버튼에서 눌러 전장으로 끌어와 놓기) — 무장 방식보다 우선 처리 ──
+            if (_dragCastSlot >= 0)
+            {
+                HandleDragCast();
+                return;
+            }
+
+            if (_armedSkillSlot < 0)
+            {
                 if (_aimIndicator.gameObject.activeSelf)
                 {
                     _aimIndicator.gameObject.SetActive(false);
@@ -1008,6 +1036,53 @@ namespace NHN.Presentation.Battle
                     _armedSkillSlot = -1;
                     _aimIndicator.gameObject.SetActive(false);
                 }
+            }
+        }
+
+        /// <summary>
+        /// 드래그 시전: 버튼을 누른 채 전장으로 끌면 조준 링을 따라 보여주고, 놓는 순간 그 지점에
+        /// 즉시 시전한다. 버튼(UI) 위에서 그대로 놓으면 시전하지 않는다 — 그 경우 Button.onClick이
+        /// 기존 탭-탭 무장(ToggleArmSkill)을 처리한다.
+        /// </summary>
+        private void HandleDragCast()
+        {
+            Pointer pointer = Pointer.current;
+            if (pointer == null)
+            {
+                _dragCastSlot = -1;
+                return;
+            }
+            Vector2 screenPosition = pointer.position.ReadValue();
+            SkillDefinition skill = _skillDefinitions[_dragCastSlot];
+            bool overUi = IsPointerOverUi();
+            bool hasGround = TryGetGroundPoint(screenPosition, out Vector3 groundPoint);
+
+            if (pointer.press.isPressed)
+            {
+                if (!overUi && hasGround)
+                {
+                    _aimIndicator.gameObject.SetActive(true);
+                    _aimIndicator.position = groundPoint + Vector3.up * AimDiscY;
+                    _aimIndicator.localScale = new Vector3(skill.Radius * 2f, DiscThickness, skill.Radius * 2f);
+                    Color aimColor = _skillColors[_dragCastSlot];
+                    aimColor.a = AimAlpha;
+                    SetDiscColor(_aimRenderer, aimColor);
+                }
+                else if (_aimIndicator.gameObject.activeSelf)
+                {
+                    _aimIndicator.gameObject.SetActive(false);
+                }
+                return;
+            }
+
+            int slot = _dragCastSlot;
+            _dragCastSlot = -1;
+            _aimIndicator.gameObject.SetActive(false);
+            if (!overUi && hasGround && _sim.TryCastSkill(slot, SimViewMapper.ToSim(groundPoint)))
+            {
+                SpawnCastFlash(slot, groundPoint, skill.Radius);
+                PlaySkillFx(slot, groundPoint, skill);
+                _armedSkillSlot = -1; // 무장 중이었다면 함께 소비 — 이중 시전 방지
             }
         }
 
@@ -1251,10 +1326,13 @@ namespace NHN.Presentation.Battle
 
         private Transform CreateDisc(string discName, out Renderer renderer)
         {
-            var disc = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            disc.name = discName;
-            Destroy(disc.GetComponent<Collider>());
-            renderer = disc.GetComponent<Renderer>();
+            // CreatePrimitive를 쓰지 않는다: 프리미티브는 콜라이더를 붙이는데, 이 프로젝트는 Unity
+            // 물리를 안 써서 IL2CPP 빌드가 콜라이더 클래스를 스트리핑한다 — 기기에서
+            // "Can't add component because class 'CapsuleCollider' doesn't exist!"로 생성이 실패했다.
+            // 내장 실린더 메시 + 렌더러만 직접 구성하면 콜라이더가 아예 개입하지 않는다.
+            var disc = new GameObject(discName);
+            disc.AddComponent<MeshFilter>().sharedMesh = Resources.GetBuiltinResource<Mesh>("Cylinder.fbx");
+            renderer = disc.AddComponent<MeshRenderer>();
             renderer.sharedMaterial = _stealthMaterial; // 공유 투명 재질 + 프로퍼티 블록 색
             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             disc.transform.SetParent(transform, false);
