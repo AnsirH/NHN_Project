@@ -175,8 +175,8 @@ namespace NHN.Presentation.Battle
         // 3D 원샷으로 재생한다. 보이스 풀이 동시 재생을 상한하고, 전부 사용 중이면 그 스윙은
         // 조용히 생략 — 576기 난전에서 소리가 겹쳐 포화하는 것을 막는다 (전투 중 무할당).
         private const int AttackVoicePoolSize = 12;
-        private const float AttackSoundVolume = 0.6f;
-        private const float CritSoundVolume = 0.85f;
+        private const float AttackSoundVolume = 0.45f;
+        private const float CritSoundVolume = 0.65f;
         private AudioClip[][] _unitAttackClips;
         private AudioSource[] _attackVoices;
         private int _nextAttackVoice;
