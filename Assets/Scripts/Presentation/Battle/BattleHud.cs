@@ -43,6 +43,22 @@ namespace NHN.Presentation.Battle
         private bool _paused;
         private float _speedMultiplier = 1f;
 
+        // 군단 체력 합산 바 (미니워리어즈식 상단 VS 바, 2026-08-05) — 좌=아군(TeamA)·우=적군.
+        // 각 진영은 자기 시작 총량 기준 비율로, 중앙(VS)에서 바깥쪽으로 줄어든다.
+        private static readonly Color AllyHpColor = new Color(0.30f, 0.55f, 0.90f);
+        private static readonly Color EnemyHpColor = new Color(0.85f, 0.30f, 0.28f);
+        private GameObject _hpBarRoot;
+        private RectTransform _allyHpFill;
+        private RectTransform _enemyHpFill;
+        private TMP_Text _allyHpText;
+        private TMP_Text _enemyHpText;
+        /// <summary>전투 시작 시 팀별 체력 총량 — 음수면 다음 동기화 프레임에 다시 잰다 (Clear 직후).</summary>
+        private float _hpBaselineAlly = -1f;
+        private float _hpBaselineEnemy = -1f;
+        /// <summary>표시 중인 합산값 캐시 — 정수 단위로 바뀐 프레임에만 텍스트를 재할당한다.</summary>
+        private int _shownAllyHp = int.MinValue;
+        private int _shownEnemyHp = int.MinValue;
+
         public void Initialize(BattleTestBootstrap bootstrap, SkillDefinition[] skills)
         {
             _bootstrap = bootstrap;
@@ -76,6 +92,74 @@ namespace NHN.Presentation.Battle
                 _shownCooldownTenths[s] = int.MinValue;
             }
             EnsureTimeControlButtons();
+            EnsureHpBar();
+        }
+
+        /// <summary>
+        /// 상단 체력 바를 런타임 생성 (초기화 1회 경로 — 씬 수정 없이, 스프라이트 없는 단색 Image).
+        /// 채움은 자식 rect의 X 스케일로 표현한다 — Filled 타입은 스프라이트가 필요해서 못 쓴다.
+        /// </summary>
+        private void EnsureHpBar()
+        {
+            if (_hpBarRoot != null)
+            {
+                return;
+            }
+            _hpBarRoot = new GameObject("HpBar");
+            var rootRect = _hpBarRoot.AddComponent<RectTransform>();
+            rootRect.SetParent(transform, false);
+            rootRect.anchorMin = rootRect.anchorMax = new Vector2(0.5f, 1f);
+            rootRect.pivot = new Vector2(0.5f, 1f);
+            rootRect.sizeDelta = new Vector2(640f, 26f);
+            rootRect.anchoredPosition = new Vector2(0f, -8f);
+
+            CreateBarImage("Background", rootRect, Vector2.zero, Vector2.one,
+                new Color(0f, 0f, 0f, 0.55f), 0f);
+            _allyHpFill = CreateBarImage("AllyFill", rootRect, new Vector2(0f, 0f), new Vector2(0.5f, 1f),
+                AllyHpColor, pivotX: 0f);
+            _enemyHpFill = CreateBarImage("EnemyFill", rootRect, new Vector2(0.5f, 0f), new Vector2(1f, 1f),
+                EnemyHpColor, pivotX: 1f);
+            _allyHpText = CreateBarText("AllyHpText", rootRect, TextAlignmentOptions.Left, new Vector2(10f, 0f));
+            _enemyHpText = CreateBarText("EnemyHpText", rootRect, TextAlignmentOptions.Right, new Vector2(-10f, 0f));
+            TMP_Text vs = CreateBarText("VsText", rootRect, TextAlignmentOptions.Center, Vector2.zero);
+            vs.text = "VS";
+        }
+
+        private static RectTransform CreateBarImage(
+            string imageName, RectTransform parent, Vector2 anchorMin, Vector2 anchorMax, Color color, float pivotX)
+        {
+            var go = new GameObject(imageName);
+            var rect = go.AddComponent<RectTransform>();
+            rect.SetParent(parent, false);
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.pivot = new Vector2(pivotX, 0.5f);
+            rect.offsetMin = new Vector2(3f, 3f);
+            rect.offsetMax = new Vector2(-3f, -3f);
+            var image = go.AddComponent<Image>();
+            image.color = color;
+            image.raycastTarget = false; // 바가 상단 터치(카메라 팬)를 가로채지 않게
+            return rect;
+        }
+
+        private TMP_Text CreateBarText(
+            string textName, RectTransform parent, TextAlignmentOptions alignment, Vector2 padding)
+        {
+            var go = new GameObject(textName);
+            var rect = go.AddComponent<RectTransform>();
+            rect.SetParent(parent, false);
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = new Vector2(Mathf.Max(padding.x, 0f), 0f);
+            rect.offsetMax = new Vector2(Mathf.Min(padding.x, 0f), 0f);
+            var text = go.AddComponent<TextMeshProUGUI>();
+            text.font = resultText.font; // 씬 텍스트와 같은 폰트 자산 재사용
+            text.fontSize = 15f;
+            text.color = Color.white;
+            text.alignment = alignment;
+            text.raycastTarget = false;
+            text.textWrappingMode = TextWrappingModes.NoWrap;
+            return text;
         }
 
         /// <summary>
@@ -180,6 +264,74 @@ namespace NHN.Presentation.Battle
             // 전투 시작은 항상 기본 시간(1배속·재생 중)에서 — 이전 판의 정지/배속이 새어들지 않게.
             SetPaused(false);
             SetSpeed(1f);
+            // 체력 바 리셋 — 기준 총량은 다음 동기화 프레임에 새 시뮬에서 다시 잰다.
+            _hpBaselineAlly = -1f;
+            _hpBaselineEnemy = -1f;
+            _shownAllyHp = int.MinValue;
+            _shownEnemyHp = int.MinValue;
+            if (_hpBarRoot != null && !_hpBarRoot.activeSelf)
+            {
+                _hpBarRoot.SetActive(true);
+            }
+        }
+
+        /// <summary>
+        /// 팀별 생존 체력 합산을 상단 바에 반영한다 (매 프레임). 죽은 유닛은 체력이 0 이하로
+        /// 고정되므로(정산이 사망자를 건너뛴다) 양수 체력만 더하면 된다.
+        /// </summary>
+        public void SyncHpBar(BattleSimulation sim)
+        {
+            if (_hpBarRoot == null || !_hpBarRoot.activeSelf)
+            {
+                return;
+            }
+            float allyHp = 0f;
+            float enemyHp = 0f;
+            int unitCount = sim.UnitCount;
+            for (int i = 0; i < unitCount; i++)
+            {
+                float hp = sim.GetHp(i);
+                if (hp <= 0f)
+                {
+                    continue;
+                }
+                if (sim.GetTeam(i) == 0)
+                {
+                    allyHp += hp;
+                }
+                else
+                {
+                    enemyHp += hp;
+                }
+            }
+            if (_hpBaselineAlly < 0f)
+            {
+                _hpBaselineAlly = allyHp;
+                _hpBaselineEnemy = enemyHp;
+            }
+
+            SetHpFill(_allyHpFill, allyHp, _hpBaselineAlly);
+            SetHpFill(_enemyHpFill, enemyHp, _hpBaselineEnemy);
+            int allyShown = Mathf.CeilToInt(allyHp);
+            if (allyShown != _shownAllyHp)
+            {
+                _shownAllyHp = allyShown;
+                _allyHpText.text = allyShown.ToString("N0");
+            }
+            int enemyShown = Mathf.CeilToInt(enemyHp);
+            if (enemyShown != _shownEnemyHp)
+            {
+                _shownEnemyHp = enemyShown;
+                _enemyHpText.text = enemyShown.ToString("N0");
+            }
+        }
+
+        private static void SetHpFill(RectTransform fill, float current, float baseline)
+        {
+            float ratio = baseline > 0f ? Mathf.Clamp01(current / baseline) : 0f;
+            Vector3 scale = fill.localScale;
+            scale.x = ratio;
+            fill.localScale = scale;
         }
 
         /// <summary>
@@ -236,6 +388,11 @@ namespace NHN.Presentation.Battle
         public void ShowResult(string message)
         {
             resultText.text = message;
+            // 결과 문구가 같은 상단 자리에 뜬다 — 다 끝난 바를 겹쳐 두지 않고 치운다.
+            if (_hpBarRoot != null && _hpBarRoot.activeSelf)
+            {
+                _hpBarRoot.SetActive(false);
+            }
         }
 
         /// <summary>씬의 Restart 버튼 OnClick(persistent listener)에서 호출된다.</summary>

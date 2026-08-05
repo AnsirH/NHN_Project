@@ -484,6 +484,7 @@ namespace NHN.Presentation.Battle
             UpdateFlashFx(Time.deltaTime);
             UpdateSkillFx(Time.deltaTime);
             hud.SyncSkills(_sim, _armedSkillSlot);
+            hud.SyncHpBar(_sim);
 
             if (_sim.Finished && !_resultShown)
             {
