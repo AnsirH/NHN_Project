@@ -171,6 +171,16 @@ namespace NHN.Presentation.Battle
         private static readonly Quaternion TeamAFacing = Quaternion.Euler(0f, -135f, 0f);
         private static readonly Quaternion TeamBFacing = Quaternion.Euler(0f, 135f, 0f);
 
+        // 공격 사운드 (2026-08-05): 롤 데이터의 클립을 유닛별로 캐싱해 Attack/CritAttack 뷰 이벤트에
+        // 3D 원샷으로 재생한다. 보이스 풀이 동시 재생을 상한하고, 전부 사용 중이면 그 스윙은
+        // 조용히 생략 — 576기 난전에서 소리가 겹쳐 포화하는 것을 막는다 (전투 중 무할당).
+        private const int AttackVoicePoolSize = 12;
+        private const float AttackSoundVolume = 0.6f;
+        private const float CritSoundVolume = 0.85f;
+        private AudioClip[][] _unitAttackClips;
+        private AudioSource[] _attackVoices;
+        private int _nextAttackVoice;
+
         // 플레이어 스킬 뷰 상태
         /// <summary>현재 적용된 스킬 구성 원본 — 같은 구성 재적용(Restart)을 건너뛰기 위한 참조 비교용.</summary>
         private SkillData[] _activeSkillAssets;
@@ -253,6 +263,8 @@ namespace NHN.Presentation.Battle
             _unitStatusShown = new byte[maxUnits];
             _projObjects = new GameObject[config.MaxUnits];
             _projTransforms = new Transform[config.MaxUnits];
+            _unitAttackClips = new AudioClip[maxUnits][];
+            CreateAttackVoicePool();
 
             _baseMaterial = unitPrefab.GetComponentInChildren<Renderer>().sharedMaterial;
             _stealthMaterial = CreateStealthMaterial(_baseMaterial);
@@ -358,6 +370,11 @@ namespace NHN.Presentation.Battle
             _finishGraceStarted = false;
             _armedSkillSlot = -1;
             ResetSkillFxViews();
+            // 지난 판 스윙 사운드가 새 전투로 넘어오지 않게 즉시 끊는다.
+            for (int v = 0; v < _attackVoices.Length; v++)
+            {
+                _attackVoices[v].Stop();
+            }
             hud.Clear();
             // 재시작은 테스트 실행(인스펙터 구성) 전용 — 실전(아웃게임 연동)은 복귀 흐름이 담당한다.
             hud.SetRestartVisible(_activeRequest == null);
@@ -532,20 +549,29 @@ namespace NHN.Presentation.Battle
                 {
                     continue; // 이미 정리됐거나 사망 연출 중 — 트리거가 Die를 덮지 않게
                 }
+                // 사운드는 리깅 여부와 무관 — 애니메이터 트리거만 리깅 프리팹 한정.
                 Animator animator = _unitViewSets[unit].Animator;
-                if (animator == null)
-                {
-                    continue; // 리깅 없는 프리팹(캡슐 폴백)
-                }
                 switch (viewEvent.Type)
                 {
                     case BattleSimulation.ViewEventType.Attack:
-                        animator.SetTrigger(AttackParamId);
+                        PlayAttackSound(unit, isCrit: false);
+                        if (animator != null)
+                        {
+                            animator.SetTrigger(AttackParamId);
+                        }
                         break;
                     case BattleSimulation.ViewEventType.CritAttack:
-                        animator.SetTrigger(CritParamId);
+                        PlayAttackSound(unit, isCrit: true);
+                        if (animator != null)
+                        {
+                            animator.SetTrigger(CritParamId);
+                        }
                         break;
                     case BattleSimulation.ViewEventType.Damaged:
+                        if (animator == null)
+                        {
+                            break;
+                        }
                         // 공격 스윙 중에는 피격 모션이 끼어들지 않는다 — 난전에서 피격이 매 순간
                         // 들어와 스윙이 계속 끊기는 어색함 방지 (공격 > 피격 우선순위).
                         AnimatorStateInfo current = animator.GetCurrentAnimatorStateInfo(0);
@@ -557,6 +583,57 @@ namespace NHN.Presentation.Battle
                 }
             }
             _sim.ClearViewEvents();
+        }
+
+        /// <summary>3D 원샷 보이스 풀 생성 (초기화 1회 경로). 리스너는 메인 카메라 — 멀수록 작게 들린다.</summary>
+        private void CreateAttackVoicePool()
+        {
+            _attackVoices = new AudioSource[AttackVoicePoolSize];
+            for (int v = 0; v < _attackVoices.Length; v++)
+            {
+                var voice = new GameObject($"AttackVoice{v}");
+                voice.transform.SetParent(transform, false);
+                AudioSource source = voice.AddComponent<AudioSource>();
+                source.playOnAwake = false;
+                source.spatialBlend = 1f;
+                source.dopplerLevel = 0f;
+                source.minDistance = 6f; // 카메라 기본 거리(~18)에서 자연 감쇠가 걸리는 하한
+                source.maxDistance = 45f;
+                source.rolloffMode = AudioRolloffMode.Logarithmic;
+                _attackVoices[v] = source;
+            }
+        }
+
+        /// <summary>
+        /// 공격 스윙 사운드 — 유닛 롤의 클립 중 무작위 1개를 빈 보이스로 재생한다.
+        /// 전부 재생 중이면 생략 (동시 재생 상한 = 풀 크기). 피치 랜덤으로 반복감을 줄이고,
+        /// 치명타는 약간 낮고 크게 — 클립을 따로 두지 않아도 구분되게.
+        /// </summary>
+        private void PlayAttackSound(int unitIndex, bool isCrit)
+        {
+            AudioClip[] clips = _unitAttackClips[unitIndex];
+            if (clips == null || clips.Length == 0)
+            {
+                return;
+            }
+            for (int v = 0; v < _attackVoices.Length; v++)
+            {
+                int index = (_nextAttackVoice + v) % _attackVoices.Length;
+                AudioSource voice = _attackVoices[index];
+                if (voice.isPlaying)
+                {
+                    continue;
+                }
+                _nextAttackVoice = (index + 1) % _attackVoices.Length;
+                voice.transform.position = _unitTransforms[unitIndex].position;
+                voice.clip = clips[UnityEngine.Random.Range(0, clips.Length)];
+                voice.volume = isCrit ? CritSoundVolume : AttackSoundVolume;
+                voice.pitch = isCrit
+                    ? UnityEngine.Random.Range(0.85f, 0.95f)
+                    : UnityEngine.Random.Range(0.92f, 1.08f);
+                voice.Play();
+                return;
+            }
         }
 
         private void SyncUnitViews(float alpha)
@@ -801,10 +878,11 @@ namespace NHN.Presentation.Battle
                 GameObjectPool pool = GetUnitPool(ViewPrefabOf(squad.Role));
                 Quaternion facing = isTeamB ? TeamBFacing : TeamAFacing;
                 float attackInterval = squad.Role.AttackInterval;
+                AudioClip[] attackSounds = squad.Role.AttackSounds;
 
                 for (int k = 0; k < squad.Count; k++)
                 {
-                    SpawnUnitView(unitIndex++, color, scale, pool, facing, attackInterval);
+                    SpawnUnitView(unitIndex++, color, scale, pool, facing, attackInterval, attackSounds);
                 }
 
                 if (squad.General != null)
@@ -813,19 +891,22 @@ namespace NHN.Presentation.Battle
                     // 시뮬의 분대 내 유닛 순서(병사 → 장군)와 일치해야 한다 (ArmyDefinition 계약).
                     Color generalColor = Color.Lerp(color, GeneralHighlight, 0.5f);
                     SpawnUnitView(
-                        unitIndex++, generalColor, squad.General.UnitRadius / 0.5f, pool, facing, attackInterval);
+                        unitIndex++, generalColor, squad.General.UnitRadius / 0.5f, pool, facing, attackInterval,
+                        attackSounds);
                 }
             }
         }
 
         private void SpawnUnitView(
-            int unitIndex, Color color, float scale, GameObjectPool pool, Quaternion facing, float attackInterval)
+            int unitIndex, Color color, float scale, GameObjectPool pool, Quaternion facing, float attackInterval,
+            AudioClip[] attackSounds)
         {
             GameObject unit = pool.Get();
             _unitObjects[unitIndex] = unit;
             _unitSourcePools[unitIndex] = pool;
             _unitTransforms[unitIndex] = unit.transform;
             _unitVisible[unitIndex] = true;
+            _unitAttackClips[unitIndex] = attackSounds;
 
             // 초기화 시점 1회 조회 — Update에서는 캐시만 사용.
             _unitViewSets[unitIndex] = GetViewCache(unit);

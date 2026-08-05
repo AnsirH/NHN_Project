@@ -45,10 +45,14 @@ namespace NHN.Data
         [SerializeField] private Color roleColor = Color.white;
         [Tooltip("유닛 3D 모델 프리팹 — 비우면 기본 캡슐 프리팹 사용 (뷰 전용, 시뮬 무관)")]
         [SerializeField] private GameObject viewPrefab;
+        [Tooltip("공격 사운드 목록 — 스윙마다 무작위 1개 재생. 비우면 무음 (뷰 전용, 시뮬 무관)")]
+        [SerializeField] private AudioClip[] attackSounds;
 
         public Color RoleColor => roleColor;
 
         public GameObject ViewPrefab => viewPrefab;
+
+        public AudioClip[] AttackSounds => attackSounds;
 
         public float UnitRadius => unitRadius;
 

@@ -29,3 +29,5 @@ MonoBehaviour:
   projectileArcHeight: 2
   roleColor: {r: 0.6, g: 0.3, b: 0.85, a: 1}
   viewPrefab: {fileID: 4032534519313787592, guid: d3d88e6fb1e9feb428719011bebfb216, type: 3}
+  attackSounds:
+  - {fileID: 8300000, guid: b1b2fa3874a8a7e46b1e2bfa697a0cf3, type: 3}
