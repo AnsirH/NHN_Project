@@ -1335,10 +1335,16 @@ namespace NHN.Presentation.Battle
             // "Can't add component because class 'CapsuleCollider' doesn't exist!"로 생성이 실패했다.
             // 내장 실린더 메시 + 렌더러만 직접 구성하면 콜라이더가 아예 개입하지 않는다.
             var disc = new GameObject(discName);
-            disc.AddComponent<MeshFilter>().sharedMesh = Resources.GetBuiltinResource<Mesh>("Cylinder.fbx");
-            renderer = disc.AddComponent<MeshRenderer>();
+            // 주의: 내장 리소스 "Cylinder.fbx"는 반경 1 — CreatePrimitive의 실린더(반경 0.5)와 다르다.
+            // 호출부는 지름(반경*2) 스케일 규칙을 쓰므로 자식에서 0.5를 곱해 반경 0.5 규격으로 맞춘다.
+            // (이 보정이 빠지면 모든 범위 표시가 실제의 2배로 커진다 — 2026-08-05 스킬 이펙트 불일치의 원인.)
+            var mesh = new GameObject("Mesh");
+            mesh.AddComponent<MeshFilter>().sharedMesh = Resources.GetBuiltinResource<Mesh>("Cylinder.fbx");
+            renderer = mesh.AddComponent<MeshRenderer>();
             renderer.sharedMaterial = _stealthMaterial; // 공유 투명 재질 + 프로퍼티 블록 색
             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            mesh.transform.SetParent(disc.transform, false);
+            mesh.transform.localScale = new Vector3(0.5f, 1f, 0.5f);
             disc.transform.SetParent(transform, false);
             disc.SetActive(false);
             return disc.transform;
