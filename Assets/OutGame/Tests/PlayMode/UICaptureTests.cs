@@ -154,11 +154,14 @@ namespace OutGame.Tests.PlayMode
                 // 해시까지 완전히 동일함을 확인). 실제로 다른 슬롯으로 옮겨야 화면이 바뀐다.
                 // 적 진영도 아군과 동일한 ArmyCardView를 재사용하므로(2026-07-26) 아군 격자로 범위를
                 // 좁혀야 실제 보유 군대 카드를 얻는다.
-                var cardView = panel.transform.Find("MainRow/AllyFormationPanel/SlotGrid")
+                var allyFormationPanel = panel.transform.Find("MainRow/AllyFormationPanel");
+                var cardView = allyFormationPanel.Find("FormationGridPanel/SlotArea")
                     .GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
-                var emptySlot = panel.GetComponentsInChildren<DeploySlotView>()
+                // 적 진영도 이제 같은 DeploySlotView를 쓰므로(2026-08-07, 공용 FormationGridPanel)
+                // panel 전체가 아니라 아군 격자로 범위를 좁혀야 한다.
+                var emptySlot = allyFormationPanel.GetComponentsInChildren<DeploySlotView>()
                     .First(s => s.CardContainer.GetComponentInChildren<ArmyCardView>() == null);
-                var allyFormationView = panel.transform.Find("MainRow/AllyFormationPanel").GetComponent<AllyFormationView>();
+                var allyFormationView = allyFormationPanel.GetComponent<AllyFormationView>();
                 typeof(AllyFormationView)
                     .GetMethod("OnArmyDroppedOnSlot", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                     .Invoke(allyFormationView, new object[] { cardView.ArmyInstanceId, emptySlot.SlotId });
@@ -184,6 +187,79 @@ namespace OutGame.Tests.PlayMode
                     .GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
 
                 yield return CaptureToFile("ArmyDeploymentPanel_05_army_info_upgraded.png");
+            }
+            finally
+            {
+                Object.Destroy(canvasGo);
+                Object.Destroy(eventSystemGo);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator Capture_ArmyDeploymentPanel_NarrowAndWideAspectRatios()
+        {
+            // 2026-08-07: 슬롯 격자를 GridLayoutGroup 고정 Cell Size 대신 정규화 앵커(FormationGridPanel)로
+            // 바꾼 핵심 이유가 해상도/화면비 대응이었다 — 실제 화면 해상도를 바꾸는 대신, 패널을 감싸는
+            // 중간 컨테이너의 RectTransform 크기만 좁게/넓게 바꿔서 같은 효과를 낸다(ArmyDeploymentPanel
+            // 자신의 루트는 항상 부모를 꽉 채우도록 앵커돼 있으므로, 이 컨테이너가 곧 "화면비"를 대신한다).
+            if (Application.isBatchMode)
+            {
+                Assert.Ignore("batchmode에서는 렌더 프레임이 없어 캡처 불가 — 에디터 열림 상태에서만 실행");
+                yield break;
+            }
+
+            yield return SettleGameView();
+
+            var canvasGo = new GameObject("CaptureCanvas", typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler));
+            var eventSystemGo = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
+            try
+            {
+                var canvas = canvasGo.GetComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                var scaler = canvasGo.GetComponent<UnityEngine.UI.CanvasScaler>();
+                scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                scaler.referenceResolution = new Vector2(1920f, 1080f);
+                scaler.matchWidthOrHeight = 0.5f;
+
+                GameObject prefab = Resources.Load<GameObject>("OutGame/ArmyDeploymentPanel");
+                var armyDefBasic = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
+                var armyDefNone = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_army_none");
+                var runConfig = new RunConfig { startingArmyCount = 3 };
+                MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
+                var enemyComposition = new System.Collections.Generic.List<OutGame.Logic.Battle.EnemyArmy>
+                {
+                    new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.Archer, soldierCount = 30 },
+                    new OutGame.Logic.Battle.EnemyArmy { armyDefId = "army_basic", armyClass = OutGame.Logic.Armies.ArmyClass.Warrior, soldierCount = 30 },
+                };
+
+                // 세로 높이는 실제 화면(1080 기준)과 비슷하게 고정하고 폭만 바꾼다 — ArmyDeploymentPanel의
+                // 바깥 틀(TopBar/MainRow 여백 등)은 이번 리팩터 대상이 아니라 여전히 고정 픽셀 오프셋을
+                // 쓴다(사용자가 지적한 건 슬롯 격자의 GridLayoutGroup 고정 Cell Size였다) — 세로까지 극단적으로
+                // 줄이면 그 바깥 틀이 넘쳐서 슬롯 격자 자체의 반응형 여부와 무관한 잡음이 캡처에 섞인다.
+                (float width, float height, string label)[] containers =
+                {
+                    (2400f, 1080f, "ultrawide"), // 가로로 넓은 화면비 — 격자가 넘치지 않고 컬럼 폭에 맞춰 재배치돼야 함
+                    (1400f, 1080f, "narrow"), // 가로로 좁은 화면비 — 빈 공간이 남지 않고 꽉 채워야 함
+                };
+
+                foreach ((float width, float height, string label) in containers)
+                {
+                    var containerGo = new GameObject($"SimulatedContainer_{label}", typeof(RectTransform));
+                    containerGo.transform.SetParent(canvasGo.transform, worldPositionStays: false);
+                    var containerRect = (RectTransform)containerGo.transform;
+                    containerRect.sizeDelta = new Vector2(width, height);
+
+                    RunState run = RunStateFactory.Create(map, runConfig);
+                    var panel = Object.Instantiate(prefab, containerRect).GetComponent<ArmyDeploymentPanel>();
+                    panel.Open(run, "room_2_0", RoomType.NormalBattle, "enc_default",
+                        new[] { armyDefBasic, armyDefNone }, new ItemDefinition[0], runConfig, new AugmentDefinition[0],
+                        new PlayerCharacterDefinition[0], enemyComposition);
+
+                    yield return CaptureToFile($"ArmyDeploymentPanel_06_aspect_{label}.png");
+
+                    Object.Destroy(containerGo);
+                    yield return null;
+                }
             }
             finally
             {
@@ -441,7 +517,7 @@ namespace OutGame.Tests.PlayMode
                 yield return CaptureToFile("ArmyFormationPopup_02_inventory_open.png");
 
                 popup.GetComponentInChildren<InventoryPopup>(includeInactive: true).Hide();
-                var cardView = window.Find("AllyFormationPanel/SlotGrid")
+                var cardView = window.Find("AllyFormationPanel/FormationGridPanel/SlotArea")
                     .GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
                 cardView.OnPointerClick(new PointerEventData(EventSystem.current));
                 yield return CaptureToFile("ArmyFormationPopup_03_army_info.png");

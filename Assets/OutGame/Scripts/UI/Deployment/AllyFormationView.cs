@@ -29,15 +29,11 @@ namespace OutGame.UI.Deployment
     public class AllyFormationView : MonoBehaviour
     {
         [Header("구조 참조")]
-        [SerializeField] private RectTransform allySlotContainer;
-        [SerializeField] private RectTransform connectorLayer; // 슬롯 격자 연결 트랙 레이어(2026-08-05)
-        [SerializeField] private Text allyPowerLabel;
+        [SerializeField] private FormationGridView formationGrid; // 슬롯 격자(원형 슬롯+연결 트랙+전투력 라벨) 공용 뼈대(2026-08-07)
         [SerializeField] private Button itemButton; // null 허용 — 아이템 버튼이 필요 없는 호스트도 있음(예: 증원 방, 2026-07-26)
 
         [Header("요소 프리팹")]
         [SerializeField] private ArmyCardView armyCardPrefab;
-        [SerializeField] private DeploySlotView allySlotPrefab;
-        [SerializeField] private Image connectorPrefab;
 
         [Header("팝업")]
         [SerializeField] private ItemBindWarningPopup bindWarningPopup;
@@ -58,7 +54,6 @@ namespace OutGame.UI.Deployment
         private readonly Dictionary<string, ArmyData> armyDataById = new Dictionary<string, ArmyData>();
         private readonly Dictionary<string, ItemData> itemDataById = new Dictionary<string, ItemData>();
         private readonly Dictionary<string, AugmentData> augmentDataById = new Dictionary<string, AugmentData>();
-        private readonly Dictionary<int, DeploySlotView> allySlotViewsById = new Dictionary<int, DeploySlotView>();
         private readonly List<int> allySlotPriorityOrder = new List<int>();
 
         private RunState run;
@@ -148,9 +143,9 @@ namespace OutGame.UI.Deployment
 
         private void ValidateWiring()
         {
-            if (allySlotContainer == null || connectorLayer == null || allyPowerLabel == null)
-                throw new InvalidOperationException("AllyFormationView의 구조 참조가 배선되지 않았습니다.");
-            if (armyCardPrefab == null || allySlotPrefab == null || connectorPrefab == null)
+            if (formationGrid == null)
+                throw new InvalidOperationException("AllyFormationView의 formationGrid가 배선되지 않았습니다.");
+            if (armyCardPrefab == null)
                 throw new InvalidOperationException("AllyFormationView의 요소 프리팹이 배선되지 않았습니다.");
             if (bindWarningPopup == null || inventoryPopup == null || armyInfoPopup == null)
                 throw new InvalidOperationException("AllyFormationView의 팝업이 배선되지 않았습니다.");
@@ -164,37 +159,28 @@ namespace OutGame.UI.Deployment
             // 업그레이드는 팝업 안에서 골드를 차감하므로(ArmyUpgradeService), 전투력/재화 표시도
             // 같이 갱신해야 한다 — RefreshLayout이 이미 둘 다 갱신하므로 재사용한다.
             armyInfoPopup.Upgraded += RefreshLayout;
+            // 슬롯이 더 이상 매 Open()마다 파괴/재생성되지 않으므로(2026-08-07, 정적 프리팹으로 전환)
+            // 한 번만 구독하면 된다 — 기존엔 슬롯 인스턴스마다 개별 구독이 필요했다.
+            formationGrid.ArmyDropped += OnArmyDroppedOnSlot;
+            formationGrid.ItemDroppedOnOccupant += OnItemDroppedOnCard;
         }
 
         private void OnDestroy()
         {
             if (itemButton != null) itemButton.onClick.RemoveListener(OnItemButtonClicked);
             armyInfoPopup.Upgraded -= RefreshLayout;
+            formationGrid.ArmyDropped -= OnArmyDroppedOnSlot;
+            formationGrid.ItemDroppedOnOccupant -= OnItemDroppedOnCard;
         }
 
         // ── 구성 ─────────────────────────────────────────────────────
 
         private void BuildAllySlots()
         {
-            foreach (Transform child in allySlotContainer.Cast<Transform>().ToArray()) Destroy(child.gameObject);
-            allySlotViewsById.Clear();
+            formationGrid.Initialize();
 
             BattleFieldConfigData fieldData = fieldConfig.ToData();
             List<SlotDefinition> slots = fieldData.GenerateSlots();
-
-            foreach (SlotDefinition slot in slots)
-            {
-                DeploySlotView view = Instantiate(allySlotPrefab, allySlotContainer);
-                view.Initialize(slot.slotId);
-                view.ArmyDropped += OnArmyDroppedOnSlot;
-                view.ItemDroppedOnOccupant += OnItemDroppedOnCard;
-                allySlotViewsById[slot.slotId] = view;
-            }
-
-            // 슬롯 격자 연결 트랙(2026-08-05, 참고 이미지).
-            FormationSlotGridBuilder.BuildConnectors(
-                connectorLayer, connectorPrefab, allySlotContainer.GetComponent<GridLayoutGroup>(),
-                fieldData.rows, fieldData.columns);
 
             // 자동 배치 우선순위 — "가운데 전방"이 기본 배치 기준점이다(2026-07-26 사용자 확정).
             // 아군은 구역 제한 없이 전방 열(마지막 열)부터 후방 쪽으로(4→3→2→1) 훑고, 각 열 안에서는
@@ -335,7 +321,7 @@ namespace OutGame.UI.Deployment
                 if (army == null) continue; // 부대가 런에서 사라진 경우(미래 기능 대비) — 카드만 남기고 스킵
 
                 int? slotId = deployment.GetSlotOf(kv.Key);
-                if (!slotId.HasValue || !allySlotViewsById.TryGetValue(slotId.Value, out DeploySlotView slotView))
+                if (!slotId.HasValue || !formationGrid.SlotViewsById.TryGetValue(slotId.Value, out DeploySlotView slotView))
                     throw new InvalidOperationException(
                         $"부대 {kv.Key}가 어떤 슬롯에도 배치되지 않았습니다 — 자동 배치 로직 확인 필요 (§4-7: 상한=슬롯 수).");
                 Transform target = slotView.CardContainer;
@@ -357,7 +343,7 @@ namespace OutGame.UI.Deployment
             }
 
             // 빈 슬롯 체크 표시 갱신(2026-08-05) — 카드가 있는 슬롯은 카드에 가려지므로 꺼둔다.
-            foreach (DeploySlotView slotView in allySlotViewsById.Values)
+            foreach (DeploySlotView slotView in formationGrid.SlotViewsById.Values)
                 slotView.SetOccupied(deployment.GetArmyAt(slotView.SlotId) != null);
 
             // 배치 영속화를 먼저 끝내둔다 — 전투력 계산은 BattlePowerCalculator를 거치며 데이터
@@ -368,7 +354,7 @@ namespace OutGame.UI.Deployment
             List<AugmentData> selectedAugments = BuildSelectedAugments();
             List<DeployedArmy> allyDeployed = deployment.BuildDeployedArmies(run, itemDataById, armyDataById, selectedAugments);
             float allyPower = BattlePowerCalculator.Calculate(allyDeployed, powerConfig.ToData(), armyDataById, selectedAugments);
-            allyPowerLabel.text = $"전투력: {allyPower:0}";
+            formationGrid.SetPower(allyPower);
 
             Changed?.Invoke();
         }

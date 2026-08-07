@@ -35,17 +35,13 @@ namespace OutGame.UI.Deployment
     public class ArmyDeploymentPanel : MonoBehaviour
     {
         [Header("구조 참조")]
-        [SerializeField] private RectTransform enemySlotContainer;
-        [SerializeField] private RectTransform enemyConnectorLayer; // 슬롯 격자 연결 트랙 레이어(2026-08-05)
-        [SerializeField] private Text enemyPowerLabel;
+        [SerializeField] private FormationGridView enemyFormationGrid; // 슬롯 격자(원형 슬롯+연결 트랙+전투력 라벨) 공용 뼈대(2026-08-07)
         [SerializeField] private Text enemyBuffLabel;
         [SerializeField] private Button startBattleButton;
         [SerializeField] private CurrencyDisplay currencyDisplay; // 2026-07-26: 상단 바 재화 표시
 
         [Header("요소 프리팹")]
         [SerializeField] private ArmyCardView armyCardPrefab; // 적 카드 표시용(interactable=false)
-        [SerializeField] private Image enemySlotPrefab;
-        [SerializeField] private Image connectorPrefab;
 
         [Header("플레이어 진영")]
         [SerializeField] private AllyFormationView allyFormationView;
@@ -62,8 +58,6 @@ namespace OutGame.UI.Deployment
         private readonly Dictionary<string, ArmyData> armyDataById = new Dictionary<string, ArmyData>();
         private readonly Dictionary<string, ItemData> itemDataById = new Dictionary<string, ItemData>();
         private readonly Dictionary<string, PlayerCharacterData> characterDataById = new Dictionary<string, PlayerCharacterData>();
-        private readonly Dictionary<int, Transform> enemySlotCardContainersById = new Dictionary<int, Transform>();
-
         private RunState run;
         private string roomId;
         private RoomType roomType;
@@ -156,11 +150,10 @@ namespace OutGame.UI.Deployment
 
         private void ValidateWiring()
         {
-            if (enemySlotContainer == null || enemyConnectorLayer == null || enemyPowerLabel == null
-                || enemyBuffLabel == null || startBattleButton == null
+            if (enemyFormationGrid == null || enemyBuffLabel == null || startBattleButton == null
                 || currencyDisplay == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 구조 참조가 배선되지 않았습니다.");
-            if (armyCardPrefab == null || enemySlotPrefab == null || connectorPrefab == null)
+            if (armyCardPrefab == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 요소 프리팹이 배선되지 않았습니다.");
             if (allyFormationView == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 allyFormationView가 배선되지 않았습니다.");
@@ -190,36 +183,24 @@ namespace OutGame.UI.Deployment
 
         private void BuildEnemySlots()
         {
-            foreach (Transform child in enemySlotContainer.Cast<Transform>().ToArray()) Destroy(child.gameObject);
-            enemySlotCardContainersById.Clear();
+            // 적 진영은 빈 슬롯도 체크 표시 없이 그냥 빈 상태로 둔다(§ 사용자 확정 — 배치 자체가 불가능하므로).
+            enemyFormationGrid.Initialize(enableEmptyIndicator: false);
+
+            // 슬롯 자체는 더 이상 매 Open()마다 파괴/재생성되지 않는 정적 프리팹이라(2026-08-07), 이전
+            // Open()의 적 카드가 CardContainer에 남아있을 수 있다 — 새로 배치하기 전에 직접 지운다.
+            foreach (DeploySlotView slotView in enemyFormationGrid.SlotViewsById.Values)
+                foreach (Transform child in slotView.CardContainer.Cast<Transform>().ToArray())
+                    Destroy(child.gameObject);
 
             BattleFieldConfigData fieldData = fieldConfig.ToData();
             List<SlotDefinition> slots = fieldData.GenerateSlots();
 
-            // 적 진영 — 아군과 똑같은 크기의 격자를 항상 전부 만들고(§5.7 "플레이어 진영처럼"), 그 위에
+            // 적 진영 — 아군과 똑같은 크기의 격자를 항상 전부 보여주고(§5.7 "플레이어 진영처럼"), 그 위에
             // §4-28 생성된 구성을 EnemyFormationAssigner로 배치한다. 유닛 표시는 아군과 동일한
             // ArmyCardView를 재사용한다(2026-07-26 사용자 요청 — 진영 간 UI 통일). 아래에서 계산한
             // 슬롯 좌표는 화면 렌더링뿐 아니라 각 EnemyArmy.slotId/slotX/slotY에도 그대로 기록되므로
             // (2026-08-02), BuildSetup() 시점에 §7 계약으로 나가는 좌표가 화면에 보이는 배치와
             // 항상 일치한다 — 별도로 재계산하지 않는다.
-            foreach (SlotDefinition slot in slots)
-            {
-                Image slotBackground = Instantiate(enemySlotPrefab, enemySlotContainer);
-
-                Transform cardContainer = slotBackground.transform.Find("CardContainer");
-                if (cardContainer == null)
-                {
-                    Debug.LogWarning("[ArmyDeploymentPanel] EnemySlotPlaceholder 프리팹에 CardContainer가 없습니다 — SceneSetupM3UI.Run() 재실행 필요.");
-                    continue;
-                }
-                enemySlotCardContainersById[slot.slotId] = cardContainer;
-            }
-
-            // 슬롯 격자 연결 트랙(2026-08-05, 참고 이미지 — 적 진영도 아군과 동일한 스타일로 통일).
-            FormationSlotGridBuilder.BuildConnectors(
-                enemyConnectorLayer, connectorPrefab, enemySlotContainer.GetComponent<GridLayoutGroup>(),
-                fieldData.rows, fieldData.columns);
-
             var assignments = EnemyFormationAssigner.Assign(enemyComposition, slots, fieldData.columns);
             foreach ((EnemyArmy enemy, SlotDefinition slot) in assignments)
             {
@@ -231,9 +212,9 @@ namespace OutGame.UI.Deployment
                 enemy.slotX = slot.x;
                 enemy.slotY = slot.y;
 
-                if (!enemySlotCardContainersById.TryGetValue(slot.slotId, out Transform container)) continue;
+                if (!enemyFormationGrid.SlotViewsById.TryGetValue(slot.slotId, out DeploySlotView slotView)) continue;
 
-                ArmyCardView card = Instantiate(armyCardPrefab, container);
+                ArmyCardView card = Instantiate(armyCardPrefab, slotView.CardContainer);
                 // 적 유닛은 run.armies에 속하지 않는 임시 표시용이라 실제 armyInstanceId가 없다 —
                 // interactable=false로 드래그/클릭/아이템 드롭을 막으므로 이 값은 식별용으로만 쓰인다.
                 card.Initialize($"enemy_{slot.slotId}", interactable: false);
@@ -279,7 +260,7 @@ namespace OutGame.UI.Deployment
             }).ToList();
             // 적은 증강 개념이 없으므로(§4-28) 빈 목록을 넘긴다 — 난이도 배율은 위 upgradeLevel로 반영됨.
             float enemyPower = BattlePowerCalculator.Calculate(enemyDeployed, power, armyDataById, new List<AugmentData>());
-            enemyPowerLabel.text = $"전투력: {enemyPower:0}";
+            enemyFormationGrid.SetPower(enemyPower);
         }
     }
 }

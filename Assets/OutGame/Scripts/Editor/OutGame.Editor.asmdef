@@ -3,7 +3,9 @@
     "rootNamespace": "OutGame.Editor",
     "references": [
         "OutGame.Logic",
-        "OutGame.ScriptableObjects"
+        "OutGame.ScriptableObjects",
+        "OutGame",
+        "UnityEngine.UI"
     ],
     "includePlatforms": [
         "Editor"

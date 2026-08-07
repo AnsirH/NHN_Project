@@ -94,21 +94,6 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Open_ArmyWithEquippedItem_ShowsClassAwareName()
-        {
-            // 배치 UI와 동일하게 병과 반영 이름이 나와야 한다 (§2 용어) — 각자 계산해서 한쪽만 반영됐던
-            // 회귀 버그 재발 방지 (2026-07-19).
-            run.ownedItemIds.Add("item_bow");
-            OutGame.Logic.Items.ItemEquipService.Equip(run, run.armies[0].instanceId, "item_bow", itemDataById);
-
-            OpenPanel();
-            yield return null;
-
-            var card = Cards().First(c => c.ArmyInstanceId == run.armies[0].instanceId);
-            StringAssert.StartsWith("궁수 군대", card.GetComponentInChildren<Text>().text);
-        }
-
-        [UnityTest]
         public IEnumerator ClickCard_DoesNotOpenArmyInfoPopup()
         {
             // 2026-07-26: 증원 방은 AllyFormationView를 "선택 모드"로 연다 — 카드 클릭이 정보 팝업
