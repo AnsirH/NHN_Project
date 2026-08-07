@@ -26,7 +26,8 @@ namespace OutGame.UI
             completeButton.onClick.AddListener(OnCompleteClicked);
         }
 
-        public void ShowRunClear() => Show("런 클리어!", "보스를 물리쳤습니다. 메인 메뉴로 돌아갑니다.");
+        public void ShowRunClear() => Show("런 클리어!",
+            "쓰러진 군세 사이, 낡은 도구 하나가 유난히 매만진 자국을 남기고 있다. 누군가 이 부대를 오래 돌보았다는 사실만은, 부정할 수 없다.");
 
         public void ShowDefeat() => Show("패배", "부대가 전멸했습니다. 런이 종료됩니다.");
 
