@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b28bd78b380747b99cfb9415a46781bb, type: 3}
+  m_Name: LoreFragmentDefinition_RainStand
+  m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.LoreFragmentDefinition
+  fragmentId: frag_rainstand
+  text: 비가 내리는 밤, 한 흙인형이 굳이 처마 밑이 아닌 빗속에 서 있다. 젖어도 상관없을 텐데, 굳이 그 자리에서. 누군가 그렇게 서 있곤 했던 것처럼.

@@ -1,6 +1,7 @@
 using System;
 using OutGame.Logic.Audio;
 using OutGame.Logic.Runs;
+using OutGame.UI;
 using UnityEngine;
 
 namespace OutGame.Flow
@@ -41,8 +42,16 @@ namespace OutGame.Flow
             {
                 // 씬 교체 전투(§7.4)에서 복귀한 경우 — 맵/캐릭터 선택이 이미 끝난 런이라 방 그래프로
                 // 곧장 진입한다(2026-07-30: 메인 메뉴 "이어하기" 제거 이후 이 경로의 유일한 발생지).
-                ShowOnly(roomGraphController.gameObject);
-                roomGraphController.Begin(pendingRun);
+                //
+                // 2026-08-04 사용자 확정: "인게임 → 맵 선택(전투 종료)" 전환에도 로딩 오버레이를 건다.
+                // 실제 씬 로드(BattleBridgeConnector.cs, InGame 소유)는 이미 끝난 뒤라 여기서는 순수
+                // 파편 게이트 역할만 한다 — roomGraphController를 아직 활성화하지 않은 채로 오버레이가
+                // 화면을 가려야 하므로, Begin() 호출 자체를 onComplete 안으로 미룬다.
+                LoadingOverlayPanel.GetOrCreate().Begin(() =>
+                {
+                    ShowOnly(roomGraphController.gameObject);
+                    roomGraphController.Begin(pendingRun);
+                });
             }
             else
             {

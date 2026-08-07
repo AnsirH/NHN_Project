@@ -5,6 +5,7 @@ using OutGame.Flow;
 using OutGame.Logic.Battle;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
+using OutGame.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
@@ -27,6 +28,7 @@ namespace OutGame.Tests.PlayMode
         {
             RunSessionContext.ConsumePendingRun(); // 정적 상태 정리 — 테스트 간 PendingRun 오염 방지
             BattleBridge.ResetToDefault();
+            LoadingOverlayPanel.ResetForTests(); // DontDestroyOnLoad 싱글톤 정리
             yield return SceneManager.UnloadSceneAsync(SceneNames.OutGame);
         }
 
@@ -73,6 +75,9 @@ namespace OutGame.Tests.PlayMode
         public IEnumerator Load_WithPendingRun_ShowsOnlyRoomGraphAndConsumesPendingRun()
         {
             RunSessionContext.SetPendingRun(NewRun());
+            // "인게임 → 맵 선택" 전환의 로딩 오버레이가 낮은 확률(기본 15%)로 파편 클릭 대기에 들어가면
+            // 이 테스트의 "1프레임 뒤 방 그래프가 곧장 보인다" 가정이 깨진다 — 결정적으로 만든다.
+            LoadingOverlayPanel.GetOrCreate().FragmentTriggerChance = 0f;
 
             yield return LoadScene();
 

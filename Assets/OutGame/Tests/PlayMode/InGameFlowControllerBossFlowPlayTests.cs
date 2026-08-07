@@ -34,6 +34,7 @@ namespace OutGame.Tests.PlayMode
         public IEnumerator TearDown()
         {
             BattleBridge.ResetToDefault(); // 정적 상태 정리 — 테스트 간 pendingSetup/콜백 오염 방지
+            LoadingOverlayPanel.ResetForTests(); // DontDestroyOnLoad 싱글톤 정리 — 다음 테스트에 새로 생성되게
             yield return SceneManager.UnloadSceneAsync(SceneNames.OutGame);
         }
 
@@ -53,6 +54,9 @@ namespace OutGame.Tests.PlayMode
             InGameFlowController flow = Object.FindFirstObjectByType<InGameFlowController>(FindObjectsInactive.Include);
             flow.gameObject.SetActive(true); // 최초 활성화 — Awake()가 이 시점에 동기 실행됨
             flow.LoadSceneAction = _ => { }; // 실제 Battle.unity 로드 방지
+            // 로딩 오버레이의 "의지의 파편" 노출은 확률적(기본 15%)이라, 고정하지 않으면 이 파일의
+            // deploymentPanel 즉시 오픈 가정이 간헐적으로 깨진다 — 결정적으로 만든다.
+            LoadingOverlayPanel.GetOrCreate().FragmentTriggerChance = 0f;
 
             var runConfigAsset = GetField<RunConfigAsset>(flow, "runConfig");
             MapState map = new MapGenerator(new MapGenerationConfig(), seed).Generate();

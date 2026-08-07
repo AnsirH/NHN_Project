@@ -169,7 +169,10 @@ namespace OutGame.Flow
                 pendingReturnRoomType = setup.roomType;
                 pendingReturnEnemies = setup.enemies;
                 BattleBridge.SetPendingBattle(setup, onResult);
-                LoadSceneAction(SceneNames.Battle);
+                // 2026-08-04 사용자 확정: "진영 → 전투시작" 전환에 로딩 오버레이를 건다 — 오버레이가
+                // 화면을 가린 상태에서 실제 씬 전환을 트리거해야 하므로 LoadSceneAction 호출을
+                // onComplete 안으로 옮긴다.
+                LoadingOverlayPanel.GetOrCreate().Begin(() => LoadSceneAction(SceneNames.Battle));
             };
 
             mapPanel.Open(run.mapState);
@@ -292,9 +295,13 @@ namespace OutGame.Flow
             currentEnemyComposition = EnemyCompositionGenerator.Generate(
                 run.powerRoomsVisited, node.roomType, enemyCompositionConfig, presetsById,
                 armyDataById, augmentDataById, rng);
-            deploymentPanel.Open(run, node.id, node.roomType, encounterId,
-                armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), runConfig.ToData(),
-                augmentDefsById.Values.ToList(), characterDefsById.Values.ToList(), currentEnemyComposition);
+
+            // 2026-08-04 사용자 확정: "맵 선택 → 진영" 전환에도 로딩 오버레이를 건다 — 실제 리소스
+            // 로딩은 없지만(같은 씬 안 패널 전환), 세 전환 지점에 동일하게 게이트를 걸어 일관성을 둔다.
+            LoadingOverlayPanel.GetOrCreate().Begin(() =>
+                deploymentPanel.Open(run, node.id, node.roomType, encounterId,
+                    armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), runConfig.ToData(),
+                    augmentDefsById.Values.ToList(), characterDefsById.Values.ToList(), currentEnemyComposition));
         }
 
         private void OnBattleSetupConfirmed(BattleSetupData setup)

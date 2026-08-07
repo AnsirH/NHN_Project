@@ -196,7 +196,7 @@ namespace OutGame.Tests.PlayMode
 
                 // EventPanel — 초기 상태 + 선택 후 결과 상태
                 var eventPrefab = Resources.Load<GameObject>("OutGame/EventPanel");
-                var eventDef = Resources.Load<EventDefinition>("OutGame/Data/Events/EventDefinition_Deserters");
+                var eventDef = Resources.Load<EventDefinition>("OutGame/Data/Events/EventDefinition_RuneRock");
                 var eventPanel = Object.Instantiate(eventPrefab, canvasGo.transform).GetComponent<EventPanel>();
                 eventPanel.Open(eventDef, run, maxArmyCountValue: 9);
                 yield return CaptureToFile("EventPanel_01_initial.png");
