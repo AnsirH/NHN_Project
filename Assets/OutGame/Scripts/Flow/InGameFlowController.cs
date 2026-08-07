@@ -169,10 +169,10 @@ namespace OutGame.Flow
                 pendingReturnRoomType = setup.roomType;
                 pendingReturnEnemies = setup.enemies;
                 BattleBridge.SetPendingBattle(setup, onResult);
-                // 2026-08-04 사용자 확정: "진영 → 전투시작" 전환에 로딩 오버레이를 건다 — 오버레이가
-                // 화면을 가린 상태에서 실제 씬 전환을 트리거해야 하므로 LoadSceneAction 호출을
-                // onComplete 안으로 옮긴다.
-                LoadingOverlayPanel.GetOrCreate().Begin(() => LoadSceneAction(SceneNames.Battle));
+                // 로딩 씬을 한 단계 거쳐 Battle로 전환한다(2026-08-04) — Loading 씬이 LoadingHandoff에서
+                // 대상 씬 이름을 꺼내 비동기로 이어받는다.
+                LoadingHandoff.SetTarget(SceneNames.Battle);
+                LoadSceneAction(SceneNames.Loading);
             };
 
             mapPanel.Open(run.mapState);
@@ -295,19 +295,17 @@ namespace OutGame.Flow
             currentEnemyComposition = EnemyCompositionGenerator.Generate(
                 run.powerRoomsVisited, node.roomType, enemyCompositionConfig, presetsById,
                 armyDataById, augmentDataById, rng);
-
-            // 2026-08-04 사용자 확정: "맵 선택 → 진영" 전환에도 로딩 오버레이를 건다 — 실제 리소스
-            // 로딩은 없지만(같은 씬 안 패널 전환), 세 전환 지점에 동일하게 게이트를 걸어 일관성을 둔다.
-            LoadingOverlayPanel.GetOrCreate().Begin(() =>
-                deploymentPanel.Open(run, node.id, node.roomType, encounterId,
-                    armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), runConfig.ToData(),
-                    augmentDefsById.Values.ToList(), characterDefsById.Values.ToList(), currentEnemyComposition));
+            deploymentPanel.Open(run, node.id, node.roomType, encounterId,
+                armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), runConfig.ToData(),
+                augmentDefsById.Values.ToList(), characterDefsById.Values.ToList(), currentEnemyComposition);
         }
 
         private void OnBattleSetupConfirmed(BattleSetupData setup)
         {
             currentBattleRoomType = setup.roomType;
-            deploymentPanel.Close();
+            // 배치 패널을 여기서 미리 닫지 않는다(2026-08-04, 사용자 리포트) — Close() 직후 씬 전환이
+            // 일어나기까지 한 프레임 정도 패널이 사라진 빈 OutGame 화면(스카이박스)이 비쳐 보였다.
+            // 곧바로 Loading 씬으로 전환되며 이 씬 자체가 파괴되므로 따로 닫아둘 필요가 없다.
             BattleBridge.StartBattle(setup, OnBattleResult);
         }
 
