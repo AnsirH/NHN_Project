@@ -48,6 +48,8 @@ namespace NHN.Presentation.Battle
         private const float DeathFxLifetime = 0.9f;
         /// <summary>타격 이펙트가 뜨는 높이(유닛 키 1 기준 가슴께).</summary>
         private const float HitFxHeight = 0.6f;
+        /// <summary>스킬 시전 시 카메라 셰이크 진폭(월드 단위).</summary>
+        private const float SkillCastShake = 0.35f;
 
         // 상태이상 유닛 틴트 — 가독성: 기절=노랑, 중독=초록, 화상=주황,
         // 표식=마젠타, 공버프=주황금(발광 표시 필수 — v4 §9), 회복=연녹, 방진=청은 (마스크 비트 순).
@@ -112,6 +114,8 @@ namespace NHN.Presentation.Battle
         [SerializeField] private BattleCatalog catalog;
         [SerializeField] private EncounterTable encounterTable;
 
+        /// <summary>연출용 카메라 제어 — worldCamera에 붙어 있으면 잡고, 없으면 연출만 건너뛴다.</summary>
+        private BattleCameraController _cameraController;
         private BattleSimulation _sim;
         private GameObjectPool _unitPool;
         private GameObjectPool _projectilePool;
@@ -310,6 +314,7 @@ namespace NHN.Presentation.Battle
             {
                 worldCamera = Camera.main; // 초기화 시점 1회 조회
             }
+            _cameraController = worldCamera != null ? worldCamera.GetComponent<BattleCameraController>() : null;
             CreateSkillFxObjects();
             StartBattle();
         }
@@ -406,6 +411,11 @@ namespace NHN.Presentation.Battle
             _finishGraceStarted = false;
             _armedSkillSlot = -1;
             ResetSkillFxViews();
+            // 전투 개시 연출 — 근접에서 기본 구도로 물러나며 "시작했다"는 신호를 준다.
+            if (_cameraController != null)
+            {
+                _cameraController.PlayIntro();
+            }
             // 지난 판 스윙 사운드가 새 전투로 넘어오지 않게 즉시 끊는다.
             for (int v = 0; v < _attackVoices.Length; v++)
             {
@@ -1521,6 +1531,11 @@ namespace NHN.Presentation.Battle
             }
             _skillFxRemainings[slot, r] = skill.ZoneDuration > 0f ? skill.ZoneDuration : InstantFxSeconds;
             _skillFxStopping[slot, r] = false;
+            // 시전 순간 화면을 살짝 흔들어 타격감을 준다 — 강조는 스킬에만, 평타에는 걸지 않는다.
+            if (_cameraController != null)
+            {
+                _cameraController.AddShake(SkillCastShake);
+            }
         }
 
         /// <summary>재생 시간 만료 → 방출 정지 → 잔향 소멸 후 비활성 (매 프레임, 무할당).</summary>
