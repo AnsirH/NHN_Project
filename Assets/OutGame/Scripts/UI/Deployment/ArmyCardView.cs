@@ -14,7 +14,6 @@ namespace OutGame.UI.Deployment
     public class ArmyCardView : DraggableCardBase, IDropHandler, IPointerClickHandler
     {
         [SerializeField] private Image portrait;
-        [SerializeField] private Text nameLabel;
         [SerializeField] private Text soldierCountLabel;
 
         public string ArmyInstanceId { get; private set; }
@@ -37,7 +36,7 @@ namespace OutGame.UI.Deployment
         {
             if (string.IsNullOrEmpty(armyInstanceId))
                 throw new ArgumentException("armyInstanceId가 비어 있습니다.", nameof(armyInstanceId));
-            if (portrait == null || nameLabel == null || soldierCountLabel == null)
+            if (portrait == null || soldierCountLabel == null)
                 throw new InvalidOperationException("ArmyCardView 프리팹의 필드가 배선되지 않았습니다.");
             ValidateCanvasGroupWired();
 
@@ -46,10 +45,10 @@ namespace OutGame.UI.Deployment
         }
 
         /// <summary>soldierCount를 주면 "N명" 형식으로 표시하고, null이면 숨긴다(적 진영 카드는
-        /// 병사 수를 표시하지 않는 게 의도된 동작 — ArmyDeploymentPanel.BuildEnemySlots 참고).</summary>
-        public void SetDisplay(string displayName, Sprite portraitSprite, int? soldierCount = null)
+        /// 병사 수를 표시하지 않는 게 의도된 동작 — ArmyDeploymentPanel.BuildEnemySlots 참고). 카드에는
+        /// 더 이상 군대 이름을 표시하지 않는다(2026-08-05 사용자 요청 — 유닛 수만 표시).</summary>
+        public void SetDisplay(Sprite portraitSprite, int? soldierCount = null)
         {
-            nameLabel.text = displayName;
             if (portraitSprite != null) portrait.sprite = portraitSprite;
             soldierCountLabel.gameObject.SetActive(soldierCount.HasValue);
             soldierCountLabel.text = soldierCount.HasValue ? $"{soldierCount.Value}명" : string.Empty;

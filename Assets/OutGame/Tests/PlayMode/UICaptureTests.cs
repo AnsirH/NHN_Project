@@ -11,6 +11,7 @@ using OutGame.UI.Deployment;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 namespace OutGame.Tests.PlayMode
@@ -76,6 +77,27 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Capture_LoadingScreen()
+        {
+            // Loading.unity는 Resources 프리팹이 아니라 씬 자체다(2026-08-04) — 다른 캡처 테스트에
+            // 잔상을 남기지 않도록 Additive로 얹었다가 반드시 걷어낸다.
+            if (Application.isBatchMode)
+            {
+                Assert.Ignore("batchmode에서는 렌더 프레임이 없어 캡처 불가 — 에디터 열림 상태에서만 실행");
+                yield break;
+            }
+
+            yield return SettleGameView();
+
+            yield return SceneManager.LoadSceneAsync(SceneNames.Loading, LoadSceneMode.Additive);
+            yield return null;
+            yield return new WaitForSecondsRealtime(0.3f); // 스피너가 눈에 띄게 회전한 상태를 캡처
+
+            yield return CaptureToFile("LoadingScreen_01.png");
+            yield return SceneManager.UnloadSceneAsync(SceneNames.Loading);
+        }
+
+        [UnityTest]
         public IEnumerator Capture_ArmyDeploymentPanel_EmptyAndWithInventoryOpen()
         {
             if (Application.isBatchMode)
@@ -132,11 +154,11 @@ namespace OutGame.Tests.PlayMode
                 // 해시까지 완전히 동일함을 확인). 실제로 다른 슬롯으로 옮겨야 화면이 바뀐다.
                 // 적 진영도 아군과 동일한 ArmyCardView를 재사용하므로(2026-07-26) 아군 격자로 범위를
                 // 좁혀야 실제 보유 군대 카드를 얻는다.
-                var cardView = panel.transform.Find("MainRow/AllyColumn/SlotGrid")
+                var cardView = panel.transform.Find("MainRow/AllyFormationPanel/SlotGrid")
                     .GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
                 var emptySlot = panel.GetComponentsInChildren<DeploySlotView>()
                     .First(s => s.CardContainer.GetComponentInChildren<ArmyCardView>() == null);
-                var allyFormationView = panel.transform.Find("MainRow/AllyColumn").GetComponent<AllyFormationView>();
+                var allyFormationView = panel.transform.Find("MainRow/AllyFormationPanel").GetComponent<AllyFormationView>();
                 typeof(AllyFormationView)
                     .GetMethod("OnArmyDroppedOnSlot", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                     .Invoke(allyFormationView, new object[] { cardView.ArmyInstanceId, emptySlot.SlotId });
@@ -419,7 +441,7 @@ namespace OutGame.Tests.PlayMode
                 yield return CaptureToFile("ArmyFormationPopup_02_inventory_open.png");
 
                 popup.GetComponentInChildren<InventoryPopup>(includeInactive: true).Hide();
-                var cardView = window.Find("AllyArea/SlotGrid")
+                var cardView = window.Find("AllyFormationPanel/SlotGrid")
                     .GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
                 cardView.OnPointerClick(new PointerEventData(EventSystem.current));
                 yield return CaptureToFile("ArmyFormationPopup_03_army_info.png");

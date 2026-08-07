@@ -30,12 +30,14 @@ namespace OutGame.UI.Deployment
     {
         [Header("구조 참조")]
         [SerializeField] private RectTransform allySlotContainer;
+        [SerializeField] private RectTransform connectorLayer; // 슬롯 격자 연결 트랙 레이어(2026-08-05)
         [SerializeField] private Text allyPowerLabel;
         [SerializeField] private Button itemButton; // null 허용 — 아이템 버튼이 필요 없는 호스트도 있음(예: 증원 방, 2026-07-26)
 
         [Header("요소 프리팹")]
         [SerializeField] private ArmyCardView armyCardPrefab;
         [SerializeField] private DeploySlotView allySlotPrefab;
+        [SerializeField] private Image connectorPrefab;
 
         [Header("팝업")]
         [SerializeField] private ItemBindWarningPopup bindWarningPopup;
@@ -146,9 +148,9 @@ namespace OutGame.UI.Deployment
 
         private void ValidateWiring()
         {
-            if (allySlotContainer == null || allyPowerLabel == null)
+            if (allySlotContainer == null || connectorLayer == null || allyPowerLabel == null)
                 throw new InvalidOperationException("AllyFormationView의 구조 참조가 배선되지 않았습니다.");
-            if (armyCardPrefab == null || allySlotPrefab == null)
+            if (armyCardPrefab == null || allySlotPrefab == null || connectorPrefab == null)
                 throw new InvalidOperationException("AllyFormationView의 요소 프리팹이 배선되지 않았습니다.");
             if (bindWarningPopup == null || inventoryPopup == null || armyInfoPopup == null)
                 throw new InvalidOperationException("AllyFormationView의 팝업이 배선되지 않았습니다.");
@@ -188,6 +190,11 @@ namespace OutGame.UI.Deployment
                 view.ItemDroppedOnOccupant += OnItemDroppedOnCard;
                 allySlotViewsById[slot.slotId] = view;
             }
+
+            // 슬롯 격자 연결 트랙(2026-08-05, 참고 이미지).
+            FormationSlotGridBuilder.BuildConnectors(
+                connectorLayer, connectorPrefab, allySlotContainer.GetComponent<GridLayoutGroup>(),
+                fieldData.rows, fieldData.columns);
 
             // 자동 배치 우선순위 — "가운데 전방"이 기본 배치 기준점이다(2026-07-26 사용자 확정).
             // 아군은 구역 제한 없이 전방 열(마지막 열)부터 후방 쪽으로(4→3→2→1) 훑고, 각 열 안에서는
@@ -344,14 +351,14 @@ namespace OutGame.UI.Deployment
 
                 armyDefsById.TryGetValue(ClassArmyDefinitions.DefIdFor(army.armyClass), out ArmyDefinition def);
                 Sprite portrait = def != null ? def.Portrait : null;
-                string baseDisplayName = def != null ? def.ToData().displayName : army.armyClass.ToString();
-                string displayName = ItemEquipService.ResolveDisplayName(army, baseDisplayName);
-                // 진영 카드에 병사 수도 표시한다(2026-07-26 사용자 요청 — 이전엔 이름이 병과를
-                // 나타낸다는 이유로 뺐었는데(§2 용어: 기본 군대 + 활 = 궁수 군대), 사용자가 다시
-                // 켜기로 확정).
+                // 진영 카드에는 유닛 수만 표시한다(2026-08-05 사용자 요청 — 이름 텍스트 제거).
                 int? soldierCount = def != null ? def.ToData().baseSoldierCount + army.bonusSoldierCount : (int?)null;
-                kv.Value.SetDisplay(displayName, portrait, soldierCount);
+                kv.Value.SetDisplay(portrait, soldierCount);
             }
+
+            // 빈 슬롯 체크 표시 갱신(2026-08-05) — 카드가 있는 슬롯은 카드에 가려지므로 꺼둔다.
+            foreach (DeploySlotView slotView in allySlotViewsById.Values)
+                slotView.SetOccupied(deployment.GetArmyAt(slotView.SlotId) != null);
 
             // 배치 영속화를 먼저 끝내둔다 — 전투력 계산은 BattlePowerCalculator를 거치며 데이터
             // 무결성 위반 시 예외를 던지므로(§4-28), 순서가 반대면 방금 한 Place()/Remove()가
