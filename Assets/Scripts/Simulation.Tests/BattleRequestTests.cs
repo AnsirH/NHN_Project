@@ -339,7 +339,8 @@ namespace NHN.Simulation.Tests
             Assert.IsTrue(sim.Finished, "요청 기반 전투가 종료되어야 한다");
 
             BattleOutcome outcome = BattleRequestBuilder.BuildOutcome(sim, squadIds);
-            Assert.AreEqual((sim.Result.Winner == 0), outcome.Victory, "victory는 A군 승리와 일치해야 한다");
+            Assert.AreEqual((sim.Result.Winner != 1), outcome.Victory,
+                "victory는 B군 승리가 아닐 때 참이어야 한다 (무승부는 패배 아님, 2026-08-06)");
             Assert.AreEqual(2, outcome.Survivals.Count, "플레이어 분대 수만큼 생존 항목이 나와야 한다");
             Assert.AreEqual("army-1", outcome.Survivals[0].SquadId, "armyInstanceId(분대 id)가 보존되어야 한다");
             Assert.AreEqual("army-2", outcome.Survivals[1].SquadId);
