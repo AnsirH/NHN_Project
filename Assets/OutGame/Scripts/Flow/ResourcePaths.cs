@@ -23,8 +23,6 @@ namespace OutGame.Flow
         public const string Characters = "OutGame/Data/Characters";
         public const string Data = "OutGame/Data"; // ArmyDefinition/ItemDefinition 공용 루트
         public const string MapLineMaterial = "OutGame/Materials/MapLine";
-        public const string LoreFragments = "OutGame/Data/LoreFragments"; // "의지의 파편" — 로딩 오버레이 전용
-        public const string LoadingOverlay = "OutGame/LoadingOverlay"; // 로딩 오버레이 프리팹
     }
 
     /// <summary>
