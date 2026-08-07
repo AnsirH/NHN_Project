@@ -123,6 +123,11 @@ namespace NHN.Presentation.Battle
             public Renderer[] Renderers;
             public Material[][] OriginalMaterials;
             public Material[][] StealthMaterials;
+            /// <summary>
+            /// 피아/상태 틴트를 적용할 렌더러 = 몸체. 투구·검·방패·활 같은 장비까지 틴트를 덮으면
+            /// 텍스처가 단색으로 뭉개져 병과 구분이 사라지므로 장비는 원본 재질 색을 유지한다.
+            /// </summary>
+            public bool[] TintTargets;
             /// <summary>모델 프리팹의 애니메이터 — 리깅 없는 프리팹(기본 몸체·캡슐)은 null.</summary>
             public Animator Animator;
             /// <summary>공격/치명타 클립 길이 — 재생 속도를 공격 주기에 동기화하기 위한 값.</summary>
@@ -798,15 +803,24 @@ namespace NHN.Presentation.Battle
             }
             color.a = stealthed ? StealthAlpha : 1f;
 
-            // 모델 프리팹은 렌더러가 여러 개(몸체+모자+무기) — 전 슬롯을 은신/원본 배열로 스왑하고
-            // 틴트를 각각 적용한다. 상태 변화 프레임에만 호출되므로 루프 비용은 무시 가능.
+            // 모델 프리팹은 렌더러가 여러 개(몸체+모자+무기) — 전 슬롯을 은신/원본 배열로 스왑한다.
+            // 틴트는 몸체에만 건다: 장비까지 덮으면 투구·검·방패·활 텍스처가 단색으로 뭉개져
+            // 병과가 구분되지 않는다. 은신 중에는 알파가 필요하므로 장비에도 블록을 적용한다.
+            // 상태 변화 프레임에만 호출되므로 루프 비용은 무시 가능.
             UnitViewCache view = _unitViewSets[unitIndex];
             _propertyBlock.SetColor(BaseColorId, color);
             for (int r = 0; r < view.Renderers.Length; r++)
             {
                 Renderer renderer = view.Renderers[r];
                 renderer.sharedMaterials = stealthed ? view.StealthMaterials[r] : view.OriginalMaterials[r];
-                renderer.SetPropertyBlock(_propertyBlock);
+                if (stealthed || view.TintTargets[r])
+                {
+                    renderer.SetPropertyBlock(_propertyBlock);
+                }
+                else
+                {
+                    renderer.SetPropertyBlock(null);
+                }
             }
         }
 
@@ -947,6 +961,57 @@ namespace NHN.Presentation.Battle
             }
         }
 
+        /// <summary>
+        /// 틴트 대상(몸체) 판별 — 로컬 메시 바운즈가 가장 큰 렌더러를 몸체로 보고, 그와 같은 재질을
+        /// 쓰는 렌더러도 몸체로 묶는다(몸체가 여러 파트로 나뉜 프리팹 대응). 장비(투구·검·방패·활·
+        /// 후드·갑옷)는 몸체보다 항상 작으므로 이 규칙으로 걸러지고, 원본 텍스처 색을 유지한다.
+        /// 렌더러가 1개뿐인 프리팹(기본 몸체·스트레스 캡슐)은 그 1개가 곧 몸체다.
+        /// </summary>
+        private static bool[] BuildTintTargets(Renderer[] renderers)
+        {
+            var targets = new bool[renderers.Length];
+            if (renderers.Length == 0)
+            {
+                return targets;
+            }
+
+            int bodyIndex = 0;
+            float bodyVolume = -1f;
+            for (int r = 0; r < renderers.Length; r++)
+            {
+                Vector3 size = LocalMeshSize(renderers[r]);
+                float volume = size.x * size.y * size.z;
+                if (volume > bodyVolume)
+                {
+                    bodyVolume = volume;
+                    bodyIndex = r;
+                }
+            }
+
+            Material bodyMaterial = renderers[bodyIndex].sharedMaterial;
+            for (int r = 0; r < renderers.Length; r++)
+            {
+                targets[r] = r == bodyIndex
+                    || (bodyMaterial != null && renderers[r].sharedMaterial == bodyMaterial);
+            }
+            return targets;
+        }
+
+        /// <summary>렌더러의 로컬 메시 크기 — 트랜스폼 상태와 무관하게 결정적인 값이라 스폰 타이밍을 타지 않는다.</summary>
+        private static Vector3 LocalMeshSize(Renderer renderer)
+        {
+            if (renderer is SkinnedMeshRenderer skinned && skinned.sharedMesh != null)
+            {
+                return skinned.sharedMesh.bounds.size;
+            }
+            var filter = renderer.GetComponent<MeshFilter>();
+            if (filter != null && filter.sharedMesh != null)
+            {
+                return filter.sharedMesh.bounds.size;
+            }
+            return renderer.localBounds.size;
+        }
+
         /// <summary>인스턴스별 렌더러·머티리얼 캐시 조회 — 처음 보는 인스턴스만 1회 구축한다.</summary>
         private UnitViewCache GetViewCache(GameObject unit)
         {
@@ -971,6 +1036,7 @@ namespace NHN.Presentation.Battle
                 Renderers = renderers,
                 OriginalMaterials = originals,
                 StealthMaterials = stealths,
+                TintTargets = BuildTintTargets(renderers),
                 Animator = unit.GetComponentInChildren<Animator>(true), // 리깅 없는 프리팹은 null
             };
             if (cache.Animator != null)
