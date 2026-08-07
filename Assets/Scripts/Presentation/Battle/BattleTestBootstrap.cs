@@ -36,6 +36,19 @@ namespace NHN.Presentation.Battle
         private const float FlashDuration = 0.4f;
         private const float FlashAlpha = 0.55f;
 
+        // 타격/사망 이펙트 — 난전에서는 피격 이벤트가 프레임당 수백 건씩 쏟아지므로
+        // 링 풀 크기와 프레임당 스폰 수를 모두 묶는다. 넘치는 이벤트는 그냥 버린다
+        // (연출용이라 누락돼도 게임 상태와 무관하고, 화면이 번쩍이는 것보다 낫다).
+        private const int HitFxPoolSize = 20;
+        private const int DeathFxPoolSize = 12;
+        private const int MaxHitFxPerFrame = 4;
+        private const int MaxDeathFxPerFrame = 3;
+        /// <summary>Hovl 팩 파티클은 전부 loop=true라 스스로 멎지 않는다 — 수명을 직접 재고 비활성화한다.</summary>
+        private const float HitFxLifetime = 0.55f;
+        private const float DeathFxLifetime = 0.9f;
+        /// <summary>타격 이펙트가 뜨는 높이(유닛 키 1 기준 가슴께).</summary>
+        private const float HitFxHeight = 0.6f;
+
         // 상태이상 유닛 틴트 — 가독성: 기절=노랑, 중독=초록, 화상=주황,
         // 표식=마젠타, 공버프=주황금(발광 표시 필수 — v4 §9), 회복=연녹, 방진=청은 (마스크 비트 순).
         private const float StatusTintStrength = 0.55f;
@@ -85,6 +98,15 @@ namespace NHN.Presentation.Battle
         [SerializeField] private SkillData[] playerSkills;
         [Tooltip("조준 레이캐스트용 카메라 — 미지정 시 Camera.main")]
         [SerializeField] private Camera worldCamera;
+
+        [Header("타격 피드백 이펙트 (비워두면 해당 연출만 꺼진다)")]
+        [Tooltip("피격 시 유닛 가슴께에 터지는 임팩트 — 미지정 시 타격 이펙트 없음")]
+        [SerializeField] private GameObject hitFxPrefab;
+        [Tooltip("사망 시 발밑에 이는 흙먼지 — 미지정 시 사망 이펙트 없음")]
+        [SerializeField] private GameObject deathFxPrefab;
+        [Tooltip("이펙트 프리팹은 대형 연출 기준이라 유닛 크기(키 1)에 맞게 줄여 쓴다")]
+        [SerializeField] private float hitFxScale = 0.2f;
+        [SerializeField] private float deathFxScale = 0.09f;
 
         [Header("아웃게임 연동 선행 준비 (RunBattle 경로 — BattleBridge 커넥터가 사용)")]
         [SerializeField] private BattleCatalog catalog;
@@ -222,6 +244,15 @@ namespace NHN.Presentation.Battle
         private Renderer[] _flashRenderers;
         private float[] _flashRemainings;
         private int _nextFlashIndex;
+        // 타격/사망 이펙트 링 풀 — 커서가 한 바퀴 돌면 가장 오래된 인스턴스를 재사용한다.
+        private Transform[] _hitFxPool;
+        private float[] _hitFxRemainings;
+        private int _nextHitFxIndex;
+        private int _hitFxThisFrame;
+        private Transform[] _deathFxPool;
+        private float[] _deathFxRemainings;
+        private int _nextDeathFxIndex;
+        private int _deathFxThisFrame;
         private GameObject[] _projObjects;
         private Transform[] _projTransforms;
         private int _projVisibleCount;
@@ -493,6 +524,10 @@ namespace NHN.Presentation.Battle
                 _accumulator %= tickDeltaTime;
             }
 
+            // 이펙트 스폰 카운터는 프레임마다 초기화 — 상한은 "프레임당" 기준이다.
+            _hitFxThisFrame = 0;
+            _deathFxThisFrame = 0;
+
             ConsumeViewEvents();
 
             // 종료 후에는 보간하지 않는다: Tick()이 종료 가드로 이전 위치를 더 갱신하지 않아
@@ -505,6 +540,8 @@ namespace NHN.Presentation.Battle
             SyncZoneViews();
             UpdateFlashFx(Time.deltaTime);
             UpdateSkillFx(Time.deltaTime);
+            UpdateImpactFxPool(_hitFxPool, _hitFxRemainings, Time.deltaTime);
+            UpdateImpactFxPool(_deathFxPool, _deathFxRemainings, Time.deltaTime);
             hud.SyncSkills(_sim, _armedSkillSlot);
             hud.SyncHpBar(_sim);
 
@@ -573,6 +610,8 @@ namespace NHN.Presentation.Battle
                         }
                         break;
                     case BattleSimulation.ViewEventType.Damaged:
+                        // 임팩트는 리깅 여부와 무관 — 애니메이터 없는 프리팹에서도 타격이 읽혀야 한다.
+                        SpawnHitFx(_unitTransforms[unit].position);
                         if (animator == null)
                         {
                             break;
@@ -661,6 +700,7 @@ namespace NHN.Presentation.Battle
                 }
                 if (!_sim.IsAlive(i))
                 {
+                    SpawnDeathFx(_unitTransforms[i].position);
                     Animator animator = _unitViewSets[i].Animator;
                     if (animator != null)
                     {
@@ -1276,6 +1316,33 @@ namespace NHN.Presentation.Battle
             {
                 _flashTransforms[f] = CreateDisc("SkillCastFlash", out _flashRenderers[f]);
             }
+
+            _hitFxPool = CreateImpactFxPool(hitFxPrefab, "HitFx", HitFxPoolSize, hitFxScale);
+            _hitFxRemainings = new float[_hitFxPool.Length];
+            _deathFxPool = CreateImpactFxPool(deathFxPrefab, "DeathFx", DeathFxPoolSize, deathFxScale);
+            _deathFxRemainings = new float[_deathFxPool.Length];
+        }
+
+        /// <summary>
+        /// 타격/사망 이펙트 링 풀 프리웜 (초기화 1회 경로 — 전투 중 Instantiate 금지 규칙 준수).
+        /// 프리팹이 비어 있으면 길이 0 배열을 돌려주고, 스폰 쪽에서 그대로 무시한다.
+        /// </summary>
+        private Transform[] CreateImpactFxPool(GameObject prefab, string label, int size, float scale)
+        {
+            if (prefab == null)
+            {
+                return System.Array.Empty<Transform>();
+            }
+            var pool = new Transform[size];
+            for (int i = 0; i < size; i++)
+            {
+                GameObject instance = Instantiate(prefab, transform);
+                instance.name = $"{label}{i}";
+                instance.transform.localScale = Vector3.one * scale;
+                instance.SetActive(false);
+                pool[i] = instance.transform;
+            }
+            return pool;
         }
 
         private void ResetSkillFxViews()
@@ -1291,6 +1358,10 @@ namespace NHN.Presentation.Battle
                 _flashRemainings[f] = 0f;
                 _flashTransforms[f].gameObject.SetActive(false);
             }
+            ResetImpactFxPool(_hitFxPool, _hitFxRemainings);
+            ResetImpactFxPool(_deathFxPool, _deathFxRemainings);
+            _nextHitFxIndex = 0;
+            _nextDeathFxIndex = 0;
             if (_skillFxObjects != null)
             {
                 for (int s = 0; s < _skillFxObjects.GetLength(0); s++)
@@ -1303,6 +1374,84 @@ namespace NHN.Presentation.Battle
                             _skillFxObjects[s, r].SetActive(false);
                         }
                     }
+                }
+            }
+        }
+
+        private static void ResetImpactFxPool(Transform[] pool, float[] remainings)
+        {
+            if (pool == null)
+            {
+                return;
+            }
+            for (int i = 0; i < pool.Length; i++)
+            {
+                remainings[i] = 0f;
+                pool[i].gameObject.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// 링 풀에서 이펙트 하나를 꺼내 위치에 재생. 프레임당 상한을 넘으면 조용히 버린다 —
+        /// 난전에서 수백 건이 몰릴 때 화면이 하얗게 뒤덮이고 프레임이 무너지는 것을 막는다.
+        /// </summary>
+        private void SpawnImpactFx(
+            Transform[] pool, float[] remainings, ref int cursor, ref int spawnedThisFrame, int frameLimit,
+            float lifetime, Vector3 position)
+        {
+            if (pool == null || pool.Length == 0 || spawnedThisFrame >= frameLimit)
+            {
+                return;
+            }
+            spawnedThisFrame++;
+
+            int index = cursor;
+            cursor = (cursor + 1) % pool.Length;
+            Transform fx = pool[index];
+            fx.position = position;
+            // 재사용 시 이전 잔여 파티클이 새 위치에서 튀지 않도록 완전히 비우고 다시 재생한다.
+            fx.gameObject.SetActive(false);
+            fx.gameObject.SetActive(true);
+            foreach (ParticleSystem system in fx.GetComponentsInChildren<ParticleSystem>(true))
+            {
+                system.Clear(true);
+                system.Play(true);
+            }
+            remainings[index] = lifetime;
+        }
+
+        public void SpawnHitFx(Vector3 unitPosition)
+        {
+            SpawnImpactFx(
+                _hitFxPool, _hitFxRemainings, ref _nextHitFxIndex, ref _hitFxThisFrame, MaxHitFxPerFrame,
+                HitFxLifetime, unitPosition + Vector3.up * HitFxHeight);
+        }
+
+        public void SpawnDeathFx(Vector3 unitPosition)
+        {
+            SpawnImpactFx(
+                _deathFxPool, _deathFxRemainings, ref _nextDeathFxIndex, ref _deathFxThisFrame, MaxDeathFxPerFrame,
+                DeathFxLifetime, unitPosition);
+        }
+
+        /// <summary>수명이 다한 이펙트를 끈다 — Hovl 파티클은 loop=true라 직접 멈추지 않으면 계속 돈다.</summary>
+        private static void UpdateImpactFxPool(Transform[] pool, float[] remainings, float deltaTime)
+        {
+            if (pool == null)
+            {
+                return;
+            }
+            for (int i = 0; i < pool.Length; i++)
+            {
+                if (remainings[i] <= 0f)
+                {
+                    continue;
+                }
+                remainings[i] -= deltaTime;
+                if (remainings[i] <= 0f)
+                {
+                    remainings[i] = 0f;
+                    pool[i].gameObject.SetActive(false);
                 }
             }
         }
