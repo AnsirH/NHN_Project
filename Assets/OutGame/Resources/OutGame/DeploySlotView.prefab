@@ -315,3 +315,4 @@ MonoBehaviour:
   background: {fileID: 8140009574925779999}
   cardContainer: {fileID: 7978990107496945182}
   emptyIndicator: {fileID: 3698226346848496624}
+  slotId: 0

@@ -589,12 +589,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5db14604a996aa408f1f0c754a4564a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: OutGame::OutGame.UI.EventPanel
-  illustrationImage: {fileID: 7015209680878013151}
-  bodyText: {fileID: 2978849257424269677}
   choiceContainer: {fileID: 3087857099338495812}
   choiceButtonPrefab: {fileID: 1655913522476339735, guid: 552f95f9733580a43b8948816cdf1e1a, type: 3}
   resultText: {fileID: 1655130464404181012}
   continueButton: {fileID: 2013672772417363003}
+  illustrationImage: {fileID: 7015209680878013151}
+  bodyText: {fileID: 2978849257424269677}
 --- !u!1 &9214042463635097093
 GameObject:
   m_ObjectHideFlags: 0
