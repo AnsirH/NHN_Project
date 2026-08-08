@@ -29,8 +29,8 @@ MonoBehaviour:
       max: 3
     battleWeight: 40
     eventWeight: 25
-    restWeight: 15
+    reinforcementWeight: 15
     augmentWeight: 20
-    layerDistance: 2
-    nodesApartDistance: 1
-    positionRandomization: 0.3
+    layerDistance: 2.4
+    nodesApartDistance: 2
+    positionRandomization: 0.2
