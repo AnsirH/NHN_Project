@@ -2165,6 +2165,10 @@ MonoBehaviour:
   boundsHalfX: 22
   boundsHalfZ: 14
   doubleTapSeconds: 0.3
+  zoomDamping: 14
+  introSeconds: 1.6
+  shakeDecay: 6
+  maxShake: 0.9
 --- !u!4 &932223956 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2465277313695290713, guid: 8db78840ce7e78542b5fb00196f5edfe, type: 3}
@@ -2814,7 +2818,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f18a26fa89ea68142b0b64dc5113a29a, type: 2}
   - {fileID: 11400000, guid: 6ed9c6d263f13214792fc220c901bf3c, type: 2}
   worldCamera: {fileID: 919660237}
-  hitFxPrefab: {fileID: 1758473627833946668, guid: 9b21333b068a5084ba09535839bee3c8, type: 3}
+  hitFxPrefab: {fileID: 0}
   deathFxPrefab: {fileID: 358637981425055526, guid: 8eb503696b886e04faff8fc0f480d473, type: 3}
   hitFxScale: 0.32
   deathFxScale: 0.16
