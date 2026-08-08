@@ -36,6 +36,21 @@ namespace NHN.Presentation.Battle
         private const float FlashDuration = 0.4f;
         private const float FlashAlpha = 0.55f;
 
+        // 타격/사망 이펙트 — 난전에서는 피격 이벤트가 프레임당 수백 건씩 쏟아지므로
+        // 링 풀 크기와 프레임당 스폰 수를 모두 묶는다. 넘치는 이벤트는 그냥 버린다
+        // (연출용이라 누락돼도 게임 상태와 무관하고, 화면이 번쩍이는 것보다 낫다).
+        private const int HitFxPoolSize = 20;
+        private const int DeathFxPoolSize = 12;
+        private const int MaxHitFxPerFrame = 4;
+        private const int MaxDeathFxPerFrame = 3;
+        /// <summary>Hovl 팩 파티클은 전부 loop=true라 스스로 멎지 않는다 — 수명을 직접 재고 비활성화한다.</summary>
+        private const float HitFxLifetime = 0.55f;
+        private const float DeathFxLifetime = 0.9f;
+        /// <summary>타격 이펙트가 뜨는 높이(유닛 키 1 기준 가슴께).</summary>
+        private const float HitFxHeight = 0.6f;
+        /// <summary>스킬 시전 시 카메라 셰이크 진폭(월드 단위).</summary>
+        private const float SkillCastShake = 0.35f;
+
         // 상태이상 유닛 틴트 — 가독성: 기절=노랑, 중독=초록, 화상=주황,
         // 표식=마젠타, 공버프=주황금(발광 표시 필수 — v4 §9), 회복=연녹, 방진=청은 (마스크 비트 순).
         private const float StatusTintStrength = 0.55f;
@@ -86,10 +101,21 @@ namespace NHN.Presentation.Battle
         [Tooltip("조준 레이캐스트용 카메라 — 미지정 시 Camera.main")]
         [SerializeField] private Camera worldCamera;
 
+        [Header("타격 피드백 이펙트 (비워두면 해당 연출만 꺼진다)")]
+        [Tooltip("피격 시 유닛 가슴께에 터지는 임팩트 — 미지정 시 타격 이펙트 없음")]
+        [SerializeField] private GameObject hitFxPrefab;
+        [Tooltip("사망 시 발밑에 이는 흙먼지 — 미지정 시 사망 이펙트 없음")]
+        [SerializeField] private GameObject deathFxPrefab;
+        [Tooltip("이펙트 프리팹은 대형 연출 기준이라 유닛 크기(키 1)에 맞게 줄여 쓴다")]
+        [SerializeField] private float hitFxScale = 0.2f;
+        [SerializeField] private float deathFxScale = 0.09f;
+
         [Header("아웃게임 연동 선행 준비 (RunBattle 경로 — BattleBridge 커넥터가 사용)")]
         [SerializeField] private BattleCatalog catalog;
         [SerializeField] private EncounterTable encounterTable;
 
+        /// <summary>연출용 카메라 제어 — worldCamera에 붙어 있으면 잡고, 없으면 연출만 건너뛴다.</summary>
+        private BattleCameraController _cameraController;
         private BattleSimulation _sim;
         private GameObjectPool _unitPool;
         private GameObjectPool _projectilePool;
@@ -123,6 +149,11 @@ namespace NHN.Presentation.Battle
             public Renderer[] Renderers;
             public Material[][] OriginalMaterials;
             public Material[][] StealthMaterials;
+            /// <summary>
+            /// 피아/상태 틴트를 적용할 렌더러 = 몸체. 투구·검·방패·활 같은 장비까지 틴트를 덮으면
+            /// 텍스처가 단색으로 뭉개져 병과 구분이 사라지므로 장비는 원본 재질 색을 유지한다.
+            /// </summary>
+            public bool[] TintTargets;
             /// <summary>모델 프리팹의 애니메이터 — 리깅 없는 프리팹(기본 몸체·캡슐)은 null.</summary>
             public Animator Animator;
             /// <summary>공격/치명타 클립 길이 — 재생 속도를 공격 주기에 동기화하기 위한 값.</summary>
@@ -171,6 +202,16 @@ namespace NHN.Presentation.Battle
         private static readonly Quaternion TeamAFacing = Quaternion.Euler(0f, -135f, 0f);
         private static readonly Quaternion TeamBFacing = Quaternion.Euler(0f, 135f, 0f);
 
+        // 공격 사운드 (2026-08-05): 롤 데이터의 클립을 유닛별로 캐싱해 Attack/CritAttack 뷰 이벤트에
+        // 3D 원샷으로 재생한다. 보이스 풀이 동시 재생을 상한하고, 전부 사용 중이면 그 스윙은
+        // 조용히 생략 — 576기 난전에서 소리가 겹쳐 포화하는 것을 막는다 (전투 중 무할당).
+        private const int AttackVoicePoolSize = 12;
+        private const float AttackSoundVolume = 0.45f;
+        private const float CritSoundVolume = 0.65f;
+        private AudioClip[][] _unitAttackClips;
+        private AudioSource[] _attackVoices;
+        private int _nextAttackVoice;
+
         // 플레이어 스킬 뷰 상태
         /// <summary>현재 적용된 스킬 구성 원본 — 같은 구성 재적용(Restart)을 건너뛰기 위한 참조 비교용.</summary>
         private SkillData[] _activeSkillAssets;
@@ -207,6 +248,15 @@ namespace NHN.Presentation.Battle
         private Renderer[] _flashRenderers;
         private float[] _flashRemainings;
         private int _nextFlashIndex;
+        // 타격/사망 이펙트 링 풀 — 커서가 한 바퀴 돌면 가장 오래된 인스턴스를 재사용한다.
+        private Transform[] _hitFxPool;
+        private float[] _hitFxRemainings;
+        private int _nextHitFxIndex;
+        private int _hitFxThisFrame;
+        private Transform[] _deathFxPool;
+        private float[] _deathFxRemainings;
+        private int _nextDeathFxIndex;
+        private int _deathFxThisFrame;
         private GameObject[] _projObjects;
         private Transform[] _projTransforms;
         private int _projVisibleCount;
@@ -253,6 +303,8 @@ namespace NHN.Presentation.Battle
             _unitStatusShown = new byte[maxUnits];
             _projObjects = new GameObject[config.MaxUnits];
             _projTransforms = new Transform[config.MaxUnits];
+            _unitAttackClips = new AudioClip[maxUnits][];
+            CreateAttackVoicePool();
 
             _baseMaterial = unitPrefab.GetComponentInChildren<Renderer>().sharedMaterial;
             _stealthMaterial = CreateStealthMaterial(_baseMaterial);
@@ -262,6 +314,7 @@ namespace NHN.Presentation.Battle
             {
                 worldCamera = Camera.main; // 초기화 시점 1회 조회
             }
+            _cameraController = worldCamera != null ? worldCamera.GetComponent<BattleCameraController>() : null;
             CreateSkillFxObjects();
             StartBattle();
         }
@@ -358,6 +411,16 @@ namespace NHN.Presentation.Battle
             _finishGraceStarted = false;
             _armedSkillSlot = -1;
             ResetSkillFxViews();
+            // 전투 개시 연출 — 근접에서 기본 구도로 물러나며 "시작했다"는 신호를 준다.
+            if (_cameraController != null)
+            {
+                _cameraController.PlayIntro();
+            }
+            // 지난 판 스윙 사운드가 새 전투로 넘어오지 않게 즉시 끊는다.
+            for (int v = 0; v < _attackVoices.Length; v++)
+            {
+                _attackVoices[v].Stop();
+            }
             hud.Clear();
             // 재시작은 테스트 실행(인스펙터 구성) 전용 — 실전(아웃게임 연동)은 복귀 흐름이 담당한다.
             hud.SetRestartVisible(_activeRequest == null);
@@ -471,6 +534,10 @@ namespace NHN.Presentation.Battle
                 _accumulator %= tickDeltaTime;
             }
 
+            // 이펙트 스폰 카운터는 프레임마다 초기화 — 상한은 "프레임당" 기준이다.
+            _hitFxThisFrame = 0;
+            _deathFxThisFrame = 0;
+
             ConsumeViewEvents();
 
             // 종료 후에는 보간하지 않는다: Tick()이 종료 가드로 이전 위치를 더 갱신하지 않아
@@ -483,7 +550,10 @@ namespace NHN.Presentation.Battle
             SyncZoneViews();
             UpdateFlashFx(Time.deltaTime);
             UpdateSkillFx(Time.deltaTime);
+            UpdateImpactFxPool(_hitFxPool, _hitFxRemainings, Time.deltaTime);
+            UpdateImpactFxPool(_deathFxPool, _deathFxRemainings, Time.deltaTime);
             hud.SyncSkills(_sim, _armedSkillSlot);
+            hud.SyncHpBar(_sim);
 
             if (_sim.Finished && !_resultShown)
             {
@@ -531,20 +601,31 @@ namespace NHN.Presentation.Battle
                 {
                     continue; // 이미 정리됐거나 사망 연출 중 — 트리거가 Die를 덮지 않게
                 }
+                // 사운드는 리깅 여부와 무관 — 애니메이터 트리거만 리깅 프리팹 한정.
                 Animator animator = _unitViewSets[unit].Animator;
-                if (animator == null)
-                {
-                    continue; // 리깅 없는 프리팹(캡슐 폴백)
-                }
                 switch (viewEvent.Type)
                 {
                     case BattleSimulation.ViewEventType.Attack:
-                        animator.SetTrigger(AttackParamId);
+                        PlayAttackSound(unit, isCrit: false);
+                        if (animator != null)
+                        {
+                            animator.SetTrigger(AttackParamId);
+                        }
                         break;
                     case BattleSimulation.ViewEventType.CritAttack:
-                        animator.SetTrigger(CritParamId);
+                        PlayAttackSound(unit, isCrit: true);
+                        if (animator != null)
+                        {
+                            animator.SetTrigger(CritParamId);
+                        }
                         break;
                     case BattleSimulation.ViewEventType.Damaged:
+                        // 임팩트는 리깅 여부와 무관 — 애니메이터 없는 프리팹에서도 타격이 읽혀야 한다.
+                        SpawnHitFx(_unitTransforms[unit].position);
+                        if (animator == null)
+                        {
+                            break;
+                        }
                         // 공격 스윙 중에는 피격 모션이 끼어들지 않는다 — 난전에서 피격이 매 순간
                         // 들어와 스윙이 계속 끊기는 어색함 방지 (공격 > 피격 우선순위).
                         AnimatorStateInfo current = animator.GetCurrentAnimatorStateInfo(0);
@@ -556,6 +637,57 @@ namespace NHN.Presentation.Battle
                 }
             }
             _sim.ClearViewEvents();
+        }
+
+        /// <summary>3D 원샷 보이스 풀 생성 (초기화 1회 경로). 리스너는 메인 카메라 — 멀수록 작게 들린다.</summary>
+        private void CreateAttackVoicePool()
+        {
+            _attackVoices = new AudioSource[AttackVoicePoolSize];
+            for (int v = 0; v < _attackVoices.Length; v++)
+            {
+                var voice = new GameObject($"AttackVoice{v}");
+                voice.transform.SetParent(transform, false);
+                AudioSource source = voice.AddComponent<AudioSource>();
+                source.playOnAwake = false;
+                source.spatialBlend = 1f;
+                source.dopplerLevel = 0f;
+                source.minDistance = 6f; // 카메라 기본 거리(~18)에서 자연 감쇠가 걸리는 하한
+                source.maxDistance = 45f;
+                source.rolloffMode = AudioRolloffMode.Logarithmic;
+                _attackVoices[v] = source;
+            }
+        }
+
+        /// <summary>
+        /// 공격 스윙 사운드 — 유닛 롤의 클립 중 무작위 1개를 빈 보이스로 재생한다.
+        /// 전부 재생 중이면 생략 (동시 재생 상한 = 풀 크기). 피치 랜덤으로 반복감을 줄이고,
+        /// 치명타는 약간 낮고 크게 — 클립을 따로 두지 않아도 구분되게.
+        /// </summary>
+        private void PlayAttackSound(int unitIndex, bool isCrit)
+        {
+            AudioClip[] clips = _unitAttackClips[unitIndex];
+            if (clips == null || clips.Length == 0)
+            {
+                return;
+            }
+            for (int v = 0; v < _attackVoices.Length; v++)
+            {
+                int index = (_nextAttackVoice + v) % _attackVoices.Length;
+                AudioSource voice = _attackVoices[index];
+                if (voice.isPlaying)
+                {
+                    continue;
+                }
+                _nextAttackVoice = (index + 1) % _attackVoices.Length;
+                voice.transform.position = _unitTransforms[unitIndex].position;
+                voice.clip = clips[UnityEngine.Random.Range(0, clips.Length)];
+                voice.volume = isCrit ? CritSoundVolume : AttackSoundVolume;
+                voice.pitch = isCrit
+                    ? UnityEngine.Random.Range(0.85f, 0.95f)
+                    : UnityEngine.Random.Range(0.92f, 1.08f);
+                voice.Play();
+                return;
+            }
         }
 
         private void SyncUnitViews(float alpha)
@@ -578,6 +710,7 @@ namespace NHN.Presentation.Battle
                 }
                 if (!_sim.IsAlive(i))
                 {
+                    SpawnDeathFx(_unitTransforms[i].position);
                     Animator animator = _unitViewSets[i].Animator;
                     if (animator != null)
                     {
@@ -720,15 +853,24 @@ namespace NHN.Presentation.Battle
             }
             color.a = stealthed ? StealthAlpha : 1f;
 
-            // 모델 프리팹은 렌더러가 여러 개(몸체+모자+무기) — 전 슬롯을 은신/원본 배열로 스왑하고
-            // 틴트를 각각 적용한다. 상태 변화 프레임에만 호출되므로 루프 비용은 무시 가능.
+            // 모델 프리팹은 렌더러가 여러 개(몸체+모자+무기) — 전 슬롯을 은신/원본 배열로 스왑한다.
+            // 틴트는 몸체에만 건다: 장비까지 덮으면 투구·검·방패·활 텍스처가 단색으로 뭉개져
+            // 병과가 구분되지 않는다. 은신 중에는 알파가 필요하므로 장비에도 블록을 적용한다.
+            // 상태 변화 프레임에만 호출되므로 루프 비용은 무시 가능.
             UnitViewCache view = _unitViewSets[unitIndex];
             _propertyBlock.SetColor(BaseColorId, color);
             for (int r = 0; r < view.Renderers.Length; r++)
             {
                 Renderer renderer = view.Renderers[r];
                 renderer.sharedMaterials = stealthed ? view.StealthMaterials[r] : view.OriginalMaterials[r];
-                renderer.SetPropertyBlock(_propertyBlock);
+                if (stealthed || view.TintTargets[r])
+                {
+                    renderer.SetPropertyBlock(_propertyBlock);
+                }
+                else
+                {
+                    renderer.SetPropertyBlock(null);
+                }
             }
         }
 
@@ -800,10 +942,11 @@ namespace NHN.Presentation.Battle
                 GameObjectPool pool = GetUnitPool(ViewPrefabOf(squad.Role));
                 Quaternion facing = isTeamB ? TeamBFacing : TeamAFacing;
                 float attackInterval = squad.Role.AttackInterval;
+                AudioClip[] attackSounds = squad.Role.AttackSounds;
 
                 for (int k = 0; k < squad.Count; k++)
                 {
-                    SpawnUnitView(unitIndex++, color, scale, pool, facing, attackInterval);
+                    SpawnUnitView(unitIndex++, color, scale, pool, facing, attackInterval, attackSounds);
                 }
 
                 if (squad.General != null)
@@ -812,19 +955,22 @@ namespace NHN.Presentation.Battle
                     // 시뮬의 분대 내 유닛 순서(병사 → 장군)와 일치해야 한다 (ArmyDefinition 계약).
                     Color generalColor = Color.Lerp(color, GeneralHighlight, 0.5f);
                     SpawnUnitView(
-                        unitIndex++, generalColor, squad.General.UnitRadius / 0.5f, pool, facing, attackInterval);
+                        unitIndex++, generalColor, squad.General.UnitRadius / 0.5f, pool, facing, attackInterval,
+                        attackSounds);
                 }
             }
         }
 
         private void SpawnUnitView(
-            int unitIndex, Color color, float scale, GameObjectPool pool, Quaternion facing, float attackInterval)
+            int unitIndex, Color color, float scale, GameObjectPool pool, Quaternion facing, float attackInterval,
+            AudioClip[] attackSounds)
         {
             GameObject unit = pool.Get();
             _unitObjects[unitIndex] = unit;
             _unitSourcePools[unitIndex] = pool;
             _unitTransforms[unitIndex] = unit.transform;
             _unitVisible[unitIndex] = true;
+            _unitAttackClips[unitIndex] = attackSounds;
 
             // 초기화 시점 1회 조회 — Update에서는 캐시만 사용.
             _unitViewSets[unitIndex] = GetViewCache(unit);
@@ -865,6 +1011,57 @@ namespace NHN.Presentation.Battle
             }
         }
 
+        /// <summary>
+        /// 틴트 대상(몸체) 판별 — 로컬 메시 바운즈가 가장 큰 렌더러를 몸체로 보고, 그와 같은 재질을
+        /// 쓰는 렌더러도 몸체로 묶는다(몸체가 여러 파트로 나뉜 프리팹 대응). 장비(투구·검·방패·활·
+        /// 후드·갑옷)는 몸체보다 항상 작으므로 이 규칙으로 걸러지고, 원본 텍스처 색을 유지한다.
+        /// 렌더러가 1개뿐인 프리팹(기본 몸체·스트레스 캡슐)은 그 1개가 곧 몸체다.
+        /// </summary>
+        private static bool[] BuildTintTargets(Renderer[] renderers)
+        {
+            var targets = new bool[renderers.Length];
+            if (renderers.Length == 0)
+            {
+                return targets;
+            }
+
+            int bodyIndex = 0;
+            float bodyVolume = -1f;
+            for (int r = 0; r < renderers.Length; r++)
+            {
+                Vector3 size = LocalMeshSize(renderers[r]);
+                float volume = size.x * size.y * size.z;
+                if (volume > bodyVolume)
+                {
+                    bodyVolume = volume;
+                    bodyIndex = r;
+                }
+            }
+
+            Material bodyMaterial = renderers[bodyIndex].sharedMaterial;
+            for (int r = 0; r < renderers.Length; r++)
+            {
+                targets[r] = r == bodyIndex
+                    || (bodyMaterial != null && renderers[r].sharedMaterial == bodyMaterial);
+            }
+            return targets;
+        }
+
+        /// <summary>렌더러의 로컬 메시 크기 — 트랜스폼 상태와 무관하게 결정적인 값이라 스폰 타이밍을 타지 않는다.</summary>
+        private static Vector3 LocalMeshSize(Renderer renderer)
+        {
+            if (renderer is SkinnedMeshRenderer skinned && skinned.sharedMesh != null)
+            {
+                return skinned.sharedMesh.bounds.size;
+            }
+            var filter = renderer.GetComponent<MeshFilter>();
+            if (filter != null && filter.sharedMesh != null)
+            {
+                return filter.sharedMesh.bounds.size;
+            }
+            return renderer.localBounds.size;
+        }
+
         /// <summary>인스턴스별 렌더러·머티리얼 캐시 조회 — 처음 보는 인스턴스만 1회 구축한다.</summary>
         private UnitViewCache GetViewCache(GameObject unit)
         {
@@ -889,6 +1086,7 @@ namespace NHN.Presentation.Battle
                 Renderers = renderers,
                 OriginalMaterials = originals,
                 StealthMaterials = stealths,
+                TintTargets = BuildTintTargets(renderers),
                 Animator = unit.GetComponentInChildren<Animator>(true), // 리깅 없는 프리팹은 null
             };
             if (cache.Animator != null)
@@ -1128,6 +1326,33 @@ namespace NHN.Presentation.Battle
             {
                 _flashTransforms[f] = CreateDisc("SkillCastFlash", out _flashRenderers[f]);
             }
+
+            _hitFxPool = CreateImpactFxPool(hitFxPrefab, "HitFx", HitFxPoolSize, hitFxScale);
+            _hitFxRemainings = new float[_hitFxPool.Length];
+            _deathFxPool = CreateImpactFxPool(deathFxPrefab, "DeathFx", DeathFxPoolSize, deathFxScale);
+            _deathFxRemainings = new float[_deathFxPool.Length];
+        }
+
+        /// <summary>
+        /// 타격/사망 이펙트 링 풀 프리웜 (초기화 1회 경로 — 전투 중 Instantiate 금지 규칙 준수).
+        /// 프리팹이 비어 있으면 길이 0 배열을 돌려주고, 스폰 쪽에서 그대로 무시한다.
+        /// </summary>
+        private Transform[] CreateImpactFxPool(GameObject prefab, string label, int size, float scale)
+        {
+            if (prefab == null)
+            {
+                return System.Array.Empty<Transform>();
+            }
+            var pool = new Transform[size];
+            for (int i = 0; i < size; i++)
+            {
+                GameObject instance = Instantiate(prefab, transform);
+                instance.name = $"{label}{i}";
+                instance.transform.localScale = Vector3.one * scale;
+                instance.SetActive(false);
+                pool[i] = instance.transform;
+            }
+            return pool;
         }
 
         private void ResetSkillFxViews()
@@ -1143,6 +1368,10 @@ namespace NHN.Presentation.Battle
                 _flashRemainings[f] = 0f;
                 _flashTransforms[f].gameObject.SetActive(false);
             }
+            ResetImpactFxPool(_hitFxPool, _hitFxRemainings);
+            ResetImpactFxPool(_deathFxPool, _deathFxRemainings);
+            _nextHitFxIndex = 0;
+            _nextDeathFxIndex = 0;
             if (_skillFxObjects != null)
             {
                 for (int s = 0; s < _skillFxObjects.GetLength(0); s++)
@@ -1155,6 +1384,84 @@ namespace NHN.Presentation.Battle
                             _skillFxObjects[s, r].SetActive(false);
                         }
                     }
+                }
+            }
+        }
+
+        private static void ResetImpactFxPool(Transform[] pool, float[] remainings)
+        {
+            if (pool == null)
+            {
+                return;
+            }
+            for (int i = 0; i < pool.Length; i++)
+            {
+                remainings[i] = 0f;
+                pool[i].gameObject.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// 링 풀에서 이펙트 하나를 꺼내 위치에 재생. 프레임당 상한을 넘으면 조용히 버린다 —
+        /// 난전에서 수백 건이 몰릴 때 화면이 하얗게 뒤덮이고 프레임이 무너지는 것을 막는다.
+        /// </summary>
+        private void SpawnImpactFx(
+            Transform[] pool, float[] remainings, ref int cursor, ref int spawnedThisFrame, int frameLimit,
+            float lifetime, Vector3 position)
+        {
+            if (pool == null || pool.Length == 0 || spawnedThisFrame >= frameLimit)
+            {
+                return;
+            }
+            spawnedThisFrame++;
+
+            int index = cursor;
+            cursor = (cursor + 1) % pool.Length;
+            Transform fx = pool[index];
+            fx.position = position;
+            // 재사용 시 이전 잔여 파티클이 새 위치에서 튀지 않도록 완전히 비우고 다시 재생한다.
+            fx.gameObject.SetActive(false);
+            fx.gameObject.SetActive(true);
+            foreach (ParticleSystem system in fx.GetComponentsInChildren<ParticleSystem>(true))
+            {
+                system.Clear(true);
+                system.Play(true);
+            }
+            remainings[index] = lifetime;
+        }
+
+        public void SpawnHitFx(Vector3 unitPosition)
+        {
+            SpawnImpactFx(
+                _hitFxPool, _hitFxRemainings, ref _nextHitFxIndex, ref _hitFxThisFrame, MaxHitFxPerFrame,
+                HitFxLifetime, unitPosition + Vector3.up * HitFxHeight);
+        }
+
+        public void SpawnDeathFx(Vector3 unitPosition)
+        {
+            SpawnImpactFx(
+                _deathFxPool, _deathFxRemainings, ref _nextDeathFxIndex, ref _deathFxThisFrame, MaxDeathFxPerFrame,
+                DeathFxLifetime, unitPosition);
+        }
+
+        /// <summary>수명이 다한 이펙트를 끈다 — Hovl 파티클은 loop=true라 직접 멈추지 않으면 계속 돈다.</summary>
+        private static void UpdateImpactFxPool(Transform[] pool, float[] remainings, float deltaTime)
+        {
+            if (pool == null)
+            {
+                return;
+            }
+            for (int i = 0; i < pool.Length; i++)
+            {
+                if (remainings[i] <= 0f)
+                {
+                    continue;
+                }
+                remainings[i] -= deltaTime;
+                if (remainings[i] <= 0f)
+                {
+                    remainings[i] = 0f;
+                    pool[i].gameObject.SetActive(false);
                 }
             }
         }
@@ -1224,6 +1531,11 @@ namespace NHN.Presentation.Battle
             }
             _skillFxRemainings[slot, r] = skill.ZoneDuration > 0f ? skill.ZoneDuration : InstantFxSeconds;
             _skillFxStopping[slot, r] = false;
+            // 시전 순간 화면을 살짝 흔들어 타격감을 준다 — 강조는 스킬에만, 평타에는 걸지 않는다.
+            if (_cameraController != null)
+            {
+                _cameraController.AddShake(SkillCastShake);
+            }
         }
 
         /// <summary>재생 시간 만료 → 방출 정지 → 잔향 소멸 후 비활성 (매 프레임, 무할당).</summary>
@@ -1335,10 +1647,16 @@ namespace NHN.Presentation.Battle
             // "Can't add component because class 'CapsuleCollider' doesn't exist!"로 생성이 실패했다.
             // 내장 실린더 메시 + 렌더러만 직접 구성하면 콜라이더가 아예 개입하지 않는다.
             var disc = new GameObject(discName);
-            disc.AddComponent<MeshFilter>().sharedMesh = Resources.GetBuiltinResource<Mesh>("Cylinder.fbx");
-            renderer = disc.AddComponent<MeshRenderer>();
+            // 주의: 내장 리소스 "Cylinder.fbx"는 반경 1 — CreatePrimitive의 실린더(반경 0.5)와 다르다.
+            // 호출부는 지름(반경*2) 스케일 규칙을 쓰므로 자식에서 0.5를 곱해 반경 0.5 규격으로 맞춘다.
+            // (이 보정이 빠지면 모든 범위 표시가 실제의 2배로 커진다 — 2026-08-05 스킬 이펙트 불일치의 원인.)
+            var mesh = new GameObject("Mesh");
+            mesh.AddComponent<MeshFilter>().sharedMesh = Resources.GetBuiltinResource<Mesh>("Cylinder.fbx");
+            renderer = mesh.AddComponent<MeshRenderer>();
             renderer.sharedMaterial = _stealthMaterial; // 공유 투명 재질 + 프로퍼티 블록 색
             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            mesh.transform.SetParent(disc.transform, false);
+            mesh.transform.localScale = new Vector3(0.5f, 1f, 0.5f);
             disc.transform.SetParent(transform, false);
             disc.SetActive(false);
             return disc.transform;

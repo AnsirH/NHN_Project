@@ -33,11 +33,27 @@ namespace NHN.Presentation.Battle
         [Header("더블탭 기본 구도 복귀")]
         [SerializeField] private float doubleTapSeconds = 0.3f;
 
+        [Header("연출")]
+        [Tooltip("줌 감쇠 계수(1/초) — 클수록 즉각적. 팬은 지면 고정이라 감쇠를 걸지 않는다")]
+        [SerializeField] private float zoomDamping = 14f;
+        [Tooltip("전투 개시 시 근접 구도에서 기본 구도로 물러나는 시간(초). 0이면 연출 없음")]
+        [SerializeField] private float introSeconds = 1.6f;
+        [Tooltip("셰이크가 잦아드는 속도(1/초)")]
+        [SerializeField] private float shakeDecay = 6f;
+        [Tooltip("셰이크 최대 진폭(월드 단위) — 누적값을 여기서 자른다")]
+        [SerializeField] private float maxShake = 0.9f;
+
         private Camera _camera;
         private Vector3 _focus;
+        /// <summary>줌 목표 거리. 실제 적용값은 <see cref="_appliedDistance"/>가 감쇠하며 따라간다.</summary>
         private float _distance;
+        private float _appliedDistance;
         private Vector3 _defaultFocus;
         private float _defaultDistance;
+        private float _introRemaining;
+        private float _introFrom;
+        private float _shake;
+        private Vector3 _shakeOffset;
 
         // 입력 상태 (프레임 간 유지)
         private bool _pressing;
@@ -65,12 +81,76 @@ namespace NHN.Presentation.Battle
 
         private void LateUpdate()
         {
-            if (HandlePinch())
+            if (!HandlePinch()) // 핀치 중에는 드래그·탭 판정을 하지 않는다
             {
-                return; // 핀치 중에는 드래그·탭 판정을 하지 않는다
+                HandleWheel();
+                HandleDragAndTap();
             }
-            HandleWheel();
-            HandleDragAndTap();
+            UpdateIntro(Time.deltaTime);
+            UpdateZoomDamping(Time.deltaTime);
+            UpdateShake(Time.deltaTime);
+            ApplyTransform();
+        }
+
+        /// <summary>
+        /// 전투 개시 연출 시작 — 근접에서 기본 구도로 물러난다. 전투 시작 시점에 외부(부트스트랩)가 부른다.
+        /// </summary>
+        public void PlayIntro()
+        {
+            if (introSeconds <= 0f)
+            {
+                return;
+            }
+            _introFrom = minDistance;
+            _introRemaining = introSeconds;
+            _appliedDistance = _introFrom;
+            ApplyTransform();
+        }
+
+        /// <summary>화면 흔들기 누적 — 스킬 시전 같은 강조 순간에 부른다. 진폭은 상한에서 잘린다.</summary>
+        public void AddShake(float strength)
+        {
+            _shake = Mathf.Min(_shake + Mathf.Max(strength, 0f), maxShake);
+        }
+
+        private void CancelIntro()
+        {
+            _introRemaining = 0f;
+        }
+
+        private void UpdateIntro(float deltaTime)
+        {
+            if (_introRemaining <= 0f)
+            {
+                return;
+            }
+            _introRemaining -= deltaTime;
+            float progress = introSeconds > 0f ? 1f - Mathf.Clamp01(_introRemaining / introSeconds) : 1f;
+            _appliedDistance = Mathf.Lerp(_introFrom, _distance, Mathf.SmoothStep(0f, 1f, progress));
+        }
+
+        private void UpdateZoomDamping(float deltaTime)
+        {
+            if (_introRemaining > 0f)
+            {
+                return; // 인트로가 거리 제어권을 갖는 동안에는 감쇠를 건너뛴다
+            }
+            // 프레임레이트 독립 감쇠 — deltaTime이 커도 오버슈트하지 않는다.
+            float t = zoomDamping > 0f ? 1f - Mathf.Exp(-zoomDamping * deltaTime) : 1f;
+            _appliedDistance = Mathf.Lerp(_appliedDistance, _distance, t);
+        }
+
+        private void UpdateShake(float deltaTime)
+        {
+            if (_shake <= 0.0001f)
+            {
+                _shake = 0f;
+                _shakeOffset = Vector3.zero;
+                return;
+            }
+            _shake *= Mathf.Exp(-shakeDecay * deltaTime);
+            // 카메라 로컬 평면(상/우)으로만 흔든다 — 앞뒤로 흔들면 줌이 흔들리는 것처럼 보인다.
+            _shakeOffset = (transform.right * Random.Range(-1f, 1f) + transform.up * Random.Range(-1f, 1f)) * _shake;
         }
 
         // ── 카메라 연산 (입력과 분리 — 검증·외부 호출 가능) ──
@@ -78,6 +158,7 @@ namespace NHN.Presentation.Battle
         /// <summary>초점을 지면 XZ로 이동 (경계 클램프).</summary>
         public void PanBy(Vector3 groundDelta)
         {
+            CancelIntro(); // 조작이 들어오면 연출보다 플레이어 의도가 우선
             _focus += new Vector3(groundDelta.x, 0f, groundDelta.z);
             _focus.x = Mathf.Clamp(_focus.x, -boundsHalfX, boundsHalfX);
             _focus.z = Mathf.Clamp(_focus.z, -boundsHalfZ, boundsHalfZ);
@@ -87,24 +168,27 @@ namespace NHN.Presentation.Battle
         /// <summary>초점까지의 거리를 설정 (범위 클램프). 배율 줌은 현재 거리 × 비율로 호출.</summary>
         public void SetDistance(float distance)
         {
+            CancelIntro();
             _distance = Mathf.Clamp(distance, minDistance, maxDistance);
-            ApplyTransform();
         }
 
+        /// <summary>줌 목표 거리 — 감쇠 중인 실제 거리가 아니라 목표값이다 (조작·테스트 기준).</summary>
         public float Distance => _distance;
 
         /// <summary>기본 구도(씬 저장 자세)로 복귀.</summary>
         public void ResetView()
         {
+            CancelIntro();
             _focus = _defaultFocus;
             _distance = _defaultDistance;
+            _appliedDistance = _defaultDistance;
             ApplyTransform();
         }
 
         private void ApplyTransform()
         {
-            // 회전 고정 — 초점에서 시선 반대 방향으로 거리만큼 물러난 위치.
-            transform.position = _focus - transform.forward * _distance;
+            // 회전 고정 — 초점에서 시선 반대 방향으로 거리만큼 물러난 위치. 셰이크는 마지막에 얹는다.
+            transform.position = _focus - transform.forward * _appliedDistance + _shakeOffset;
         }
 
         // ── 입력 처리 ──

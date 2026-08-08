@@ -139,8 +139,9 @@ namespace NHN.Data
         {
             var outcome = new BattleOutcome
             {
-                // 시간 상한 무승부는 패배 처리 — 아웃게임의 "victory=false → 런 종료" 규칙과 합치
-                Victory = sim.Result.Winner == 0,
+                // 패배는 B군(적) 승리일 때만 — 시간 상한 무승부는 패배로 치지 않는다.
+                // 고지되지 않은 "무승부 = 런 삭제"는 플레이어 입장에서 부당한 죽음이라 제거 (2026-08-06 결정).
+                Victory = sim.Result.Winner != 1,
             };
             for (int s = 0; s < playerSquadIds.Count; s++)
             {
