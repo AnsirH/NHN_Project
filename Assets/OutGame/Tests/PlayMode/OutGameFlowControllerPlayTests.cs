@@ -5,6 +5,7 @@ using OutGame.Flow;
 using OutGame.Logic.Battle;
 using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
+using OutGame.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
@@ -36,19 +37,22 @@ namespace OutGame.Tests.PlayMode
             yield return null;
         }
 
-        private static MapSelectController MapSelect() =>
-            Object.FindFirstObjectByType<MapSelectController>(FindObjectsInactive.Include);
+        private static MapSelectPanel MapSelect() =>
+            Object.FindFirstObjectByType<MapSelectPanel>(FindObjectsInactive.Include);
 
-        private static CharacterSelectController CharacterSelect() =>
-            Object.FindFirstObjectByType<CharacterSelectController>(FindObjectsInactive.Include);
+        private static CharacterSelectPanel CharacterSelect() =>
+            Object.FindFirstObjectByType<CharacterSelectPanel>(FindObjectsInactive.Include);
 
         private static InGameFlowController RoomGraph() =>
             Object.FindFirstObjectByType<InGameFlowController>(FindObjectsInactive.Include);
 
+        private static LoreFragmentOverlayPanel LoreFragmentOverlay() =>
+            Object.FindFirstObjectByType<LoreFragmentOverlayPanel>(FindObjectsInactive.Include);
+
         private static readonly string[] MapPointNames =
             { "MapPoint_1_SmallCastle", "MapPoint_2_CentralCastle", "MapPoint_3_Fortress" };
 
-        private static Button ActiveMapPointButton(MapSelectController mapSelect) =>
+        private static Button ActiveMapPointButton(MapSelectPanel mapSelect) =>
             MapPointNames
                 .Select(name => mapSelect.transform.Find(name).GetComponent<Button>())
                 .First(b => b.interactable);
@@ -67,20 +71,40 @@ namespace OutGame.Tests.PlayMode
             Assert.IsTrue(MapSelect().gameObject.activeSelf, "새 게임 진입은 맵 선택부터 시작해야 함");
             Assert.IsFalse(CharacterSelect().gameObject.activeSelf);
             Assert.IsFalse(RoomGraph().gameObject.activeSelf);
+            Assert.IsFalse(LoreFragmentOverlay().gameObject.activeSelf,
+                "의지의 파편 오버레이는 전투 종료 복귀(pendingRun) 시점에만 떠야 함");
         }
 
         [UnityTest]
-        public IEnumerator Load_WithPendingRun_ShowsOnlyRoomGraphAndConsumesPendingRun()
+        public IEnumerator Load_WithPendingRun_ShowsLoreFragmentOverlayBeforeRoomGraph()
+        {
+            // 2026-08-08: 전투 종료 복귀(pendingRun 분기)는 이제 "의지의 파편" 오버레이를 한 번
+            // 거친 뒤에야 방 그래프로 넘어간다(Docs/OutGame/로딩 화면 - 의지의 파편 설계.md).
+            RunSessionContext.SetPendingRun(NewRun());
+
+            yield return LoadScene();
+
+            Assert.IsTrue(LoreFragmentOverlay().gameObject.activeSelf,
+                "전투 종료 복귀 시점엔 방 그래프보다 먼저 로딩 오버레이가 떠야 함");
+            Assert.IsFalse(RoomGraph().gameObject.activeSelf, "오버레이 클릭 전엔 방 그래프가 보이면 안 됨");
+            Assert.IsNull(RunSessionContext.PendingRun, "한 번 소비된 PendingRun은 다시 남아있으면 안 됨(오버레이 시작 전 소비)");
+        }
+
+        [UnityTest]
+        public IEnumerator Load_WithPendingRun_ContinueClick_ShowsOnlyRoomGraph()
         {
             RunSessionContext.SetPendingRun(NewRun());
 
             yield return LoadScene();
 
+            LoreFragmentOverlay().transform.Find("FragmentRoot/ContinueButton").GetComponent<Button>().onClick.Invoke();
+            yield return null;
+
+            Assert.IsFalse(LoreFragmentOverlay().gameObject.activeSelf, "클릭 후엔 오버레이가 닫혀야 함");
             Assert.IsFalse(MapSelect().gameObject.activeSelf);
             Assert.IsFalse(CharacterSelect().gameObject.activeSelf);
             Assert.IsTrue(RoomGraph().gameObject.activeSelf,
                 "이어하기는 맵/캐릭터 선택을 건너뛰고 방 그래프로 곧장 진입해야 함");
-            Assert.IsNull(RunSessionContext.PendingRun, "한 번 소비된 PendingRun은 다시 남아있으면 안 됨");
         }
 
         [UnityTest]
@@ -88,7 +112,7 @@ namespace OutGame.Tests.PlayMode
         {
             yield return LoadScene();
 
-            MapSelectController mapSelect = MapSelect();
+            MapSelectPanel mapSelect = MapSelect();
             Button entryButton = ActiveMapPointButton(mapSelect);
             entryButton.onClick.Invoke();
             yield return null;
@@ -106,7 +130,7 @@ namespace OutGame.Tests.PlayMode
             ActiveMapPointButton(MapSelect()).onClick.Invoke();
             yield return null;
 
-            CharacterSelectController characterSelect = CharacterSelect();
+            CharacterSelectPanel characterSelect = CharacterSelect();
             characterSelect.transform.Find("ConfirmButton").GetComponent<Button>().onClick.Invoke();
             yield return null;
 

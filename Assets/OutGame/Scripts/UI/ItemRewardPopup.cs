@@ -9,7 +9,7 @@ namespace OutGame.UI
 {
     /// <summary>
     /// 전투 승리 시 획득한 아이템 알림 팝업 (2026-07-26 사용자 요청) — 그 전까지는 드롭이
-    /// `run.ownedItemIds`에 조용히 추가되기만 하고 화면 표시가 전혀 없었다. EventPanel/RestPanel/
+    /// `run.ownedItemIds`에 조용히 추가되기만 하고 화면 표시가 전혀 없었다. EventPanel/ReinforcementPanel/
     /// AugmentPanel과 달리 확인 전까지 뒤 화면을 막는 모달이라 dim 배경을 둔다(다른 두 배치 화면
     /// 팝업, InventoryPopup/ArmyInfoPopup은 드래그 앤 드롭 작업 중 뒤가 보여야 해서 dim이 없는 것과
     /// 대비됨).

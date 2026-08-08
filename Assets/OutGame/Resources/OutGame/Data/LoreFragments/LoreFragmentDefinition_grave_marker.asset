@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b090f60d953351c4387e182b15f2203f, type: 3}
+  m_Name: LoreFragmentDefinition_grave_marker
+  m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.LoreFragmentDefinition
+  fragmentId: grave_marker
+  text: "\uC7A0\uC2DC \uB300\uC5F4\uC774 \uBA48\uCD98 \uC0AC\uC774, \uD759\uC778\uD615
+    \uD558\uB098\uAC00 \uB545\uC5D0 \uC190\uAC00\uB77D\uC73C\uB85C \uC9E7\uC740 \uC120\uC744
+    \uD558\uB098 \uAE0B\uB294\uB2E4. \uBB34\uB364 \uD45C\uC2DD \uAC19\uAE30\uB3C4
+    \uD558\uB2E4. \uB2E4\uC74C \uD759\uC778\uD615\uC774 \uADF8 \uC704\uB97C \uBB34\uC2EC\uD788
+    \uBC1F\uACE0 \uC9C0\uB098\uAC04\uB2E4."

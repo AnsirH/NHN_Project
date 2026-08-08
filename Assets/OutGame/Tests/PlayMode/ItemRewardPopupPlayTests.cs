@@ -22,7 +22,7 @@ namespace OutGame.Tests.PlayMode
         public void SetUp()
         {
             canvasGo = new GameObject("TestCanvas", typeof(Canvas));
-            GameObject prefab = Resources.Load<GameObject>("OutGame/ItemRewardPopup");
+            GameObject prefab = Resources.Load<GameObject>("OutGame/Popups/ItemRewardPopup");
             Assert.IsNotNull(prefab, "ItemRewardPopup 프리팹이 없음 — SceneSetupM4UI.Run() 실행 필요");
             popup = Object.Instantiate(prefab, canvasGo.transform).GetComponent<ItemRewardPopup>();
 

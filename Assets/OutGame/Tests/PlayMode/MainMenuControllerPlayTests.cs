@@ -23,7 +23,7 @@ namespace OutGame.Tests.PlayMode
             canvasGo = new GameObject("TestCanvas", typeof(Canvas), typeof(CanvasScaler));
             canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
 
-            GameObject prefab = Resources.Load<GameObject>("OutGame/MainMenuScreen");
+            GameObject prefab = Resources.Load<GameObject>("OutGame/Panels/MainMenuScreen");
             Assert.IsNotNull(prefab, "MainMenuScreen 프리팹 없음 — SceneSetupM5UI.Run() 실행 필요");
             controller = Object.Instantiate(prefab, canvasGo.transform).GetComponent<MainMenuController>();
 

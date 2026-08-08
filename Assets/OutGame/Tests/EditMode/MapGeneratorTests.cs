@@ -132,7 +132,7 @@ namespace OutGame.Tests.EditMode
                 var preBossNodes = map.nodes.Where(n => n.point.y == preBossFloor).ToList();
 
                 Assert.IsNotEmpty(preBossNodes, $"seed {seed}");
-                Assert.IsTrue(preBossNodes.All(n => n.roomType == RoomType.Rest),
+                Assert.IsTrue(preBossNodes.All(n => n.roomType == RoomType.Reinforcement),
                     $"seed {seed}: 보스 직전 층은 전부 증원이어야 함");
             }
         }
@@ -159,9 +159,9 @@ namespace OutGame.Tests.EditMode
             foreach (int seed in Seeds())
             {
                 MapState map = Generate(seed);
-                foreach (MapNode node in map.nodes.Where(n => n.roomType == RoomType.Rest))
+                foreach (MapNode node in map.nodes.Where(n => n.roomType == RoomType.Reinforcement))
                     foreach (GridPoint dest in node.outgoing)
-                        Assert.AreNotEqual(RoomType.Rest, map.GetNode(dest).roomType,
+                        Assert.AreNotEqual(RoomType.Reinforcement, map.GetNode(dest).roomType,
                             $"seed {seed}: 증원 연속 {node.point} → {dest}");
             }
         }

@@ -29,7 +29,7 @@ namespace OutGame.Tests.PlayMode
             canvasGo = new GameObject("TestCanvas", typeof(Canvas), typeof(CanvasScaler));
             canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
 
-            GameObject prefab = Resources.Load<GameObject>("OutGame/EventPanel");
+            GameObject prefab = Resources.Load<GameObject>("OutGame/Panels/EventPanel");
             Assert.IsNotNull(prefab, "EventPanel 프리팹 없음 — SceneSetupM4UI.Run() 실행 필요");
             panel = Object.Instantiate(prefab, canvasGo.transform).GetComponent<EventPanel>();
 

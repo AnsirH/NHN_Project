@@ -34,7 +34,7 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Capture_RoomMapPanel_InitialAndMidRun()
+        public IEnumerator Capture_RoomGraphPanel_InitialAndMidRun()
         {
             if (Application.isBatchMode)
             {
@@ -54,21 +54,21 @@ namespace OutGame.Tests.PlayMode
                 scaler.referenceResolution = new Vector2(1920f, 1080f);
                 scaler.matchWidthOrHeight = 0.5f;
 
-                GameObject prefab = Resources.Load<GameObject>("OutGame/RoomMapPanel");
-                Assert.IsNotNull(prefab, "RoomMapPanel 프리팹 없음 — SceneSetupM2.Run() 실행 필요");
-                var panel = Object.Instantiate(prefab, canvasGo.transform).GetComponent<RoomMapPanel>();
+                GameObject prefab = Resources.Load<GameObject>("OutGame/Panels/RoomGraphPanel");
+                Assert.IsNotNull(prefab, "RoomGraphPanel 프리팹 없음 — SceneSetupM2.Run() 실행 필요");
+                var panel = Object.Instantiate(prefab, canvasGo.transform).GetComponent<RoomGraphPanel>();
 
                 MapState map = new MapGenerator(new MapGenerationConfig(), seed: 42).Generate();
                 panel.Open(map);
 
-                yield return CaptureToFile("RoomMapPanel_01_initial.png");
+                yield return CaptureToFile("RoomGraphPanel_01_initial.png");
 
                 // 2개 방 방문 후 상태 (현재/방문/선택가능/잠김 + 경로 강조 확인용)
                 MapProgress.Visit(map, MapProgress.GetSelectableNodes(map)[0].point);
                 MapProgress.Visit(map, MapProgress.GetSelectableNodes(map)[0].point);
                 panel.Refresh();
 
-                yield return CaptureToFile("RoomMapPanel_02_midrun.png");
+                yield return CaptureToFile("RoomGraphPanel_02_midrun.png");
             }
             finally
             {
@@ -119,7 +119,7 @@ namespace OutGame.Tests.PlayMode
                 scaler.referenceResolution = new Vector2(1920f, 1080f);
                 scaler.matchWidthOrHeight = 0.5f;
 
-                GameObject prefab = Resources.Load<GameObject>("OutGame/ArmyDeploymentPanel");
+                GameObject prefab = Resources.Load<GameObject>("OutGame/Panels/ArmyDeploymentPanel");
                 Assert.IsNotNull(prefab, "ArmyDeploymentPanel 프리팹 없음 — SceneSetupM3UI.Run() 실행 필요");
                 var panel = Object.Instantiate(prefab, canvasGo.transform).GetComponent<ArmyDeploymentPanel>();
 
@@ -155,7 +155,7 @@ namespace OutGame.Tests.PlayMode
                 // 적 진영도 아군과 동일한 ArmyCardView를 재사용하므로(2026-07-26) 아군 격자로 범위를
                 // 좁혀야 실제 보유 군대 카드를 얻는다.
                 var allyFormationPanel = panel.transform.Find("MainRow/AllyFormationPanel");
-                var cardView = allyFormationPanel.Find("FormationGridPanel/SlotArea")
+                var cardView = allyFormationPanel.Find("FormationGridPanel/GridContent")
                     .GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
                 // 적 진영도 이제 같은 DeploySlotView를 쓰므로(2026-08-07, 공용 FormationGridPanel)
                 // panel 전체가 아니라 아군 격자로 범위를 좁혀야 한다.
@@ -221,7 +221,7 @@ namespace OutGame.Tests.PlayMode
                 scaler.referenceResolution = new Vector2(1920f, 1080f);
                 scaler.matchWidthOrHeight = 0.5f;
 
-                GameObject prefab = Resources.Load<GameObject>("OutGame/ArmyDeploymentPanel");
+                GameObject prefab = Resources.Load<GameObject>("OutGame/Panels/ArmyDeploymentPanel");
                 var armyDefBasic = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_Basic");
                 var armyDefNone = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_army_none");
                 var runConfig = new RunConfig { startingArmyCount = 3 };
@@ -269,7 +269,7 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Capture_EventAndRestPanels()
+        public IEnumerator Capture_EventAndReinforcementPanels()
         {
             if (Application.isBatchMode)
             {
@@ -293,7 +293,7 @@ namespace OutGame.Tests.PlayMode
                 RunState run = RunStateFactory.Create(map, new RunConfig { startingArmyCount = 2 });
 
                 // EventPanel — 초기 상태 + 선택 후 결과 상태
-                var eventPrefab = Resources.Load<GameObject>("OutGame/EventPanel");
+                var eventPrefab = Resources.Load<GameObject>("OutGame/Panels/EventPanel");
                 var eventDef = Resources.Load<EventDefinition>("OutGame/Data/Events/EventDefinition_RuneRock");
                 var eventPanel = Object.Instantiate(eventPrefab, canvasGo.transform).GetComponent<EventPanel>();
                 eventPanel.Open(eventDef, run, maxArmyCountValue: 9);
@@ -306,28 +306,28 @@ namespace OutGame.Tests.PlayMode
                 Object.Destroy(eventPanel.gameObject);
                 yield return null;
 
-                // RestPanel — 초기 상태(진영 그리드) + 카드 클릭 후 결과 상태 (2026-07-26: 증원 대상
-                // 선택을 배치 화면과 동일한 진영 그리드로 교체 — 카드 클릭 즉시 증원)
-                var restPrefab = Resources.Load<GameObject>("OutGame/RestPanel");
+                // ReinforcementPanel(증원 방) — 초기 상태(진영 그리드) + 카드 클릭 후 결과 상태
+                // (2026-07-26: 증원 대상 선택을 배치 화면과 동일한 진영 그리드로 교체 — 카드 클릭 즉시 증원)
+                var reinforcementPrefab = Resources.Load<GameObject>("OutGame/Panels/ReinforcementPanel");
                 var armyDefNone = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_army_none");
-                var restPanel = Object.Instantiate(restPrefab, canvasGo.transform).GetComponent<RestPanel>();
-                restPanel.Open(
+                var reinforcementPanel = Object.Instantiate(reinforcementPrefab, canvasGo.transform).GetComponent<ReinforcementPanel>();
+                reinforcementPanel.Open(
                     run,
                     new RunConfig { startingArmyCount = 2 },
                     new[] { armyDefNone },
                     new ItemDefinition[0],
                     new OutGame.ScriptableObjects.AugmentDefinition[0]);
-                yield return CaptureToFile("RestPanel_01_initial.png");
+                yield return CaptureToFile("ReinforcementPanel_01_initial.png");
 
-                var restCard = restPanel.GetComponentInChildren<AllyFormationView>()
+                var reinforcementCard = reinforcementPanel.GetComponentInChildren<AllyFormationView>()
                     .GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
-                restCard.OnPointerClick(new PointerEventData(EventSystem.current));
-                yield return CaptureToFile("RestPanel_02_result.png");
-                Object.Destroy(restPanel.gameObject);
+                reinforcementCard.OnPointerClick(new PointerEventData(EventSystem.current));
+                yield return CaptureToFile("ReinforcementPanel_02_result.png");
+                Object.Destroy(reinforcementPanel.gameObject);
                 yield return null;
 
                 // AugmentPanel — 초기 상태(3개 무작위 노출) + 선택 후 결과 상태 (§4-27)
-                var augmentPrefab = Resources.Load<GameObject>("OutGame/AugmentPanel");
+                var augmentPrefab = Resources.Load<GameObject>("OutGame/Panels/AugmentPanel");
                 var augmentDefs = Resources.LoadAll<OutGame.ScriptableObjects.AugmentDefinition>("OutGame/Data/Augments");
                 Assert.IsTrue(augmentDefs.Length > 0, "증강 정의 없음 — SceneSetupM4Data.Run() 실행 필요");
                 var augmentPanel = Object.Instantiate(augmentPrefab, canvasGo.transform).GetComponent<AugmentPanel>();
@@ -338,6 +338,48 @@ namespace OutGame.Tests.PlayMode
                     .First(b => b.transform.parent.name == "ChoiceContainer");
                 augmentChoiceButton.onClick.Invoke();
                 yield return CaptureToFile("AugmentPanel_02_result.png");
+            }
+            finally
+            {
+                Object.Destroy(canvasGo);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator Capture_LoreFragmentOverlay_WithAndWithoutFragment()
+        {
+            if (Application.isBatchMode)
+            {
+                Assert.Ignore("batchmode에서는 렌더 프레임이 없어 캡처 불가 — 에디터 열림 상태에서만 실행");
+                yield break;
+            }
+
+            yield return SettleGameView(); // 직전 테스트가 남긴 캔버스 잔상 제거
+
+            var canvasGo = new GameObject("CaptureCanvas", typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler));
+            try
+            {
+                var canvas = canvasGo.GetComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                var scaler = canvasGo.GetComponent<UnityEngine.UI.CanvasScaler>();
+                scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                scaler.referenceResolution = new Vector2(1920f, 1080f);
+                scaler.matchWidthOrHeight = 0.5f;
+
+                var overlayPrefab = Resources.Load<GameObject>("OutGame/Overlays/LoreFragmentOverlay");
+                Assert.IsNotNull(overlayPrefab, "LoreFragmentOverlay 프리팹 없음 — BuildLoadingOverlayPrefab.Run() 실행 필요");
+
+                var overlay = Object.Instantiate(overlayPrefab, canvasGo.transform).GetComponent<LoreFragmentOverlayPanel>();
+                overlay.FragmentTriggerChance = 1f;
+                overlay.Begin(() => { });
+                yield return CaptureToFile("LoreFragmentOverlay_01_with_fragment.png");
+                Object.Destroy(overlay.gameObject);
+                yield return null;
+
+                var overlayNoFragment = Object.Instantiate(overlayPrefab, canvasGo.transform).GetComponent<LoreFragmentOverlayPanel>();
+                overlayNoFragment.FragmentTriggerChance = 0f;
+                overlayNoFragment.Begin(() => { });
+                yield return CaptureToFile("LoreFragmentOverlay_02_without_fragment.png");
             }
             finally
             {
@@ -366,7 +408,7 @@ namespace OutGame.Tests.PlayMode
                 scaler.referenceResolution = new Vector2(1920f, 1080f);
                 scaler.matchWidthOrHeight = 0.5f;
 
-                var mainMenuPrefab = Resources.Load<GameObject>("OutGame/MainMenuScreen");
+                var mainMenuPrefab = Resources.Load<GameObject>("OutGame/Panels/MainMenuScreen");
                 Assert.IsNotNull(mainMenuPrefab, "MainMenuScreen 프리팹 없음 — SceneSetupM5UI.Run() 실행 필요");
                 var mainMenu = Object.Instantiate(mainMenuPrefab, canvasGo.transform).GetComponent<MainMenuController>();
                 yield return CaptureToFile("MainMenu_01.png"); // 2026-07-30: 이어하기 제거로 저장 유무 캡처 구분 없음
@@ -374,8 +416,8 @@ namespace OutGame.Tests.PlayMode
                 Object.Destroy(mainMenu.gameObject);
                 yield return null;
 
-                var mapSelectPrefab = Resources.Load<GameObject>("OutGame/MapSelectScreen");
-                Assert.IsNotNull(mapSelectPrefab, "MapSelectScreen 프리팹 없음 — SceneSetupM5UI.Run() 실행 필요");
+                var mapSelectPrefab = Resources.Load<GameObject>("OutGame/Panels/MapSelectPanel");
+                Assert.IsNotNull(mapSelectPrefab, "MapSelectPanel 프리팹 없음 — SceneSetupM5UI.Run() 실행 필요");
                 Object.Instantiate(mapSelectPrefab, canvasGo.transform);
                 yield return null; // Start()에서 MapDefinition 목록을 스폰할 시간
                 yield return CaptureToFile("MapSelect_01_initial.png");
@@ -387,7 +429,7 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Capture_CharacterSelectScreen()
+        public IEnumerator Capture_CharacterSelectPanel()
         {
             // 2026-07-26 사용자 요청: 맵 선택 다음에 삽입한 캐릭터 선택 화면(§5.2.5) — 좌측 설명/
             // 스킬 패널, 하단 아이콘 하이라이트/흑백 차이, 화살표 이동 후 상태를 육안 확인.
@@ -410,9 +452,9 @@ namespace OutGame.Tests.PlayMode
                 scaler.referenceResolution = new Vector2(1920f, 1080f);
                 scaler.matchWidthOrHeight = 0.5f;
 
-                var prefab = Resources.Load<GameObject>("OutGame/CharacterSelectScreen");
-                Assert.IsNotNull(prefab, "CharacterSelectScreen 프리팹 없음 — SceneSetupM7UI.Run() 실행 필요");
-                var controller = Object.Instantiate(prefab, canvasGo.transform).GetComponent<CharacterSelectController>();
+                var prefab = Resources.Load<GameObject>("OutGame/Panels/CharacterSelectPanel");
+                Assert.IsNotNull(prefab, "CharacterSelectPanel 프리팹 없음 — SceneSetupM7UI.Run() 실행 필요");
+                var controller = Object.Instantiate(prefab, canvasGo.transform).GetComponent<CharacterSelectPanel>();
                 yield return null; // Start()에서 아이콘 스폰할 시간
 
                 yield return CaptureToFile("CharacterSelect_01_initial.png");
@@ -449,7 +491,7 @@ namespace OutGame.Tests.PlayMode
                 scaler.referenceResolution = new Vector2(1920f, 1080f);
                 scaler.matchWidthOrHeight = 0.5f;
 
-                var prefab = Resources.Load<GameObject>("OutGame/ItemRewardPopup");
+                var prefab = Resources.Load<GameObject>("OutGame/Popups/ItemRewardPopup");
                 Assert.IsNotNull(prefab, "ItemRewardPopup 프리팹 없음 — SceneSetupM4UI.Run() 실행 필요");
                 var popup = Object.Instantiate(prefab, canvasGo.transform).GetComponent<ItemRewardPopup>();
 
@@ -495,7 +537,7 @@ namespace OutGame.Tests.PlayMode
                 scaler.referenceResolution = new Vector2(1920f, 1080f);
                 scaler.matchWidthOrHeight = 0.5f;
 
-                var prefab = Resources.Load<GameObject>("OutGame/ArmyFormationPopup");
+                var prefab = Resources.Load<GameObject>("OutGame/Popups/ArmyFormationPopup");
                 Assert.IsNotNull(prefab, "ArmyFormationPopup 프리팹 없음 — SceneSetupM3UI.Run() 실행 필요");
                 var popup = Object.Instantiate(prefab, canvasGo.transform).GetComponent<ArmyFormationPopup>();
 
@@ -517,7 +559,7 @@ namespace OutGame.Tests.PlayMode
                 yield return CaptureToFile("ArmyFormationPopup_02_inventory_open.png");
 
                 popup.GetComponentInChildren<InventoryPopup>(includeInactive: true).Hide();
-                var cardView = window.Find("AllyFormationPanel/FormationGridPanel/SlotArea")
+                var cardView = window.Find("AllyFormationPanel/FormationGridPanel/GridContent")
                     .GetComponentsInChildren<ArmyCardView>(includeInactive: true).First();
                 cardView.OnPointerClick(new PointerEventData(EventSystem.current));
                 yield return CaptureToFile("ArmyFormationPopup_03_army_info.png");
@@ -527,6 +569,46 @@ namespace OutGame.Tests.PlayMode
                 Object.Destroy(canvasGo);
                 Object.Destroy(eventSystemGo);
             }
+        }
+
+        [UnityTest]
+        public IEnumerator Capture_ArmyFormationPopup_OpenedFromRoomGraph()
+        {
+            // 사용자 리포트(2026-08-08): 방 그래프 패널에서 "진영" 버튼으로 연 진영 팝업이 투명해
+            // 보인다는 지적 — UICaptureTests의 기존 Capture_ArmyFormationPopup은 빈 캔버스에 프리팹을
+            // 단독 인스턴스화해서 찍기 때문에 재현이 안 될 수 있다. 실제 버그 재현 경로(OutGame.unity
+            // 로드 → RoomGraphPanel → "진영" 버튼)를 그대로 캡처해 비교한다.
+            if (Application.isBatchMode)
+            {
+                Assert.Ignore("batchmode에서는 렌더 프레임이 없어 캡처 불가 — 에디터 열림 상태에서만 실행");
+                yield break;
+            }
+
+            yield return SettleGameView();
+
+            yield return SceneManager.LoadSceneAsync(SceneNames.OutGame, LoadSceneMode.Additive);
+            yield return null;
+
+            var flow = Object.FindFirstObjectByType<InGameFlowController>(FindObjectsInactive.Include);
+            flow.gameObject.SetActive(true);
+
+            var runConfigAsset = (RunConfigAsset)typeof(InGameFlowController)
+                .GetField("runConfig", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .GetValue(flow);
+            MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
+            RunState run = RunStateFactory.Create(map, runConfigAsset.ToData());
+            run.selectedCharacterId = "char_1";
+            flow.Begin(run);
+            yield return null;
+
+            var mapPanel = flow.GetComponentInChildren<RoomGraphPanel>(includeInactive: true);
+            UnityEngine.UI.Button formationButton = mapPanel.transform.Find("FormationButton").GetComponent<UnityEngine.UI.Button>();
+            formationButton.onClick.Invoke();
+            yield return null;
+
+            yield return CaptureToFile("ArmyFormationPopup_04_from_room_graph.png");
+
+            yield return SceneManager.UnloadSceneAsync(SceneNames.OutGame);
         }
 
         /// <summary>

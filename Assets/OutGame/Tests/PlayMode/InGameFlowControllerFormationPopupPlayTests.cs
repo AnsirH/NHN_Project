@@ -17,7 +17,7 @@ using UnityEngine.UI;
 namespace OutGame.Tests.PlayMode
 {
     /// <summary>
-    /// 방 그래프의 "진영" 팝업(2026-07-26 사용자 요청) 통합 검증 — RoomMapPanel.FormationRequested →
+    /// 방 그래프의 "진영" 팝업(2026-07-26 사용자 요청) 통합 검증 — RoomGraphPanel.FormationRequested →
     /// InGameFlowController → ArmyFormationPopup으로 이어지는 배선을 OutGame.unity를 직접 로드해
     /// 확인한다(§3.1 씬 통합). 방 그래프(RoomGraphRoot)는 씬 로드 시점엔 비활성 상태라 직접
     /// 활성화한 뒤 Begin(RunState)으로 진입시킨다.
@@ -59,7 +59,7 @@ namespace OutGame.Tests.PlayMode
         {
             InGameFlowController flow = null;
             yield return LoadRoomGraph(1, (f, r) => flow = f);
-            var mapPanel = GetField<RoomMapPanel>(flow, "mapPanel");
+            var mapPanel = GetField<RoomGraphPanel>(flow, "mapPanel");
             var armyFormationPopup = GetField<ArmyFormationPopup>(flow, "armyFormationPopup");
 
             Assert.IsFalse(armyFormationPopup.gameObject.activeSelf, "선행 조건: 진영 팝업은 처음엔 닫혀 있어야 함");
@@ -77,7 +77,7 @@ namespace OutGame.Tests.PlayMode
             InGameFlowController flow = null;
             RunState run = null;
             yield return LoadRoomGraph(1, (f, r) => { flow = f; run = r; });
-            var mapPanel = GetField<RoomMapPanel>(flow, "mapPanel");
+            var mapPanel = GetField<RoomGraphPanel>(flow, "mapPanel");
             var armyFormationPopup = GetField<ArmyFormationPopup>(flow, "armyFormationPopup");
 
             Button formationButton = mapPanel.transform.Find("FormationButton").GetComponent<Button>();
@@ -102,7 +102,7 @@ namespace OutGame.Tests.PlayMode
             InGameFlowController flow = null;
             RunState run = null;
             yield return LoadRoomGraph(1, (f, r) => { flow = f; run = r; });
-            var mapPanel = GetField<RoomMapPanel>(flow, "mapPanel");
+            var mapPanel = GetField<RoomGraphPanel>(flow, "mapPanel");
             var armyFormationPopup = GetField<ArmyFormationPopup>(flow, "armyFormationPopup");
 
             Button formationButton = mapPanel.transform.Find("FormationButton").GetComponent<Button>();
@@ -126,7 +126,7 @@ namespace OutGame.Tests.PlayMode
             InGameFlowController flow = null;
             RunState run = null;
             yield return LoadRoomGraph(1, (f, r) => { flow = f; run = r; });
-            var mapPanel = GetField<RoomMapPanel>(flow, "mapPanel");
+            var mapPanel = GetField<RoomGraphPanel>(flow, "mapPanel");
             var armyFormationPopup = GetField<ArmyFormationPopup>(flow, "armyFormationPopup");
             // run.gold를 직접 바꾸는 것만으로는(정상 흐름의 보상 적용과 달리) 방 그래프 재화 표시가
             // 저절로 갱신되지 않는다 — mapPanel.SetGold를 거쳐야 화면에 반영되므로, "이미 500으로
