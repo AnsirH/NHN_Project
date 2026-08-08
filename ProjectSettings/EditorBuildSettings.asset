@@ -15,12 +15,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Battle.unity
     guid: 7c1e4a9d05b3f8241ba6d3e08c52f9a7
   - enabled: 1
-    path: Assets/Scenes/StressTest.unity
-    guid: 8ea28d6267146c74489816ea2db054c7
-  - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
     path: Assets/OutGame/Scenes/Loading.unity
     guid: d2952bac003daab4ea529963d6cd8a49
   m_configObjects:
