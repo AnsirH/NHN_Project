@@ -2819,7 +2819,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6ed9c6d263f13214792fc220c901bf3c, type: 2}
   worldCamera: {fileID: 919660237}
   hitFxPrefab: {fileID: 0}
-  deathFxPrefab: {fileID: 358637981425055526, guid: 8eb503696b886e04faff8fc0f480d473, type: 3}
+  deathFxPrefab: {fileID: 0}
   hitFxScale: 0.32
   deathFxScale: 0.16
   catalog: {fileID: 11400000, guid: f2a8e15b9c6d2478ef0a4b31c57d96e2, type: 2}
