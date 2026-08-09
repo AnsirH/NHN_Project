@@ -10,7 +10,7 @@ namespace NHN.Simulation.Battle
     /// </summary>
     public sealed class StatusEffectSystem
     {
-        public const int TypeCount = 8;
+        public const int TypeCount = 9;
 
         /// <summary>[unit * TypeCount + type] 남은 지속시간(초). 0 이하 = 비활성.</summary>
         private readonly float[] _remainings;

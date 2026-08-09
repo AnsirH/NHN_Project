@@ -107,7 +107,9 @@ namespace BalanceLab
                 c.GetFloat("formationTightnessTolerance"),
                 c.GetFloat("formationEngageRangeMargin"),
                 c.GetInt("formationColumnWidth"),
-                c.GetFloat("formationSpacingMultiplier"));
+                c.GetFloat("formationSpacingMultiplier"),
+                c.GetFloat("meleeSuppressDuration"),
+                c.GetFloat("meleeSuppressMagnitude"));
         }
 
         /// <summary>

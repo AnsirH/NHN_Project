@@ -34,6 +34,7 @@ namespace NHN.Simulation.Battle
         HealOverTime = 5, // 긍정: 세기 = 초당 회복량 (힐 장판)
         AttackUp = 6,     // 긍정: 세기 = 공격력 배율 (>1, 전투 함성)
         DamageResist = 7, // 긍정: 세기 = 받는 피해 배율 (<1, 장군 방진)
+        AttackDown = 8,   // 부정: 세기 = 공격력 배율 (<1). 원거리 유닛이 근접 공격을 받으면 부여 (2026-08-10)
     }
 
     /// <summary>이동 패턴. 새 이동 방식은 케이스 추가로 확장한다.</summary>

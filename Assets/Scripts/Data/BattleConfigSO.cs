@@ -31,6 +31,10 @@ namespace NHN.Data
         [SerializeField] private float defenseK = 50f;
         [Tooltip("치명타 피해 배율 (기획 합의: 1.8배)")]
         [SerializeField] private float critMultiplier = 1.8f;
+        [Tooltip("원거리 유닛이 근접 공격을 받으면 부여되는 공격력 감소 지속시간(초)")]
+        [SerializeField] private float meleeSuppressDuration = 3f;
+        [Tooltip("원거리 유닛이 근접 공격을 받았을 때의 공격력 배율 (0.5 = 50% 감소)")]
+        [SerializeField] private float meleeSuppressMagnitude = 0.5f;
 
         [Header("장군 스킬 강화 (아웃게임 generalSkillUpgradeCount → 발동 빈도)")]
         [Tooltip("강화 1회당 충전 필요량 감소 비율 (0.15 = -15%)")]
@@ -78,7 +82,8 @@ namespace NHN.Data
                 skillUpgradeChargeReduction, minChargeRequiredRatio,
                 separationOverlapRatio, separationStrength,
                 formationTightnessTolerance, formationEngageRangeMargin,
-                formationColumnWidth, formationSpacingMultiplier);
+                formationColumnWidth, formationSpacingMultiplier,
+                meleeSuppressDuration, meleeSuppressMagnitude);
         }
     }
 }

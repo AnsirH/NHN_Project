@@ -868,6 +868,15 @@ namespace NHN.Simulation.Battle
 
             if (!role.IsRanged)
             {
+                // 근접 공격이 원거리 유닛을 맞히면 공격력 디버프 부여 — 근접에게 붙잡히면 원거리
+                // 화력이 줄어드는 것으로 표현한다(2026-08-10). 재적중 시 지속시간이 갱신되므로
+                // 계속 붙어 있는 한 안 끊긴다.
+                if (_isRangedUnit[target])
+                {
+                    _statusEffects.Apply(
+                        target, StatusEffectType.AttackDown,
+                        _config.MeleeSuppressDuration, _config.MeleeSuppressMagnitude);
+                }
                 _pendingDamage[target] += damage;
                 _lastDamageSourceSquad[target] = attackerSquad;
                 return;
@@ -914,7 +923,8 @@ namespace NHN.Simulation.Battle
             return 1f;
         }
 
-        /// <summary>공격력 배율: 장군 패시브(AttackPercent, 생존 중) × 상태 버프(AttackUp — 전투 함성).</summary>
+        /// <summary>공격력 배율: 장군 패시브(AttackPercent, 생존 중) × 상태 버프(AttackUp — 전투 함성)
+        /// × 상태 디버프(AttackDown — 근접 피격, 2026-08-10).</summary>
         private float OutgoingDamageMultiplier(int unitIndex)
         {
             float multiplier = 1f;
@@ -928,6 +938,11 @@ namespace NHN.Simulation.Battle
             if (attackUp > 0f)
             {
                 multiplier *= attackUp;
+            }
+            float attackDown = _statusEffects.GetMagnitude(unitIndex, StatusEffectType.AttackDown);
+            if (attackDown > 0f)
+            {
+                multiplier *= attackDown;
             }
             return multiplier;
         }

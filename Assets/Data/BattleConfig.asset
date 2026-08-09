@@ -23,15 +23,17 @@ MonoBehaviour:
   retargetInterval: 0.4
   projectileImpactRadius: 0.6
   maxBattleSeconds: 180
+  defenseK: 50
+  critMultiplier: 1.8
+  meleeSuppressDuration: 3
+  meleeSuppressMagnitude: 0.5
+  skillUpgradeChargeReduction: 0.15
+  minChargeRequiredRatio: 0.4
   separationOverlapRatio: 0.8
-  separationStrength: 0.45
+  separationStrength: 0.6
   formationTightnessTolerance: 0.5
   formationEngageRangeMargin: 1
   formationColumnWidth: 5
   formationSpacingMultiplier: 2.5
   deploymentDepth: 10
   deploymentHalfWidth: 14
-  defenseK: 50
-  critMultiplier: 1.8
-  skillUpgradeChargeReduction: 0.15
-  minChargeRequiredRatio: 0.4
