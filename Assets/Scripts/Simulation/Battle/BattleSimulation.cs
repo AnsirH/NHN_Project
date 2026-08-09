@@ -17,14 +17,6 @@ namespace NHN.Simulation.Battle
         private const byte TeamA = 0;
         private const byte TeamB = 1;
 
-        // ── 가중치 룰렛 휠 타겟 선택 튜닝값 (2026-08-09: 겹침 분리 완화의 전제 조건으로 도입) ──
-        /// <summary>가중치 후보를 모으는 반경 — 이 밖의 적은 후보에서 제외되고 기존 최근접 폴백을 탄다.</summary>
-        private const float TargetScanRadius = 12f;
-        /// <summary>이미 아군 1명이 물고 있는 타겟에 곱하는 가중치 (1보다 크면 짝짓기를 살짝 유도).</summary>
-        private const float PairBonusWeight = 1.4f;
-        /// <summary>아군 2명 이상 물고 있는 타겟의 가중치 감쇠 지수 — 클수록 3번째부터 급격히 덜 뽑힌다.</summary>
-        private const float OverflowPenaltyExponent = 3f;
-
         // ── 근접 공격 위치 (2026-08-09) ──
         /// <summary>공격 목적지를 AttackRange 경계보다 살짝 안쪽으로 잡는 여유 배율 — 정확히 경계에
         /// 도착하면 부동소수 오차로 "<=AttackRange" 판정이 영원히 거짓이 되는 문제를 막는다
@@ -123,12 +115,6 @@ namespace NHN.Simulation.Battle
         /// <summary>다음 공격 데미지 배율 (기본 1). 그림자 습격이 배율로 설정, 공격 시 소비.</summary>
         private readonly float[] _critPending;
         private readonly int[] _queryBuffer;
-        /// <summary>타겟(적) 유닛 인덱스로 색인 — 그 유닛을 현재 타겟으로 물고 있는 "근접" 아군 수
-        /// (원거리는 옆에 안 붙으니 미포함, 2026-08-09). SetTarget()이 대칭으로 증감시키며,
-        /// 가중치 룰렛 휠 선택의 "몰림" 페널티 판단에 참조한다 (2026-08-09: 캡 강제는 제거, 확률적 유도만 남음).</summary>
-        private readonly int[] _assignedAttackerCounts;
-        /// <summary>가중치 룰렛 휠 선택의 스크래치 가중치 버퍼 — _queryBuffer와 같은 크기·생명주기.</summary>
-        private readonly float[] _weightBuffer;
         /// <summary>공격자(자기 자신) 유닛 인덱스로 색인 — 근접 공격 시 타겟의 좌(-1)/우(+1)
         /// 어느 쪽에 설 지. 새 타겟이 배정될 때 한 번만 무작위로 정해지고 그 타겟을 유지하는
         /// 동안 고정된다 (2026-08-09: 점유/예약 없이 각자 독립적으로 좌우만 무작위 선택).</summary>
@@ -177,8 +163,9 @@ namespace NHN.Simulation.Battle
         private readonly int[] _squadMemberStart;
         /// <summary>분대 명단 총원(죽어도 안 줄어듦) — [start, start+count)가 그 분대의 전체 유닛 인덱스 범위.</summary>
         private readonly int[] _squadMemberCount;
-        /// <summary>대형 재정렬용 재사용 스크래치 버퍼 — CollectAliveSquadMembers 결과를 담는다 (틱당 할당 없음).</summary>
-        private readonly int[] _squadReflowBuffer;
+        /// <summary>분대 명단 재사용 스크래치 버퍼 — CollectAliveSquadMembers 결과를 담는다 (틱당 할당 없음).
+        /// 대형 재정렬과 타겟 인덱스 매칭이 공유(한 호출 안에서 순차 사용이라 안전).</summary>
+        private readonly int[] _squadRosterBuffer;
         /// <summary>마지막으로 ReflowSquadFormation을 실행했을 때의 생존자 수 — 이 값이 현재와 다르면 재정렬 트리거.</summary>
         private readonly int[] _squadLastReflowedAliveCount;
 
@@ -261,8 +248,6 @@ namespace NHN.Simulation.Battle
             _stealthRemaining = new float[totalUnits];
             _critPending = new float[totalUnits];
             _queryBuffer = new int[totalUnits];
-            _assignedAttackerCounts = new int[totalUnits];
-            _weightBuffer = new float[totalUnits];
             _attackSide = new float[totalUnits];
 
             _projLaunchPos = new Vector2[config.MaxProjectiles];
@@ -305,7 +290,7 @@ namespace NHN.Simulation.Battle
             _formationOffsets = new Vector2[totalUnits];
             _squadMemberStart = new int[_squadCount];
             _squadMemberCount = new int[_squadCount];
-            _squadReflowBuffer = new int[totalUnits];
+            _squadRosterBuffer = new int[totalUnits];
             _squadLastReflowedAliveCount = new int[_squadCount];
 
             _roles = BuildRoleTable(armyA, armyB);
@@ -1419,8 +1404,10 @@ namespace NHN.Simulation.Battle
         /// <summary>분대 squadIndex의 생존 유닛을 스폰 순서 그대로 buffer 앞부터 채워 넣고 개수를
         /// 반환한다. 그 분대의 유닛은 스폰 시 항상 연속 구간을 차지하므로(SpawnArmy) 죽은 유닛만
         /// 건너뛰면 빈틈없이 나열된 "지금 살아있는 명단"이 매번 즉석에서 나온다 — 별도 리스트
-        /// 자료구조나 스왑 제거 없이도 충분하다.</summary>
-        private int CollectAliveSquadMembers(int squadIndex, int[] buffer)
+        /// 자료구조나 스왑 제거 없이도 충분하다. excludeStealthed=true면 은신 중인 유닛도 건너뛴다
+        /// (적 타겟 후보 조회용 — 은신 중엔 피타겟 제외가 불변조건). 대형 재정렬처럼 아군 자신의
+        /// 명단을 볼 때는 은신 여부가 무관하므로 기본값 false.</summary>
+        private int CollectAliveSquadMembers(int squadIndex, int[] buffer, bool excludeStealthed = false)
         {
             int start = _squadMemberStart[squadIndex];
             int count = _squadMemberCount[squadIndex];
@@ -1428,7 +1415,7 @@ namespace NHN.Simulation.Battle
             for (int k = 0; k < count; k++)
             {
                 int unit = start + k;
-                if (_alives[unit])
+                if (_alives[unit] && (!excludeStealthed || _stealthRemaining[unit] <= 0f))
                 {
                     buffer[n++] = unit;
                 }
@@ -1466,7 +1453,7 @@ namespace NHN.Simulation.Battle
         /// </summary>
         private void ReflowSquadFormation(int squadIndex)
         {
-            int n = CollectAliveSquadMembers(squadIndex, _squadReflowBuffer);
+            int n = CollectAliveSquadMembers(squadIndex, _squadRosterBuffer);
             _squadLastReflowedAliveCount[squadIndex] = n;
             if (n == 0)
             {
@@ -1488,7 +1475,7 @@ namespace NHN.Simulation.Battle
             int followerIndex = 0;
             for (int k = 0; k < n; k++)
             {
-                int unit = _squadReflowBuffer[k];
+                int unit = _squadRosterBuffer[k];
                 if (hasLivingGeneral && unit == generalUnit)
                 {
                     _formationOffsets[unit] = Vector2.Zero; // 장군은 그 자리(앵커)에 그대로 — 이동 없음
@@ -1534,11 +1521,11 @@ namespace NHN.Simulation.Battle
         }
 
         /// <summary>
-        /// _targets 배정을 갱신하며 _assignedAttackerCounts를 대칭으로 증감한다. 근접 유닛이 새
-        /// 타겟을 받으면 좌/우 공격 위치(_attackSide)를 한 번 무작위로 정해 그 타겟을 유지하는
-        /// 동안 고정한다 (2026-08-09: 점유/예약 없이 각자 독립적으로 선택 — 여러 명이 같은 쪽을
-        /// 골라도 충돌이 없으니 무방하다). _targets[unitIndex]를 직접 대입하는 대신 반드시 이
-        /// 메서드를 거칠 것 (KillUnit의 반납도 동일 경로).
+        /// _targets 배정을 갱신한다. 근접 유닛이 새 타겟을 받으면 좌/우 공격 위치(_attackSide)를
+        /// 한 번 무작위로 정해 그 타겟을 유지하는 동안 고정한다 (2026-08-09: 점유/예약 없이
+        /// 각자 독립적으로 선택 — 여러 명이 같은 쪽을 골라도 충돌이 없으니 무방하다).
+        /// _targets[unitIndex]를 직접 대입하는 대신 반드시 이 메서드를 거칠 것 (KillUnit의 반납도
+        /// 동일 경로).
         /// </summary>
         private void SetTarget(int unitIndex, int newTarget)
         {
@@ -1549,15 +1536,9 @@ namespace NHN.Simulation.Battle
                 // 좌/우가 매번 바뀌어 목적지가 흔들리는 문제가 생긴다 (실측으로 확인).
                 return;
             }
-            bool isMelee = !_isRangedUnit[unitIndex];
-            if (oldTarget != NoTarget && isMelee)
-            {
-                _assignedAttackerCounts[oldTarget]--;
-            }
             _targets[unitIndex] = newTarget;
-            if (newTarget != NoTarget && isMelee)
+            if (newTarget != NoTarget && !_isRangedUnit[unitIndex])
             {
-                _assignedAttackerCounts[newTarget]++;
                 _attackSide[unitIndex] = _random.NextDouble() < 0.5 ? -1f : 1f;
             }
         }
@@ -1614,67 +1595,47 @@ namespace NHN.Simulation.Battle
                 }
             }
 
-            return SelectWeightedTarget(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, focusSquad), role.PositionFilter);
+            return SelectIndexPairedTarget(unitIndex, focusSquad, role.PositionFilter,
+                new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, focusSquad));
         }
 
         /// <summary>
-        /// 가중치 룰렛 휠 타겟 선택 — Nearest 필터일 때만 반경(TargetScanRadius) 내 후보 여러 명을 모아
-        /// [거리 역수 × 집중도 가중치]로 확률 선택한다. 여러 아군이 동일한 최근접 계산을 반복해
-        /// 한 타겟에 쏠리는 현상을 완화해서, 겹침 분리(separation) 완화를 안전하게 만드는 전제 조건.
-        /// Farthest 필터거나 반경 내 후보가 없으면 기존 FindByPositionFilter(결정론적)로 폴백한다.
-        /// 시드 고정 _random만 소비하므로 배틀 결정론(같은 시드=같은 결과)은 그대로 유지된다.
+        /// 인덱스 기반 타겟 매칭 (2026-08-09) — Nearest 필터일 때만 적용: 내 분대의 "지금 살아있는
+        /// 유닛 명단"에서 내가 몇 번째인지(내 순번, 사상자가 나면 매번 다시 계산되어 당겨짐) 구하고,
+        /// 상대 focus 분대의 "지금 살아있고 타겟 가능한(은신 제외) 명단"에서 내 순번 % 명단 길이
+        /// 번째를 고른다. 양쪽 생존자 수가 같으면 "생존자 기준 K번째 ↔ K번째"로 정확히 대칭
+        /// 매칭되고, 내 순번이 상대보다 많으면 모듈로로 여러 명이 같은 상대에게 겹쳐 화력이 자연히
+        /// 집중된다(사용자 요청 — 타겟당 캡을 강제하는 대신 화력 분산 자체를 없앰). 순수 정수
+        /// 연산이라 난수를 소비하지 않는다. Farthest 필터(현재 암살자)거나 상대 명단이 비어있으면
+        /// (전원 은신 등) 기존 FindByPositionFilter로 폴백한다.
         /// </summary>
-        private int SelectWeightedTarget(int unitIndex, in AliveEnemyFilter filter, PositionFilter positionFilter)
+        private int SelectIndexPairedTarget(int unitIndex, int focusSquad, PositionFilter positionFilter, in AliveEnemyFilter fallbackFilter)
         {
             if (positionFilter != PositionFilter.Nearest)
             {
-                return FindByPositionFilter(unitIndex, filter, positionFilter);
+                return FindByPositionFilter(unitIndex, fallbackFilter, positionFilter);
             }
 
-            int candidateCount = _grid.QueryCircle(_positions[unitIndex], TargetScanRadius, _queryBuffer);
-            int pickCount = 0;
-            float totalWeight = 0f;
-            for (int k = 0; k < candidateCount; k++)
+            int mySquad = _squadIndices[unitIndex];
+            int myAliveCount = CollectAliveSquadMembers(mySquad, _squadRosterBuffer);
+            int mySlot = 0;
+            for (int k = 0; k < myAliveCount; k++)
             {
-                int candidate = _queryBuffer[k];
-                if (!filter.Accept(candidate))
+                if (_squadRosterBuffer[k] == unitIndex)
                 {
-                    continue;
+                    mySlot = k;
+                    break;
                 }
-                float distance = Vector2.Distance(_positions[unitIndex], _positions[candidate]);
-                float weight = 1f / (distance + 0.5f);
-                int assigned = _assignedAttackerCounts[candidate];
-                if (assigned == 1)
-                {
-                    weight *= PairBonusWeight; // 짝 완성 유도
-                }
-                else if (assigned >= 2)
-                {
-                    weight /= MathF.Pow(assigned, OverflowPenaltyExponent); // 3번째부터 급격히 덜 뽑힘
-                }
-                _queryBuffer[pickCount] = candidate; // 통과분만 앞으로 압축 (k >= pickCount라 안전)
-                _weightBuffer[pickCount] = weight;
-                totalWeight += weight;
-                pickCount++;
             }
 
-            if (pickCount == 0)
+            int enemyAliveCount = CollectAliveSquadMembers(focusSquad, _squadRosterBuffer, excludeStealthed: true);
+            if (enemyAliveCount == 0)
             {
-                // 반경 밖에만 적이 있는 경우 — 기존 무제한 탐색으로 폴백해 "타겟 없음"을 만들지 않는다.
-                return FindByPositionFilter(unitIndex, filter, positionFilter);
+                // focusSquad 전원 은신 등 — 명단이 비어 매칭할 상대가 없다.
+                return FindByPositionFilter(unitIndex, fallbackFilter, positionFilter);
             }
 
-            double roll = _random.NextDouble() * totalWeight;
-            float cumulative = 0f;
-            for (int k = 0; k < pickCount; k++)
-            {
-                cumulative += _weightBuffer[k];
-                if (roll <= cumulative)
-                {
-                    return _queryBuffer[k];
-                }
-            }
-            return _queryBuffer[pickCount - 1]; // 부동소수 오차 안전망
+            return _squadRosterBuffer[mySlot % enemyAliveCount];
         }
 
         private int FindByPositionFilter(int unitIndex, in AliveEnemyFilter filter, PositionFilter positionFilter)
