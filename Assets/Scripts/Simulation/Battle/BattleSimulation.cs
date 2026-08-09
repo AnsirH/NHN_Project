@@ -170,8 +170,17 @@ namespace NHN.Simulation.Battle
         private readonly float[] _squadTightness;
         /// <summary>대형 중심 간 거리가 이 값 이하로 좁혀지면 Fighting 전환 (역할군 사거리 + 대형 반경 기반, 스폰 시 1회 계산).</summary>
         private readonly float[] _squadEngageRanges;
-        /// <summary>유닛별 대형 내 상대 위치(스폰 시 분대 중심 기준으로 1회 캡처, 이후 불변) — 대형 이동 목적지 계산에 사용.</summary>
+        /// <summary>유닛별 대형 내 상대 위치 — 대형 이동 목적지 계산에 사용. 스폰 시 1회 캡처하고,
+        /// 이후 그 분대의 생존자 수가 바뀌면 ReflowSquadFormation()이 다시 채운다.</summary>
         private readonly Vector2[] _formationOffsets;
+        /// <summary>분대 명단(장군 포함) 시작 인덱스 — 그 분대의 유닛은 스폰 시 항상 연속 구간을 차지한다.</summary>
+        private readonly int[] _squadMemberStart;
+        /// <summary>분대 명단 총원(죽어도 안 줄어듦) — [start, start+count)가 그 분대의 전체 유닛 인덱스 범위.</summary>
+        private readonly int[] _squadMemberCount;
+        /// <summary>대형 재정렬용 재사용 스크래치 버퍼 — CollectAliveSquadMembers 결과를 담는다 (틱당 할당 없음).</summary>
+        private readonly int[] _squadReflowBuffer;
+        /// <summary>마지막으로 ReflowSquadFormation을 실행했을 때의 생존자 수 — 이 값이 현재와 다르면 재정렬 트리거.</summary>
+        private readonly int[] _squadLastReflowedAliveCount;
 
         /// <summary>액티브 충전 게이지. 장군 사망 시 0으로 소멸 (기획 §6 사망 규칙).</summary>
         private readonly float[] _squadCharges;
@@ -294,6 +303,10 @@ namespace NHN.Simulation.Battle
             _squadTightness = new float[_squadCount];
             _squadEngageRanges = new float[_squadCount];
             _formationOffsets = new Vector2[totalUnits];
+            _squadMemberStart = new int[_squadCount];
+            _squadMemberCount = new int[_squadCount];
+            _squadReflowBuffer = new int[totalUnits];
+            _squadLastReflowedAliveCount = new int[_squadCount];
 
             _roles = BuildRoleTable(armyA, armyB);
 
@@ -338,6 +351,9 @@ namespace NHN.Simulation.Battle
             for (int s = 0; s < _squadCount; s++)
             {
                 _squadEngageRanges[s] = _squadRoles[s].AttackRange + squadFormationRadius[s] + _config.FormationEngageRangeMargin;
+                // 스폰 시점엔 전원 생존이라 위에서 캡처한 오프셋이 곧 "이미 재정렬됨" 상태 —
+                // ReflowSquadFormation()은 생존자 수가 이 값과 달라질 때만(=사상자 발생) 트리거된다.
+                _squadLastReflowedAliveCount[s] = _squadAliveCounts[s];
             }
 
             // 재탐색 시차 균등 배분 (Fighting 전환 후 첫 재탐색 주기에 사용).
@@ -1356,9 +1372,21 @@ namespace NHN.Simulation.Battle
                     int focus = _squadFocusEnemies[s];
                     if (focus == NoTarget || _squadAliveCounts[focus] == 0)
                     {
-                        _squadFighting[s] = false;
+                        _squadFighting[s] = false; // Formation으로 복귀 — 아래로 흘러가 재정렬 여부까지 같은 틱에 처리
                     }
-                    continue;
+                    else
+                    {
+                        continue; // 계속 Fighting — 대형 로직 불필요
+                    }
+                }
+
+                // Formation 상태(방금 복귀했을 수도 있음): 사상자로 생존자 수가 줄었으면 그 자리에서
+                // 재정렬한다 — 죽은 유닛의 원래 슬롯을 비워두지 않고 생존자를 스폰 순서대로 채운
+                // 작은 격자로 다시 짠다. _squadTightness[s]도 새 오프셋 기준으로 즉시 갱신되므로
+                // 위에서 계산한 낡은 값 대신 이 틱부터 바로 정확한 값을 쓴다.
+                if (_squadAliveCounts[s] != _squadLastReflowedAliveCount[s])
+                {
+                    ReflowSquadFormation(s);
                 }
 
                 int focusSquad = _squadFocusEnemies[s];
@@ -1385,6 +1413,79 @@ namespace NHN.Simulation.Battle
                     _squadFighting[s] = true;
                 }
             }
+        }
+
+        /// <summary>분대 squadIndex의 생존 유닛을 스폰 순서 그대로 buffer 앞부터 채워 넣고 개수를
+        /// 반환한다. 그 분대의 유닛은 스폰 시 항상 연속 구간을 차지하므로(SpawnArmy) 죽은 유닛만
+        /// 건너뛰면 빈틈없이 나열된 "지금 살아있는 명단"이 매번 즉석에서 나온다 — 별도 리스트
+        /// 자료구조나 스왑 제거 없이도 충분하다.</summary>
+        private int CollectAliveSquadMembers(int squadIndex, int[] buffer)
+        {
+            int start = _squadMemberStart[squadIndex];
+            int count = _squadMemberCount[squadIndex];
+            int n = 0;
+            for (int k = 0; k < count; k++)
+            {
+                int unit = start + k;
+                if (_alives[unit])
+                {
+                    buffer[n++] = unit;
+                }
+            }
+            return n;
+        }
+
+        /// <summary>
+        /// 분대 squadIndex의 대형을 지금 생존자 수에 맞게 다시 짠다. 죽은 유닛의 원래 슬롯을
+        /// 비워두지 않고, 생존자를 스폰 순서 그대로 작은 격자(SpawnArmy와 같은 공식)에 채운다.
+        /// 중심은 스폰 앵커가 아니라 지금 살아있는 유닛들의 실제 위치 중심(_squadCentroids)이라
+        /// "그 자리에서 다시 뭉치기"가 된다 — 앵커도 그 중심으로 스냅한다. 새 오프셋 기준
+        /// 타이트니스를 여기서 바로 재계산해 반환하므로, 호출 직후 이번 틱 판정에 즉시 반영된다.
+        /// </summary>
+        private void ReflowSquadFormation(int squadIndex)
+        {
+            int n = CollectAliveSquadMembers(squadIndex, _squadReflowBuffer);
+            _squadLastReflowedAliveCount[squadIndex] = n;
+            if (n == 0)
+            {
+                return; // 전멸 — 재정렬할 대상이 없다.
+            }
+
+            Vector2 anchor = _squadCentroids[squadIndex];
+            _squadFormationAnchors[squadIndex] = anchor;
+
+            RoleDefinition role = _squadRoles[squadIndex];
+            int rows = (int)MathF.Ceiling(MathF.Sqrt(n));
+            float spacing = role.UnitRadius * 2.5f;
+            float jitter = role.UnitRadius * 0.5f;
+
+            float formationRadius = 0f;
+            float tightness = 0f;
+            for (int k = 0; k < n; k++)
+            {
+                int unit = _squadReflowBuffer[k];
+                int row = k / rows;
+                int col = k % rows;
+                float offsetX = (row - rows * 0.5f) * spacing + ((float)_random.NextDouble() * 2f - 1f) * jitter;
+                float offsetY = (col - rows * 0.5f) * spacing + ((float)_random.NextDouble() * 2f - 1f) * jitter;
+                var offset = new Vector2(offsetX, offsetY);
+                _formationOffsets[unit] = offset;
+
+                float offsetLength = offset.Length();
+                if (offsetLength > formationRadius)
+                {
+                    formationRadius = offsetLength;
+                }
+
+                float slotDistance = Vector2.Distance(_positions[unit], anchor + offset);
+                if (slotDistance > tightness)
+                {
+                    tightness = slotDistance;
+                }
+            }
+
+            _squadEngageRanges[squadIndex] = role.AttackRange + formationRadius + _config.FormationEngageRangeMargin;
+            _squadTightness[squadIndex] = tightness;
         }
 
         /// <summary>승패 판정 보류 중, 생존 팀의 모든 분대가 Formation 상태 + 대형 타이트까지 끝났는가.</summary>
@@ -1630,6 +1731,9 @@ namespace NHN.Simulation.Battle
                 _squadCharges[squadIndex] = 0f;
                 _squadActivationCounts[squadIndex] = 0;
                 _squadLastActivationTimes[squadIndex] = -1f;
+                // 분대 유닛은 이 for문 안에서 항상 연속된 인덱스로 스폰된다(장군 포함) —
+                // 별도 리스트 없이 (시작, 개수)만으로 "분대 명단"을 얻는다 (2026-08-09).
+                int memberStart = _unitCount;
 
                 var anchor = new Vector2(
                     direction * (_config.FrontLineOffsetX + squad.Anchor.X),
@@ -1661,6 +1765,9 @@ namespace NHN.Simulation.Battle
                     int generalUnit = SpawnUnit(generalRole, generalRoleIndex, team, squadIndex, new Vector2(frontX, anchor.Y), isLeader: true);
                     _squadGeneralUnits[squadIndex] = generalUnit;
                 }
+
+                _squadMemberStart[squadIndex] = memberStart;
+                _squadMemberCount[squadIndex] = _unitCount - memberStart;
             }
         }
 
