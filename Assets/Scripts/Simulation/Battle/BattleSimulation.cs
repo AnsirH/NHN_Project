@@ -769,6 +769,11 @@ namespace NHN.Simulation.Battle
             }
 
             // 5) 겹침 분리 (이동 후 위치 기준 재구축, 생존 유닛만).
+            //    이번 틱에 실제로 이동한(행군 중이거나 타겟에 접근 중인) 유닛은 밀기 대상에서
+            //    제외한다 — 밀리면 대형 타이트니스·공격 사거리 판정이 다음 틱에 다시 어긋나 전투가
+            //    시간 제한까지 안 끝나는 회귀가 있었다(2026-08-09 실측). 이미 도착해서 가만히
+            //    있는(대형 슬롯에 정지, 또는 사거리 안이라 서서 공격만 하는) 유닛끼리만 서로 밀어
+            //    겹침을 서서히 푼다 — 이 경우엔 밀려도 "이동 중" 판정에 안 걸리므로 문제없다.
             //    쌍 중 한쪽만 은신이면 스킵 — 은신 유닛이 전열을 '통과'해 돌진하기 위한 규칙.
             //    은신 유닛끼리는 분리를 유지한다: 꺼두면 같은 타겟으로 돌진하는 은신 블롭이 한 점에
             //    완전히 겹쳐 스플래시 한 발을 전원이 공유하는 동시 몰살이 난다 (헤드리스 실측으로 확인).
@@ -778,6 +783,10 @@ namespace NHN.Simulation.Battle
                 if (!_alives[i])
                 {
                     continue;
+                }
+                if (Vector2.DistanceSquared(_positions[i], _prevPositions[i]) > 1e-8f)
+                {
+                    continue; // 이번 틱에 이동함 — 밀기 대상 아님
                 }
                 bool stealthedI = _stealthRemaining[i] > 0f;
                 RoleDefinition role = _roles[_roleIndices[i]];
@@ -789,6 +798,10 @@ namespace NHN.Simulation.Battle
                     if (j <= i || !_alives[j] || stealthedI != (_stealthRemaining[j] > 0f))
                     {
                         continue;
+                    }
+                    if (Vector2.DistanceSquared(_positions[j], _prevPositions[j]) > 1e-8f)
+                    {
+                        continue; // 상대도 이번 틱에 이동했으면 역시 밀기 대상 아님
                     }
 
                     // 부분 겹침 허용: 반경 합 × 비율 안까지 파고들어야 분리를 시작하고,

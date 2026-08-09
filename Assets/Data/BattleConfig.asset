@@ -24,7 +24,7 @@ MonoBehaviour:
   projectileImpactRadius: 0.6
   maxBattleSeconds: 180
   separationOverlapRatio: 0.8
-  separationStrength: 0
+  separationStrength: 0.45
   formationTightnessTolerance: 0.5
   formationEngageRangeMargin: 1
   formationColumnWidth: 5
