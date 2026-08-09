@@ -1146,13 +1146,14 @@ namespace NHN.Simulation.Battle
         {
             RoleDefinition role = _roles[_roleIndices[unitIndex]];
             byte enemyTeam = _teams[unitIndex] == TeamA ? TeamB : TeamA;
+            int focusSquad = _squadFocusEnemies[_squadIndices[unitIndex]];
 
             TargetPriority[] priorities = role.Priorities;
             int currentRank = PriorityRank(currentTarget, priorities);
             for (int p = 0; p < currentRank; p++)
             {
-                // 우선순위 기믹은 분대 집중을 무시한다 (SelectTarget과 동일한 규칙).
-                int candidate = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: true, priorities[p], NoTarget), role.PositionFilter);
+                // 우선순위 기믹도 분대 경계를 넘지 않는다 (2026-08-09: 분대는 항상 같이 다닌다 — 사용자 결정).
+                int candidate = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: true, priorities[p], focusSquad), role.PositionFilter);
                 if (candidate != NoTarget)
                 {
                     return candidate;
@@ -1365,39 +1366,35 @@ namespace NHN.Simulation.Battle
             byte enemyTeam = _teams[unitIndex] == TeamA ? TeamB : TeamA;
             int focusSquad = _squadFocusEnemies[_squadIndices[unitIndex]];
 
+            if (focusSquad == NoTarget)
+            {
+                // 살아있는 적 분대가 없다 — 곧 전투 종료. 분대 경계를 넘어서까지 찾지 않는다.
+                return NoTarget;
+            }
+
+            // 분대는 항상 같이 다닌다 (2026-08-09 사용자 결정) — 우선순위 기믹도, 일반 탐색도,
+            // 캡이 다 찼을 때의 대기용 폴백도 전부 focusSquad 경계를 절대 넘지 않는다.
+            // 그 분대가 전멸하면 UpdateSquadFocus()가 다음 틱에 자동으로 새 분대를 배정한다.
             TargetPriority[] priorities = role.Priorities;
             for (int p = 0; p < priorities.Length; p++)
             {
-                int candidate = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: true, priorities[p], NoTarget), role.PositionFilter);
+                int candidate = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: true, priorities[p], focusSquad), role.PositionFilter);
                 if (candidate != NoTarget)
                 {
                     return candidate;
                 }
             }
 
-            int fallback = SelectWeightedTarget(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, focusSquad), role.PositionFilter);
-            if (fallback != NoTarget)
+            int found = SelectWeightedTarget(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, focusSquad), role.PositionFilter);
+            if (found != NoTarget)
             {
-                return fallback;
-            }
-            if (focusSquad != NoTarget)
-            {
-                fallback = SelectWeightedTarget(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, NoTarget), role.PositionFilter);
-                if (fallback != NoTarget)
-                {
-                    return fallback;
-                }
+                return found;
             }
 
-            // 근접 유닛 전용 최종 폴백: 사거리 닿는 범위가 전부 좌/우 캡(2명)으로 찼어도,
-            // 대기 위치로 걸어갈 참조 타겟은 있어야 한다 — 캡을 무시하고 다시 탐색.
-            if (!_isRangedUnit[unitIndex])
-            {
-                return SelectWeightedTarget(
-                    unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, NoTarget, bypassCap: true),
-                    role.PositionFilter);
-            }
-            return NoTarget;
+            // 캡(근접 2명)이 다 찼을 때의 대기용 폴백 — 캡만 무시하고, 분대 경계는 여전히 지킨다.
+            return SelectWeightedTarget(
+                unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, focusSquad, bypassCap: true),
+                role.PositionFilter);
         }
 
         /// <summary>

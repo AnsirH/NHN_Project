@@ -230,9 +230,13 @@ namespace NHN.Simulation.Tests
             Assert.IsFalse(stunnedPosition == sim.GetPosition(TargetIndex), "기절 해제 후에는 이동이 재개되어야 한다");
         }
 
-        /// <summary>사냥꾼 갈아타기: 교전/추격 중이어도 중독 대상이 나타나면 우선순위 규칙(ReevaluateTarget)으로 타겟 교체.</summary>
+        /// <summary>
+        /// 분대 경계 고정 (2026-08-09 사용자 결정: 분대는 항상 같이 다닌다): 우선순위 기믹(중독 등)도
+        /// 분대 경계를 넘지 않는다. 포커스 분대 밖의 적이 중독돼도 사냥꾼은 갈아타지 않고
+        /// 자기 분대가 노리는 적 분대 안에 머문다.
+        /// </summary>
         [Test]
-        public void Hunter_SwitchesTargetToPoisoned()
+        public void Hunter_DoesNotSwitchTargetAcrossSquadBoundary_EvenWhenPoisoned()
         {
             RoleData hunter = LoadRole(HunterPath);
             RoleData warrior = LoadRole(WarriorPath);
@@ -248,11 +252,11 @@ namespace NHN.Simulation.Tests
                 new SquadDefinition(warrior.ToDefinition(), 1, new System.Numerics.Vector2(0f, 5f)),
             });
             var sim = new BattleSimulation(LoadConfig().ToConfig(), armyA, armyB, seed: 11, new[] { poisonCloud });
-            const int HunterIndex = 0; // 1=워리어(y-5), 2=워리어(y+5)
+            const int HunterIndex = 0; // 1=워리어(y-5), 2=워리어(y+5) — 서로 다른 분대
 
             int initialTarget = sim.GetTargetIndex(HunterIndex);
             Assert.IsTrue(initialTarget == 1 || initialTarget == 2, "사냥꾼의 초기 타겟은 두 전사 중 하나여야 한다");
-            int otherWarrior = initialTarget == 1 ? 2 : 1;
+            int otherWarrior = initialTarget == 1 ? 2 : 1; // 사냥꾼의 포커스 분대가 아닌 쪽
 
             Assert.IsTrue(sim.TryCastSkill(0, sim.GetPosition(otherWarrior)));
 
@@ -263,8 +267,8 @@ namespace NHN.Simulation.Tests
                 sim.Tick();
             }
             Assert.IsTrue(sim.HasStatus(otherWarrior, StatusEffectType.Poison));
-            Assert.AreEqual(otherWarrior, sim.GetTargetIndex(HunterIndex),
-                "사냥꾼은 중독 대상이 나타나면 그쪽으로 갈아타야 한다 (Poisoned 우선순위)");
+            Assert.AreEqual(initialTarget, sim.GetTargetIndex(HunterIndex),
+                "사냥꾼은 분대 경계 밖의 중독 대상으로는 갈아타지 않아야 한다 (분대는 항상 같이 다닌다)");
         }
 
         // v4: Hunter_DealsBonusDamageToStatusTarget 삭제 — 병사 트리거 기믹(상태이상 추가 데미지) 폐지.
