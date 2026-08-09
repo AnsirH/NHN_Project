@@ -745,19 +745,33 @@ namespace NHN.Presentation.Battle
                         unitAnimator.SetFloat(SpeedParamId, speed);
                     }
 
-                    // 회전: Formation(대형 이동/재정렬) 중엔 항상 상대 진영 쪽을 본다(2026-08-09
-                    // 사용자 요청) — 장군처럼 거의 안 움직이는 유닛도 이동 방향으로는 방향을 못
-                    // 잡던 문제가 같이 해결된다. Fighting(개별 전투) 중엔 기존처럼 살아있는 타겟이
-                    // 있으면 이동량과 무관하게 항상 타겟 방향을 본다 — "이동 방향 = 타겟 방향"이
-                    // 항상 성립하던 예전 직선 접근 방식과 달리, 지금은 좌/우 오프셋 지점으로 걸어가기
-                    // 때문에 이동 방향만으로는 타겟을 안 보고 공격하는 문제가 생긴다(2026-08-09).
+                    // 회전: Formation(대형 이동/재정렬) 중엔 "정지해 있을 때만" 상대 진영 쪽을
+                    // 본다(2026-08-09 사용자 요청 + 2026-08-10 보정) — 장군처럼 거의 안 움직이는
+                    // 유닛의 방향이 안 잡히던 문제는 해결하되, 재정렬 등으로 뒤/옆 랭크를 향해
+                    // 실제로 이동해야 하는 유닛까지 무조건 상대 쪽을 보게 하면 이동 방향과 바라보는
+                    // 방향이 반대가 돼 뒤로 걷는 것처럼 보이는 문제가 있었다. 이동 중엔 이동 방향을
+                    // 그대로 본다(기존 폴백과 동일 로직). Fighting(개별 전투) 중엔 기존처럼 살아있는
+                    // 타겟이 있으면 이동량과 무관하게 항상 타겟 방향을 본다 — "이동 방향 = 타겟
+                    // 방향"이 항상 성립하던 예전 직선 접근 방식과 달리, 지금은 좌/우 오프셋 지점으로
+                    // 걸어가기 때문에 이동 방향만으로는 타겟을 안 보고 공격하는 문제가 생긴다(2026-08-09).
                     bool isFighting = _sim.IsSquadFighting(_sim.GetSquadIndex(i));
                     int targetIndex = _sim.GetTargetIndex(i);
-                    if (!isFighting)
+                    bool movingNow = speed > TurnSpeedThreshold && delta.sqrMagnitude > 1e-8f;
+                    if (!isFighting && !movingNow)
                     {
                         Quaternion enemyFacing = _sim.GetTeam(i) == 1 ? TeamBFacing : TeamAFacing;
                         _unitTransforms[i].localRotation = Quaternion.RotateTowards(
                             _unitTransforms[i].localRotation, enemyFacing, UnitTurnDegreesPerSecond * deltaTime);
+                    }
+                    else if (!isFighting)
+                    {
+                        // 대형 상태에서 실제로 이동 중 — 이동 방향을 본다(moonwalk 방지).
+                        Vector3 moveDelta = delta;
+                        moveDelta.y = 0f;
+                        _unitTransforms[i].localRotation = Quaternion.RotateTowards(
+                            _unitTransforms[i].localRotation,
+                            Quaternion.LookRotation(moveDelta),
+                            UnitTurnDegreesPerSecond * deltaTime);
                     }
                     else if (targetIndex >= 0 && _sim.IsAlive(targetIndex))
                     {
