@@ -96,6 +96,7 @@ namespace NHN.Simulation.Tests
         /// 2026-08-02 계약: EnemyArmy에도 최종 스탯·배치 좌표가 실려 온다 — 아군과 동일하게
         /// 재계산·자체 진형 없이 그대로 복사되는지 확인한다 (배치 화면 = 실제 전투 보장).
         /// roleId/generalId만 병과에서 인게임이 매핑한다 (에셋 선택 — 인게임 소유).
+        /// slotX만 예외로 (1-x) 반전된다(2026-08-10) — AddEnemySquads 주석 참고.
         /// </summary>
         [Test]
         public void Enemies_MapToEnemySquads_CopyingStatsAndSlots()
@@ -130,8 +131,8 @@ namespace NHN.Simulation.Tests
             Assert.AreEqual("NormalGeneral", output[1].generalId);
             Assert.AreEqual(10, output[0].soldierCount);
 
-            // 배치 좌표 그대로 복사 — 배치 화면(EnemyFormationAssigner)과 실제 스폰이 일치해야 한다
-            Assert.AreEqual(1f, output[0].slotX, 1e-3f);
+            // slotY는 그대로, slotX는 (1-x) 반전되어야 "낮은 열=전방"으로 스폰된다 (§AddEnemySquads)
+            Assert.AreEqual(0f, output[0].slotX, 1e-3f);
             Assert.AreEqual(0.4f, output[0].slotY, 1e-3f);
             Assert.AreEqual(0.5f, output[1].slotX, 1e-3f);
             Assert.AreEqual(0.75f, output[1].slotY, 1e-3f);
