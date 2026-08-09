@@ -9,7 +9,9 @@ AnimatorOverrideController:
   m_Name: UnitAnimatorWarrior
   m_Controller: {fileID: 9100000, guid: 7a4bc1b278697bb4aa7fdc8f45438dcc, type: 2}
   m_Clips:
-  - m_OriginalClip: {fileID: -203655887218126122, guid: cc064a5cfb615e4428062fd085ca8255, type: 3}
-    m_OverrideClip: {fileID: -203655887218126122, guid: 29f6bf11c9ab36444bcc43cd6d846bf6, type: 3}
-  - m_OriginalClip: {fileID: -203655887218126122, guid: 644c450c2e579aa40b5afe7658e2d7da, type: 3}
-    m_OverrideClip: {fileID: -203655887218126122, guid: 29f6bf11c9ab36444bcc43cd6d846bf6, type: 3}
+  - m_OriginalClip: {fileID: -203655887218126122, guid: 8a1552bdd4951b94993dddf9546468cd, type: 3}
+    m_OverrideClip: {fileID: -203655887218126122, guid: d429ccf0363552a48ad17658b81feec2, type: 3}
+  - m_OriginalClip: {fileID: -203655887218126122, guid: d89efeac6b9832f45ac114b1023a0f70, type: 3}
+    m_OverrideClip: {fileID: -203655887218126122, guid: b9df88d1ae454654881cf1ec44740bbb, type: 3}
+  - m_OriginalClip: {fileID: -203655887218126122, guid: 7b3ba95a826c0c1488797d2386e45ce2, type: 3}
+    m_OverrideClip: {fileID: -203655887218126122, guid: 31981a9f5cb985c4dae401c4bf1cc019, type: 3}
