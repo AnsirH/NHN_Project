@@ -17,6 +17,14 @@ namespace NHN.Simulation.Battle
         private const byte TeamA = 0;
         private const byte TeamB = 1;
 
+        // ── 가중치 룰렛 휠 타겟 선택 튜닝값 (2026-08-09: 겹침 분리 완화의 전제 조건으로 도입) ──
+        /// <summary>가중치 후보를 모으는 반경 — 이 밖의 적은 후보에서 제외되고 기존 최근접 폴백을 탄다.</summary>
+        private const float TargetScanRadius = 12f;
+        /// <summary>이미 아군 1명이 물고 있는 타겟에 곱하는 가중치 (1보다 크면 짝짓기를 살짝 유도).</summary>
+        private const float PairBonusWeight = 1.4f;
+        /// <summary>아군 2명 이상 물고 있는 타겟의 가중치 감쇠 지수 — 클수록 3번째부터 급격히 덜 뽑힌다.</summary>
+        private const float OverflowPenaltyExponent = 3f;
+
         /// <summary>
         /// 생존·비은신 적군만 수락. priority가 지정되면 해당 우선순위(TargetPriority)로 후보를 좁힌다.
         /// 새 우선순위는 Accept의 switch에 케이스 추가로 확장한다 (SatisfiesPriority와 짝).
@@ -109,6 +117,11 @@ namespace NHN.Simulation.Battle
         /// <summary>다음 공격 데미지 배율 (기본 1). 그림자 습격이 배율로 설정, 공격 시 소비.</summary>
         private readonly float[] _critPending;
         private readonly int[] _queryBuffer;
+        /// <summary>타겟(적) 유닛 인덱스로 색인 — 그 유닛을 현재 타겟으로 물고 있는 아군 수.
+        /// SetTarget()이 대칭으로 증감시키며, 가중치 룰렛 휠 선택이 "몰림" 페널티에 참조한다.</summary>
+        private readonly int[] _assignedAttackerCounts;
+        /// <summary>가중치 룰렛 휠 선택의 스크래치 가중치 버퍼 — _queryBuffer와 같은 크기·생명주기.</summary>
+        private readonly float[] _weightBuffer;
 
         // ── 뷰 전용 전투 이벤트 (공격/치명타/피격 연출용) ──
         // 시뮬 상태에는 아무 영향이 없다: 결과·RNG 소비·틱 순서 불변 (결정론 유지, BalanceLab 무관).
@@ -209,6 +222,8 @@ namespace NHN.Simulation.Battle
             _stealthRemaining = new float[totalUnits];
             _critPending = new float[totalUnits];
             _queryBuffer = new int[totalUnits];
+            _assignedAttackerCounts = new int[totalUnits];
+            _weightBuffer = new float[totalUnits];
 
             _projLaunchPos = new Vector2[config.MaxProjectiles];
             _projImpactPos = new Vector2[config.MaxProjectiles];
@@ -266,7 +281,7 @@ namespace NHN.Simulation.Battle
             UpdateSquadFocus();
             for (int i = 0; i < _unitCount; i++)
             {
-                _targets[i] = SelectTarget(i);
+                SetTarget(i, SelectTarget(i));
                 _nextRetargetTimes[i] = _config.RetargetInterval * (i + 1) / _unitCount;
             }
         }
@@ -536,12 +551,12 @@ namespace NHN.Simulation.Battle
                 bool targetInvalid = target == NoTarget || !_alives[target] || _stealthRemaining[target] > 0f;
                 if (targetInvalid)
                 {
-                    _targets[i] = SelectTarget(i);
+                    SetTarget(i, SelectTarget(i));
                     _nextRetargetTimes[i] = _time + _config.RetargetInterval;
                 }
                 else if (_time >= _nextRetargetTimes[i])
                 {
-                    _targets[i] = ReevaluateTarget(i, target);
+                    SetTarget(i, ReevaluateTarget(i, target));
                     _nextRetargetTimes[i] = _time + _config.RetargetInterval;
                 }
             }
@@ -816,6 +831,10 @@ namespace NHN.Simulation.Battle
         {
             _alives[unitIndex] = false;
             _teamAliveCounts[_teams[unitIndex]]--;
+
+            // 죽은 유닛은 다음 틱부터 순회에서 스킵되므로 SetTarget을 다시 탈 일이 없다 —
+            // 물고 있던 타겟의 배정 카운트를 여기서 직접 반납하지 않으면 영구 누수로 남는다.
+            SetTarget(unitIndex, NoTarget);
 
             int squad = _squadIndices[unitIndex];
             AddCharge(squad, ChargeCondition.SquadDeaths, 1f);
@@ -1194,6 +1213,25 @@ namespace NHN.Simulation.Battle
         }
 
         /// <summary>
+        /// _targets 배정을 갱신하며 _assignedAttackerCounts를 대칭으로 증감한다 — 이 카운트를
+        /// SelectWeightedTarget이 "몰림" 페널티 판단에 참조하므로 항상 정확해야 한다.
+        /// _targets[unitIndex]를 직접 대입하는 대신 반드시 이 메서드를 거칠 것 (KillUnit의 반납도 동일 경로).
+        /// </summary>
+        private void SetTarget(int unitIndex, int newTarget)
+        {
+            int oldTarget = _targets[unitIndex];
+            if (oldTarget != NoTarget)
+            {
+                _assignedAttackerCounts[oldTarget]--;
+            }
+            _targets[unitIndex] = newTarget;
+            if (newTarget != NoTarget)
+            {
+                _assignedAttackerCounts[newTarget]++;
+            }
+        }
+
+        /// <summary>
         /// 타겟팅: ① 우선순위 목록(중독·표식 기믹)은 적군 전체에서 찾는다 — 의도된 분대 이탈이라
         /// 집중 제한을 받지 않는다. ② 기본 위치 필터는 분대 집중 대상 안에서만 골라
         /// 분대가 반으로 갈라지지 않게 하고, 못 찾으면(전원 은신 등) 제한 없이 폴백.
@@ -1214,12 +1252,72 @@ namespace NHN.Simulation.Battle
                 }
             }
 
-            int fallback = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, focusSquad), role.PositionFilter);
+            int fallback = SelectWeightedTarget(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, focusSquad), role.PositionFilter);
             if (fallback != NoTarget || focusSquad == NoTarget)
             {
                 return fallback;
             }
-            return FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, NoTarget), role.PositionFilter);
+            return SelectWeightedTarget(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, NoTarget), role.PositionFilter);
+        }
+
+        /// <summary>
+        /// 가중치 룰렛 휠 타겟 선택 — Nearest 필터일 때만 반경(TargetScanRadius) 내 후보 여러 명을 모아
+        /// [거리 역수 × 집중도 가중치]로 확률 선택한다. 여러 아군이 동일한 최근접 계산을 반복해
+        /// 한 타겟에 쏠리는 현상을 완화해서, 겹침 분리(separation) 완화를 안전하게 만드는 전제 조건.
+        /// Farthest 필터거나 반경 내 후보가 없으면 기존 FindByPositionFilter(결정론적)로 폴백한다.
+        /// 시드 고정 _random만 소비하므로 배틀 결정론(같은 시드=같은 결과)은 그대로 유지된다.
+        /// </summary>
+        private int SelectWeightedTarget(int unitIndex, in AliveEnemyFilter filter, PositionFilter positionFilter)
+        {
+            if (positionFilter != PositionFilter.Nearest)
+            {
+                return FindByPositionFilter(unitIndex, filter, positionFilter);
+            }
+
+            int candidateCount = _grid.QueryCircle(_positions[unitIndex], TargetScanRadius, _queryBuffer);
+            int pickCount = 0;
+            float totalWeight = 0f;
+            for (int k = 0; k < candidateCount; k++)
+            {
+                int candidate = _queryBuffer[k];
+                if (!filter.Accept(candidate))
+                {
+                    continue;
+                }
+                float distance = Vector2.Distance(_positions[unitIndex], _positions[candidate]);
+                float weight = 1f / (distance + 0.5f);
+                int assigned = _assignedAttackerCounts[candidate];
+                if (assigned == 1)
+                {
+                    weight *= PairBonusWeight; // 짝 완성 유도
+                }
+                else if (assigned >= 2)
+                {
+                    weight /= MathF.Pow(assigned, OverflowPenaltyExponent); // 3번째부터 급격히 덜 뽑힘
+                }
+                _queryBuffer[pickCount] = candidate; // 통과분만 앞으로 압축 (k >= pickCount라 안전)
+                _weightBuffer[pickCount] = weight;
+                totalWeight += weight;
+                pickCount++;
+            }
+
+            if (pickCount == 0)
+            {
+                // 반경 밖에만 적이 있는 경우 — 기존 무제한 탐색으로 폴백해 "타겟 없음"을 만들지 않는다.
+                return FindByPositionFilter(unitIndex, filter, positionFilter);
+            }
+
+            double roll = _random.NextDouble() * totalWeight;
+            float cumulative = 0f;
+            for (int k = 0; k < pickCount; k++)
+            {
+                cumulative += _weightBuffer[k];
+                if (roll <= cumulative)
+                {
+                    return _queryBuffer[k];
+                }
+            }
+            return _queryBuffer[pickCount - 1]; // 부동소수 오차 안전망
         }
 
         private int FindByPositionFilter(int unitIndex, in AliveEnemyFilter filter, PositionFilter positionFilter)
