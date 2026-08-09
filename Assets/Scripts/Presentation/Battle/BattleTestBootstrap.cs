@@ -738,12 +738,21 @@ namespace NHN.Presentation.Battle
                         unitAnimator.SetFloat(SpeedParamId, speed);
                     }
 
-                    // 회전: 살아있는 타겟이 있으면 이동량과 무관하게 항상 타겟 방향을 본다 —
-                    // "이동 방향 = 타겟 방향"이 항상 성립하던 예전 직선 접근 방식과 달리, 지금은
-                    // 좌/우 오프셋 지점으로 걸어가기 때문에 이동 방향만으로는 타겟을 안 보고 공격하는
-                    // 문제가 생긴다(2026-08-09). 타겟이 없을 때만 기존 이동 방향 기반으로 폴백.
+                    // 회전: Formation(대형 이동/재정렬) 중엔 항상 상대 진영 쪽을 본다(2026-08-09
+                    // 사용자 요청) — 장군처럼 거의 안 움직이는 유닛도 이동 방향으로는 방향을 못
+                    // 잡던 문제가 같이 해결된다. Fighting(개별 전투) 중엔 기존처럼 살아있는 타겟이
+                    // 있으면 이동량과 무관하게 항상 타겟 방향을 본다 — "이동 방향 = 타겟 방향"이
+                    // 항상 성립하던 예전 직선 접근 방식과 달리, 지금은 좌/우 오프셋 지점으로 걸어가기
+                    // 때문에 이동 방향만으로는 타겟을 안 보고 공격하는 문제가 생긴다(2026-08-09).
+                    bool isFighting = _sim.IsSquadFighting(_sim.GetSquadIndex(i));
                     int targetIndex = _sim.GetTargetIndex(i);
-                    if (targetIndex >= 0 && _sim.IsAlive(targetIndex))
+                    if (!isFighting)
+                    {
+                        Quaternion enemyFacing = _sim.GetTeam(i) == 1 ? TeamBFacing : TeamAFacing;
+                        _unitTransforms[i].localRotation = Quaternion.RotateTowards(
+                            _unitTransforms[i].localRotation, enemyFacing, UnitTurnDegreesPerSecond * deltaTime);
+                    }
+                    else if (targetIndex >= 0 && _sim.IsAlive(targetIndex))
                     {
                         Vector3 targetPosition = SimViewMapper.ToWorld(_sim.GetPosition(targetIndex));
                         Vector3 toTarget = targetPosition - position;
@@ -758,8 +767,8 @@ namespace NHN.Presentation.Battle
                     }
                     else
                     {
-                        // 이동 방향으로 부드럽게 회전 — 밀림·분리 같은 미세 이동(문턱 미만)에는 돌지
-                        // 않아 방향이 파닥거리지 않는다. 멈추면 마지막 방향을 유지한다.
+                        // Fighting인데 타겟이 아직 없는 과도기(재탐색 직전 등) — 이동 방향으로 부드럽게
+                        // 회전. 밀림·분리 같은 미세 이동(문턱 미만)에는 돌지 않아 방향이 파닥거리지 않는다.
                         delta.y = 0f;
                         if (speed > TurnSpeedThreshold && delta.sqrMagnitude > 1e-8f)
                         {

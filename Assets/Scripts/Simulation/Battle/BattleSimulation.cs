@@ -411,6 +411,10 @@ namespace NHN.Simulation.Battle
 
         public int GetSquadIndex(int unitIndex) => _squadIndices[unitIndex];
 
+        /// <summary>true면 개별 전투 중(Fighting), false면 대형 이동/재정렬 중(Formation) — 뷰의
+        /// 회전 연출(대형일 땐 상대 진영 쪽을 본다)이 참조한다.</summary>
+        public bool IsSquadFighting(int squadIndex) => _squadFighting[squadIndex];
+
         public bool IsLeader(int unitIndex) => _isLeaderUnit[unitIndex];
 
         /// <summary>분대 장군의 유닛 인덱스 (장군 없는 분대는 -1).</summary>
