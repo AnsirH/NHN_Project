@@ -142,6 +142,9 @@ namespace NHN.Simulation.Battle
         private readonly int[] _squadFocusEnemies;
         private readonly Vector2[] _squadCentroids;
         private readonly int[] _squadAliveCounts;
+        /// <summary>_squadAliveCounts 중 은신 아닌(=실제로 타게팅 가능한) 유닛 수 — focus 분대
+        /// 후보 판정용(2026-08-10). 전원 은신 중인 분대는 아무도 공격 못 하므로 후보에서 제외.</summary>
+        private readonly int[] _squadTargetableAliveCounts;
 
         // 분대 대형/교전 상태 (2026-08-09): 분대는 항상 두 상태 중 하나 — Formation(대형을 지키며
         // focus 분대 쪽으로 이동, 개별 타게팅 없음) / Fighting(개별 유닛이 알아서 싸움). 분대 하나는
@@ -282,6 +285,7 @@ namespace NHN.Simulation.Battle
             _squadFocusEnemies = new int[_squadCount];
             _squadCentroids = new Vector2[_squadCount];
             _squadAliveCounts = new int[_squadCount];
+            _squadTargetableAliveCounts = new int[_squadCount];
             _squadRoles = new RoleDefinition[_squadCount];
             _squadFighting = new bool[_squadCount];
             _squadFormationAnchors = new Vector2[_squadCount];
@@ -1276,7 +1280,10 @@ namespace NHN.Simulation.Battle
         /// <summary>
         /// 분대의 집중 대상 적 분대 갱신 — 살아있는 유닛의 중심점끼리 가장 가까운 적 분대를 고른다
         /// (동률은 낮은 인덱스, 결정론 유지). 유닛 타게팅은 이 분대 안에서만 후보를 찾아
-        /// 분대가 반으로 갈라져 흩어지지 않는다 (2026-08-04 사용자 결정).
+        /// 분대가 반으로 갈라져 흩어지지 않는다 (2026-08-04 사용자 결정). 전원이 은신 중인 분대는
+        /// focus 후보에서 제외한다 — 개별 타게팅(AliveEnemyFilter)이 은신 유닛을 원래 후보에서
+        /// 빼는 것과 마찬가지로, 아무도 공격할 수 없는 분대를 향해 행군만 하다 마는 걸 막는다
+        /// (2026-08-10). 일부만 은신 중인 분대는 나머지 비은신 유닛이 유효 타겟이라 그대로 후보.
         /// </summary>
         private void UpdateSquadFocus()
         {
@@ -1284,6 +1291,7 @@ namespace NHN.Simulation.Battle
             {
                 _squadCentroids[s] = Vector2.Zero;
                 _squadAliveCounts[s] = 0;
+                _squadTargetableAliveCounts[s] = 0;
             }
             for (int i = 0; i < _unitCount; i++)
             {
@@ -1294,6 +1302,10 @@ namespace NHN.Simulation.Battle
                 int s = _squadIndices[i];
                 _squadCentroids[s] += _positions[i];
                 _squadAliveCounts[s]++;
+                if (_stealthRemaining[i] <= 0f)
+                {
+                    _squadTargetableAliveCounts[s]++;
+                }
             }
             for (int s = 0; s < _squadCount; s++)
             {
@@ -1320,7 +1332,7 @@ namespace NHN.Simulation.Battle
                 float best = float.MaxValue;
                 for (int e = 0; e < _squadCount; e++)
                 {
-                    if (_squadTeams[e] == _squadTeams[s] || _squadAliveCounts[e] == 0)
+                    if (_squadTeams[e] == _squadTeams[s] || _squadTargetableAliveCounts[e] == 0)
                     {
                         continue;
                     }
