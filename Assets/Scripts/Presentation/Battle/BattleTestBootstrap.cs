@@ -946,7 +946,6 @@ namespace NHN.Presentation.Battle
                 // 병과 구분은 모델이 담당 — 색은 피아 식별만: 아군 원색, 적군 진한 회색.
                 // (롤 색 틴트는 캡슐 시절의 병과 구분 수단이라 모델 도입 후 제거, 2026-08-02)
                 Color color = isTeamB ? EnemyTint : Color.white;
-                float scale = squad.Role.UnitRadius / 0.5f; // 뷰 프리팹 표준 크기(반경 0.5 = 키 1) 기준
                 GameObjectPool pool = GetUnitPool(ViewPrefabOf(squad.Role));
                 Quaternion facing = isTeamB ? TeamBFacing : TeamAFacing;
                 float attackInterval = squad.Role.AttackInterval;
@@ -954,23 +953,21 @@ namespace NHN.Presentation.Battle
 
                 for (int k = 0; k < squad.Count; k++)
                 {
-                    SpawnUnitView(unitIndex++, color, scale, pool, facing, attackInterval, attackSounds);
+                    SpawnUnitView(unitIndex++, color, pool, facing, attackInterval, attackSounds);
                 }
 
                 if (squad.General != null)
                 {
-                    // 장군 뷰: 크기 배율 + 금색 혼합 — 병사와 즉시 구분 (기획 §4). 모델은 병과와 공유.
+                    // 장군 뷰: 금색 혼합 — 병사와 즉시 구분 (기획 §4). 모델은 병과와 공유.
                     // 시뮬의 분대 내 유닛 순서(병사 → 장군)와 일치해야 한다 (ArmyDefinition 계약).
                     Color generalColor = Color.Lerp(color, GeneralHighlight, 0.5f);
-                    SpawnUnitView(
-                        unitIndex++, generalColor, squad.General.UnitRadius / 0.5f, pool, facing, attackInterval,
-                        attackSounds);
+                    SpawnUnitView(unitIndex++, generalColor, pool, facing, attackInterval, attackSounds);
                 }
             }
         }
 
         private void SpawnUnitView(
-            int unitIndex, Color color, float scale, GameObjectPool pool, Quaternion facing, float attackInterval,
+            int unitIndex, Color color, GameObjectPool pool, Quaternion facing, float attackInterval,
             AudioClip[] attackSounds)
         {
             GameObject unit = pool.Get();
@@ -986,7 +983,8 @@ namespace NHN.Presentation.Battle
             // 재질·색을 함께 리셋 — 풀 재사용 시 이전 은신 재질/틴트가 남지 않도록 항상 호출.
             ApplyUnitVisual(unitIndex, _sim.IsStealthed(unitIndex), ComputeStatusMask(unitIndex));
 
-            unit.transform.localScale = Vector3.one * scale;
+            // UnitRadius 기반 스케일링 제거 — 프리팹 원본 크기 그대로 사용 (2026-08-09 사용자 요청).
+            unit.transform.localScale = Vector3.one;
             unit.transform.localRotation = facing;
             Vector3 spawnPosition = SimViewMapper.ToWorld(_sim.GetPosition(unitIndex));
             unit.transform.localPosition = spawnPosition;
