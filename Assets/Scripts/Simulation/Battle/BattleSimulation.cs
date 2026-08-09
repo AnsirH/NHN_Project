@@ -1372,20 +1372,21 @@ namespace NHN.Simulation.Battle
                     int focus = _squadFocusEnemies[s];
                     if (focus == NoTarget || _squadAliveCounts[focus] == 0)
                     {
-                        _squadFighting[s] = false; // Formation으로 복귀 — 아래로 흘러가 재정렬 여부까지 같은 틱에 처리
+                        // Formation으로 복귀 — 자기 피해가 0이었어도(무손실 승리) 무조건 재정렬한다.
+                        // 아래 "생존자 수가 바뀌었으면"만으로는 무손실 승리 시 트리거가 전혀 안 걸려서
+                        // 앵커·오프셋이 스폰 시점 값 그대로 남고, 그 결과 장군을 포함한 전원이 전투로
+                        // 흩어진 지금 위치에서 엉뚱하게 먼 스폰 슬롯까지 걸어가 버렸다(2026-08-09 확인).
+                        _squadFighting[s] = false;
+                        ReflowSquadFormation(s);
                     }
                     else
                     {
                         continue; // 계속 Fighting — 대형 로직 불필요
                     }
                 }
-
-                // Formation 상태(방금 복귀했을 수도 있음): 사상자로 생존자 수가 줄었으면 그 자리에서
-                // 재정렬한다 — 죽은 유닛의 원래 슬롯을 비워두지 않고 생존자를 스폰 순서대로 채운
-                // 작은 격자로 다시 짠다. _squadTightness[s]도 새 오프셋 기준으로 즉시 갱신되므로
-                // 위에서 계산한 낡은 값 대신 이 틱부터 바로 정확한 값을 쓴다.
-                if (_squadAliveCounts[s] != _squadLastReflowedAliveCount[s])
+                else if (_squadAliveCounts[s] != _squadLastReflowedAliveCount[s])
                 {
+                    // 이미 Formation 상태 — 행군 중 광역기 등으로 사상자가 나면 그 자리에서 재정렬.
                     ReflowSquadFormation(s);
                 }
 
