@@ -1438,9 +1438,12 @@ namespace NHN.Simulation.Battle
         /// <summary>
         /// 분대 squadIndex의 대형을 지금 생존자 수에 맞게 다시 짠다. 죽은 유닛의 원래 슬롯을
         /// 비워두지 않고, 생존자를 스폰 순서 그대로 작은 격자(SpawnArmy와 같은 공식)에 채운다.
-        /// 중심은 스폰 앵커가 아니라 지금 살아있는 유닛들의 실제 위치 중심(_squadCentroids)이라
-        /// "그 자리에서 다시 뭉치기"가 된다 — 앵커도 그 중심으로 스냅한다. 새 오프셋 기준
-        /// 타이트니스를 여기서 바로 재계산해 반환하므로, 호출 직후 이번 틱 판정에 즉시 반영된다.
+        /// 중심(앵커)은 장군이 살아있으면 장군의 현재 위치 — 장군은 그 자리에 서 있고 나머지가
+        /// 장군을 중심으로 모인다(오프셋 0으로 고정, 이동 없음). 장군이 없거나 죽었으면 지금
+        /// 살아있는 유닛들의 실제 위치 중심(_squadCentroids)으로 대체한다. 장군 위치가 아니라
+        /// 평균 중심(대형 밖 허공일 수 있음)을 쓰면 전투 직후 다들 엉뚱한 곳까지 걸어가게 되는
+        /// 문제가 있었다(2026-08-09 사용자 피드백). 새 오프셋 기준 타이트니스도 여기서 바로
+        /// 재계산해, 호출 직후 이번 틱 판정에 즉시 반영된다.
         /// </summary>
         private void ReflowSquadFormation(int squadIndex)
         {
@@ -1451,21 +1454,32 @@ namespace NHN.Simulation.Battle
                 return; // 전멸 — 재정렬할 대상이 없다.
             }
 
-            Vector2 anchor = _squadCentroids[squadIndex];
+            int generalUnit = _squadGeneralUnits[squadIndex];
+            bool hasLivingGeneral = generalUnit != NoTarget && _alives[generalUnit];
+            Vector2 anchor = hasLivingGeneral ? _positions[generalUnit] : _squadCentroids[squadIndex];
             _squadFormationAnchors[squadIndex] = anchor;
 
+            int followerCount = hasLivingGeneral ? n - 1 : n;
             RoleDefinition role = _squadRoles[squadIndex];
-            int rows = (int)MathF.Ceiling(MathF.Sqrt(n));
+            int rows = (int)MathF.Ceiling(MathF.Sqrt(MathF.Max(followerCount, 1)));
             float spacing = role.UnitRadius * 2.5f;
             float jitter = role.UnitRadius * 0.5f;
 
             float formationRadius = 0f;
             float tightness = 0f;
+            int slot = 0;
             for (int k = 0; k < n; k++)
             {
                 int unit = _squadReflowBuffer[k];
-                int row = k / rows;
-                int col = k % rows;
+                if (hasLivingGeneral && unit == generalUnit)
+                {
+                    _formationOffsets[unit] = Vector2.Zero; // 장군은 그 자리(앵커)에 그대로 — 이동 없음
+                    continue;
+                }
+
+                int row = slot / rows;
+                int col = slot % rows;
+                slot++;
                 float offsetX = (row - rows * 0.5f) * spacing + ((float)_random.NextDouble() * 2f - 1f) * jitter;
                 float offsetY = (col - rows * 0.5f) * spacing + ((float)_random.NextDouble() * 2f - 1f) * jitter;
                 var offset = new Vector2(offsetX, offsetY);
