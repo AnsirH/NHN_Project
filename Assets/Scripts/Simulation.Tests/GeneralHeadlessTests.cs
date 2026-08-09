@@ -179,9 +179,12 @@ namespace NHN.Simulation.Tests
                 leadRankOffset: 1f);
 
             // A: 원거리에 홀로 (개입 방지용 깊은 후방 배치) / B: 병사 1 + 장군. 처형 스킬은 B군(적군)만 타격한다.
-            // 반경 0.4: 장군 선두 리드(1랭크 = 1.25유닛)보다 판정 반경(0.4+병사 반경)이 작아 장군만 맞는다.
+            // 반경 0.15: 병사 1명뿐이면 대형 중앙(장군 바로 뒤, 좌우 오프셋 0)에 서므로 장군과의
+            // 거리는 랭크 간격 하나(UnitRadius 0.2 × FormationSpacingMultiplier 2.5 = 0.5유닛)뿐이다
+            // (2026-08-10: 랭크 안을 중앙부터 채우도록 바뀌어 예전의 좌우 오프셋만큼의 여유가 없어짐).
+            // 판정 반경(0.15)이 이 0.5유닛보다 충분히 작아야 장군만 맞는다.
             var executeSkill = new SkillDefinition(
-                "Execute", cooldown: 1f, radius: 0.4f, damage: 9999f,
+                "Execute", cooldown: 1f, radius: 0.15f, damage: 9999f,
                 StatusEffectType.Stun, statusDuration: 0f, statusMagnitude: 0f, zoneDuration: 0f);
             var armyA = new ArmyDefinition(new[]
             {

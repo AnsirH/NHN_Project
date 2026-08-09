@@ -1406,6 +1406,13 @@ namespace NHN.Simulation.Battle
                         // 앵커·오프셋이 스폰 시점 값 그대로 남고, 그 결과 장군을 포함한 전원이 전투로
                         // 흩어진 지금 위치에서 엉뚱하게 먼 스폰 슬롯까지 걸어가 버렸다(2026-08-09 확인).
                         _squadFighting[s] = false;
+                        // focus도 여기서 바로 비운다 — UpdateSquadFocus()는 이번 틱 시작에 이미
+                        // _squadFighting[s]==true로 돌았기 때문에 재계산을 건너뛰어, 이 시점의
+                        // _squadFocusEnemies[s]는 여전히 방금 전멸한(죽은) 분대를 가리키는 낡은 값이다.
+                        // 안 비우면 바로 아래에서 그 죽은 분대의 중심좌표(전멸이라 0으로 남아있음,
+                        // 즉 원점)를 향해 앵커가 한 스텝 밀리는 미세한 오작동이 있었다(2026-08-10).
+                        // 다음 틱 UpdateSquadFocus()가 살아있는 새 적 분대를 다시 찾는다.
+                        _squadFocusEnemies[s] = NoTarget;
                         ReflowSquadFormation(s);
                     }
                     else
@@ -1472,15 +1479,20 @@ namespace NHN.Simulation.Battle
         /// FormationColumnWidth열 종대로 채운다(넘치면 다음 랭크). followerIndex는 그 분대 안에서
         /// 병사(장군 제외) 순서(0-index, 스폰/생존 순서 — 스폰 시와 재정렬 시 공통 사용). "뒤"는
         /// retreatDirection 부호 방향(적과 반대쪽, 팀별로 다름) — 랭크가 커질수록 그만큼 물러난다.
-        /// 좌우(열)는 폭 중앙 기준으로 대칭 배치.
+        /// 랭크 안에서는 중앙부터 바깥쪽으로(0, +1, -1, +2, -2, ...) 채운다 — 좌측부터 순서대로
+        /// 채우면 랭크가 꽉 찼을 땐 상관없지만, 사상자로 랭크 일부만 찼을 때(특히 장군 없는 분대의
+        /// 생존자 1~2명) 중앙이 아니라 한쪽 끝에 쏠려 앵커에서 불필요하게 멀어지는 문제가 있었다
+        /// (2026-08-10). 꽉 찬 랭크는 좌우 순서만 다를 뿐 차지하는 좌표 집합은 기존과 동일하다.
         /// </summary>
         private Vector2 ColumnFormationOffset(int followerIndex, int rankOffset, float retreatDirection, float spacing)
         {
             int columns = Math.Max(_config.FormationColumnWidth, 1); // 0 이하 설정값 방어
             int rank = followerIndex / columns + rankOffset;
-            int col = followerIndex % columns;
+            int slotInRank = followerIndex % columns;
+            int magnitude = (slotInRank + 1) / 2;
+            int sign = (slotInRank % 2 == 1) ? 1 : -1;
             float x = retreatDirection * rank * spacing;
-            float y = (col - (columns - 1) * 0.5f) * spacing;
+            float y = magnitude * sign * spacing;
             return new Vector2(x, y);
         }
 
