@@ -90,12 +90,12 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             var deploymentPanel = GetField<ArmyDeploymentPanel>(flow, "deploymentPanel");
-            var roomPanel = GetField<DummyRoomPanel>(flow, "roomPanel");
-            var mapPanel = GetField<RoomMapPanel>(flow, "mapPanel");
+            var runResultPanel = GetField<RunResultPanel>(flow, "runResultPanel");
+            var mapPanel = GetField<RoomGraphPanel>(flow, "mapPanel");
 
             Assert.IsTrue(deploymentPanel.gameObject.activeSelf,
                 "보스 노드 선택 시 배치 UI가 열려야 함 (전투 없이 즉시 클리어되면 안 됨)");
-            Assert.IsFalse(roomPanel.gameObject.activeSelf, "전투 전에는 런 클리어 화면이 뜨면 안 됨");
+            Assert.IsFalse(runResultPanel.gameObject.activeSelf, "전투 전에는 런 클리어 화면이 뜨면 안 됨");
             Assert.IsFalse(mapPanel.gameObject.activeSelf,
                 "배치 UI(65% 반투명 dim 배경)가 뜬 동안 방 그래프가 뒤로 겹쳐 보이면 안 됨 (2026-08-04 사용자 리포트)");
         }
@@ -121,7 +121,7 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             var deploymentPanel = GetField<ArmyDeploymentPanel>(flow, "deploymentPanel");
-            var roomPanel = GetField<DummyRoomPanel>(flow, "roomPanel");
+            var runResultPanel = GetField<RunResultPanel>(flow, "runResultPanel");
 
             // 군대 보유 상한 = 배치 슬롯 수(§4-7)라 Open() 시점에 이미 전원 자동 배치돼 있다.
             var startButton = deploymentPanel.GetComponentsInChildren<Button>(true).First(b => b.name == "StartBattleButton");
@@ -133,14 +133,14 @@ namespace OutGame.Tests.PlayMode
             // 사라지므로(LoadSceneAction이 실제 씬 전환을 하는 경우), 여기서는 활성 상태가 유지된다.
             Assert.IsTrue(deploymentPanel.gameObject.activeSelf,
                 "배치 확정 직후에는 패널을 미리 닫지 않는다 — 실제 씬 전환이 처리를 대신함");
-            Assert.IsFalse(roomPanel.gameObject.activeSelf, "전투 결과가 나오기 전에는 런 클리어 화면이 뜨면 안 됨");
+            Assert.IsFalse(runResultPanel.gameObject.activeSelf, "전투 결과가 나오기 전에는 런 클리어 화면이 뜨면 안 됨");
 
             // 실제 Battle.unity 대신 §7.4 콜백을 직접 호출해 전투 승리 결과를 주입한다.
             BattleBridge.CompleteBattle(new BattleResultData { roomId = boss.id, victory = true });
             yield return null;
 
-            Assert.IsTrue(roomPanel.gameObject.activeSelf, "보스 승리 후에는 런 클리어 화면이 떠야 함");
-            var mapPanel = GetField<RoomMapPanel>(flow, "mapPanel");
+            Assert.IsTrue(runResultPanel.gameObject.activeSelf, "보스 승리 후에는 런 클리어 화면이 떠야 함");
+            var mapPanel = GetField<RoomGraphPanel>(flow, "mapPanel");
             Assert.IsFalse(mapPanel.gameObject.activeSelf,
                 "런 클리어 화면(65% 반투명 dim 배경) 뒤로 방 그래프가 겹쳐 보이면 안 됨 (2026-08-04 사용자 리포트)");
         }
@@ -197,7 +197,7 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             var deploymentPanel = GetField<ArmyDeploymentPanel>(flow, "deploymentPanel");
-            var roomPanel = GetField<DummyRoomPanel>(flow, "roomPanel");
+            var runResultPanel = GetField<RunResultPanel>(flow, "runResultPanel");
             var itemRewardPopup = GetField<ItemRewardPopup>(flow, "itemRewardPopup");
 
             var startButton = deploymentPanel.GetComponentsInChildren<Button>(true).First(b => b.name == "StartBattleButton");
@@ -208,14 +208,14 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             Assert.IsTrue(itemRewardPopup.gameObject.activeSelf, "드롭이 있으면 획득 팝업이 떠야 함");
-            Assert.IsFalse(roomPanel.gameObject.activeSelf, "획득 팝업을 닫기 전까지는 런 클리어 화면이 뜨면 안 됨");
+            Assert.IsFalse(runResultPanel.gameObject.activeSelf, "획득 팝업을 닫기 전까지는 런 클리어 화면이 뜨면 안 됨");
 
             Button closeButton = itemRewardPopup.transform.Find("Window/CloseButton").GetComponent<Button>();
             closeButton.onClick.Invoke();
             yield return null;
 
             Assert.IsFalse(itemRewardPopup.gameObject.activeSelf, "확인 후에는 획득 팝업이 닫혀야 함");
-            Assert.IsTrue(roomPanel.gameObject.activeSelf, "획득 팝업을 닫은 뒤에는 런 클리어 화면이 떠야 함");
+            Assert.IsTrue(runResultPanel.gameObject.activeSelf, "획득 팝업을 닫은 뒤에는 런 클리어 화면이 떠야 함");
         }
 
         [UnityTest]
@@ -326,7 +326,7 @@ namespace OutGame.Tests.PlayMode
             itemDropConfig.hunterDropChance = 0f;
             itemDropConfig.assassinDropChance = 0f;
 
-            var mapPanel = GetField<RoomMapPanel>(flow, "mapPanel");
+            var mapPanel = GetField<RoomGraphPanel>(flow, "mapPanel");
             Assert.IsTrue(mapPanel.gameObject.activeSelf, "전투 전에는 방 그래프가 보여야 함");
 
             MapNode battleNode = MapProgress.GetSelectableNodes(run.mapState).First(n => n.roomType == RoomType.NormalBattle);

@@ -31,6 +31,10 @@ namespace NHN.Data
         [SerializeField] private float defenseK = 50f;
         [Tooltip("치명타 피해 배율 (기획 합의: 1.8배)")]
         [SerializeField] private float critMultiplier = 1.8f;
+        [Tooltip("원거리 유닛이 근접 공격을 받으면 부여되는 공격력 감소 지속시간(초)")]
+        [SerializeField] private float meleeSuppressDuration = 3f;
+        [Tooltip("원거리 유닛이 근접 공격을 받았을 때의 공격력 배율 (0.5 = 50% 감소)")]
+        [SerializeField] private float meleeSuppressMagnitude = 0.5f;
 
         [Header("장군 스킬 강화 (아웃게임 generalSkillUpgradeCount → 발동 빈도)")]
         [Tooltip("강화 1회당 충전 필요량 감소 비율 (0.15 = -15%)")]
@@ -41,8 +45,19 @@ namespace NHN.Data
         [Header("겹침 분리 (밀집 전투 감각 — 미니워리어즈식 부분 겹침)")]
         [Tooltip("분리가 시작되는 거리 비율 (반경 합 기준). 1 = 닿는 즉시(하드), 0.65 = 35% 겹침 허용")]
         [SerializeField] private float separationOverlapRatio = 0.8f;
-        [Tooltip("틱당 겹침 해소 비율. 1 = 즉시 전량(튕김), 0.2 = 서서히 — 밀림·떨림 완화")]
-        [SerializeField] private float separationStrength = 0.45f;
+        [Tooltip("틱당 겹침 해소 비율. 1 = 즉시 전량(튕김), 0.2 = 서서히 — 밀림·떨림 완화. " +
+                 "0 = 완전 비활성화 (2026-08-09: 가중치 룰렛 휠 타겟 선택 도입으로 실험적으로 끔).")]
+        [SerializeField] private float separationStrength = 0f;
+
+        [Header("분대 대형 이동 (2026-08-09: 분대 단위로 뭉쳐 이동 → 인접 시 개별 전투)")]
+        [Tooltip("대형 슬롯과의 거리 허용 오차. 이 안이어야 '정렬됨' — 앵커 전진·Fighting 전환 조건")]
+        [SerializeField] private float formationTightnessTolerance = 0.5f;
+        [Tooltip("교전 판정 반경 여유값. 반경 = 분대 역할군 AttackRange + 대형 반경 + 이 값")]
+        [SerializeField] private float formationEngageRangeMargin = 1f;
+        [Tooltip("대형 몇 열 종대로 설지 (장군 맨 앞 + 이 폭만큼 좌우로 채우고 다음 랭크로)")]
+        [SerializeField] private int formationColumnWidth = 5;
+        [Tooltip("대형 유닛 간 간격 = 역할군 UnitRadius × 이 배율")]
+        [SerializeField] private float formationSpacingMultiplier = 2.5f;
 
         [Header("배치 슬롯 변환 (정규화 0~1 → anchor, DeploymentGrid)")]
         [Tooltip("slotX 0(후방)~1(전선)이 펼쳐지는 깊이 범위")]
@@ -65,7 +80,10 @@ namespace NHN.Data
                 deploymentDepth, deploymentHalfWidth,
                 defenseK, critMultiplier,
                 skillUpgradeChargeReduction, minChargeRequiredRatio,
-                separationOverlapRatio, separationStrength);
+                separationOverlapRatio, separationStrength,
+                formationTightnessTolerance, formationEngageRangeMargin,
+                formationColumnWidth, formationSpacingMultiplier,
+                meleeSuppressDuration, meleeSuppressMagnitude);
         }
     }
 }

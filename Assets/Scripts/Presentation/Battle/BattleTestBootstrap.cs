@@ -68,23 +68,16 @@ namespace NHN.Presentation.Battle
         private static readonly Color AttackUpTint = new Color(1f, 0.68f, 0.1f);
         private static readonly Color HealTint = new Color(0.5f, 1f, 0.6f);
         private static readonly Color ResistTint = new Color(0.55f, 0.75f, 1f);
-        /// <summary>장군 하이라이트 — 금색 혼합으로 병사와 즉시 구분 (기획 §4).</summary>
-        private static readonly Color GeneralHighlight = new Color(1f, 0.85f, 0.25f);
-        /// <summary>
-        /// 적군 틴트 (진한 회색, 2026-08-02 사용자 결정). 병과 구분은 모델(투구·후드·갑옷·무기)이
-        /// 담당하므로 색은 피아 식별만 한다 — 아군은 클레이 원색(무틴트).
-        /// </summary>
-        private static readonly Color EnemyTint = new Color(0.42f, 0.42f, 0.42f);
 
         [Serializable]
         private struct SquadSetup
         {
-            public RoleData role;
+            public SquadData role;
             public int count;
             [Tooltip("x=전선으로부터 깊이(+뒤), y=측면 오프셋")]
             public Vector2 anchor;
-            [Tooltip("분대 리더(장군) — 비우면 노멀/무장군 분대 (v4 §5)")]
-            public GeneralData general;
+            [Tooltip("분대 리더(장군) — 비우면 노멀/무장군 분대 (v4 §5). 보통 role과 같은 SquadData 에셋을 지정한다")]
+            public SquadData general;
         }
 
         [SerializeField] private BattleConfigSO config;
@@ -110,6 +103,22 @@ namespace NHN.Presentation.Battle
         [SerializeField] private float hitFxScale = 0.2f;
         [SerializeField] private float deathFxScale = 0.09f;
 
+        [Header("배경음악")]
+        [Tooltip("전투 시작 시 이 중 하나를 무작위로 골라 반복 재생한다 (Assets/Music). 비우면 재생 없음.")]
+        [SerializeField] private AudioClip[] inGameMusic;
+
+        [Header("유닛 색상")]
+        [Tooltip("적군(B팀) 유닛에 곱해지는 틴트 — 흰색이면 무틴트(모델 원색). 병과 구분은 모델이 " +
+                 "전담하므로 이건 순수 피아 식별용 (2026-08-10: 하드코딩 상수에서 인스펙터 설정값으로 변경).")]
+        [SerializeField] private Color enemyTint = Color.white;
+
+        [Header("유닛 위치 감쇠 (2026-08-10: 겹침 분리로 인한 미세 진동 완화)")]
+        [Tooltip("렌더 위치가 시뮬 목표 위치를 프레임마다 따라가는 비율(초당 기준, 프레임레이트 " +
+                 "보정됨). 1 = 즉시 스냅(감쇠 없음), 낮을수록 부드럽지만 지연이 커진다. 겹침 분리가 " +
+                 "정지 유닛을 틱마다 미세하게 밀었다 놨다 하면서 생기는 떨림을 완화하려는 용도 — " +
+                 "시뮬 값 자체는 그대로고 화면에 그리는 위치만 완만하게 뒤따라간다.")]
+        [SerializeField, Range(0.05f, 1f)] private float unitPositionFollowRate = 0.5f;
+
         [Header("아웃게임 연동 선행 준비 (RunBattle 경로 — BattleBridge 커넥터가 사용)")]
         [SerializeField] private BattleCatalog catalog;
         [SerializeField] private EncounterTable encounterTable;
@@ -129,7 +138,7 @@ namespace NHN.Presentation.Battle
         private Material _baseMaterial;
         private Material _stealthMaterial;
 
-        // 롤별 3D 모델 뷰 (RoleData.viewPrefab — 비면 기본 캡슐 프리팹):
+        // 롤별 3D 모델 뷰 (SquadData.ViewPrefab/GeneralViewPrefab — 비면 기본 캡슐 프리팹):
         // 프리팹마다 풀을 따로 두고, 전투 시작 시 실제 분대 구성 수량만큼만 프리웜한다
         // (상한 기준 프리웜은 모델 5종 × MaxUnits라 낭비가 너무 큼).
         private readonly Dictionary<GameObject, GameObjectPool> _unitPoolsByPrefab =
@@ -171,12 +180,9 @@ namespace NHN.Presentation.Battle
         private static readonly int DieParamId = Animator.StringToHash("Die");
         private static readonly int AttackParamId = Animator.StringToHash("Attack");
         private static readonly int CritParamId = Animator.StringToHash("Crit");
-        private static readonly int HitParamId = Animator.StringToHash("Hit");
         private static readonly int AttackSpeedParamId = Animator.StringToHash("AttackSpeed");
         private static readonly int CritSpeedParamId = Animator.StringToHash("CritSpeed");
         private static readonly int IdleStateId = Animator.StringToHash("Idle");
-        private static readonly int AttackStateId = Animator.StringToHash("Attack");
-        private static readonly int CritStateId = Animator.StringToHash("Crit");
 
         /// <summary>
         /// 시뮬 종료 후 결과 표시·복귀 콜백까지의 연출 유예 — 마지막 유닛의 사망 애니메이션
@@ -211,6 +217,14 @@ namespace NHN.Presentation.Battle
         private AudioClip[][] _unitAttackClips;
         private AudioSource[] _attackVoices;
         private int _nextAttackVoice;
+
+        /// <summary>
+        /// 배경음악 소스 — 볼륨은 건드리지 않는다(기본값 1). 마스터 볼륨 연동은 다른 인게임 사운드
+        /// (공격 보이스 등)와 동일하게 AudioListener.volume(전역 배율)에 맡긴다 — 아웃게임이
+        /// SoundSettings.MasterVolume을 AudioListener.volume에 적용해두므로(OutGameFlowController/
+        /// MainMenuController) 별도로 다시 곱하면 이중 감쇠(설정값²)가 된다.
+        /// </summary>
+        private AudioSource _musicSource;
 
         // 플레이어 스킬 뷰 상태
         /// <summary>현재 적용된 스킬 구성 원본 — 같은 구성 재적용(Restart)을 건너뛰기 위한 참조 비교용.</summary>
@@ -305,6 +319,7 @@ namespace NHN.Presentation.Battle
             _projTransforms = new Transform[config.MaxUnits];
             _unitAttackClips = new AudioClip[maxUnits][];
             CreateAttackVoicePool();
+            PlayInGameMusic();
 
             _baseMaterial = unitPrefab.GetComponentInChildren<Renderer>().sharedMaterial;
             _stealthMaterial = CreateStealthMaterial(_baseMaterial);
@@ -433,9 +448,16 @@ namespace NHN.Presentation.Battle
         }
 
         /// <summary>롤의 뷰 프리팹 — 미지정 롤(또는 롤 없음)은 기본 캡슐 프리팹 폴백.</summary>
-        private GameObject ViewPrefabOf(RoleData role)
+        private GameObject ViewPrefabOf(SquadData role)
         {
             return role != null && role.ViewPrefab != null ? role.ViewPrefab : unitPrefab;
+        }
+
+        /// <summary>장군 전용 모델 — SquadData.GeneralViewPrefab이 비어 있으면 이미 병사 프리팹으로
+        /// 대체돼 있으므로(SquadData 쪽 폴백), 여기서는 그 결과가 null일 때만 기본 캡슐로 내려간다.</summary>
+        private GameObject GeneralViewPrefabOf(SquadData general)
+        {
+            return general != null && general.GeneralViewPrefab != null ? general.GeneralViewPrefab : unitPrefab;
         }
 
         private GameObjectPool GetUnitPool(GameObject prefab)
@@ -471,13 +493,25 @@ namespace NHN.Presentation.Battle
         {
             for (int s = 0; s < squads.Count; s++)
             {
-                GameObject prefab = ViewPrefabOf(squads[s].Role);
-                if (prefab == unitPrefab)
+                GameObject soldierPrefab = ViewPrefabOf(squads[s].Role);
+                if (soldierPrefab != unitPrefab) // 기본 풀은 Awake에서 상한만큼 프리웜돼 있다
                 {
-                    continue; // 기본 풀은 Awake에서 상한만큼 프리웜돼 있다
+                    _poolDemand.TryGetValue(soldierPrefab, out int count);
+                    _poolDemand[soldierPrefab] = count + squads[s].Count;
                 }
-                _poolDemand.TryGetValue(prefab, out int count);
-                _poolDemand[prefab] = count + squads[s].Count + (squads[s].General != null ? 1 : 0);
+                if (squads[s].General == null)
+                {
+                    continue;
+                }
+                // 장군 전용 프리팹이 없으면 GeneralViewPrefabOf가 병사 프리팹과 같은 값을 반환하므로
+                // 위 집계에 자연히 합산된다 — 여기서는 "실제로 다른 프리팹일 때"만 별도로 더한다.
+                GameObject generalPrefab = GeneralViewPrefabOf(squads[s].General);
+                if (generalPrefab == unitPrefab || generalPrefab == soldierPrefab)
+                {
+                    continue;
+                }
+                _poolDemand.TryGetValue(generalPrefab, out int generalCount);
+                _poolDemand[generalPrefab] = generalCount + 1;
             }
         }
 
@@ -621,22 +655,33 @@ namespace NHN.Presentation.Battle
                         break;
                     case BattleSimulation.ViewEventType.Damaged:
                         // 임팩트는 리깅 여부와 무관 — 애니메이터 없는 프리팹에서도 타격이 읽혀야 한다.
+                        // 피격 애니메이션(Hit)은 재생하지 않는다 — 이펙트만으로 타격을 표현.
                         SpawnHitFx(_unitTransforms[unit].position);
-                        if (animator == null)
-                        {
-                            break;
-                        }
-                        // 공격 스윙 중에는 피격 모션이 끼어들지 않는다 — 난전에서 피격이 매 순간
-                        // 들어와 스윙이 계속 끊기는 어색함 방지 (공격 > 피격 우선순위).
-                        AnimatorStateInfo current = animator.GetCurrentAnimatorStateInfo(0);
-                        if (current.shortNameHash != AttackStateId && current.shortNameHash != CritStateId)
-                        {
-                            animator.SetTrigger(HitParamId);
-                        }
                         break;
                 }
             }
             _sim.ClearViewEvents();
+        }
+
+        /// <summary>
+        /// 배경음악 재생 — inGameMusic 중 무작위 1개를 반복 재생한다. 씬 진입(Awake) 1회만
+        /// 호출되므로 같은 씬 안에서 전투를 재시작(Restart)해도 음악은 끊기지 않는다.
+        /// </summary>
+        private void PlayInGameMusic()
+        {
+            if (inGameMusic == null || inGameMusic.Length == 0)
+            {
+                return;
+            }
+            if (_musicSource == null)
+            {
+                _musicSource = gameObject.AddComponent<AudioSource>();
+                _musicSource.playOnAwake = false;
+                _musicSource.loop = true;
+                _musicSource.spatialBlend = 0f; // 배경음악 — 2D, 카메라 위치 무관
+            }
+            _musicSource.clip = inGameMusic[UnityEngine.Random.Range(0, inGameMusic.Length)];
+            _musicSource.Play();
         }
 
         /// <summary>3D 원샷 보이스 풀 생성 (초기화 1회 경로). 리스너는 메인 카메라 — 멀수록 작게 들린다.</summary>
@@ -719,7 +764,6 @@ namespace NHN.Presentation.Battle
                         // Die 상태의 시체를 공격/피격 자세로 다시 끄집어낸다 (죽다 벌떡 일어나는 버그).
                         animator.ResetTrigger(AttackParamId);
                         animator.ResetTrigger(CritParamId);
-                        animator.ResetTrigger(HitParamId);
                         animator.SetFloat(SpeedParamId, 0f);
                         animator.SetTrigger(DieParamId);
                         _unitDying[i] = true;
@@ -739,11 +783,11 @@ namespace NHN.Presentation.Battle
                     ApplyUnitVisual(i, stealthed, statusMask);
                 }
 
-                Vector3 position = SimViewMapper.ToWorld(_sim.GetInterpolatedPosition(i, alpha));
+                Vector3 renderTarget = SimViewMapper.ToWorld(_sim.GetInterpolatedPosition(i, alpha));
                 float deltaTime = Time.deltaTime;
                 if (deltaTime > 0.0001f)
                 {
-                    Vector3 delta = position - _unitPrevPositions[i];
+                    Vector3 delta = renderTarget - _unitPrevPositions[i];
                     float speed = delta.magnitude / deltaTime;
                     // Idle/Run 전환은 뷰가 위치 변화(속도)로 판단 — 시뮬에 뷰 전용 API를 요구하지 않는다.
                     Animator unitAnimator = _unitViewSets[i].Animator;
@@ -751,19 +795,70 @@ namespace NHN.Presentation.Battle
                     {
                         unitAnimator.SetFloat(SpeedParamId, speed);
                     }
-                    // 이동 방향으로 부드럽게 회전 — 밀림·분리 같은 미세 이동(문턱 미만)에는 돌지 않아
-                    // 난전에서 방향이 파닥거리지 않는다. 멈추면 마지막 방향을 유지한다.
-                    delta.y = 0f;
-                    if (speed > TurnSpeedThreshold && delta.sqrMagnitude > 1e-8f)
+
+                    // 회전: Formation(대형 이동/재정렬) 중엔 "정지해 있을 때만" 상대 진영 쪽을
+                    // 본다(2026-08-09 사용자 요청 + 2026-08-10 보정) — 장군처럼 거의 안 움직이는
+                    // 유닛의 방향이 안 잡히던 문제는 해결하되, 재정렬 등으로 뒤/옆 랭크를 향해
+                    // 실제로 이동해야 하는 유닛까지 무조건 상대 쪽을 보게 하면 이동 방향과 바라보는
+                    // 방향이 반대가 돼 뒤로 걷는 것처럼 보이는 문제가 있었다. 이동 중엔 이동 방향을
+                    // 그대로 본다(기존 폴백과 동일 로직). Fighting(개별 전투) 중엔 기존처럼 살아있는
+                    // 타겟이 있으면 이동량과 무관하게 항상 타겟 방향을 본다 — "이동 방향 = 타겟
+                    // 방향"이 항상 성립하던 예전 직선 접근 방식과 달리, 지금은 좌/우 오프셋 지점으로
+                    // 걸어가기 때문에 이동 방향만으로는 타겟을 안 보고 공격하는 문제가 생긴다(2026-08-09).
+                    bool isFighting = _sim.IsSquadFighting(_sim.GetSquadIndex(i));
+                    int targetIndex = _sim.GetTargetIndex(i);
+                    bool movingNow = speed > TurnSpeedThreshold && delta.sqrMagnitude > 1e-8f;
+                    if (!isFighting && !movingNow)
                     {
+                        Quaternion enemyFacing = _sim.GetTeam(i) == 1 ? TeamBFacing : TeamAFacing;
+                        _unitTransforms[i].localRotation = Quaternion.RotateTowards(
+                            _unitTransforms[i].localRotation, enemyFacing, UnitTurnDegreesPerSecond * deltaTime);
+                    }
+                    else if (!isFighting)
+                    {
+                        // 대형 상태에서 실제로 이동 중 — 이동 방향을 본다(moonwalk 방지).
+                        Vector3 moveDelta = delta;
+                        moveDelta.y = 0f;
                         _unitTransforms[i].localRotation = Quaternion.RotateTowards(
                             _unitTransforms[i].localRotation,
-                            Quaternion.LookRotation(delta),
+                            Quaternion.LookRotation(moveDelta),
                             UnitTurnDegreesPerSecond * deltaTime);
                     }
+                    else if (targetIndex >= 0 && _sim.IsAlive(targetIndex))
+                    {
+                        Vector3 targetPosition = SimViewMapper.ToWorld(_sim.GetPosition(targetIndex));
+                        Vector3 toTarget = targetPosition - renderTarget;
+                        toTarget.y = 0f;
+                        if (toTarget.sqrMagnitude > 1e-8f)
+                        {
+                            _unitTransforms[i].localRotation = Quaternion.RotateTowards(
+                                _unitTransforms[i].localRotation,
+                                Quaternion.LookRotation(toTarget),
+                                UnitTurnDegreesPerSecond * deltaTime);
+                        }
+                    }
+                    else
+                    {
+                        // Fighting인데 타겟이 아직 없는 과도기(재탐색 직전 등) — 이동 방향으로 부드럽게
+                        // 회전. 밀림·분리 같은 미세 이동(문턱 미만)에는 돌지 않아 방향이 파닥거리지 않는다.
+                        delta.y = 0f;
+                        if (speed > TurnSpeedThreshold && delta.sqrMagnitude > 1e-8f)
+                        {
+                            _unitTransforms[i].localRotation = Quaternion.RotateTowards(
+                                _unitTransforms[i].localRotation,
+                                Quaternion.LookRotation(delta),
+                                UnitTurnDegreesPerSecond * deltaTime);
+                        }
+                    }
                 }
-                _unitPrevPositions[i] = position;
-                _unitTransforms[i].localPosition = position;
+                _unitPrevPositions[i] = renderTarget;
+
+                // 렌더 위치는 시뮬 목표(renderTarget)로 즉시 스냅하지 않고 프레임마다 감쇠 추종한다
+                // (2026-08-10) — 겹침 분리가 정지 유닛을 틱마다 미세하게 밀었다 놨다 하면서 생기는
+                // 떨림을 완화하려는 용도. unitPositionFollowRate=1이면 감쇠 없이 기존과 동일(즉시 스냅).
+                float followT = 1f - Mathf.Pow(1f - unitPositionFollowRate, deltaTime * 60f);
+                _unitTransforms[i].localPosition =
+                    Vector3.Lerp(_unitTransforms[i].localPosition, renderTarget, followT);
             }
         }
 
@@ -935,10 +1030,9 @@ namespace NHN.Presentation.Battle
             for (int s = 0; s < squads.Count; s++)
             {
                 BattleRequestBuilder.SquadAssets squad = squads[s];
-                // 병과 구분은 모델이 담당 — 색은 피아 식별만: 아군 원색, 적군 진한 회색.
-                // (롤 색 틴트는 캡슐 시절의 병과 구분 수단이라 모델 도입 후 제거, 2026-08-02)
-                Color color = isTeamB ? EnemyTint : Color.white;
-                float scale = squad.Role.UnitRadius / 0.5f; // 뷰 프리팹 표준 크기(반경 0.5 = 키 1) 기준
+                // 병과 구분은 모델(프리팹)이 전담한다 — 피아 구분만 인스펙터의 enemyTint로 건다
+                // (2026-08-10: 하드코딩 상수 제거 후 재도입, 장군 금색 혼합은 제거 유지 — 사용자 결정).
+                Color color = isTeamB ? enemyTint : Color.white;
                 GameObjectPool pool = GetUnitPool(ViewPrefabOf(squad.Role));
                 Quaternion facing = isTeamB ? TeamBFacing : TeamAFacing;
                 float attackInterval = squad.Role.AttackInterval;
@@ -946,23 +1040,22 @@ namespace NHN.Presentation.Battle
 
                 for (int k = 0; k < squad.Count; k++)
                 {
-                    SpawnUnitView(unitIndex++, color, scale, pool, facing, attackInterval, attackSounds);
+                    SpawnUnitView(unitIndex++, color, pool, facing, attackInterval, attackSounds);
                 }
 
                 if (squad.General != null)
                 {
-                    // 장군 뷰: 크기 배율 + 금색 혼합 — 병사와 즉시 구분 (기획 §4). 모델은 병과와 공유.
-                    // 시뮬의 분대 내 유닛 순서(병사 → 장군)와 일치해야 한다 (ArmyDefinition 계약).
-                    Color generalColor = Color.Lerp(color, GeneralHighlight, 0.5f);
-                    SpawnUnitView(
-                        unitIndex++, generalColor, squad.General.UnitRadius / 0.5f, pool, facing, attackInterval,
-                        attackSounds);
+                    // 장군 모델은 SquadData.GeneralViewPrefab이 있으면 그걸, 없으면 병사와 공유
+                    // (2026-08-10 — 장군 전용 모델 지원). 시뮬의 분대 내 유닛 순서(병사 → 장군)와
+                    // 일치해야 한다 (ArmyDefinition 계약).
+                    GameObjectPool generalPool = GetUnitPool(GeneralViewPrefabOf(squad.General));
+                    SpawnUnitView(unitIndex++, color, generalPool, facing, attackInterval, attackSounds);
                 }
             }
         }
 
         private void SpawnUnitView(
-            int unitIndex, Color color, float scale, GameObjectPool pool, Quaternion facing, float attackInterval,
+            int unitIndex, Color color, GameObjectPool pool, Quaternion facing, float attackInterval,
             AudioClip[] attackSounds)
         {
             GameObject unit = pool.Get();
@@ -978,7 +1071,8 @@ namespace NHN.Presentation.Battle
             // 재질·색을 함께 리셋 — 풀 재사용 시 이전 은신 재질/틴트가 남지 않도록 항상 호출.
             ApplyUnitVisual(unitIndex, _sim.IsStealthed(unitIndex), ComputeStatusMask(unitIndex));
 
-            unit.transform.localScale = Vector3.one * scale;
+            // UnitRadius 기반 스케일링 제거 — 프리팹 원본 크기 그대로 사용 (2026-08-09 사용자 요청).
+            unit.transform.localScale = Vector3.one;
             unit.transform.localRotation = facing;
             Vector3 spawnPosition = SimViewMapper.ToWorld(_sim.GetPosition(unitIndex));
             unit.transform.localPosition = spawnPosition;
@@ -992,7 +1086,6 @@ namespace NHN.Presentation.Battle
                 animator.ResetTrigger(DieParamId);
                 animator.ResetTrigger(AttackParamId);
                 animator.ResetTrigger(CritParamId);
-                animator.ResetTrigger(HitParamId);
                 animator.SetFloat(SpeedParamId, 0f);
                 // 스윙 1회 = 공격 1회 동기화: 클립을 끝까지 재생하되 속도를 공격 주기에 맞춘다.
                 UnitViewCache view = _unitViewSets[unitIndex];
@@ -1685,7 +1778,7 @@ namespace NHN.Presentation.Battle
                     setups[s].role.ToDefinition(),
                     setups[s].count,
                     new System.Numerics.Vector2(setups[s].anchor.x, setups[s].anchor.y),
-                    setups[s].general != null ? setups[s].general.ToDefinition() : null);
+                    setups[s].general != null ? setups[s].general.ToGeneralDefinition() : null);
             }
             return new ArmyDefinition(squads);
         }

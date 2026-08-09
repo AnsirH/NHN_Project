@@ -14,20 +14,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.EventDefinition
   eventId: evt_hermit_cabin
   illustration: {fileID: 0}
-  bodyText: 인적 없는 골짜기 깊숙한 곳, 낡은 오두막 자리에 흙인형 여럿이 줄지어 서 있다. 이걸 빚은 손은 이미 오래전에 사라졌지만
-    — 그 손이 당신과 같은 일을 했다는 사실만은, 부정할 수 없다.
+  bodyText: "\uC778\uC801 \uC5C6\uB294 \uACE8\uC9DC\uAE30 \uAE4A\uC219\uD55C \uACF3,
+    \uB0A1\uC740 \uC624\uB450\uB9C9 \uC790\uB9AC\uC5D0 \uD759\uC778\uD615 \uC5EC\uB7FF\uC774
+    \uC904\uC9C0\uC5B4 \uC11C \uC788\uB2E4. \uC774\uAC78 \uBE5A\uC740 \uC190\uC740
+    \uC774\uBBF8 \uC624\uB798\uC804\uC5D0 \uC0AC\uB77C\uC84C\uC9C0\uB9CC \uADF8 \uC190\uC774
+    \uB2F9\uC2E0\uACFC \uAC19\uC740 \uC77C\uC744 \uD588\uB2E4\uB294 \uC0AC\uC2E4\uB9CC\uC740,
+    \uBD80\uC815\uD560 \uC218 \uC5C6\uB2E4."
   choices:
-  - choiceText: 부대를 거둔다
+  - choiceText: "\uBD80\uB300\uB97C \uAC70\uB454\uB2E4"
     rewards:
     - type: 1
       armyClass: 0
       itemDef: {fileID: 0}
       goldAmount: 0
-    resultText: 명령을 내리자, 낯선 손에 의해 빚어졌던 흙인형들이 망설임 없이 당신을 따랐다.
-  - choiceText: 건드리지 않고 자리를 뜬다
+    resultText: "\uBA85\uB839\uC744 \uB0B4\uB9AC\uC790, \uB0AF\uC120 \uC190\uC5D0
+      \uC758\uD574 \uBE5A\uC5B4\uC84C\uB358 \uD759\uC778\uD615\uB4E4\uC774 \uB9DD\uC124\uC784
+      \uC5C6\uC774 \uB2F9\uC2E0\uC744 \uB530\uB790\uB2E4."
+  - choiceText: "\uAC74\uB4DC\uB9AC\uC9C0 \uC54A\uACE0 \uC790\uB9AC\uB97C \uB72C\uB2E4"
     rewards:
     - type: 3
       armyClass: 0
       itemDef: {fileID: 0}
       goldAmount: 25
-    resultText: 오두막 잔해 속에서, 누군가 오래 매만졌을 낡은 연장 하나를 발견했다.
+    resultText: "\uC624\uB450\uB9C9 \uC794\uD574 \uC18D\uC5D0\uC11C, \uB204\uAD70\uAC00
+      \uC624\uB798 \uB9E4\uB9CC\uC84C\uC744 \uB0A1\uC740 \uC5F0\uC7A5 \uD558\uB098\uB97C
+      \uBC1C\uACAC\uD588\uB2E4."

@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace NHN.Presentation.Battle
 {
@@ -33,6 +35,14 @@ namespace NHN.Presentation.Battle
         [Header("더블탭 기본 구도 복귀")]
         [SerializeField] private float doubleTapSeconds = 0.3f;
 
+        [Header("피사계 심도 (줌 연동 — URP DepthOfField.focalLength)")]
+        [Tooltip("Focal Length를 줌에 연동시킬 Volume — 비우면 연동하지 않는다 (Bokeh 모드 DepthOfField 필요)")]
+        [SerializeField] private Volume depthOfFieldVolume;
+        [Tooltip("최대로 확대(근접, minDistance)했을 때의 Focal Length")]
+        [SerializeField, Range(0f, 100f)] private float focalLengthAtMinDistance = 100f;
+        [Tooltip("최대로 축소(원경, maxDistance)했을 때의 Focal Length")]
+        [SerializeField, Range(0f, 100f)] private float focalLengthAtMaxDistance = 0f;
+
         [Header("연출")]
         [Tooltip("줌 감쇠 계수(1/초) — 클수록 즉각적. 팬은 지면 고정이라 감쇠를 걸지 않는다")]
         [SerializeField] private float zoomDamping = 14f;
@@ -64,6 +74,9 @@ namespace NHN.Presentation.Battle
         private float _lastPinchDistance;
         private float _lastTapTime = -10f;
 
+        /// <summary>depthOfFieldVolume에서 1회 조회해 캐시 — 못 찾으면 null(연동 비활성).</summary>
+        private DepthOfField _depthOfField;
+
         private void Awake()
         {
             _camera = GetComponent<Camera>();
@@ -75,6 +88,12 @@ namespace NHN.Presentation.Battle
             if (maxDistance <= 0f)
             {
                 maxDistance = _defaultDistance;
+            }
+            // profile(공유 아님, 인스턴스 카피)로 조회해야 에셋 원본을 건드리지 않는다 —
+            // Volume.profile은 sharedProfile을 처음 읽을 때 자동으로 인스턴스를 만들어 돌려준다.
+            if (depthOfFieldVolume != null && depthOfFieldVolume.profile != null)
+            {
+                depthOfFieldVolume.profile.TryGet(out _depthOfField);
             }
             ResetView();
         }
@@ -90,6 +109,25 @@ namespace NHN.Presentation.Battle
             UpdateZoomDamping(Time.deltaTime);
             UpdateShake(Time.deltaTime);
             ApplyTransform();
+            UpdateDepthOfField();
+        }
+
+        /// <summary>
+        /// Focal Length를 현재 줌 거리(_appliedDistance)에 선형 연동한다 — 근접(minDistance)일수록
+        /// focalLengthAtMinDistance, 원경(maxDistance)일수록 focalLengthAtMaxDistance (둘 다 인스펙터
+        /// 설정 가능, 기본 100~0). 실제 카메라 위치를 결정하는 감쇠된 거리를 기준으로 삼아 DoF도
+        /// 카메라 움직임과 같은 속도로 부드럽게 따라간다.
+        /// </summary>
+        private void UpdateDepthOfField()
+        {
+            if (_depthOfField == null)
+            {
+                return;
+            }
+            float t = maxDistance > minDistance
+                ? Mathf.InverseLerp(minDistance, maxDistance, _appliedDistance)
+                : 0f;
+            _depthOfField.focalLength.value = Mathf.Lerp(focalLengthAtMinDistance, focalLengthAtMaxDistance, t);
         }
 
         /// <summary>

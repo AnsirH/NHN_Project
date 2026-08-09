@@ -5,7 +5,9 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "OutGame.Logic",
-        "OutGame.ScriptableObjects"
+        "OutGame.ScriptableObjects",
+        "OutGame",
+        "UnityEngine.UI"
     ],
     "includePlatforms": [
         "Editor"

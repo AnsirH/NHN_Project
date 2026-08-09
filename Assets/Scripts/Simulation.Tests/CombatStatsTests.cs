@@ -193,7 +193,7 @@ namespace NHN.Simulation.Tests
         [Test]
         public void ZeroDefenseAndCrit_PreservesExistingBattleOutcome()
         {
-            var warrior = AssetDatabase.LoadAssetAtPath<RoleData>(WarriorPath);
+            var warrior = AssetDatabase.LoadAssetAtPath<SquadData>(WarriorPath);
             Assert.IsNotNull(warrior);
             RoleDefinition role = warrior.ToDefinition();
             Assert.AreEqual(0f, role.Defense, "기존 롤 에셋의 방어력은 0이어야 한다 (회귀 방어 전제)");

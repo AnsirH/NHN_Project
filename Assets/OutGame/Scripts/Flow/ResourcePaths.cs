@@ -19,6 +19,7 @@ namespace OutGame.Flow
         public const string RoomTypeVisuals = "OutGame/RoomTypeVisuals";
         public const string Maps = "OutGame/Data/Maps";
         public const string Events = "OutGame/Data/Events";
+        public const string LoreFragments = "OutGame/Data/LoreFragments";
         public const string Augments = "OutGame/Data/Augments";
         public const string Characters = "OutGame/Data/Characters";
         public const string Data = "OutGame/Data"; // ArmyDefinition/ItemDefinition 공용 루트

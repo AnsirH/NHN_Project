@@ -391,7 +391,7 @@ namespace OutGame.Tests.EditMode
         {
             deployment.Place(run.armies[0].instanceId, 0);
             Assert.Throws<ArgumentException>(() => deployment.BuildSetup(
-                "room_0_3", RoomType.Rest, "enc", run, Items, Defs, NoAugments, Characters, NoEnemies),
+                "room_0_3", RoomType.Reinforcement, "enc", run, Items, Defs, NoAugments, Characters, NoEnemies),
                 "배치는 전투/보스 방에서만 (§4-8)");
         }
 

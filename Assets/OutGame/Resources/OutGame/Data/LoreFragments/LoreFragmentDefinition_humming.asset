@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b090f60d953351c4387e182b15f2203f, type: 3}
+  m_Name: LoreFragmentDefinition_humming
+  m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.LoreFragmentDefinition
+  fragmentId: humming
+  text: "\uC57C\uC601 \uC911, \uBCF4\uCD08\uB97C \uC11C\uB358 \uD759\uC778\uD615
+    \uD558\uB098\uAC00 \uB0AE\uAC8C \uCF67\uB178\uB798 \uAC19\uC740 \uC18C\uB9AC\uB97C
+    \uD758\uB9B0\uB2E4. \uACE1\uC870\uB784 \uAC83\uB3C4 \uC5C6\uB294 \uC9E7\uC740
+    \uC18C\uC808 \u2014 \uC774\uB0B4 \uB2E4\uC2DC, \uC544\uBB34 \uC18C\uB9AC\uB3C4
+    \uB0B4\uC9C0 \uC54A\uB294\uB2E4."

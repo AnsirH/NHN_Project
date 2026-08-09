@@ -1,7 +1,7 @@
 namespace NHN.Simulation.Battle
 {
     /// <summary>
-    /// 롤 1종의 순수 정의. 단일 출처는 RoleData(SO)이며 ToDefinition()으로 변환된다.
+    /// 롤 1종의 순수 정의. 단일 출처는 SquadData(SO)이며 ToDefinition()으로 변환된다.
     /// 롤별 클래스 금지 — 모든 롤은 이 데이터 하나로 표현된다.
     /// v4: 병사 트리거 기믹 폐지 — 롤의 개성은 이동 패턴 + 타겟팅 + 스탯 프로필로만 구성된다 (기획 §7).
     /// 장군의 전투 능력도 이 구조를 재사용한다 (GeneralDefinition.CombatRole).

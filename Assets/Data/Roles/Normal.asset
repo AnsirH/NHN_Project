@@ -11,15 +11,15 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7408ee50e8163d4ca6f4a7a33c45507, type: 3}
   m_Name: Normal
-  m_EditorClassIdentifier: NHN.Data::NHN.Data.RoleData
+  m_EditorClassIdentifier: NHN.Data::NHN.Data.SquadData
   maxHp: 80
   attackDamage: 8
   defense: 0
   critChancePercent: 0
   attackInterval: 1
-  attackRange: 1.2
+  attackRange: 0.5
   moveSpeed: 3.2
-  unitRadius: 0.5
+  unitRadius: 0.2
   positionFilter: 0
   priorities: 
   movePattern: 0
@@ -27,8 +27,21 @@ MonoBehaviour:
   moveParamB: 1
   projectileSpeed: 0
   projectileArcHeight: 2
+  generalHpMultiplier: 5
+  generalDamageMultiplier: 1.2
+  generalSizeMultiplier: 1.3
+  generalPassive: 0
+  generalPassiveValue: 0
+  generalChargeCondition: 0
+  generalChargeRequired: 0
+  generalActiveEffect: 0
+  generalActiveParamA: 0
+  generalActiveParamB: 0
+  generalActiveDuration: 0
+  generalLeadRankOffset: 1
   roleColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
-  viewPrefab: {fileID: 4702333043996612597, guid: 6da5a9bef589bd14f9e74e027ebbc726, type: 3}
+  soldierViewPrefab: {fileID: 3534342333997546649, guid: 34bce4c5f270bb84d97fd3afa36ee52e, type: 3}
+  generalViewPrefab: {fileID: 2223098995641795304, guid: c5bdf2d99009fb848a2a42b77f22b3d6, type: 3}
   attackSounds:
   - {fileID: 8300000, guid: 0b8cdf34f85764f43be64c1eb0e21198, type: 3}
   - {fileID: 8300000, guid: fc17e2669cee9bc4280c0d6520d3d7db, type: 3}

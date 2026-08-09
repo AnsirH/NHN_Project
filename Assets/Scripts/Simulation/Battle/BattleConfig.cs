@@ -48,6 +48,35 @@ namespace NHN.Simulation.Battle
         /// 밀집 시 떨림·밀림 없이 부드럽게 자리를 잡는다.
         /// </summary>
         public readonly float SeparationStrength;
+        /// <summary>
+        /// 분대 대형 타이트니스 허용 오차 — 대형 슬롯(앵커+오프셋)과의 거리가 이 안이어야
+        /// "정렬됨"으로 본다. 이 값 이내여야 대형 앵커가 전진하거나 Fighting으로 전환한다
+        /// (2026-08-09, 분대 대형 이동).
+        /// </summary>
+        public readonly float FormationTightnessTolerance;
+        /// <summary>
+        /// 분대 교전 판정 반경의 여유값 — 반경 = 분대 역할군 AttackRange + 대형 반경 + 이 값.
+        /// 경계에서 정지·진동하지 않도록 약간의 여유를 둔다 (2026-08-09).
+        /// </summary>
+        public readonly float FormationEngageRangeMargin;
+        /// <summary>
+        /// 대형(스폰 최초 배치 + 전투 후 재정렬 공통) 몇 열 종대로 설지 — 장군 바로 뒤부터 이
+        /// 폭만큼 좌우로 채우고 넘치면 다음 랭크로 (2026-08-09, 사용자 요청: 장군 맨 앞 + 5열 종대).
+        /// </summary>
+        public readonly int FormationColumnWidth;
+        /// <summary>
+        /// 대형 유닛 간 간격 = 역할군 UnitRadius × 이 배율. 값이 클수록 성글게, 작을수록 빽빽하게
+        /// 선다 (2026-08-09, 유닛 간격을 쉽게 조절할 수 있도록 노출).
+        /// </summary>
+        public readonly float FormationSpacingMultiplier;
+        /// <summary>
+        /// 원거리 유닛이 근접 공격을 받았을 때 부여되는 AttackDown 지속시간(초). 재적중 시
+        /// 최댓값으로 갱신된다(StatusEffectSystem.Apply 공통 규칙) — 계속 두들겨 맞으면 안 끊김
+        /// (2026-08-10).
+        /// </summary>
+        public readonly float MeleeSuppressDuration;
+        /// <summary>원거리 유닛이 근접 공격을 받았을 때의 공격력 배율 (0.5 = 50% 감소, 2026-08-10).</summary>
+        public readonly float MeleeSuppressMagnitude;
 
         public BattleConfig(
             int ticksPerSecond, float arenaHalfWidth, float arenaHalfHeight,
@@ -56,12 +85,21 @@ namespace NHN.Simulation.Battle
             float deploymentDepth, float deploymentHalfWidth,
             float defenseK, float critMultiplier,
             float skillUpgradeChargeReduction, float minChargeRequiredRatio,
-            float separationOverlapRatio, float separationStrength)
+            float separationOverlapRatio, float separationStrength,
+            float formationTightnessTolerance, float formationEngageRangeMargin,
+            int formationColumnWidth, float formationSpacingMultiplier,
+            float meleeSuppressDuration, float meleeSuppressMagnitude)
         {
             SkillUpgradeChargeReduction = skillUpgradeChargeReduction;
             MinChargeRequiredRatio = minChargeRequiredRatio;
             SeparationOverlapRatio = separationOverlapRatio;
             SeparationStrength = separationStrength;
+            FormationTightnessTolerance = formationTightnessTolerance;
+            FormationEngageRangeMargin = formationEngageRangeMargin;
+            FormationColumnWidth = formationColumnWidth;
+            FormationSpacingMultiplier = formationSpacingMultiplier;
+            MeleeSuppressDuration = meleeSuppressDuration;
+            MeleeSuppressMagnitude = meleeSuppressMagnitude;
             TicksPerSecond = ticksPerSecond;
             ArenaHalfWidth = arenaHalfWidth;
             ArenaHalfHeight = arenaHalfHeight;

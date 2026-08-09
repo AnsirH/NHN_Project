@@ -21,7 +21,7 @@ namespace OutGame.Tests.PlayMode
         private GameObject canvasGo;
         private EventPanel panel;
         private RunState run;
-        private EventDefinition deserters;
+        private EventDefinition runeRock; // 2026-08-03 EventDefinition_Deserters → RuneRock 개명(a637503)에 맞춰 갱신
 
         [SetUp]
         public void SetUp()
@@ -29,12 +29,12 @@ namespace OutGame.Tests.PlayMode
             canvasGo = new GameObject("TestCanvas", typeof(Canvas), typeof(CanvasScaler));
             canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
 
-            GameObject prefab = Resources.Load<GameObject>("OutGame/EventPanel");
+            GameObject prefab = Resources.Load<GameObject>("OutGame/Panels/EventPanel");
             Assert.IsNotNull(prefab, "EventPanel 프리팹 없음 — SceneSetupM4UI.Run() 실행 필요");
             panel = Object.Instantiate(prefab, canvasGo.transform).GetComponent<EventPanel>();
 
-            deserters = Resources.Load<EventDefinition>("OutGame/Data/Events/EventDefinition_Deserters");
-            Assert.IsNotNull(deserters);
+            runeRock = Resources.Load<EventDefinition>("OutGame/Data/Events/EventDefinition_RuneRock");
+            Assert.IsNotNull(runeRock);
 
             MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
             run = RunStateFactory.Create(map, new RunConfig { startingArmyCount = 1 });
@@ -46,18 +46,18 @@ namespace OutGame.Tests.PlayMode
         [UnityTest]
         public IEnumerator Open_SpawnsButtonPerChoice()
         {
-            panel.Open(deserters, run, DefaultMaxArmyCount);
+            panel.Open(runeRock, run, DefaultMaxArmyCount);
             yield return null;
 
             var buttons = panel.GetComponentsInChildren<Button>()
                 .Where(b => b.transform.parent.name == "ChoiceContainer").ToArray();
-            Assert.AreEqual(2, buttons.Length, "탈영병 이벤트는 선택지 2개");
+            Assert.AreEqual(2, buttons.Length, "숲길의 룬석 이벤트는 선택지 2개");
         }
 
         [UnityTest]
         public IEnumerator SelectChoice_AppliesRewardAndShowsResult()
         {
-            panel.Open(deserters, run, DefaultMaxArmyCount);
+            panel.Open(runeRock, run, DefaultMaxArmyCount);
             yield return null;
 
             int armiesBefore = run.armies.Count;
@@ -79,8 +79,8 @@ namespace OutGame.Tests.PlayMode
         [UnityTest]
         public IEnumerator SelectChoice_ArmyRewardAtCap_ShowsFailureMessageAndDoesNotAddArmy()
         {
-            // 탈영병 이벤트 첫 선택지는 군대 획득 — 상한을 현재 보유 수(1)로 맞춰 즉시 꽉 찬 상태를 재현
-            panel.Open(deserters, run, maxArmyCountValue: run.armies.Count);
+            // 숲길의 룬석 이벤트 첫 선택지는 군대 획득 — 상한을 현재 보유 수(1)로 맞춰 즉시 꽉 찬 상태를 재현
+            panel.Open(runeRock, run, maxArmyCountValue: run.armies.Count);
             yield return null;
 
             int armiesBefore = run.armies.Count;
@@ -99,7 +99,7 @@ namespace OutGame.Tests.PlayMode
         [UnityTest]
         public IEnumerator Continue_FiresCompletedAndHidesPanel()
         {
-            panel.Open(deserters, run, DefaultMaxArmyCount);
+            panel.Open(runeRock, run, DefaultMaxArmyCount);
             yield return null;
 
             panel.GetComponentsInChildren<Button>().First(b => b.transform.parent.name == "ChoiceContainer").onClick.Invoke();
@@ -121,7 +121,7 @@ namespace OutGame.Tests.PlayMode
             // 이벤트 자체는 EventSelector가 아니라 플로우가 마킹하므로, 여기선 EventPanel이
             // run 상태를 직접 건드리지 않는다는 것만 확인 (선택 전엔 visitedEventIds 불변)
             Assert.IsEmpty(run.visitedEventIds);
-            panel.Open(deserters, run, DefaultMaxArmyCount);
+            panel.Open(runeRock, run, DefaultMaxArmyCount);
             yield return null;
             Assert.IsEmpty(run.visitedEventIds, "방문 기록은 플로우 컨트롤러 책임 — 패널이 직접 추가하지 않음");
         }

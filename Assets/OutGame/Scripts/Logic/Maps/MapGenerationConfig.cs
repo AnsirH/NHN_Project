@@ -1,4 +1,5 @@
 using System;
+using UnityEngine.Serialization;
 
 namespace OutGame.Logic.Maps
 {
@@ -20,7 +21,9 @@ namespace OutGame.Logic.Maps
         // 방 타입 확률 — 고정층 제외 나머지 층 (상세 기획 §5.3 초안, 2026-07-19 증강 추가 개정: 40/25/15/20)
         public float battleWeight = 40f;
         public float eventWeight = 25f;
-        public float restWeight = 15f;
+        // 2026-08-08: restWeight → reinforcementWeight로 개명(Docs/OutGame/화면 명칭 정리.md) —
+        // 필드는 "휴식"이 아니라 증원 확률 가중치. FormerlySerializedAs로 기존 에셋에 저장된 값 보존.
+        [FormerlySerializedAs("restWeight")] public float reinforcementWeight = 15f;
         public float augmentWeight = 20f;
 
         // 뷰 배치 참고용 레이아웃 값
@@ -39,7 +42,7 @@ namespace OutGame.Logic.Maps
             preBossNodeCount = preBossNodeCount,
             battleWeight = battleWeight,
             eventWeight = eventWeight,
-            restWeight = restWeight,
+            reinforcementWeight = reinforcementWeight,
             augmentWeight = augmentWeight,
             layerDistance = layerDistance,
             nodesApartDistance = nodesApartDistance,
@@ -58,10 +61,10 @@ namespace OutGame.Logic.Maps
                 throw new ArgumentException($"startingNodeCount는 2 ≤ min ≤ max ≤ gridWidth 여야 합니다. 현재: [{startingNodeCount.min},{startingNodeCount.max}]");
             if (preBossNodeCount.min < 1 || preBossNodeCount.min > preBossNodeCount.max || preBossNodeCount.max > gridWidth)
                 throw new ArgumentException($"preBossNodeCount는 1 ≤ min ≤ max ≤ gridWidth 여야 합니다. 현재: [{preBossNodeCount.min},{preBossNodeCount.max}]");
-            if (battleWeight <= 0f || eventWeight < 0f || restWeight < 0f || augmentWeight < 0f)
+            if (battleWeight <= 0f || eventWeight < 0f || reinforcementWeight < 0f || augmentWeight < 0f)
                 throw new ArgumentException(
-                    $"확률 가중치는 battle > 0, event/rest/augment ≥ 0 이어야 합니다. " +
-                    $"현재: {battleWeight}/{eventWeight}/{restWeight}/{augmentWeight}");
+                    $"확률 가중치는 battle > 0, event/reinforcement/augment ≥ 0 이어야 합니다. " +
+                    $"현재: {battleWeight}/{eventWeight}/{reinforcementWeight}/{augmentWeight}");
         }
     }
 }

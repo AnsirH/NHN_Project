@@ -46,7 +46,8 @@ namespace NHN.Simulation.Tests
             Assert.AreEqual("Normal", catalog.ResolveRole(null).name, "빈 roleId는 노멀 병사여야 한다 (기획 §5)");
             Assert.AreEqual("Normal", catalog.ResolveRole("Cavalry").name, "미등록 키는 노멀 폴백 — 연동 초기 키 불일치 대비");
 
-            Assert.AreEqual("WarriorGeneral", catalog.ResolveGeneral("WarriorGeneral").name);
+            Assert.AreEqual("Warrior", catalog.ResolveGeneral("WarriorGeneral").name,
+                "병사/장군 통합 이후 generalId는 여전히 'roleId+General'이지만 실제 에셋 이름은 roleId다");
             Assert.IsNull(catalog.ResolveGeneral(null), "빈 generalId는 장군 없음이어야 한다");
             Assert.IsNull(catalog.ResolveGeneral("UnknownGeneral"), "미등록 장군 키는 장군 없음 폴백");
         }
@@ -94,7 +95,7 @@ namespace NHN.Simulation.Tests
             BattleCatalog catalog = LoadCatalog();
             BattleConfig config = LoadConfig();
             RoleDefinition assetRole = catalog.ResolveRole("Archer").ToDefinition();
-            GeneralDefinition assetGeneral = catalog.ResolveGeneral("ArcherGeneral").ToDefinition();
+            GeneralDefinition assetGeneral = catalog.ResolveGeneral("ArcherGeneral").ToGeneralDefinition();
 
             var squads = new System.Collections.Generic.List<SquadRequest>
             {
@@ -147,7 +148,7 @@ namespace NHN.Simulation.Tests
             BattleCatalog catalog = LoadCatalog();
             BattleConfig config = LoadConfig();
             RoleDefinition assetRole = catalog.ResolveRole("Warrior").ToDefinition();
-            GeneralDefinition assetGeneral = catalog.ResolveGeneral("WarriorGeneral").ToDefinition();
+            GeneralDefinition assetGeneral = catalog.ResolveGeneral("WarriorGeneral").ToGeneralDefinition();
 
             var squads = new System.Collections.Generic.List<SquadRequest>
             {
@@ -223,7 +224,7 @@ namespace NHN.Simulation.Tests
         {
             BattleCatalog catalog = LoadCatalog();
             BattleConfig config = LoadConfig();
-            float baseRequired = catalog.ResolveGeneral("WarriorGeneral").ToDefinition().ChargeRequired;
+            float baseRequired = catalog.ResolveGeneral("WarriorGeneral").ToGeneralDefinition().ChargeRequired;
             Assert.Greater(baseRequired, 0f, "충전 필요량이 데이터로 정의돼 있어야 한다");
             Assert.Greater(config.SkillUpgradeChargeReduction, 0f, "감소율이 BattleConfig에 있어야 한다");
 

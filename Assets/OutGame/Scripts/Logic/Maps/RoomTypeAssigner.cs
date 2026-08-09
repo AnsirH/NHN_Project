@@ -9,8 +9,10 @@ namespace OutGame.Logic.Maps
     /// 고정층: 1층=일반전투, 최상층=보스, 직전 층=증원.
     /// 나머지 층: 확률표(전투/이벤트/증원) + 제약(증원 연속 금지, 2층은 전투/이벤트,
     /// 한 노드에서 갈라지는 분기의 목적지 타입 중복 금지 — 만족 불가능할 때만 완화).
-    /// 2026-07-26: RoomType.Rest 열거값/필드명은 그대로 두고 표시명·기획 용어만 "증원"으로 개칭
-    /// (실제 효과가 회복이 아니라 병사 수 영구 증원이라 원래부터 이름이 안 맞았음).
+    /// 2026-07-26: 표시명·기획 용어를 "휴식"에서 "증원"으로 개칭(실제 효과가 회복이 아니라 병사 수
+    /// 영구 증원이라 원래부터 이름이 안 맞았음). 2026-08-08: 그때 호환을 위해 남겨뒀던
+    /// RoomType.Rest/restWeight 코드 식별자도 RoomType.Reinforcement/reinforcementWeight로 마저
+    /// 정리(Docs/OutGame/화면 명칭 정리.md).
     /// </summary>
     public static class RoomTypeAssigner
     {
@@ -43,7 +45,7 @@ namespace OutGame.Logic.Maps
             int y = node.point.y;
             if (y == 0) return RoomType.NormalBattle;
             if (y == topFloor) return RoomType.Boss;
-            if (y == topFloor - 1) return RoomType.Rest;
+            if (y == topFloor - 1) return RoomType.Reinforcement;
 
             List<RoomType> allowed = BuildAllowedTypes(node, config, byPoint, assigned, y, topFloor);
             return WeightedPick(allowed, config, rng);
@@ -61,24 +63,24 @@ namespace OutGame.Logic.Maps
 
             // 가중치 0 = config로 비활성화된 타입 (battle은 Validate가 양수를 보장)
             if (config.eventWeight <= 0f) forbidden.Add(RoomType.Event);
-            if (config.restWeight <= 0f) forbidden.Add(RoomType.Rest);
+            if (config.reinforcementWeight <= 0f) forbidden.Add(RoomType.Reinforcement);
             if (config.augmentWeight <= 0f) forbidden.Add(RoomType.Augment);
 
             // 2층은 전투/이벤트만 허용 (§5.3) — 증원뿐 아니라 증강도 제외
             if (y == 1)
             {
-                forbidden.Add(RoomType.Rest);
+                forbidden.Add(RoomType.Reinforcement);
                 forbidden.Add(RoomType.Augment);
             }
             // 고정 증원층 직전 층은 증원 금지 (연속 방지)
             if (y == topFloor - 2)
-                forbidden.Add(RoomType.Rest);
+                forbidden.Add(RoomType.Reinforcement);
 
             // 선행 노드가 증원이면 증원 금지 (증원 연속 금지)
             foreach (GridPoint predPoint in node.incoming)
             {
-                if (byPoint.TryGetValue(predPoint, out MapNode pred) && pred.roomType == RoomType.Rest)
-                    forbidden.Add(RoomType.Rest);
+                if (byPoint.TryGetValue(predPoint, out MapNode pred) && pred.roomType == RoomType.Reinforcement)
+                    forbidden.Add(RoomType.Reinforcement);
             }
 
             List<RoomType> baseAllowed = CandidatesExcept(forbidden);
@@ -104,7 +106,7 @@ namespace OutGame.Logic.Maps
             var candidates = new List<RoomType>(4);
             if (!forbidden.Contains(RoomType.NormalBattle)) candidates.Add(RoomType.NormalBattle);
             if (!forbidden.Contains(RoomType.Event)) candidates.Add(RoomType.Event);
-            if (!forbidden.Contains(RoomType.Rest)) candidates.Add(RoomType.Rest);
+            if (!forbidden.Contains(RoomType.Reinforcement)) candidates.Add(RoomType.Reinforcement);
             if (!forbidden.Contains(RoomType.Augment)) candidates.Add(RoomType.Augment);
             return candidates;
         }
@@ -135,7 +137,7 @@ namespace OutGame.Logic.Maps
             {
                 case RoomType.NormalBattle: return config.battleWeight;
                 case RoomType.Event: return config.eventWeight;
-                case RoomType.Rest: return config.restWeight;
+                case RoomType.Reinforcement: return config.reinforcementWeight;
                 case RoomType.Augment: return config.augmentWeight;
                 default: return 0f;
             }

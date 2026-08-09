@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: MapDefinition_Default
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.MapDefinition
   mapId: map_default
-  displayName: "\uBD81\uBD80 \uC804\uC120"
+  displayName: "\uBB34\uB108\uC9C4 \uC131\uD130"
   thumbnail: {fileID: 0}
-  difficultyLabel: "\uBCF4\uD1B5"
+  difficultyLabel: "\uC26C\uC6C0"
   generationConfig:
     mapName: Map01
     floorCount: 10

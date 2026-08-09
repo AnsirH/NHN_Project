@@ -54,18 +54,18 @@ namespace OutGame.Tests.EditMode
         [Test]
         public void Generate_ZeroRestWeight_NoRestOnProbabilityFloors()
         {
-            var config = new MapGenerationConfig { restWeight = 0f };
+            var config = new MapGenerationConfig { reinforcementWeight = 0f };
             int fixedRestFloor = config.floorCount - 2;
 
             for (int seed = 0; seed < 30; seed++)
             {
                 MapState map = new MapGenerator(config, seed).Generate();
                 var violations = map.nodes
-                    .Where(n => n.roomType == RoomType.Rest && n.point.y != fixedRestFloor)
+                    .Where(n => n.roomType == RoomType.Reinforcement && n.point.y != fixedRestFloor)
                     .ToList();
 
                 Assert.IsEmpty(violations,
-                    $"seed {seed}: restWeight=0인데 확률 배정 층에 증원 방 생성됨");
+                    $"seed {seed}: reinforcementWeight=0인데 확률 배정 층에 증원 방 생성됨");
             }
         }
 

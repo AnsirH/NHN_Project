@@ -13,8 +13,9 @@ namespace OutGame.UI.Deployment
         [SerializeField] private Image background;
         [SerializeField] private RectTransform cardContainer;
         [SerializeField] private GameObject emptyIndicator; // 빈 슬롯 초록 체크(2026-08-05, 배치 가능 표시)
+        [SerializeField] private int slotId; // 2026-08-07: 런타임 주입 대신 프리팹에 직접 구워 넣는다(에디터 가시성 요구사항).
 
-        public int SlotId { get; private set; }
+        public int SlotId => slotId;
         public RectTransform CardContainer => cardContainer;
 
         /// <summary>군대 카드가 이 슬롯에 드롭됐을 때 발행 (armyInstanceId, slotId).</summary>
@@ -23,12 +24,10 @@ namespace OutGame.UI.Deployment
         /// <summary>아이템이 카드 밖 슬롯 여백에 드롭됐을 때, 슬롯에 배치된 카드로 위임 발행 (아래 참고).</summary>
         public event Action<ArmyCardView, string> ItemDroppedOnOccupant;
 
-        public void Initialize(int slotId)
+        private void Awake()
         {
             if (background == null || cardContainer == null || emptyIndicator == null)
                 throw new InvalidOperationException("DeploySlotView 프리팹의 필드가 배선되지 않았습니다.");
-
-            SlotId = slotId;
         }
 
         /// <summary>occupied=false면 빈 슬롯 체크 표시를 보여준다(§ 사용자 확정 — 적 진영은 이 메서드를

@@ -15,6 +15,7 @@ using OutGame.UI;
 using OutGame.UI.Deployment;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace OutGame.Flow
 {
@@ -28,10 +29,13 @@ namespace OutGame.Flow
     /// </summary>
     public class InGameFlowController : MonoBehaviour
     {
-        [SerializeField] private RoomMapPanel mapPanel;
-        [SerializeField] private DummyRoomPanel roomPanel; // 런 종료(클리어/패배) 화면
+        [SerializeField] private RoomGraphPanel mapPanel;
+        // 2026-08-08: DummyRoomPanel/RestPanel → RunResultPanel/ReinforcementPanel로 개명
+        // (Docs/OutGame/화면 명칭 정리.md) — 기존 씬에 이미 배선된 참조를 잃지 않도록
+        // FormerlySerializedAs로 이전 필드명을 남겨둔다.
+        [FormerlySerializedAs("roomPanel")] [SerializeField] private RunResultPanel runResultPanel; // 런 종료(클리어/패배) 화면
         [SerializeField] private EventPanel eventPanel;
-        [SerializeField] private RestPanel restPanel;
+        [FormerlySerializedAs("restPanel")] [SerializeField] private ReinforcementPanel reinforcementPanel;
         [SerializeField] private AugmentPanel augmentPanel;
         [SerializeField] private ArmyDeploymentPanel deploymentPanel;
         [SerializeField] private ArmyFormationPopup armyFormationPopup; // 2026-07-26: 방 그래프의 "진영" 팝업
@@ -78,7 +82,7 @@ namespace OutGame.Flow
         {
             LoadResourcePools();
             WireRoomEvents();
-            roomPanel.Hide();
+            runResultPanel.Hide();
         }
 
         private void LoadResourcePools()
@@ -92,7 +96,7 @@ namespace OutGame.Flow
             if (itemDropConfigAsset == null)
                 itemDropConfigAsset = Resources.Load<ItemDropConfigAsset>(ResourcePaths.ItemDropConfigDefault);
 
-            if (mapPanel == null || roomPanel == null || eventPanel == null || restPanel == null
+            if (mapPanel == null || runResultPanel == null || eventPanel == null || reinforcementPanel == null
                 || augmentPanel == null || deploymentPanel == null || armyFormationPopup == null
                 || itemRewardPopup == null
                 || visuals == null || runConfig == null
@@ -139,9 +143,9 @@ namespace OutGame.Flow
         {
             mapPanel.RoomSelected += OnRoomSelected;
             mapPanel.FormationRequested += OnFormationRequested;
-            roomPanel.Completed += OnRoomCompleted;
+            runResultPanel.Completed += OnRoomCompleted;
             eventPanel.Completed += OnRoomCompleted;
-            restPanel.Completed += OnRoomCompleted;
+            reinforcementPanel.Completed += OnRoomCompleted;
             augmentPanel.Completed += OnRoomCompleted;
             deploymentPanel.Confirmed += OnBattleSetupConfirmed;
             armyFormationPopup.Changed += OnArmyFormationChanged;
@@ -194,9 +198,9 @@ namespace OutGame.Flow
         {
             if (mapPanel != null) mapPanel.RoomSelected -= OnRoomSelected;
             if (mapPanel != null) mapPanel.FormationRequested -= OnFormationRequested;
-            if (roomPanel != null) roomPanel.Completed -= OnRoomCompleted;
+            if (runResultPanel != null) runResultPanel.Completed -= OnRoomCompleted;
             if (eventPanel != null) eventPanel.Completed -= OnRoomCompleted;
-            if (restPanel != null) restPanel.Completed -= OnRoomCompleted;
+            if (reinforcementPanel != null) reinforcementPanel.Completed -= OnRoomCompleted;
             if (augmentPanel != null) augmentPanel.Completed -= OnRoomCompleted;
             if (deploymentPanel != null) deploymentPanel.Confirmed -= OnBattleSetupConfirmed;
             if (armyFormationPopup != null) armyFormationPopup.Changed -= OnArmyFormationChanged;
@@ -217,7 +221,7 @@ namespace OutGame.Flow
         {
             // 이 패널의 유일한 실제 진입 경로(OutGameFlowController)는 활성화 직후 반드시 Begin()을
             // 호출하지만, mapPanel.RoomSelected 자체는 그 보장에 기대지 않고 fail-fast로 확인한다
-            // (CharacterSelectController.OnConfirmClicked와 동일한 방어 — 코드 리뷰 HIGH 수정).
+            // (CharacterSelectPanel.OnConfirmClicked와 동일한 방어 — 코드 리뷰 HIGH 수정).
             if (run == null)
                 throw new InvalidOperationException("InGameFlowController.Begin(RunState)이 호출되지 않았습니다.");
 
@@ -229,7 +233,7 @@ namespace OutGame.Flow
             mapPanel.Refresh();
 
             // 방 그래프는 진영 팝업(OnFormationRequested)에서만 의도적으로 dim 배경 뒤에 계속 보이게
-            // 둔다 — 실제 방 콘텐츠(이벤트/휴식/증강/전투)로 넘어갈 때는 65% 반투명 dim 배경 뒤로
+            // 둔다 — 실제 방 콘텐츠(이벤트/증원/증강/전투)로 넘어갈 때는 65% 반투명 dim 배경 뒤로
             // 그래프가 그대로 겹쳐 보이던 문제가 있었다(2026-08-04 사용자 리포트) — 방 처리가 끝나
             // OnRoomCompleted가 부를 때까지 확실히 닫아둔다.
             mapPanel.Close();
@@ -250,8 +254,8 @@ namespace OutGame.Flow
                     OpenEventRoom();
                     run.powerRoomsVisited++;
                     break;
-                case RoomType.Rest:
-                    restPanel.Open(run, runConfig.ToData(),
+                case RoomType.Reinforcement:
+                    reinforcementPanel.Open(run, runConfig.ToData(),
                         armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), augmentDefsById.Values.ToList());
                     run.powerRoomsVisited++;
                     break;
@@ -325,7 +329,7 @@ namespace OutGame.Flow
             {
                 runEnded = true;
                 RunSaveService.DeleteSave(savePath); // 패배 — 런 종료 (§4-14)
-                roomPanel.ShowDefeat();
+                runResultPanel.ShowDefeat();
                 return;
             }
 
@@ -365,7 +369,7 @@ namespace OutGame.Flow
                 // 보스 "방문"이 아니라 "승리"가 런 클리어 조건이다 (MapProgress.HasVisitedBoss와 혼동 주의).
                 runEnded = true;
                 RunSaveService.DeleteSave(savePath); // 런 종료 — 이어하기 대상에서 제외 (§5.1)
-                roomPanel.ShowRunClear();
+                runResultPanel.ShowRunClear();
                 return;
             }
 

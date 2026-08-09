@@ -11,15 +11,15 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7408ee50e8163d4ca6f4a7a33c45507, type: 3}
   m_Name: Hunter
-  m_EditorClassIdentifier: NHN.Data::NHN.Data.RoleData
+  m_EditorClassIdentifier: NHN.Data::NHN.Data.SquadData
   maxHp: 75
   attackDamage: 13
   defense: 0
   critChancePercent: 0
   attackInterval: 1.1
-  attackRange: 1.2
+  attackRange: 0.5
   moveSpeed: 3.2
-  unitRadius: 0.45
+  unitRadius: 0.2
   positionFilter: 0
   priorities: 0100000002000000
   movePattern: 0
@@ -27,8 +27,21 @@ MonoBehaviour:
   moveParamB: 1
   projectileSpeed: 0
   projectileArcHeight: 0.8
+  generalHpMultiplier: 8
+  generalDamageMultiplier: 1.5
+  generalSizeMultiplier: 1.3
+  generalPassive: 1
+  generalPassiveValue: 0.15
+  generalChargeCondition: 4
+  generalChargeRequired: 8
+  generalActiveEffect: 13
+  generalActiveParamA: 1.5
+  generalActiveParamB: 0
+  generalActiveDuration: 6
+  generalLeadRankOffset: 1
   roleColor: {r: 1, g: 0.6, b: 0.15, a: 1}
-  viewPrefab: {fileID: 8040072477810646663, guid: 09217c5f390ea254ab6dda070c3e6657, type: 3}
+  soldierViewPrefab: {fileID: 4176577089874135601, guid: bebf82e7290f9b5499df009f2d588c8e, type: 3}
+  generalViewPrefab: {fileID: 7550798743312032342, guid: 4e41e56c3261a5d42b675cbd17ee2851, type: 3}
   attackSounds:
   - {fileID: 8300000, guid: fbd22b1bf4c7d7f499391798abb40585, type: 3}
   - {fileID: 8300000, guid: bfe7dc0986ab4d941b6f73f1f2fdb5c7, type: 3}

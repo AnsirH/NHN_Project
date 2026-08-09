@@ -127,6 +127,8 @@ CLAUDE.local.md
 !/Docs/OutGame/상세 기획.md
 !/Docs/OutGame/적 데이터 연동 가이드.md
 !/Docs/OutGame/스토리 기획.md
+!/Docs/OutGame/로딩 화면 - 의지의 파편 설계.md
+!/Docs/OutGame/화면 명칭 정리.md
 
 # UI 스크린샷 캡처 (시각 검증 루프 — 개인 도구)
 /ui-captures/
@@ -151,6 +153,9 @@ CLAUDE.local.md
 # OMC 런타임 상태 (프로젝트 어디에서 생성되든 커밋 금지)
 .omc/
 **/.omc/
+
+# 개인 참고 이미지 (저장소 루트에 임시로 놓인 스크린샷 등)
+/슬더스맵그림.jpg
 
 # MCP 스크린샷 캡처 산출물 (진단용 — 리포지토리에 넣지 않는다)
 /[Aa]ssets/Screenshots/

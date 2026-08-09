@@ -33,6 +33,7 @@ namespace OutGame.Tests.PlayMode
         private ItemDefinition bowDef;
         private ItemDefinition shieldDef;
         private PlayerCharacterDefinition characterDef;
+        private BattleFieldConfig fieldConfigAsset;
         private RunConfig runConfig;
         private static readonly List<EnemyArmy> TestEnemyComposition = new List<EnemyArmy>
         {
@@ -53,7 +54,7 @@ namespace OutGame.Tests.PlayMode
 
             eventSystemGo = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
 
-            GameObject prefab = Resources.Load<GameObject>("OutGame/ArmyDeploymentPanel");
+            GameObject prefab = Resources.Load<GameObject>("OutGame/Panels/ArmyDeploymentPanel");
             Assert.IsNotNull(prefab, "ArmyDeploymentPanel 프리팹이 없음 — SceneSetupM3UI.Run() 실행 필요");
             panel = Object.Instantiate(prefab, canvasGo.transform).GetComponent<ArmyDeploymentPanel>();
 
@@ -67,6 +68,8 @@ namespace OutGame.Tests.PlayMode
             armyDefWarrior = Resources.Load<ArmyDefinition>("OutGame/Data/ArmyDefinition_army_warrior");
             bowDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Bow");
             shieldDef = Resources.Load<ItemDefinition>("OutGame/Data/ItemDefinition_Shield");
+            fieldConfigAsset = Resources.Load<BattleFieldConfig>("OutGame/Data/BattleFieldConfig_Default");
+            Assert.IsNotNull(fieldConfigAsset, "BattleFieldConfig_Default 에셋이 없음");
             Assert.IsNotNull(armyDefBasic);
             Assert.IsNotNull(armyDefNone, "army_none 정의 없음 — CreateClassArmyDefinitions.Run() 실행 필요");
             Assert.IsNotNull(armyDefArcher, "army_archer 정의 없음 — CreateClassArmyDefinitions.Run() 실행 필요");
@@ -133,13 +136,14 @@ namespace OutGame.Tests.PlayMode
         // 적 진영도 아군과 동일한 ArmyCardView를 재사용하므로(2026-07-26), panel 전체를 뒤지면 적
         // 카드까지 섞여 나온다 — 실제 보유 군대 카드만 필요한 테스트는 반드시 아군 격자로 범위를 좁힌다.
         private ArmyCardView[] AllyCards() =>
-            panel.transform.Find("MainRow/AllyFormationPanel/SlotGrid").GetComponentsInChildren<ArmyCardView>(includeInactive: true);
+            panel.transform.Find("MainRow/AllyFormationPanel/FormationGridPanel/GridContent").GetComponentsInChildren<ArmyCardView>(includeInactive: true);
 
         // 자동 배치가 이제 slotId 오름차순이 아니라 "가운데 전방" 기준점에서부터 채워지므로
         // (2026-07-26 사용자 확정), slotId가 가장 낮은 슬롯이 더 이상 항상 점유돼 있다는 보장이 없다 —
-        // 카드가 실제로 들어있는 슬롯만 걸러서 써야 한다.
+        // 카드가 실제로 들어있는 슬롯만 걸러서 써야 한다. 적 진영도 이제 같은 DeploySlotView를 쓰므로
+        // (2026-08-07, 공용 FormationGridPanel) panel 전체가 아니라 아군 격자로 범위를 좁혀야 한다.
         private List<DeploySlotView> OccupiedAllySlotsOrdered() =>
-            panel.GetComponentsInChildren<DeploySlotView>()
+            panel.transform.Find("MainRow/AllyFormationPanel").GetComponentsInChildren<DeploySlotView>()
                 .Where(s => s.CardContainer.GetComponentInChildren<ArmyCardView>() != null)
                 .OrderBy(s => s.SlotId)
                 .ToList();
@@ -188,10 +192,10 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            Transform allySlotGrid = panel.transform.Find("MainRow/AllyFormationPanel/SlotGrid");
-            Transform enemySlotGrid = panel.transform.Find("MainRow/EnemyColumn/SlotGrid");
-            Assert.IsNotNull(enemySlotGrid, "적 진영 슬롯 컨테이너가 있어야 함");
-            Assert.AreEqual(allySlotGrid.childCount, enemySlotGrid.childCount,
+            Transform allySlotArea = panel.transform.Find("MainRow/AllyFormationPanel/FormationGridPanel/GridContent");
+            Transform enemySlotArea = panel.transform.Find("MainRow/EnemyColumn/FormationGridPanel/GridContent");
+            Assert.IsNotNull(enemySlotArea, "적 진영 슬롯 컨테이너가 있어야 함");
+            Assert.AreEqual(allySlotArea.childCount, enemySlotArea.childCount,
                 "적 진영 격자 크기는 아군과 같아야 함(§5.7)");
         }
 
@@ -205,8 +209,8 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            Transform enemySlotGrid = panel.transform.Find("MainRow/EnemyColumn/SlotGrid");
-            var enemyCards = enemySlotGrid.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
+            Transform enemySlotArea = panel.transform.Find("MainRow/EnemyColumn/FormationGridPanel/GridContent");
+            var enemyCards = enemySlotArea.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
             Assert.AreEqual(TestEnemyComposition.Count, enemyCards.Length, "생성된 적 구성 개수만큼만 카드가 있어야 함");
 
             foreach (ArmyCardView card in enemyCards)
@@ -224,7 +228,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            var allySlots = panel.transform.Find("MainRow/AllyFormationPanel/SlotGrid")
+            var allySlots = panel.transform.Find("MainRow/AllyFormationPanel/FormationGridPanel/GridContent")
                 .GetComponentsInChildren<DeploySlotView>(includeInactive: true);
             Assert.IsTrue(allySlots.Length > TestEnemyComposition.Count, "빈 슬롯이 있어야 검증 가능(슬롯 수 > 보유 군대 수)");
 
@@ -244,18 +248,15 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            Transform enemySlotGrid = panel.transform.Find("MainRow/EnemyColumn/SlotGrid");
-            var gridLayout = enemySlotGrid.GetComponent<GridLayoutGroup>();
-            int columns = gridLayout.constraintCount;
+            // 슬롯이 더 이상 GridLayoutGroup으로 배치되지 않으므로(2026-08-07, 정적 프리팹 + 앵커 배치),
+            // 열(column) 판정은 GridLayoutGroup.constraintCount/sibling index 대신 DeploySlotView.SlotId
+            // (=row*columns+col, BattleFieldConfigData.GenerateSlots)로 직접 계산한다.
+            Transform enemySlotArea = panel.transform.Find("MainRow/EnemyColumn/FormationGridPanel/GridContent");
+            int columns = fieldConfigAsset.ToData().columns;
 
-            int ColumnOf(ArmyCardView card)
-            {
-                Transform slotRoot = card.transform.parent;
-                while (slotRoot.parent != enemySlotGrid) slotRoot = slotRoot.parent;
-                return slotRoot.GetSiblingIndex() % columns;
-            }
+            int ColumnOf(ArmyCardView card) => card.GetComponentInParent<DeploySlotView>().SlotId % columns;
 
-            var enemyCards = enemySlotGrid.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
+            var enemyCards = enemySlotArea.GetComponentsInChildren<ArmyCardView>(includeInactive: true);
             // 카드에 이름 텍스트가 없으므로(2026-08-05) ArmyInstanceId("enemy_{slotId}")로 원래
             // EnemyArmy(및 그 armyClass)와 역상관해 어떤 카드가 어떤 병과인지 식별한다.
             EnemyArmy warriorEnemy = TestEnemyComposition.First(e => e.armyClass == ArmyClass.Warrior);
@@ -295,7 +296,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            Text enemyPowerLabel = panel.transform.Find("MainRow/EnemyColumn/PowerLabel").GetComponent<Text>();
+            Text enemyPowerLabel = panel.transform.Find("MainRow/EnemyColumn/FormationGridPanel/PowerPanel/PowerLabel").GetComponent<Text>();
             Assert.AreEqual("전투력: 141", enemyPowerLabel.text);
         }
 

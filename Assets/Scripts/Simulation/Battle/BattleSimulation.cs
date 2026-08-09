@@ -17,6 +17,12 @@ namespace NHN.Simulation.Battle
         private const byte TeamA = 0;
         private const byte TeamB = 1;
 
+        // ── 근접 공격 위치 (2026-08-09) ──
+        /// <summary>공격 목적지를 AttackRange 경계보다 살짝 안쪽으로 잡는 여유 배율 — 정확히 경계에
+        /// 도착하면 부동소수 오차로 "<=AttackRange" 판정이 영원히 거짓이 되는 문제를 막는다
+        /// (실측으로 확인: 유닛이 dist=AttackRange에서 멈춘 채 공격을 영원히 못 함, 2026-08-09).</summary>
+        private const float AttackApproachMargin = 0.95f;
+
         /// <summary>
         /// 생존·비은신 적군만 수락. priority가 지정되면 해당 우선순위(TargetPriority)로 후보를 좁힌다.
         /// 새 우선순위는 Accept의 switch에 케이스 추가로 확장한다 (SatisfiesPriority와 짝).
@@ -109,6 +115,10 @@ namespace NHN.Simulation.Battle
         /// <summary>다음 공격 데미지 배율 (기본 1). 그림자 습격이 배율로 설정, 공격 시 소비.</summary>
         private readonly float[] _critPending;
         private readonly int[] _queryBuffer;
+        /// <summary>공격자(자기 자신) 유닛 인덱스로 색인 — 근접 공격 시 타겟의 좌(-1)/우(+1)
+        /// 어느 쪽에 설 지. 새 타겟이 배정될 때 한 번만 무작위로 정해지고 그 타겟을 유지하는
+        /// 동안 고정된다 (2026-08-09: 점유/예약 없이 각자 독립적으로 좌우만 무작위 선택).</summary>
+        private readonly float[] _attackSide;
 
         // ── 뷰 전용 전투 이벤트 (공격/치명타/피격 연출용) ──
         // 시뮬 상태에는 아무 영향이 없다: 결과·RNG 소비·틱 순서 불변 (결정론 유지, BalanceLab 무관).
@@ -132,6 +142,35 @@ namespace NHN.Simulation.Battle
         private readonly int[] _squadFocusEnemies;
         private readonly Vector2[] _squadCentroids;
         private readonly int[] _squadAliveCounts;
+        /// <summary>_squadAliveCounts 중 은신 아닌(=실제로 타게팅 가능한) 유닛 수 — focus 분대
+        /// 후보 판정용(2026-08-10). 전원 은신 중인 분대는 아무도 공격 못 하므로 후보에서 제외.</summary>
+        private readonly int[] _squadTargetableAliveCounts;
+
+        // 분대 대형/교전 상태 (2026-08-09): 분대는 항상 두 상태 중 하나 — Formation(대형을 지키며
+        // focus 분대 쪽으로 이동, 개별 타게팅 없음) / Fighting(개별 유닛이 알아서 싸움). 분대 하나는
+        // 전부 같은 역할군이라(SpawnArmy) 교전 판정 반경도 분대당 하나로 충분하다.
+        /// <summary>분대의 역할군 — 스폰 시 1회 캡처 (장군은 다른 역할군일 수 있으나 대형 계산엔 무시).</summary>
+        private readonly RoleDefinition[] _squadRoles;
+        /// <summary>true = Fighting(개별 전투 중), false = Formation(대형 이동/재정렬 중).</summary>
+        private readonly bool[] _squadFighting;
+        /// <summary>대형의 가상 기준점 — 타이트할 때만 focus 분대 쪽으로 전진한다.</summary>
+        private readonly Vector2[] _squadFormationAnchors;
+        /// <summary>이번 틱 기준, 대형 슬롯(앵커+오프셋)에서 가장 많이 벗어난 생존 유닛까지의 거리.</summary>
+        private readonly float[] _squadTightness;
+        /// <summary>대형 중심 간 거리가 이 값 이하로 좁혀지면 Fighting 전환 (역할군 사거리 + 대형 반경 기반, 스폰 시 1회 계산).</summary>
+        private readonly float[] _squadEngageRanges;
+        /// <summary>유닛별 대형 내 상대 위치 — 대형 이동 목적지 계산에 사용. 스폰 시 1회 캡처하고,
+        /// 이후 그 분대의 생존자 수가 바뀌면 ReflowSquadFormation()이 다시 채운다.</summary>
+        private readonly Vector2[] _formationOffsets;
+        /// <summary>분대 명단(장군 포함) 시작 인덱스 — 그 분대의 유닛은 스폰 시 항상 연속 구간을 차지한다.</summary>
+        private readonly int[] _squadMemberStart;
+        /// <summary>분대 명단 총원(죽어도 안 줄어듦) — [start, start+count)가 그 분대의 전체 유닛 인덱스 범위.</summary>
+        private readonly int[] _squadMemberCount;
+        /// <summary>분대 명단 재사용 스크래치 버퍼 — CollectAliveSquadMembers 결과를 담는다 (틱당 할당 없음).
+        /// 대형 재정렬과 타겟 인덱스 매칭이 공유(한 호출 안에서 순차 사용이라 안전).</summary>
+        private readonly int[] _squadRosterBuffer;
+        /// <summary>마지막으로 ReflowSquadFormation을 실행했을 때의 생존자 수 — 이 값이 현재와 다르면 재정렬 트리거.</summary>
+        private readonly int[] _squadLastReflowedAliveCount;
 
         /// <summary>액티브 충전 게이지. 장군 사망 시 0으로 소멸 (기획 §6 사망 규칙).</summary>
         private readonly float[] _squadCharges;
@@ -175,6 +214,9 @@ namespace NHN.Simulation.Battle
         private int _tick;
         private bool _finished;
         private BattleResult _result;
+        /// <summary>한 팀이 전멸해 승자는 정해졌지만, 생존 팀 전 분대가 대형 복귀할 때까지 종료를 보류 중.</summary>
+        private bool _pendingFinish;
+        private int _pendingWinner;
 
         public BattleSimulation(
             in BattleConfig config, ArmyDefinition armyA, ArmyDefinition armyB, int seed,
@@ -209,6 +251,7 @@ namespace NHN.Simulation.Battle
             _stealthRemaining = new float[totalUnits];
             _critPending = new float[totalUnits];
             _queryBuffer = new int[totalUnits];
+            _attackSide = new float[totalUnits];
 
             _projLaunchPos = new Vector2[config.MaxProjectiles];
             _projImpactPos = new Vector2[config.MaxProjectiles];
@@ -242,6 +285,17 @@ namespace NHN.Simulation.Battle
             _squadFocusEnemies = new int[_squadCount];
             _squadCentroids = new Vector2[_squadCount];
             _squadAliveCounts = new int[_squadCount];
+            _squadTargetableAliveCounts = new int[_squadCount];
+            _squadRoles = new RoleDefinition[_squadCount];
+            _squadFighting = new bool[_squadCount];
+            _squadFormationAnchors = new Vector2[_squadCount];
+            _squadTightness = new float[_squadCount];
+            _squadEngageRanges = new float[_squadCount];
+            _formationOffsets = new Vector2[totalUnits];
+            _squadMemberStart = new int[_squadCount];
+            _squadMemberCount = new int[_squadCount];
+            _squadRosterBuffer = new int[totalUnits];
+            _squadLastReflowedAliveCount = new int[_squadCount];
 
             _roles = BuildRoleTable(armyA, armyB);
 
@@ -261,12 +315,39 @@ namespace NHN.Simulation.Battle
 
             Array.Copy(_positions, _prevPositions, _unitCount);
 
-            // 최초 타겟 즉시 배정 + 재탐색 시차 균등 배분
             _grid.Rebuild(_positions, _unitCount);
             UpdateSquadFocus();
+
+            // 대형 기준점 초기화: 스폰 위치가 곧 대형이다 — 분대 중심을 앵커로,
+            // 각 유닛의 상대 위치를 대형 오프셋으로 1회 캡처해 이후 불변으로 유지한다.
+            // 모든 분대는 Formation 상태로 시작(_squadFighting 기본값 false) — 개별 타게팅은
+            // Fighting 전환 후 Tick()의 재탐색 루프가 담당한다(스폰 시 즉시 배정하지 않음).
+            var squadFormationRadius = new float[_squadCount];
+            for (int s = 0; s < _squadCount; s++)
+            {
+                _squadFormationAnchors[s] = _squadCentroids[s];
+            }
             for (int i = 0; i < _unitCount; i++)
             {
-                _targets[i] = SelectTarget(i);
+                int s = _squadIndices[i];
+                _formationOffsets[i] = _positions[i] - _squadCentroids[s];
+                float offsetLength = _formationOffsets[i].Length();
+                if (offsetLength > squadFormationRadius[s])
+                {
+                    squadFormationRadius[s] = offsetLength;
+                }
+            }
+            for (int s = 0; s < _squadCount; s++)
+            {
+                _squadEngageRanges[s] = _squadRoles[s].AttackRange + squadFormationRadius[s] + _config.FormationEngageRangeMargin;
+                // 스폰 시점엔 전원 생존이라 위에서 캡처한 오프셋이 곧 "이미 재정렬됨" 상태 —
+                // ReflowSquadFormation()은 생존자 수가 이 값과 달라질 때만(=사상자 발생) 트리거된다.
+                _squadLastReflowedAliveCount[s] = _squadAliveCounts[s];
+            }
+
+            // 재탐색 시차 균등 배분 (Fighting 전환 후 첫 재탐색 주기에 사용).
+            for (int i = 0; i < _unitCount; i++)
+            {
                 _nextRetargetTimes[i] = _config.RetargetInterval * (i + 1) / _unitCount;
             }
         }
@@ -333,6 +414,10 @@ namespace NHN.Simulation.Battle
         public int SquadCount => _squadCount;
 
         public int GetSquadIndex(int unitIndex) => _squadIndices[unitIndex];
+
+        /// <summary>true면 개별 전투 중(Fighting), false면 대형 이동/재정렬 중(Formation) — 뷰의
+        /// 회전 연출(대형일 땐 상대 진영 쪽을 본다)이 참조한다.</summary>
+        public bool IsSquadFighting(int squadIndex) => _squadFighting[squadIndex];
 
         public bool IsLeader(int unitIndex) => _isLeaderUnit[unitIndex];
 
@@ -523,12 +608,14 @@ namespace NHN.Simulation.Battle
                 AddCharge(s, ChargeCondition.TimeElapsed, dt);
             }
 
-            // 1) 재탐색: 타겟 무효(사망/은신)는 즉시 재선택, 주기 도래 시엔 교전 유지 규칙 적용.
-            //    분대 집중 대상(분대 단위 타게팅)은 매 틱 여기서 한 번 갱신한다.
+            // 1) 분대 대형/교전 상태 갱신 → focus 분대 재계산(Fighting 중엔 고정) →
+            //    재탐색: 타겟 무효(사망/은신)는 즉시 재선택, 주기 도래 시엔 교전 유지 규칙 적용.
+            //    Formation 상태인 분대는 아직 교전 전이라 개별 타게팅을 하지 않는다.
             UpdateSquadFocus();
+            UpdateSquadFormationState(dt);
             for (int i = 0; i < _unitCount; i++)
             {
-                if (!_alives[i])
+                if (!_alives[i] || !_squadFighting[_squadIndices[i]])
                 {
                     continue;
                 }
@@ -536,12 +623,12 @@ namespace NHN.Simulation.Battle
                 bool targetInvalid = target == NoTarget || !_alives[target] || _stealthRemaining[target] > 0f;
                 if (targetInvalid)
                 {
-                    _targets[i] = SelectTarget(i);
+                    SetTarget(i, SelectTarget(i));
                     _nextRetargetTimes[i] = _time + _config.RetargetInterval;
                 }
                 else if (_time >= _nextRetargetTimes[i])
                 {
-                    _targets[i] = ReevaluateTarget(i, target);
+                    SetTarget(i, ReevaluateTarget(i, target));
                     _nextRetargetTimes[i] = _time + _config.RetargetInterval;
                 }
             }
@@ -564,6 +651,22 @@ namespace NHN.Simulation.Battle
                     continue; // 기절: 행동 정지 — 이동·공격 불가, 쿨다운 회복만 진행
                 }
 
+                int squadIndex = _squadIndices[i];
+                if (!_squadFighting[squadIndex])
+                {
+                    // 대형 이동: 목적지는 분대 앵커 + 내 대형 오프셋 — 개별 타겟팅/공격 없음.
+                    RoleDefinition formationRole = _roles[_roleIndices[i]];
+                    Vector2 slot = _squadFormationAnchors[squadIndex] + _formationOffsets[i];
+                    Vector2 toSlot = slot - _positions[i];
+                    float slotDistance = toSlot.Length();
+                    if (slotDistance > 1e-5f)
+                    {
+                        float step = MathF.Min(formationRole.MoveSpeed * dt, slotDistance);
+                        _positions[i] = ClampToArena(_positions[i] + toSlot * (step / slotDistance));
+                    }
+                    continue;
+                }
+
                 int target = _targets[i];
                 if (target == NoTarget || !_alives[target] || _stealthRemaining[target] > 0f)
                 {
@@ -571,12 +674,15 @@ namespace NHN.Simulation.Battle
                 }
 
                 RoleDefinition role = _roles[_roleIndices[i]];
-                RoleDefinition targetRole = _roles[_roleIndices[target]];
-                Vector2 toTarget = _positions[target] - _positions[i];
-                float centerDistance = toTarget.Length();
-                float edgeDistance = centerDistance - role.UnitRadius - targetRole.UnitRadius;
+                // 공격 판정은 실제 타겟과의 거리(사거리 이내)로 — 목적지 좌표는 "어디로 이동할지"만
+                // 정할 뿐 공격 허가의 하드 게이트로 쓰지 않는다. 도착을 하드 게이트로 쓰면, 타겟이
+                // 아직 자기 타겟을 쫓아 계속 움직이는 중일 때(교전 락이 없어 멈추지 않음) 목적지도
+                // 계속 흔들려서 영원히 못 붙는다(실측으로 확인 — 전투가 시간 상한까지 안 끝나고
+                // 무승부가 남). 캡 제거로는 이 문제가 안 풀린다 — 별도로 교전 락을 넣기 전까지는
+                // 이 완화된 판정을 유지한다.
+                float centerDistance = Vector2.Distance(_positions[i], _positions[target]);
 
-                if (edgeDistance <= role.AttackRange)
+                if (centerDistance <= role.AttackRange)
                 {
                     if (_attackCooldowns[i] <= 0f)
                     {
@@ -584,16 +690,24 @@ namespace NHN.Simulation.Battle
                         _attackCooldowns[i] = role.AttackInterval;
                     }
                 }
-                else if (centerDistance > 1e-5f)
+                else
                 {
-                    // ApproachTarget과 StealthDash 모두 타겟 접근 — StealthDash의 차이(은신)는 상태로 처리.
+                    // ApproachTarget과 StealthDash 모두 목적지 접근 — StealthDash의 차이(은신)는 상태로 처리.
                     // 이동 궤적이 다른 새 패턴은 여기서 케이스 추가.
-                    float speed = role.MoveSpeed;
-                    if (_stealthRemaining[i] > 0f && role.MoveParamB > 0f)
+                    Vector2 destination = ComputeApproachDestination(i, target, role);
+                    Vector2 toDestination = destination - _positions[i];
+                    float destDistance = toDestination.Length();
+                    if (destDistance > 1e-5f)
                     {
-                        speed *= role.MoveParamB; // StealthDash: 은신 중 이속 배율 (돌진 가속)
+                        float speed = role.MoveSpeed;
+                        if (_stealthRemaining[i] > 0f && role.MoveParamB > 0f)
+                        {
+                            speed *= role.MoveParamB; // StealthDash: 은신 중 이속 배율 (돌진 가속)
+                        }
+                        // 목적지를 지나치지 않게 스텝을 남은 거리로 클램프 — 밀림·떨림 방지.
+                        float step = MathF.Min(speed * dt, destDistance);
+                        _positions[i] = ClampToArena(_positions[i] + toDestination * (step / destDistance));
                     }
-                    _positions[i] = ClampToArena(_positions[i] + toTarget * (speed * dt / centerDistance));
                 }
             }
 
@@ -663,6 +777,11 @@ namespace NHN.Simulation.Battle
             }
 
             // 5) 겹침 분리 (이동 후 위치 기준 재구축, 생존 유닛만).
+            //    이번 틱에 실제로 이동한(행군 중이거나 타겟에 접근 중인) 유닛은 밀기 대상에서
+            //    제외한다 — 밀리면 대형 타이트니스·공격 사거리 판정이 다음 틱에 다시 어긋나 전투가
+            //    시간 제한까지 안 끝나는 회귀가 있었다(2026-08-09 실측). 이미 도착해서 가만히
+            //    있는(대형 슬롯에 정지, 또는 사거리 안이라 서서 공격만 하는) 유닛끼리만 서로 밀어
+            //    겹침을 서서히 푼다 — 이 경우엔 밀려도 "이동 중" 판정에 안 걸리므로 문제없다.
             //    쌍 중 한쪽만 은신이면 스킵 — 은신 유닛이 전열을 '통과'해 돌진하기 위한 규칙.
             //    은신 유닛끼리는 분리를 유지한다: 꺼두면 같은 타겟으로 돌진하는 은신 블롭이 한 점에
             //    완전히 겹쳐 스플래시 한 발을 전원이 공유하는 동시 몰살이 난다 (헤드리스 실측으로 확인).
@@ -672,6 +791,10 @@ namespace NHN.Simulation.Battle
                 if (!_alives[i])
                 {
                     continue;
+                }
+                if (Vector2.DistanceSquared(_positions[i], _prevPositions[i]) > 1e-8f)
+                {
+                    continue; // 이번 틱에 이동함 — 밀기 대상 아님
                 }
                 bool stealthedI = _stealthRemaining[i] > 0f;
                 RoleDefinition role = _roles[_roleIndices[i]];
@@ -683,6 +806,10 @@ namespace NHN.Simulation.Battle
                     if (j <= i || !_alives[j] || stealthedI != (_stealthRemaining[j] > 0f))
                     {
                         continue;
+                    }
+                    if (Vector2.DistanceSquared(_positions[j], _prevPositions[j]) > 1e-8f)
+                    {
+                        continue; // 상대도 이번 틱에 이동했으면 역시 밀기 대상 아님
                     }
 
                     // 부분 겹침 허용: 반경 합 × 비율 안까지 파고들어야 분리를 시작하고,
@@ -705,13 +832,19 @@ namespace NHN.Simulation.Battle
                 }
             }
 
-            // 6) 승패 판정
-            if (_teamAliveCounts[TeamA] == 0 || _teamAliveCounts[TeamB] == 0)
+            // 6) 승패 판정: 팀 전멸은 승자만 확정해두고 즉시 끝내지 않는다 — 생존 팀 전 분대가
+            //    대형으로 복귀할 때까지 보류(2026-08-09, 분대 대형 이동 도입). 시간 초과는 안전판이라
+            //    대형 복귀를 기다리지 않고 무조건 즉시 종료한다.
+            if (!_pendingFinish && (_teamAliveCounts[TeamA] == 0 || _teamAliveCounts[TeamB] == 0))
             {
-                int winner = _teamAliveCounts[TeamA] > 0 ? TeamA
+                _pendingWinner = _teamAliveCounts[TeamA] > 0 ? TeamA
                     : _teamAliveCounts[TeamB] > 0 ? TeamB
                     : BattleResult.DrawWinner;
-                Finish(winner);
+                _pendingFinish = true;
+            }
+            if (_pendingFinish && AllSquadsReformed())
+            {
+                Finish(_pendingWinner);
             }
             else if (_time >= _config.MaxBattleSeconds)
             {
@@ -735,6 +868,15 @@ namespace NHN.Simulation.Battle
 
             if (!role.IsRanged)
             {
+                // 근접 공격이 원거리 유닛을 맞히면 공격력 디버프 부여 — 근접에게 붙잡히면 원거리
+                // 화력이 줄어드는 것으로 표현한다(2026-08-10). 재적중 시 지속시간이 갱신되므로
+                // 계속 붙어 있는 한 안 끊긴다.
+                if (_isRangedUnit[target])
+                {
+                    _statusEffects.Apply(
+                        target, StatusEffectType.AttackDown,
+                        _config.MeleeSuppressDuration, _config.MeleeSuppressMagnitude);
+                }
                 _pendingDamage[target] += damage;
                 _lastDamageSourceSquad[target] = attackerSquad;
                 return;
@@ -781,7 +923,8 @@ namespace NHN.Simulation.Battle
             return 1f;
         }
 
-        /// <summary>공격력 배율: 장군 패시브(AttackPercent, 생존 중) × 상태 버프(AttackUp — 전투 함성).</summary>
+        /// <summary>공격력 배율: 장군 패시브(AttackPercent, 생존 중) × 상태 버프(AttackUp — 전투 함성)
+        /// × 상태 디버프(AttackDown — 근접 피격, 2026-08-10).</summary>
         private float OutgoingDamageMultiplier(int unitIndex)
         {
             float multiplier = 1f;
@@ -795,6 +938,11 @@ namespace NHN.Simulation.Battle
             if (attackUp > 0f)
             {
                 multiplier *= attackUp;
+            }
+            float attackDown = _statusEffects.GetMagnitude(unitIndex, StatusEffectType.AttackDown);
+            if (attackDown > 0f)
+            {
+                multiplier *= attackDown;
             }
             return multiplier;
         }
@@ -816,6 +964,10 @@ namespace NHN.Simulation.Battle
         {
             _alives[unitIndex] = false;
             _teamAliveCounts[_teams[unitIndex]]--;
+
+            // 죽은 유닛은 다음 틱부터 순회에서 스킵되므로 SetTarget을 다시 탈 일이 없다 —
+            // 물고 있던 타겟의 배정 카운트를 여기서 직접 반납하지 않으면 영구 누수로 남는다.
+            SetTarget(unitIndex, NoTarget);
 
             int squad = _squadIndices[unitIndex];
             AddCharge(squad, ChargeCondition.SquadDeaths, 1f);
@@ -1086,22 +1238,22 @@ namespace NHN.Simulation.Battle
         {
             RoleDefinition role = _roles[_roleIndices[unitIndex]];
             byte enemyTeam = _teams[unitIndex] == TeamA ? TeamB : TeamA;
+            int focusSquad = _squadFocusEnemies[_squadIndices[unitIndex]];
 
             TargetPriority[] priorities = role.Priorities;
             int currentRank = PriorityRank(currentTarget, priorities);
             for (int p = 0; p < currentRank; p++)
             {
-                // 우선순위 기믹은 분대 집중을 무시한다 (SelectTarget과 동일한 규칙).
-                int candidate = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: true, priorities[p], NoTarget), role.PositionFilter);
+                // 우선순위 기믹도 분대 경계를 넘지 않는다 (2026-08-09: 분대는 항상 같이 다닌다 — 사용자 결정).
+                int candidate = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: true, priorities[p], focusSquad), role.PositionFilter);
                 if (candidate != NoTarget)
                 {
                     return candidate;
                 }
             }
 
-            RoleDefinition targetRole = _roles[_roleIndices[currentTarget]];
             float centerDistance = Vector2.Distance(_positions[unitIndex], _positions[currentTarget]);
-            if (centerDistance - role.UnitRadius - targetRole.UnitRadius <= role.AttackRange)
+            if (centerDistance <= role.AttackRange)
             {
                 return currentTarget;
             }
@@ -1143,7 +1295,10 @@ namespace NHN.Simulation.Battle
         /// <summary>
         /// 분대의 집중 대상 적 분대 갱신 — 살아있는 유닛의 중심점끼리 가장 가까운 적 분대를 고른다
         /// (동률은 낮은 인덱스, 결정론 유지). 유닛 타게팅은 이 분대 안에서만 후보를 찾아
-        /// 분대가 반으로 갈라져 흩어지지 않는다 (2026-08-04 사용자 결정).
+        /// 분대가 반으로 갈라져 흩어지지 않는다 (2026-08-04 사용자 결정). 전원이 은신 중인 분대는
+        /// focus 후보에서 제외한다 — 개별 타게팅(AliveEnemyFilter)이 은신 유닛을 원래 후보에서
+        /// 빼는 것과 마찬가지로, 아무도 공격할 수 없는 분대를 향해 행군만 하다 마는 걸 막는다
+        /// (2026-08-10). 일부만 은신 중인 분대는 나머지 비은신 유닛이 유효 타겟이라 그대로 후보.
         /// </summary>
         private void UpdateSquadFocus()
         {
@@ -1151,6 +1306,7 @@ namespace NHN.Simulation.Battle
             {
                 _squadCentroids[s] = Vector2.Zero;
                 _squadAliveCounts[s] = 0;
+                _squadTargetableAliveCounts[s] = 0;
             }
             for (int i = 0; i < _unitCount; i++)
             {
@@ -1161,6 +1317,10 @@ namespace NHN.Simulation.Battle
                 int s = _squadIndices[i];
                 _squadCentroids[s] += _positions[i];
                 _squadAliveCounts[s]++;
+                if (_stealthRemaining[i] <= 0f)
+                {
+                    _squadTargetableAliveCounts[s]++;
+                }
             }
             for (int s = 0; s < _squadCount; s++)
             {
@@ -1171,15 +1331,23 @@ namespace NHN.Simulation.Battle
             }
             for (int s = 0; s < _squadCount; s++)
             {
-                _squadFocusEnemies[s] = NoTarget;
                 if (_squadAliveCounts[s] == 0)
+                {
+                    _squadFocusEnemies[s] = NoTarget;
+                    continue;
+                }
+                // Fighting 중인 분대는 focus를 고정한다 — 안 그러면 싸우던 상대가 전멸하기도
+                // 전에 "지금 더 가까운 다른 분대"로 갈아타 버려서, 전멸 판정(UpdateSquadFormationState)이
+                // 엉뚱한 분대를 보고 있게 된다. 전멸 후에만(Formation 복귀 후) 다시 계산한다.
+                if (_squadFighting[s])
                 {
                     continue;
                 }
+                _squadFocusEnemies[s] = NoTarget;
                 float best = float.MaxValue;
                 for (int e = 0; e < _squadCount; e++)
                 {
-                    if (_squadTeams[e] == _squadTeams[s] || _squadAliveCounts[e] == 0)
+                    if (_squadTeams[e] == _squadTeams[s] || _squadTargetableAliveCounts[e] == 0)
                     {
                         continue;
                     }
@@ -1194,9 +1362,269 @@ namespace NHN.Simulation.Battle
         }
 
         /// <summary>
-        /// 타겟팅: ① 우선순위 목록(중독·표식 기믹)은 적군 전체에서 찾는다 — 의도된 분대 이탈이라
-        /// 집중 제한을 받지 않는다. ② 기본 위치 필터는 분대 집중 대상 안에서만 골라
-        /// 분대가 반으로 갈라지지 않게 하고, 못 찾으면(전원 은신 등) 제한 없이 폴백.
+        /// 분대 대형/교전 상태 전환 — UpdateSquadFocus() 직후에 호출해야 한다(신선한
+        /// _squadCentroids·_squadFocusEnemies 필요). Formation: 대형 슬롯(앵커+오프셋)이 전부
+        /// 타이트할 때만 앵커가 focus 분대 쪽으로 전진하고, 타이트 + 사거리 안이면 Fighting 전환.
+        /// Fighting: focus 분대가 전멸하면 Formation으로 복귀(개별 타겟은 건드리지 않아도 Tick()의
+        /// 이동/공격 루프가 상태로 분기하므로 자연히 멈춘다).
+        /// </summary>
+        private void UpdateSquadFormationState(float dt)
+        {
+            for (int s = 0; s < _squadCount; s++)
+            {
+                _squadTightness[s] = 0f;
+            }
+            for (int i = 0; i < _unitCount; i++)
+            {
+                if (!_alives[i])
+                {
+                    continue;
+                }
+                int s = _squadIndices[i];
+                Vector2 slot = _squadFormationAnchors[s] + _formationOffsets[i];
+                float dist = Vector2.Distance(_positions[i], slot);
+                if (dist > _squadTightness[s])
+                {
+                    _squadTightness[s] = dist;
+                }
+            }
+
+            for (int s = 0; s < _squadCount; s++)
+            {
+                if (_squadAliveCounts[s] == 0)
+                {
+                    continue;
+                }
+
+                if (_squadFighting[s])
+                {
+                    int focus = _squadFocusEnemies[s];
+                    if (focus == NoTarget || _squadAliveCounts[focus] == 0)
+                    {
+                        // Formation으로 복귀 — 자기 피해가 0이었어도(무손실 승리) 무조건 재정렬한다.
+                        // 아래 "생존자 수가 바뀌었으면"만으로는 무손실 승리 시 트리거가 전혀 안 걸려서
+                        // 앵커·오프셋이 스폰 시점 값 그대로 남고, 그 결과 장군을 포함한 전원이 전투로
+                        // 흩어진 지금 위치에서 엉뚱하게 먼 스폰 슬롯까지 걸어가 버렸다(2026-08-09 확인).
+                        _squadFighting[s] = false;
+                        // focus도 여기서 바로 비운다 — UpdateSquadFocus()는 이번 틱 시작에 이미
+                        // _squadFighting[s]==true로 돌았기 때문에 재계산을 건너뛰어, 이 시점의
+                        // _squadFocusEnemies[s]는 여전히 방금 전멸한(죽은) 분대를 가리키는 낡은 값이다.
+                        // 안 비우면 바로 아래에서 그 죽은 분대의 중심좌표(전멸이라 0으로 남아있음,
+                        // 즉 원점)를 향해 앵커가 한 스텝 밀리는 미세한 오작동이 있었다(2026-08-10).
+                        // 다음 틱 UpdateSquadFocus()가 살아있는 새 적 분대를 다시 찾는다.
+                        _squadFocusEnemies[s] = NoTarget;
+                        ReflowSquadFormation(s);
+                    }
+                    else
+                    {
+                        continue; // 계속 Fighting — 대형 로직 불필요
+                    }
+                }
+                else if (_squadAliveCounts[s] != _squadLastReflowedAliveCount[s])
+                {
+                    // 이미 Formation 상태 — 행군 중 광역기 등으로 사상자가 나면 그 자리에서 재정렬.
+                    ReflowSquadFormation(s);
+                }
+
+                int focusSquad = _squadFocusEnemies[s];
+                if (focusSquad == NoTarget)
+                {
+                    continue; // 갈 곳 없음 — 대형 유지한 채 대기
+                }
+
+                bool tight = _squadTightness[s] <= _config.FormationTightnessTolerance;
+                if (tight)
+                {
+                    Vector2 toEnemy = _squadCentroids[focusSquad] - _squadFormationAnchors[s];
+                    float distance = toEnemy.Length();
+                    if (distance > 1e-5f)
+                    {
+                        float step = MathF.Min(_squadRoles[s].MoveSpeed * dt, distance);
+                        _squadFormationAnchors[s] += toEnemy * (step / distance);
+                    }
+                }
+
+                float centroidDistance = Vector2.Distance(_squadCentroids[s], _squadCentroids[focusSquad]);
+                if (tight && centroidDistance <= _squadEngageRanges[s])
+                {
+                    _squadFighting[s] = true;
+                }
+            }
+        }
+
+        /// <summary>분대 squadIndex의 생존 유닛을 스폰 순서 그대로 buffer 앞부터 채워 넣고 개수를
+        /// 반환한다. 그 분대의 유닛은 스폰 시 항상 연속 구간을 차지하므로(SpawnArmy) 죽은 유닛만
+        /// 건너뛰면 빈틈없이 나열된 "지금 살아있는 명단"이 매번 즉석에서 나온다 — 별도 리스트
+        /// 자료구조나 스왑 제거 없이도 충분하다. excludeStealthed=true면 은신 중인 유닛도 건너뛴다
+        /// (적 타겟 후보 조회용 — 은신 중엔 피타겟 제외가 불변조건). 대형 재정렬처럼 아군 자신의
+        /// 명단을 볼 때는 은신 여부가 무관하므로 기본값 false.</summary>
+        private int CollectAliveSquadMembers(int squadIndex, int[] buffer, bool excludeStealthed = false)
+        {
+            int start = _squadMemberStart[squadIndex];
+            int count = _squadMemberCount[squadIndex];
+            int n = 0;
+            for (int k = 0; k < count; k++)
+            {
+                int unit = start + k;
+                if (_alives[unit] && (!excludeStealthed || _stealthRemaining[unit] <= 0f))
+                {
+                    buffer[n++] = unit;
+                }
+            }
+            return n;
+        }
+
+        /// <summary>
+        /// 대형 내 상대 오프셋 — 장군(또는 앵커) 바로 뒤 rankOffset칸째부터 시작해 병사를
+        /// FormationColumnWidth열 종대로 채운다(넘치면 다음 랭크). followerIndex는 그 분대 안에서
+        /// 병사(장군 제외) 순서(0-index, 스폰/생존 순서 — 스폰 시와 재정렬 시 공통 사용). "뒤"는
+        /// retreatDirection 부호 방향(적과 반대쪽, 팀별로 다름) — 랭크가 커질수록 그만큼 물러난다.
+        /// 랭크 안에서는 중앙부터 바깥쪽으로(0, +1, -1, +2, -2, ...) 채운다 — 좌측부터 순서대로
+        /// 채우면 랭크가 꽉 찼을 땐 상관없지만, 사상자로 랭크 일부만 찼을 때(특히 장군 없는 분대의
+        /// 생존자 1~2명) 중앙이 아니라 한쪽 끝에 쏠려 앵커에서 불필요하게 멀어지는 문제가 있었다
+        /// (2026-08-10). 꽉 찬 랭크는 좌우 순서만 다를 뿐 차지하는 좌표 집합은 기존과 동일하다.
+        /// </summary>
+        private Vector2 ColumnFormationOffset(int followerIndex, int rankOffset, float retreatDirection, float spacing)
+        {
+            int columns = Math.Max(_config.FormationColumnWidth, 1); // 0 이하 설정값 방어
+            int rank = followerIndex / columns + rankOffset;
+            int slotInRank = followerIndex % columns;
+            int magnitude = (slotInRank + 1) / 2;
+            int sign = (slotInRank % 2 == 1) ? 1 : -1;
+            float x = retreatDirection * rank * spacing;
+            float y = magnitude * sign * spacing;
+            return new Vector2(x, y);
+        }
+
+        /// <summary>
+        /// 분대 squadIndex의 대형을 지금 생존자 수에 맞게 다시 짠다. 죽은 유닛의 원래 슬롯을
+        /// 비워두지 않고, 생존자를 스폰 순서 그대로 장군 맨 앞 + N열 종대(ColumnFormationOffset,
+        /// SpawnArmy 최초 배치와 같은 공식)로 채운다. 중심(앵커)은 장군이 살아있으면 장군의 현재
+        /// 위치 — 장군은 그 자리에 서 있고 나머지가 장군 뒤로 도열한다(오프셋 0으로 고정, 이동
+        /// 없음). 장군이 없거나 죽었으면 지금 살아있는 유닛들의 실제 위치 중심(_squadCentroids)을
+        /// 대체 앵커로 쓰고, 이 경우 병사들은 랭크 0(앵커 바로 그 줄)부터 채운다. 장군 위치가
+        /// 아니라 평균 중심(대형 밖 허공일 수 있음)을 쓰면 전투 직후 다들 엉뚱한 곳까지 걸어가게
+        /// 되는 문제가 있었다(2026-08-09 사용자 피드백). 새 오프셋 기준 타이트니스도 여기서 바로
+        /// 재계산해, 호출 직후 이번 틱 판정에 즉시 반영된다.
+        /// </summary>
+        private void ReflowSquadFormation(int squadIndex)
+        {
+            int n = CollectAliveSquadMembers(squadIndex, _squadRosterBuffer);
+            _squadLastReflowedAliveCount[squadIndex] = n;
+            if (n == 0)
+            {
+                return; // 전멸 — 재정렬할 대상이 없다.
+            }
+
+            int generalUnit = _squadGeneralUnits[squadIndex];
+            bool hasLivingGeneral = generalUnit != NoTarget && _alives[generalUnit];
+            Vector2 anchor = hasLivingGeneral ? _positions[generalUnit] : _squadCentroids[squadIndex];
+            _squadFormationAnchors[squadIndex] = anchor;
+
+            RoleDefinition role = _squadRoles[squadIndex];
+            float retreatDirection = _squadTeams[squadIndex] == TeamA ? -1f : 1f;
+            float spacing = role.UnitRadius * _config.FormationSpacingMultiplier;
+            int rankOffset = hasLivingGeneral ? 1 : 0;
+
+            float formationRadius = 0f;
+            float tightness = 0f;
+            int followerIndex = 0;
+            for (int k = 0; k < n; k++)
+            {
+                int unit = _squadRosterBuffer[k];
+                if (hasLivingGeneral && unit == generalUnit)
+                {
+                    _formationOffsets[unit] = Vector2.Zero; // 장군은 그 자리(앵커)에 그대로 — 이동 없음
+                    continue;
+                }
+
+                Vector2 offset = ColumnFormationOffset(followerIndex, rankOffset, retreatDirection, spacing);
+                followerIndex++;
+                _formationOffsets[unit] = offset;
+
+                float offsetLength = offset.Length();
+                if (offsetLength > formationRadius)
+                {
+                    formationRadius = offsetLength;
+                }
+
+                float slotDistance = Vector2.Distance(_positions[unit], anchor + offset);
+                if (slotDistance > tightness)
+                {
+                    tightness = slotDistance;
+                }
+            }
+
+            _squadEngageRanges[squadIndex] = role.AttackRange + formationRadius + _config.FormationEngageRangeMargin;
+            _squadTightness[squadIndex] = tightness;
+        }
+
+        /// <summary>승패 판정 보류 중, 생존 팀의 모든 분대가 Formation 상태 + 대형 타이트까지 끝났는가.</summary>
+        private bool AllSquadsReformed()
+        {
+            for (int s = 0; s < _squadCount; s++)
+            {
+                if (_squadAliveCounts[s] == 0)
+                {
+                    continue;
+                }
+                if (_squadFighting[s] || _squadTightness[s] > _config.FormationTightnessTolerance)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// _targets 배정을 갱신한다. 근접 유닛이 새 타겟을 받으면 좌/우 공격 위치(_attackSide)를
+        /// 한 번 무작위로 정해 그 타겟을 유지하는 동안 고정한다 (2026-08-09: 점유/예약 없이
+        /// 각자 독립적으로 선택 — 여러 명이 같은 쪽을 골라도 충돌이 없으니 무방하다).
+        /// _targets[unitIndex]를 직접 대입하는 대신 반드시 이 메서드를 거칠 것 (KillUnit의 반납도
+        /// 동일 경로).
+        /// </summary>
+        private void SetTarget(int unitIndex, int newTarget)
+        {
+            int oldTarget = _targets[unitIndex];
+            if (oldTarget == newTarget)
+            {
+                // 타겟이 실제로 안 바뀌었으면 아무것도 하지 않는다 — 재확인마다 다시 굴리면
+                // 좌/우가 매번 바뀌어 목적지가 흔들리는 문제가 생긴다 (실측으로 확인).
+                return;
+            }
+            _targets[unitIndex] = newTarget;
+            if (newTarget != NoTarget && !_isRangedUnit[unitIndex])
+            {
+                _attackSide[unitIndex] = _random.NextDouble() < 0.5 ? -1f : 1f;
+            }
+        }
+
+        /// <summary>
+        /// 공격 목적지 좌표 계산 (2026-08-09). 반경 합은 쓰지 않는다 — 충돌이 없으니 AttackRange
+        /// 하나만 "거리" 기준으로 삼는다.
+        /// · 원거리: 공격자→타겟 직선상에서 AttackRange만큼 떨어진 지점.
+        /// · 근접: 타겟 위치에서 화면 좌/우(시뮬 X축) 중 SetTarget()이 정해둔 방향으로
+        ///   AttackRange만큼 떨어진 지점.
+        /// </summary>
+        private Vector2 ComputeApproachDestination(int attacker, int target, RoleDefinition role)
+        {
+            Vector2 targetPos = _positions[target];
+
+            if (!role.IsRanged)
+            {
+                return targetPos + new Vector2(_attackSide[attacker] * role.AttackRange * AttackApproachMargin, 0f);
+            }
+
+            Vector2 toTarget = targetPos - _positions[attacker];
+            float distance = toTarget.Length();
+            Vector2 direction = distance > 1e-5f ? toTarget / distance : new Vector2(1f, 0f);
+            return targetPos - direction * role.AttackRange * AttackApproachMargin;
+        }
+
+        /// <summary>
+        /// 타겟팅: 우선순위 목록(중독·표식 기믹)도 기본 탐색도 전부 focusSquad(분대가 집중하는
+        /// 적 분대) 안에서만 찾는다 (2026-08-09: 분대는 항상 같이 다닌다 — 예외 없음).
+        /// focusSquad 안에 유효한 후보가 없으면 NoTarget — 다음 재탐색 주기에 다시 시도한다.
         /// </summary>
         private int SelectTarget(int unitIndex)
         {
@@ -1204,22 +1632,66 @@ namespace NHN.Simulation.Battle
             byte enemyTeam = _teams[unitIndex] == TeamA ? TeamB : TeamA;
             int focusSquad = _squadFocusEnemies[_squadIndices[unitIndex]];
 
+            if (focusSquad == NoTarget)
+            {
+                // 살아있는 적 분대가 없다 — 곧 전투 종료. 분대 경계를 넘어서까지 찾지 않는다.
+                return NoTarget;
+            }
+
+            // 분대는 항상 같이 다닌다 (2026-08-09 사용자 결정) — 우선순위 기믹도 일반 탐색도
+            // focusSquad 경계를 절대 넘지 않는다. 그 분대가 전멸하면 UpdateSquadFocus()가
+            // 다음 틱에 자동으로 새 분대를 배정한다.
             TargetPriority[] priorities = role.Priorities;
             for (int p = 0; p < priorities.Length; p++)
             {
-                int candidate = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: true, priorities[p], NoTarget), role.PositionFilter);
+                int candidate = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: true, priorities[p], focusSquad), role.PositionFilter);
                 if (candidate != NoTarget)
                 {
                     return candidate;
                 }
             }
 
-            int fallback = FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, focusSquad), role.PositionFilter);
-            if (fallback != NoTarget || focusSquad == NoTarget)
+            return SelectIndexPairedTarget(unitIndex, focusSquad, role.PositionFilter,
+                new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, focusSquad));
+        }
+
+        /// <summary>
+        /// 인덱스 기반 타겟 매칭 (2026-08-09) — Nearest 필터일 때만 적용: 내 분대의 "지금 살아있는
+        /// 유닛 명단"에서 내가 몇 번째인지(내 순번, 사상자가 나면 매번 다시 계산되어 당겨짐) 구하고,
+        /// 상대 focus 분대의 "지금 살아있고 타겟 가능한(은신 제외) 명단"에서 내 순번 % 명단 길이
+        /// 번째를 고른다. 양쪽 생존자 수가 같으면 "생존자 기준 K번째 ↔ K번째"로 정확히 대칭
+        /// 매칭되고, 내 순번이 상대보다 많으면 모듈로로 여러 명이 같은 상대에게 겹쳐 화력이 자연히
+        /// 집중된다(사용자 요청 — 타겟당 캡을 강제하는 대신 화력 분산 자체를 없앰). 순수 정수
+        /// 연산이라 난수를 소비하지 않는다. Farthest 필터(현재 암살자)거나 상대 명단이 비어있으면
+        /// (전원 은신 등) 기존 FindByPositionFilter로 폴백한다.
+        /// </summary>
+        private int SelectIndexPairedTarget(int unitIndex, int focusSquad, PositionFilter positionFilter, in AliveEnemyFilter fallbackFilter)
+        {
+            if (positionFilter != PositionFilter.Nearest)
             {
-                return fallback;
+                return FindByPositionFilter(unitIndex, fallbackFilter, positionFilter);
             }
-            return FindByPositionFilter(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, NoTarget), role.PositionFilter);
+
+            int mySquad = _squadIndices[unitIndex];
+            int myAliveCount = CollectAliveSquadMembers(mySquad, _squadRosterBuffer);
+            int mySlot = 0;
+            for (int k = 0; k < myAliveCount; k++)
+            {
+                if (_squadRosterBuffer[k] == unitIndex)
+                {
+                    mySlot = k;
+                    break;
+                }
+            }
+
+            int enemyAliveCount = CollectAliveSquadMembers(focusSquad, _squadRosterBuffer, excludeStealthed: true);
+            if (enemyAliveCount == 0)
+            {
+                // focusSquad 전원 은신 등 — 명단이 비어 매칭할 상대가 없다.
+                return FindByPositionFilter(unitIndex, fallbackFilter, positionFilter);
+            }
+
+            return _squadRosterBuffer[mySlot % enemyAliveCount];
         }
 
         private int FindByPositionFilter(int unitIndex, in AliveEnemyFilter filter, PositionFilter positionFilter)
@@ -1299,41 +1771,47 @@ namespace NHN.Simulation.Battle
                 int squadIndex = squadCursor++;
                 _squadGenerals[squadIndex] = squad.General;
                 _squadTeams[squadIndex] = team;
+                _squadRoles[squadIndex] = role;
                 _squadGeneralUnits[squadIndex] = NoTarget;
                 _squadCharges[squadIndex] = 0f;
                 _squadActivationCounts[squadIndex] = 0;
                 _squadLastActivationTimes[squadIndex] = -1f;
+                // 분대 유닛은 이 for문 안에서 항상 연속된 인덱스로 스폰된다(장군 포함) —
+                // 별도 리스트 없이 (시작, 개수)만으로 "분대 명단"을 얻는다 (2026-08-09).
+                int memberStart = _unitCount;
 
                 var anchor = new Vector2(
                     direction * (_config.FrontLineOffsetX + squad.Anchor.X),
                     squad.Anchor.Y);
+                float spacing = role.UnitRadius * _config.FormationSpacingMultiplier;
 
-                int rows = (int)MathF.Ceiling(MathF.Sqrt(squad.Count));
-                float spacing = role.UnitRadius * 2.5f;
-                float jitter = role.UnitRadius * 0.5f;
+                // 최초 스폰 배치도 재정렬(ReflowSquadFormation)과 같은 공식 — 장군이 맨 앞(대형
+                // 기준점)에 서고 병사는 그 뒤로 N열 종대 (2026-08-09, 사용자 요청). 장군의 정확한
+                // 선두 위치는 데이터(LeadRankOffset, 랭크 단위 −1~+1)로 살짝 조정 가능.
+                Vector2 generalPosition = anchor;
+                int rankOffset = 0;
+                if (squad.General != null)
+                {
+                    generalPosition = anchor + new Vector2(direction * -squad.General.LeadRankOffset * spacing, 0f);
+                    rankOffset = 1; // 병사는 장군 바로 뒤 랭크부터 시작
+                }
 
                 for (int k = 0; k < squad.Count; k++)
                 {
-                    int row = k / rows;
-                    int col = k % rows;
-                    float x = anchor.X + direction * (row - rows * 0.5f) * spacing
-                              + ((float)_random.NextDouble() * 2f - 1f) * jitter;
-                    float y = anchor.Y + (col - rows * 0.5f) * spacing
-                              + ((float)_random.NextDouble() * 2f - 1f) * jitter;
-
-                    SpawnUnit(role, roleIndex, team, squadIndex, new Vector2(x, y), isLeader: false);
+                    Vector2 offset = ColumnFormationOffset(k, rankOffset, direction, spacing);
+                    SpawnUnit(role, roleIndex, team, squadIndex, generalPosition + offset, isLeader: false);
                 }
 
                 if (squad.General != null)
                 {
-                    // 장군 스폰 위치 = 분대 선두 (기획 §5), 측면 중앙.
-                    // 앞뒤 정도는 데이터(LeadRankOffset, 랭크 단위 −1~+1)가 결정한다 — 밸런싱 튜닝 대상.
                     RoleDefinition generalRole = squad.General.CombatRole;
                     int generalRoleIndex = IndexOfRole(_roles, _roles.Length, generalRole);
-                    float frontX = anchor.X + direction * (-(rows * 0.5f) - squad.General.LeadRankOffset) * spacing;
-                    int generalUnit = SpawnUnit(generalRole, generalRoleIndex, team, squadIndex, new Vector2(frontX, anchor.Y), isLeader: true);
+                    int generalUnit = SpawnUnit(generalRole, generalRoleIndex, team, squadIndex, generalPosition, isLeader: true);
                     _squadGeneralUnits[squadIndex] = generalUnit;
                 }
+
+                _squadMemberStart[squadIndex] = memberStart;
+                _squadMemberCount[squadIndex] = _unitCount - memberStart;
             }
         }
 

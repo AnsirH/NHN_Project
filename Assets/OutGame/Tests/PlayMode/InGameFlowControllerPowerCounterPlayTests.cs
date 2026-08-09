@@ -72,7 +72,7 @@ namespace OutGame.Tests.PlayMode
         public IEnumerator RestRoomSelected_IncrementsPowerRoomsVisited()
         {
             RunState observed = null;
-            yield return SelectSingleRoomAndGetRun(RoomType.Rest, run => observed = run);
+            yield return SelectSingleRoomAndGetRun(RoomType.Reinforcement, run => observed = run);
             Assert.AreEqual(1, observed.powerRoomsVisited);
         }
 

@@ -13,11 +13,11 @@ namespace NHN.Data
         /// <summary>뷰 표현용 분대 에셋 정보 — ArmyDefinition과 같은 분대 순서.</summary>
         public readonly struct SquadAssets
         {
-            public readonly RoleData Role;
-            public readonly GeneralData General;
+            public readonly SquadData Role;
+            public readonly SquadData General;
             public readonly int Count;
 
-            public SquadAssets(RoleData role, GeneralData general, int count)
+            public SquadAssets(SquadData role, SquadData general, int count)
             {
                 Role = role;
                 General = general;
@@ -34,8 +34,8 @@ namespace NHN.Data
             for (int s = 0; s < squadRequests.Count; s++)
             {
                 SquadRequest squadRequest = squadRequests[s];
-                RoleData role = catalog.ResolveRole(squadRequest.roleId);
-                GeneralData general = catalog.ResolveGeneral(squadRequest.generalId);
+                SquadData role = catalog.ResolveRole(squadRequest.roleId);
+                SquadData general = catalog.ResolveGeneral(squadRequest.generalId);
                 squads[s] = new SquadDefinition(
                     BuildSoldierRole(role, squadRequest),
                     squadRequest.soldierCount,
@@ -52,7 +52,7 @@ namespace NHN.Data
         /// 병사 정의: 아웃게임이 스탯을 보냈으면 인게임 속성(.asset)과 결합하고, 아니면 .asset 값을 그대로 쓴다.
         /// 전달 여부와 무관하게 공격 주기·사거리·타겟팅·이동 패턴은 언제나 인게임 소유다.
         /// </summary>
-        private static RoleDefinition BuildSoldierRole(RoleData role, SquadRequest request)
+        private static RoleDefinition BuildSoldierRole(SquadData role, SquadRequest request)
         {
             RoleDefinition baseRole = role.ToDefinition();
             if (!request.HasSoldierStats)
@@ -69,13 +69,13 @@ namespace NHN.Data
         /// 장군 정의: 능력(패시브·충전·액티브)은 에셋에서, 스탯은 전달값이 있으면 그것으로.
         /// 같은 장군 에셋이 여러 분대에 쓰여도 분대마다 레벨이 다를 수 있어 인스턴스를 분리한다.
         /// </summary>
-        private static GeneralDefinition BuildGeneral(GeneralData general, SquadRequest request, in BattleConfig config)
+        private static GeneralDefinition BuildGeneral(SquadData general, SquadRequest request, in BattleConfig config)
         {
             if (general == null)
             {
                 return null;
             }
-            GeneralDefinition definition = general.ToDefinition();
+            GeneralDefinition definition = general.ToGeneralDefinition();
             if (request.HasGeneralStats)
             {
                 // 치명타·이동속도는 장군 값을 병사와 공유하므로 같은 필드를 쓴다 (아웃게임 §5.7).
@@ -107,13 +107,13 @@ namespace NHN.Data
             for (int s = 0; s < encounter.squads.Length; s++)
             {
                 EncounterTable.EncounterSquad encounterSquad = encounter.squads[s];
-                RoleData role = encounterSquad.role != null ? encounterSquad.role : catalog.NormalRole;
+                SquadData role = encounterSquad.role != null ? encounterSquad.role : catalog.NormalRole;
                 squads[s] = new SquadDefinition(
                     role.ToDefinition(),
                     encounterSquad.count,
                     DeploymentGrid.SlotToAnchor(
                         encounterSquad.slotX, encounterSquad.slotY, config.DeploymentDepth, config.DeploymentHalfWidth),
-                    encounterSquad.general != null ? encounterSquad.general.ToDefinition() : null);
+                    encounterSquad.general != null ? encounterSquad.general.ToGeneralDefinition() : null);
                 viewSquadsOut?.Add(new SquadAssets(role, encounterSquad.general, encounterSquad.count));
             }
             return new ArmyDefinition(squads);

@@ -44,6 +44,14 @@ namespace NHN.Integration
         /// (2026-08-02 계약: EnemyArmy에 최종 스탯·배치 좌표가 실려 온다. 재계산·자체 진형 없이
         /// 그대로 복사 — 배치 화면(EnemyFormationAssigner)에 보이는 위치·수치가 곧 실제 전투다).
         /// roleId/generalId만 병과에서 인게임이 매핑한다 (스탯이 아니라 에셋 선택이므로 인게임 소유).
+        ///
+        /// slotX만 예외로 인게임에서 반전(1-x)한다(2026-08-10 사용자 확정). DeploymentGrid.SlotToAnchor는
+        /// 아군·적 공용 공식이라 slotX를 그대로 넘기면 "낮은 열=후방, 높은 열=전방"으로 계산되는데,
+        /// EnemyFormationAssigner의 열 배정(전사/사냥꾼=낮은 열, 궁수=높은 열, §4-28)은 반대로
+        /// "낮은 열=전방(플레이어와 가까움)"을 전제한다 — 그 결과 전열 병과가 실제로는 적 진영 맨
+        /// 뒤에, 후열 병과가 맨 앞에 스폰되고 있었다. 아웃게임이 보낸 좌표 자체는 정확하므로(전용
+        /// 구역 배정 §4-28은 그대로 유지) slotY는 손대지 않고, 인게임 진입점인 여기서 slotX만
+        /// 뒤집어 "낮은 열=전방, 높은 열=후방"이 되도록 바로잡는다.
         /// </summary>
         public static void AddEnemySquads(List<SquadRequest> output, IReadOnlyList<EnemyArmy> enemies)
         {
@@ -60,7 +68,7 @@ namespace NHN.Integration
                     roleId = MapClassToRoleId(enemy.armyClass),
                     generalId = MapClassToGeneralId(enemy.armyClass),
                     soldierCount = enemy.soldierCount,
-                    slotX = enemy.slotX,
+                    slotX = 1f - enemy.slotX, // 낮은 열=전방이 되도록 반전 — 위 클래스 주석 참고.
                     slotY = enemy.slotY,
 
                     // 최종 스탯 — 난이도·병과 배율이 이미 반영된 값이라 그대로 쓴다 (아군과 동일).
