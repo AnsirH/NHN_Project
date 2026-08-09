@@ -45,6 +45,12 @@ namespace NHN.Data
                  "0 = 완전 비활성화 (2026-08-09: 가중치 룰렛 휠 타겟 선택 도입으로 실험적으로 끔).")]
         [SerializeField] private float separationStrength = 0f;
 
+        [Header("분대 대형 이동 (2026-08-09: 분대 단위로 뭉쳐 이동 → 인접 시 개별 전투)")]
+        [Tooltip("대형 슬롯과의 거리 허용 오차. 이 안이어야 '정렬됨' — 앵커 전진·Fighting 전환 조건")]
+        [SerializeField] private float formationTightnessTolerance = 0.5f;
+        [Tooltip("교전 판정 반경 여유값. 반경 = 분대 역할군 AttackRange + 대형 반경 + 이 값")]
+        [SerializeField] private float formationEngageRangeMargin = 1f;
+
         [Header("배치 슬롯 변환 (정규화 0~1 → anchor, DeploymentGrid)")]
         [Tooltip("slotX 0(후방)~1(전선)이 펼쳐지는 깊이 범위")]
         [SerializeField] private float deploymentDepth = 10f;
@@ -66,7 +72,8 @@ namespace NHN.Data
                 deploymentDepth, deploymentHalfWidth,
                 defenseK, critMultiplier,
                 skillUpgradeChargeReduction, minChargeRequiredRatio,
-                separationOverlapRatio, separationStrength);
+                separationOverlapRatio, separationStrength,
+                formationTightnessTolerance, formationEngageRangeMargin);
         }
     }
 }

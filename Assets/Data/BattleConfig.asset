@@ -25,6 +25,8 @@ MonoBehaviour:
   maxBattleSeconds: 180
   separationOverlapRatio: 0.8
   separationStrength: 0
+  formationTightnessTolerance: 0.5
+  formationEngageRangeMargin: 1
   deploymentDepth: 10
   deploymentHalfWidth: 14
   defenseK: 50

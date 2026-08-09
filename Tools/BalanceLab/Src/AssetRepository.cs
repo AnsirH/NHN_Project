@@ -103,7 +103,9 @@ namespace BalanceLab
                 c.GetFloat("skillUpgradeChargeReduction"),
                 c.GetFloat("minChargeRequiredRatio"),
                 c.GetFloat("separationOverlapRatio"),
-                c.GetFloat("separationStrength"));
+                c.GetFloat("separationStrength"),
+                c.GetFloat("formationTightnessTolerance"),
+                c.GetFloat("formationEngageRangeMargin"));
         }
 
         /// <summary>

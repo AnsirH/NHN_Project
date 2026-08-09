@@ -48,6 +48,17 @@ namespace NHN.Simulation.Battle
         /// 밀집 시 떨림·밀림 없이 부드럽게 자리를 잡는다.
         /// </summary>
         public readonly float SeparationStrength;
+        /// <summary>
+        /// 분대 대형 타이트니스 허용 오차 — 대형 슬롯(앵커+오프셋)과의 거리가 이 안이어야
+        /// "정렬됨"으로 본다. 이 값 이내여야 대형 앵커가 전진하거나 Fighting으로 전환한다
+        /// (2026-08-09, 분대 대형 이동).
+        /// </summary>
+        public readonly float FormationTightnessTolerance;
+        /// <summary>
+        /// 분대 교전 판정 반경의 여유값 — 반경 = 분대 역할군 AttackRange + 대형 반경 + 이 값.
+        /// 경계에서 정지·진동하지 않도록 약간의 여유를 둔다 (2026-08-09).
+        /// </summary>
+        public readonly float FormationEngageRangeMargin;
 
         public BattleConfig(
             int ticksPerSecond, float arenaHalfWidth, float arenaHalfHeight,
@@ -56,12 +67,15 @@ namespace NHN.Simulation.Battle
             float deploymentDepth, float deploymentHalfWidth,
             float defenseK, float critMultiplier,
             float skillUpgradeChargeReduction, float minChargeRequiredRatio,
-            float separationOverlapRatio, float separationStrength)
+            float separationOverlapRatio, float separationStrength,
+            float formationTightnessTolerance, float formationEngageRangeMargin)
         {
             SkillUpgradeChargeReduction = skillUpgradeChargeReduction;
             MinChargeRequiredRatio = minChargeRequiredRatio;
             SeparationOverlapRatio = separationOverlapRatio;
             SeparationStrength = separationStrength;
+            FormationTightnessTolerance = formationTightnessTolerance;
+            FormationEngageRangeMargin = formationEngageRangeMargin;
             TicksPerSecond = ticksPerSecond;
             ArenaHalfWidth = arenaHalfWidth;
             ArenaHalfHeight = arenaHalfHeight;

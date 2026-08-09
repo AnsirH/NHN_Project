@@ -254,6 +254,17 @@ namespace NHN.Simulation.Tests
             var sim = new BattleSimulation(LoadConfig().ToConfig(), armyA, armyB, seed: 11, new[] { poisonCloud });
             const int HunterIndex = 0; // 1=워리어(y-5), 2=워리어(y+5) — 서로 다른 분대
 
+            // 분대 대형 이동(2026-08-09): 전투는 개별 타게팅 없이 대형으로 접근하다가 인접해야
+            // 교전이 시작된다. 스폰 앵커는 전선(FrontLineOffsetX)만큼 떨어져 있어 실제 거리가
+            // 꽤 되므로, 정해진 틱 수 대신 교전이 시작될 때까지(타겟이 잡힐 때까지) 돌린다.
+            int engageDeadlineTicks = (int)(20f / sim.TickDeltaTime);
+            int ticksElapsed = 0;
+            while (sim.GetTargetIndex(HunterIndex) == -1 && ticksElapsed < engageDeadlineTicks)
+            {
+                sim.Tick();
+                ticksElapsed++;
+            }
+
             int initialTarget = sim.GetTargetIndex(HunterIndex);
             Assert.IsTrue(initialTarget == 1 || initialTarget == 2, "사냥꾼의 초기 타겟은 두 전사 중 하나여야 한다");
             int otherWarrior = initialTarget == 1 ? 2 : 1; // 사냥꾼의 포커스 분대가 아닌 쪽
