@@ -13,9 +13,9 @@ namespace NHN.Data
         [Serializable]
         public struct EncounterSquad
         {
-            public RoleData role;
-            [Tooltip("비우면 장군 없는 분대")]
-            public GeneralData general;
+            public SquadData role;
+            [Tooltip("비우면 장군 없는 분대 — 보통 role과 같은 SquadData 에셋을 그대로 지정한다 (2026-08-10 통합)")]
+            public SquadData general;
             public int count;
             [Tooltip("정규화 0~1, 1 = 전선 쪽")]
             public float slotX;

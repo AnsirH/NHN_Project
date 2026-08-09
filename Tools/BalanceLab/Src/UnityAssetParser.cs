@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Text.RegularExpressions;
 
 namespace BalanceLab
 {
@@ -14,7 +13,7 @@ namespace BalanceLab
     public sealed class ParsedAsset
     {
         public string FilePath;
-        /// <summary>m_EditorClassIdentifier — 예: "NHN.Data::NHN.Data.RoleData".</summary>
+        /// <summary>m_EditorClassIdentifier — 예: "NHN.Data::NHN.Data.SquadData".</summary>
         public string ClassIdentifier;
         /// <summary>m_Name — 에셋 이름 (카탈로그 키).</summary>
         public string Name;
@@ -56,20 +55,6 @@ namespace BalanceLab
                 throw Fail($"'{key}' 값 '{raw}'를 int로 해석할 수 없다");
             }
             return value;
-        }
-
-        private static readonly Regex GuidRefPattern = new Regex(@"guid:\s*([0-9a-f]{32})", RegexOptions.Compiled);
-
-        /// <summary>오브젝트 참조 필드("{fileID: ..., guid: X, type: 2}")에서 guid를 얻는다.</summary>
-        public string GetGuidRef(string key)
-        {
-            string raw = GetRequiredScalar(key);
-            Match match = GuidRefPattern.Match(raw);
-            if (!match.Success)
-            {
-                throw Fail($"'{key}' 값 '{raw}'가 guid 참조 형식이 아니다");
-            }
-            return match.Groups[1].Value;
         }
 
         /// <summary>
@@ -150,21 +135,6 @@ namespace BalanceLab
 
     public static class UnityAssetParser
     {
-        private static readonly Regex MetaGuidPattern = new Regex(@"^guid:\s*([0-9a-f]{32})\s*$", RegexOptions.Compiled);
-
-        public static string ParseMetaGuid(string metaPath)
-        {
-            foreach (string line in File.ReadLines(metaPath))
-            {
-                Match match = MetaGuidPattern.Match(line.Trim());
-                if (match.Success)
-                {
-                    return match.Groups[1].Value;
-                }
-            }
-            throw new InvalidDataException($"{metaPath}: guid 라인을 찾을 수 없다");
-        }
-
         /// <summary>
         /// 클래스 식별자만 가볍게 읽는다 (전체 파싱 없이) — 관련 없는 에셋(중첩 구조 등)을 걸러내는 1차 스캔용.
         /// MonoBehaviour 에셋이 아니면 null.

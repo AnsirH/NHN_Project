@@ -9,7 +9,8 @@ namespace NHN.Simulation.Tests
     /// <summary>
     /// 장군 시스템 헤드리스 검증 (기획 §6, v4 파트 B 요구 테스트 3종):
     /// (1) 장군 유/무 승률 차이 (2) 장군 조기 사망 시 패시브·게이지 소멸 (3) 충전식 액티브의 전투당 2회 이상 발동.
-    /// 장군은 GeneralDefinition 데이터만으로 구성된다 — 장군별 클래스 없음 (에셋 경로는 GeneralData가 동일 구조).
+    /// 장군은 GeneralDefinition 데이터만으로 구성된다 — 장군별 클래스 없음 (에셋 경로는 SquadData의 장군
+    /// 필드가 같은 구조를 담당, 2026-08-10 병사/장군 에셋 통합).
     /// </summary>
     public sealed class GeneralHeadlessTests
     {
@@ -19,14 +20,14 @@ namespace NHN.Simulation.Tests
         private const string HunterPath = "Assets/Data/Roles/Hunter.asset";
         private const string ConfigPath = "Assets/Data/BattleConfig.asset";
 
-        // 테스트 전용 장군 튜닝 (전투당 2~3회 수준 검증용 — 실전 수치는 GeneralData 에셋에서 튜닝)
+        // 테스트 전용 장군 튜닝 (전투당 2~3회 수준 검증용 — 실전 수치는 SquadData 에셋의 장군 필드에서 튜닝)
         private const float EliteHpMultiplier = 3f;
         private const float EliteDamageMultiplier = 1.5f;
         private const float EliteSizeMultiplier = 1.3f;
 
-        private static RoleData LoadRole(string path)
+        private static SquadData LoadRole(string path)
         {
-            var role = AssetDatabase.LoadAssetAtPath<RoleData>(path);
+            var role = AssetDatabase.LoadAssetAtPath<SquadData>(path);
             Assert.IsNotNull(role, $"{path} 에셋이 있어야 한다");
             return role;
         }
@@ -39,7 +40,7 @@ namespace NHN.Simulation.Tests
         }
 
         /// <summary>
-        /// 장군의 전투 능력 = 기반 롤 × 엘리트 배율 — GeneralData.ToDefinition과 같은 파생 규칙.
+        /// 장군의 전투 능력 = 기반 롤 × 엘리트 배율 — SquadData.ToGeneralDefinition과 같은 파생 규칙.
         /// hpMultiplier 재정의: 선두에 선 장군은 적 최근접 타겟팅의 집중 포화를 받으므로(기획 §5 —
         /// "근접 부대 장군은 구조적으로 위험") 장기 생존 시나리오는 높은 HP 배율로 표현한다.
         /// </summary>
@@ -84,17 +85,17 @@ namespace NHN.Simulation.Tests
         }
 
         /// <summary>
-        /// 완료 기준 자가 검증: 장군 1명 추가 = GeneralData 에셋 1개, 코드 수정 0줄.
-        /// 에셋 로드 → ToDefinition → 시뮬 구동까지 데이터만으로 동작해야 한다.
+        /// 완료 기준 자가 검증: 장군 1명 추가 = SquadData 에셋 1개(장군 필드 채우기), 코드 수정 0줄
+        /// (2026-08-10: 병사/장군 에셋 통합 이전엔 GeneralData 에셋 1개였다).
+        /// 에셋 로드 → ToGeneralDefinition → 시뮬 구동까지 데이터만으로 동작해야 한다.
         /// </summary>
         [Test]
         public void GeneralDataAsset_DrivesSimulation_WithoutCodeChanges()
         {
-            var generalData = AssetDatabase.LoadAssetAtPath<GeneralData>("Assets/Data/Generals/WarriorGeneral.asset");
-            Assert.IsNotNull(generalData, "WarriorGeneral 에셋이 있어야 한다");
+            SquadData squadData = LoadRole(WarriorPath);
 
-            RoleDefinition warrior = LoadRole(WarriorPath).ToDefinition();
-            GeneralDefinition general = generalData.ToDefinition();
+            RoleDefinition warrior = squadData.ToDefinition();
+            GeneralDefinition general = squadData.ToGeneralDefinition();
             Assert.AreEqual(SquadPassive.AttackPercent, general.Passive);
             Assert.AreEqual(GimmickEffect.SquadDamageResist, general.ActiveEffect);
 

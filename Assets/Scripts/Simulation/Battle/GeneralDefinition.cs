@@ -1,8 +1,9 @@
 namespace NHN.Simulation.Battle
 {
     /// <summary>
-    /// 장군 1명의 순수 정의 (기획 §6). 단일 출처는 GeneralData(SO)이며 ToDefinition()으로 변환된다.
-    /// 장군별 클래스 금지 — 장군 추가 = GeneralData 에셋 1개.
+    /// 장군 1명의 순수 정의 (기획 §6). 단일 출처는 SquadData(SO)의 장군 필드이며
+    /// ToGeneralDefinition()으로 변환된다.
+    /// 장군별 클래스 금지 — 장군 추가 = SquadData 에셋 1개(장군 필드 채우기).
     /// 구성: 전투 능력(RoleDefinition 재사용) + 패시브(부대 지속 버프: enum + 수치)
     /// + 액티브(충전 조건 enum + 필요량 + GimmickEffect 부대 스코프 케이스 재사용, 자동 발동·재충전).
     /// </summary>
@@ -63,7 +64,7 @@ namespace NHN.Simulation.Battle
 
         /// <summary>
         /// 엘리트 파생 공식의 단일 출처 — 장군 전투 능력 = 기반 롤 × 배율 (기획 §5 롤별 장군 스탯 차등).
-        /// GeneralData.ToDefinition(Unity)과 BalanceLab CLI가 함께 이 팩토리에 위임한다 (공식 중복 금지).
+        /// SquadData.ToGeneralDefinition(Unity)과 BalanceLab CLI가 함께 이 팩토리에 위임한다 (공식 중복 금지).
         ///
         /// 주의(아웃게임 연동 계약): 연결 경로에서는 장군 스탯도 아웃게임이 계산해 전달하므로
         /// hp/damage 배율은 사용되지 않는다 — 이 배율들은 테스트 씬·BalanceLab 로컬 경로 전용이다.

@@ -20,9 +20,9 @@ namespace NHN.Simulation.Tests
         private const string PoisonCloudPath = "Assets/Data/Skills/PoisonCloud.asset";
         private const string ConfigPath = "Assets/Data/BattleConfig.asset";
 
-        private static RoleData LoadRole(string path)
+        private static SquadData LoadRole(string path)
         {
-            var role = AssetDatabase.LoadAssetAtPath<RoleData>(path);
+            var role = AssetDatabase.LoadAssetAtPath<SquadData>(path);
             Assert.IsNotNull(role, $"{path} 에셋이 있어야 한다");
             return role;
         }
@@ -43,7 +43,7 @@ namespace NHN.Simulation.Tests
 
         /// <summary>단일 분대 vs 단일 분대 전투 생성. 유닛 인덱스는 A군(0..countA-1) → B군 순.</summary>
         private static BattleSimulation CreateBattle(
-            RoleData roleA, int countA, RoleData roleB, int countB, int seed,
+            SquadData roleA, int countA, SquadData roleB, int countB, int seed,
             SkillDefinition[] skills = null)
         {
             var armyA = new ArmyDefinition(new[]
@@ -130,8 +130,8 @@ namespace NHN.Simulation.Tests
         [Test]
         public void Assassin_IsUntargetableWhileStealthed_And_FirstHitIsPlain()
         {
-            RoleData assassinData = LoadRole(AssassinPath);
-            RoleData archerData = LoadRole(ArcherPath);
+            SquadData assassinData = LoadRole(AssassinPath);
+            SquadData archerData = LoadRole(ArcherPath);
             RoleDefinition assassin = assassinData.ToDefinition();
             RoleDefinition archer = archerData.ToDefinition();
 
@@ -171,7 +171,7 @@ namespace NHN.Simulation.Tests
         [Test]
         public void PoisonCloud_AppliesPoisonDot()
         {
-            RoleData warrior = LoadRole(WarriorPath);
+            SquadData warrior = LoadRole(WarriorPath);
             SkillDefinition poisonCloud = LoadSkill(PoisonCloudPath).ToDefinition();
             var sim = CreateBattle(warrior, 1, warrior, 1, seed: 5, new[] { poisonCloud });
             const int TargetIndex = 1; // B군 유닛
@@ -198,7 +198,7 @@ namespace NHN.Simulation.Tests
         [Test]
         public void Lightning_DamagesAndStuns()
         {
-            RoleData warrior = LoadRole(WarriorPath);
+            SquadData warrior = LoadRole(WarriorPath);
             RoleDefinition warriorDef = warrior.ToDefinition();
             SkillDefinition lightning = LoadSkill(LightningPath).ToDefinition();
             var sim = CreateBattle(warrior, 1, warrior, 1, seed: 5, new[] { lightning });
@@ -238,8 +238,8 @@ namespace NHN.Simulation.Tests
         [Test]
         public void Hunter_DoesNotSwitchTargetAcrossSquadBoundary_EvenWhenPoisoned()
         {
-            RoleData hunter = LoadRole(HunterPath);
-            RoleData warrior = LoadRole(WarriorPath);
+            SquadData hunter = LoadRole(HunterPath);
+            SquadData warrior = LoadRole(WarriorPath);
             SkillDefinition poisonCloud = LoadSkill(PoisonCloudPath).ToDefinition();
 
             var armyA = new ArmyDefinition(new[]
@@ -292,7 +292,7 @@ namespace NHN.Simulation.Tests
         [Test]
         public void Burn_WorksViaDataOnly_AndSkillCastsAreDeterministic()
         {
-            RoleData warrior = LoadRole(WarriorPath);
+            SquadData warrior = LoadRole(WarriorPath);
             float maxHp = warrior.ToDefinition().MaxHp;
             var burnSkill = new SkillDefinition(
                 "BurnTest", cooldown: 5f, radius: 3f, damage: 0f,
@@ -319,7 +319,7 @@ namespace NHN.Simulation.Tests
             Assert.AreEqual(first.SurvivorsTeamB, second.SurvivorsTeamB);
         }
 
-        private static BattleResult RunBurnBattle(RoleData warrior, SkillDefinition burnSkill)
+        private static BattleResult RunBurnBattle(SquadData warrior, SkillDefinition burnSkill)
         {
             var sim = CreateBattle(warrior, 5, warrior, 5, seed: 9, new[] { burnSkill });
             Assert.IsTrue(sim.TryCastSkill(0, sim.GetPosition(5)));
@@ -333,7 +333,7 @@ namespace NHN.Simulation.Tests
         [Test]
         public void PositiveEffects_HealAndAttackUp_WorkViaStatusSystem()
         {
-            RoleData warriorData = LoadRole(WarriorPath);
+            SquadData warriorData = LoadRole(WarriorPath);
             RoleDefinition warrior = warriorData.ToDefinition();
 
             // 대상을 깊은 후방에 배치해 검증 구간 동안 교전이 없도록 한다.

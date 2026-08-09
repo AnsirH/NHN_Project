@@ -11,15 +11,15 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7408ee50e8163d4ca6f4a7a33c45507, type: 3}
   m_Name: Assassin
-  m_EditorClassIdentifier: NHN.Data::NHN.Data.RoleData
+  m_EditorClassIdentifier: NHN.Data::NHN.Data.SquadData
   maxHp: 70
   attackDamage: 16
   defense: 0
   critChancePercent: 0
   attackInterval: 0.8
-  attackRange: 0.9
+  attackRange: 0.5
   moveSpeed: 5
-  unitRadius: 0.45
+  unitRadius: 0.2
   positionFilter: 1
   priorities: 00000000
   movePattern: 1
@@ -27,7 +27,20 @@ MonoBehaviour:
   moveParamB: 1.5
   projectileSpeed: 0
   projectileArcHeight: 2
+  generalHpMultiplier: 4
+  generalDamageMultiplier: 1.5
+  generalSizeMultiplier: 1.3
+  generalPassive: 1
+  generalPassiveValue: 0.15
+  generalChargeCondition: 3
+  generalChargeRequired: 4
+  generalActiveEffect: 12
+  generalActiveParamA: 2
+  generalActiveParamB: 2
+  generalActiveDuration: 0
+  generalLeadRankOffset: 1
   roleColor: {r: 0.6, g: 0.3, b: 0.85, a: 1}
-  viewPrefab: {fileID: 4032534519313787592, guid: d3d88e6fb1e9feb428719011bebfb216, type: 3}
+  soldierViewPrefab: {fileID: 3637382283819324154, guid: 30e1f441a7fe96b4ea3c39d7110ffb44, type: 3}
+  generalViewPrefab: {fileID: 6227988113184810142, guid: b4f124ce8ca02df43b16bfe24695cbbe, type: 3}
   attackSounds:
   - {fileID: 8300000, guid: b1b2fa3874a8a7e46b1e2bfa697a0cf3, type: 3}

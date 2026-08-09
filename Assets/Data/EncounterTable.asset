@@ -16,29 +16,29 @@ MonoBehaviour:
   - encounterId: enc_NormalBattle
     squads:
     - role: {fileID: 11400000, guid: bb0033d66abb649409b4061e3eba26ad, type: 2}
-      general: {fileID: 11400000, guid: 3f314d7902daeb34aa50e8cc49ec6f96, type: 2}
+      general: {fileID: 11400000, guid: bb0033d66abb649409b4061e3eba26ad, type: 2}
       count: 15
       slotX: 1
       slotY: 0.5
     - role: {fileID: 11400000, guid: add2da02bd93a734284633e23af1852e, type: 2}
-      general: {fileID: 11400000, guid: b7e4a91c5d2f8034ab6c0d97e13f52a8, type: 2}
+      general: {fileID: 11400000, guid: add2da02bd93a734284633e23af1852e, type: 2}
       count: 12
       slotX: 0.3
       slotY: 0.5
   - encounterId: enc_Boss
     squads:
     - role: {fileID: 11400000, guid: bb0033d66abb649409b4061e3eba26ad, type: 2}
-      general: {fileID: 11400000, guid: 3f314d7902daeb34aa50e8cc49ec6f96, type: 2}
+      general: {fileID: 11400000, guid: bb0033d66abb649409b4061e3eba26ad, type: 2}
       count: 20
       slotX: 1
       slotY: 0.5
     - role: {fileID: 11400000, guid: add2da02bd93a734284633e23af1852e, type: 2}
-      general: {fileID: 11400000, guid: b7e4a91c5d2f8034ab6c0d97e13f52a8, type: 2}
+      general: {fileID: 11400000, guid: add2da02bd93a734284633e23af1852e, type: 2}
       count: 15
       slotX: 0.3
       slotY: 0.5
     - role: {fileID: 11400000, guid: 3a7c1f92d4e8b4740a1c55b9e2f01c3d, type: 2}
-      general: {fileID: 11400000, guid: c9d5b82e6f3a9145bc7d1e08f24a63b9, type: 2}
+      general: {fileID: 11400000, guid: 3a7c1f92d4e8b4740a1c55b9e2f01c3d, type: 2}
       count: 8
       slotX: 0.9
       slotY: 0.15

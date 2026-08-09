@@ -24,45 +24,56 @@ namespace NHN.Data
             public SkillData skill;
         }
 
+        /// <summary>generalId 계약(roleId + "General")의 접미사 — MapClassToGeneralId와 동일 상수.</summary>
+        private const string GeneralSuffix = "General";
+
         [Header("키 → 에셋 (키 = 에셋 이름)")]
-        [SerializeField] private RoleData[] roles;
-        [SerializeField] private GeneralData[] generals;
+        [Tooltip("병사·장군 데이터가 통합된 분대 에셋 — SquadData 1개 = 롤 1종 (2026-08-10 통합)")]
+        [SerializeField] private SquadData[] squads;
         [Tooltip("roleId가 비었거나 미등록일 때 사용 — 기획 §5 노멀 병사")]
-        [SerializeField] private RoleData normalRole;
+        [SerializeField] private SquadData normalSquad;
 
         [Header("플레이어 캐릭터 스킬 (§5.2.5 — 계약 playerCharacterSkillId → 스킬 에셋)")]
         [SerializeField] private PlayerSkillEntry[] playerSkillMap;
 
-        public RoleData NormalRole => normalRole;
+        public SquadData NormalRole => normalSquad;
 
-        public RoleData ResolveRole(string roleId)
+        public SquadData ResolveRole(string roleId)
         {
             if (string.IsNullOrEmpty(roleId))
             {
-                return normalRole;
+                return normalSquad;
             }
-            for (int i = 0; i < roles.Length; i++)
+            for (int i = 0; i < squads.Length; i++)
             {
-                if (roles[i] != null && roles[i].name == roleId)
+                if (squads[i] != null && squads[i].name == roleId)
                 {
-                    return roles[i];
+                    return squads[i];
                 }
             }
             Debug.LogWarning($"[BattleCatalog] 미등록 roleId '{roleId}' — 노멀 병사로 폴백 (키 협의/카탈로그 등록 필요)");
-            return normalRole;
+            return normalSquad;
         }
 
-        public GeneralData ResolveGeneral(string generalId)
+        /// <summary>
+        /// generalId는 계약상 언제나 "roleId + General"(MapClassToGeneralId) 형태다 — 병사·장군이
+        /// 하나의 SquadData로 통합된 뒤에도(2026-08-10) 이 문자열 계약은 그대로 두고, 여기서 접미사를
+        /// 벗겨 같은 배열에서 찾는다.
+        /// </summary>
+        public SquadData ResolveGeneral(string generalId)
         {
             if (string.IsNullOrEmpty(generalId))
             {
                 return null;
             }
-            for (int i = 0; i < generals.Length; i++)
+            string roleId = generalId.EndsWith(GeneralSuffix, StringComparison.Ordinal)
+                ? generalId.Substring(0, generalId.Length - GeneralSuffix.Length)
+                : generalId;
+            for (int i = 0; i < squads.Length; i++)
             {
-                if (generals[i] != null && generals[i].name == generalId)
+                if (squads[i] != null && squads[i].name == roleId)
                 {
-                    return generals[i];
+                    return squads[i];
                 }
             }
             Debug.LogWarning($"[BattleCatalog] 미등록 generalId '{generalId}' — 장군 없음으로 폴백");

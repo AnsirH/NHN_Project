@@ -12,19 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c28cf755a310264d9ab8881006058fc, type: 3}
   m_Name: BattleCatalog
   m_EditorClassIdentifier: NHN.Data::NHN.Data.BattleCatalog
-  roles:
+  squads:
   - {fileID: 11400000, guid: bb0033d66abb649409b4061e3eba26ad, type: 2}
   - {fileID: 11400000, guid: add2da02bd93a734284633e23af1852e, type: 2}
   - {fileID: 11400000, guid: 3a7c1f92d4e8b4740a1c55b9e2f01c3d, type: 2}
   - {fileID: 11400000, guid: 5e8a1c7d2f9b34e4a8d06b3c94e17f5a, type: 2}
   - {fileID: 11400000, guid: e1f7d04a8b5c1367de9f3a20b46c85d1, type: 2}
-  generals:
-  - {fileID: 11400000, guid: c4f8b71d3e6a2049ba5d0c83f19e47a6, type: 2}
-  - {fileID: 11400000, guid: 3f314d7902daeb34aa50e8cc49ec6f96, type: 2}
-  - {fileID: 11400000, guid: b7e4a91c5d2f8034ab6c0d97e13f52a8, type: 2}
-  - {fileID: 11400000, guid: c9d5b82e6f3a9145bc7d1e08f24a63b9, type: 2}
-  - {fileID: 11400000, guid: d0e6c93f7a4b0256cd8e2f19a35b74c0, type: 2}
-  normalRole: {fileID: 11400000, guid: e1f7d04a8b5c1367de9f3a20b46c85d1, type: 2}
+  normalSquad: {fileID: 11400000, guid: e1f7d04a8b5c1367de9f3a20b46c85d1, type: 2}
   playerSkillMap:
   - skillId: skill_char_1
     skill: {fileID: 11400000, guid: c8d13b5e9a2f74c4d907e6b18f35a2c1, type: 2}
