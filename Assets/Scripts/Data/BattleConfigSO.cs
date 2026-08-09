@@ -50,6 +50,10 @@ namespace NHN.Data
         [SerializeField] private float formationTightnessTolerance = 0.5f;
         [Tooltip("교전 판정 반경 여유값. 반경 = 분대 역할군 AttackRange + 대형 반경 + 이 값")]
         [SerializeField] private float formationEngageRangeMargin = 1f;
+        [Tooltip("대형 몇 열 종대로 설지 (장군 맨 앞 + 이 폭만큼 좌우로 채우고 다음 랭크로)")]
+        [SerializeField] private int formationColumnWidth = 5;
+        [Tooltip("대형 유닛 간 간격 = 역할군 UnitRadius × 이 배율")]
+        [SerializeField] private float formationSpacingMultiplier = 2.5f;
 
         [Header("배치 슬롯 변환 (정규화 0~1 → anchor, DeploymentGrid)")]
         [Tooltip("slotX 0(후방)~1(전선)이 펼쳐지는 깊이 범위")]
@@ -73,7 +77,8 @@ namespace NHN.Data
                 defenseK, critMultiplier,
                 skillUpgradeChargeReduction, minChargeRequiredRatio,
                 separationOverlapRatio, separationStrength,
-                formationTightnessTolerance, formationEngageRangeMargin);
+                formationTightnessTolerance, formationEngageRangeMargin,
+                formationColumnWidth, formationSpacingMultiplier);
         }
     }
 }

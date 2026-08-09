@@ -27,6 +27,8 @@ MonoBehaviour:
   separationStrength: 0
   formationTightnessTolerance: 0.5
   formationEngageRangeMargin: 1
+  formationColumnWidth: 5
+  formationSpacingMultiplier: 2.5
   deploymentDepth: 10
   deploymentHalfWidth: 14
   defenseK: 50

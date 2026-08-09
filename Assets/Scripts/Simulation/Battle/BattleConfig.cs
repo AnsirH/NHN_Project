@@ -59,6 +59,16 @@ namespace NHN.Simulation.Battle
         /// 경계에서 정지·진동하지 않도록 약간의 여유를 둔다 (2026-08-09).
         /// </summary>
         public readonly float FormationEngageRangeMargin;
+        /// <summary>
+        /// 대형(스폰 최초 배치 + 전투 후 재정렬 공통) 몇 열 종대로 설지 — 장군 바로 뒤부터 이
+        /// 폭만큼 좌우로 채우고 넘치면 다음 랭크로 (2026-08-09, 사용자 요청: 장군 맨 앞 + 5열 종대).
+        /// </summary>
+        public readonly int FormationColumnWidth;
+        /// <summary>
+        /// 대형 유닛 간 간격 = 역할군 UnitRadius × 이 배율. 값이 클수록 성글게, 작을수록 빽빽하게
+        /// 선다 (2026-08-09, 유닛 간격을 쉽게 조절할 수 있도록 노출).
+        /// </summary>
+        public readonly float FormationSpacingMultiplier;
 
         public BattleConfig(
             int ticksPerSecond, float arenaHalfWidth, float arenaHalfHeight,
@@ -68,7 +78,8 @@ namespace NHN.Simulation.Battle
             float defenseK, float critMultiplier,
             float skillUpgradeChargeReduction, float minChargeRequiredRatio,
             float separationOverlapRatio, float separationStrength,
-            float formationTightnessTolerance, float formationEngageRangeMargin)
+            float formationTightnessTolerance, float formationEngageRangeMargin,
+            int formationColumnWidth, float formationSpacingMultiplier)
         {
             SkillUpgradeChargeReduction = skillUpgradeChargeReduction;
             MinChargeRequiredRatio = minChargeRequiredRatio;
@@ -76,6 +87,8 @@ namespace NHN.Simulation.Battle
             SeparationStrength = separationStrength;
             FormationTightnessTolerance = formationTightnessTolerance;
             FormationEngageRangeMargin = formationEngageRangeMargin;
+            FormationColumnWidth = formationColumnWidth;
+            FormationSpacingMultiplier = formationSpacingMultiplier;
             TicksPerSecond = ticksPerSecond;
             ArenaHalfWidth = arenaHalfWidth;
             ArenaHalfHeight = arenaHalfHeight;

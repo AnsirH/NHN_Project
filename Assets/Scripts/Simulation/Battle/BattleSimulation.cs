@@ -1437,13 +1437,31 @@ namespace NHN.Simulation.Battle
         }
 
         /// <summary>
+        /// 대형 내 상대 오프셋 — 장군(또는 앵커) 바로 뒤 rankOffset칸째부터 시작해 병사를
+        /// FormationColumnWidth열 종대로 채운다(넘치면 다음 랭크). followerIndex는 그 분대 안에서
+        /// 병사(장군 제외) 순서(0-index, 스폰/생존 순서 — 스폰 시와 재정렬 시 공통 사용). "뒤"는
+        /// retreatDirection 부호 방향(적과 반대쪽, 팀별로 다름) — 랭크가 커질수록 그만큼 물러난다.
+        /// 좌우(열)는 폭 중앙 기준으로 대칭 배치.
+        /// </summary>
+        private Vector2 ColumnFormationOffset(int followerIndex, int rankOffset, float retreatDirection, float spacing)
+        {
+            int columns = Math.Max(_config.FormationColumnWidth, 1); // 0 이하 설정값 방어
+            int rank = followerIndex / columns + rankOffset;
+            int col = followerIndex % columns;
+            float x = retreatDirection * rank * spacing;
+            float y = (col - (columns - 1) * 0.5f) * spacing;
+            return new Vector2(x, y);
+        }
+
+        /// <summary>
         /// 분대 squadIndex의 대형을 지금 생존자 수에 맞게 다시 짠다. 죽은 유닛의 원래 슬롯을
-        /// 비워두지 않고, 생존자를 스폰 순서 그대로 작은 격자(SpawnArmy와 같은 공식)에 채운다.
-        /// 중심(앵커)은 장군이 살아있으면 장군의 현재 위치 — 장군은 그 자리에 서 있고 나머지가
-        /// 장군을 중심으로 모인다(오프셋 0으로 고정, 이동 없음). 장군이 없거나 죽었으면 지금
-        /// 살아있는 유닛들의 실제 위치 중심(_squadCentroids)으로 대체한다. 장군 위치가 아니라
-        /// 평균 중심(대형 밖 허공일 수 있음)을 쓰면 전투 직후 다들 엉뚱한 곳까지 걸어가게 되는
-        /// 문제가 있었다(2026-08-09 사용자 피드백). 새 오프셋 기준 타이트니스도 여기서 바로
+        /// 비워두지 않고, 생존자를 스폰 순서 그대로 장군 맨 앞 + N열 종대(ColumnFormationOffset,
+        /// SpawnArmy 최초 배치와 같은 공식)로 채운다. 중심(앵커)은 장군이 살아있으면 장군의 현재
+        /// 위치 — 장군은 그 자리에 서 있고 나머지가 장군 뒤로 도열한다(오프셋 0으로 고정, 이동
+        /// 없음). 장군이 없거나 죽었으면 지금 살아있는 유닛들의 실제 위치 중심(_squadCentroids)을
+        /// 대체 앵커로 쓰고, 이 경우 병사들은 랭크 0(앵커 바로 그 줄)부터 채운다. 장군 위치가
+        /// 아니라 평균 중심(대형 밖 허공일 수 있음)을 쓰면 전투 직후 다들 엉뚱한 곳까지 걸어가게
+        /// 되는 문제가 있었다(2026-08-09 사용자 피드백). 새 오프셋 기준 타이트니스도 여기서 바로
         /// 재계산해, 호출 직후 이번 틱 판정에 즉시 반영된다.
         /// </summary>
         private void ReflowSquadFormation(int squadIndex)
@@ -1460,15 +1478,14 @@ namespace NHN.Simulation.Battle
             Vector2 anchor = hasLivingGeneral ? _positions[generalUnit] : _squadCentroids[squadIndex];
             _squadFormationAnchors[squadIndex] = anchor;
 
-            int followerCount = hasLivingGeneral ? n - 1 : n;
             RoleDefinition role = _squadRoles[squadIndex];
-            int rows = (int)MathF.Ceiling(MathF.Sqrt(MathF.Max(followerCount, 1)));
-            float spacing = role.UnitRadius * 2.5f;
-            float jitter = role.UnitRadius * 0.5f;
+            float retreatDirection = _squadTeams[squadIndex] == TeamA ? -1f : 1f;
+            float spacing = role.UnitRadius * _config.FormationSpacingMultiplier;
+            int rankOffset = hasLivingGeneral ? 1 : 0;
 
             float formationRadius = 0f;
             float tightness = 0f;
-            int slot = 0;
+            int followerIndex = 0;
             for (int k = 0; k < n; k++)
             {
                 int unit = _squadReflowBuffer[k];
@@ -1478,12 +1495,8 @@ namespace NHN.Simulation.Battle
                     continue;
                 }
 
-                int row = slot / rows;
-                int col = slot % rows;
-                slot++;
-                float offsetX = (row - rows * 0.5f) * spacing + ((float)_random.NextDouble() * 2f - 1f) * jitter;
-                float offsetY = (col - rows * 0.5f) * spacing + ((float)_random.NextDouble() * 2f - 1f) * jitter;
-                var offset = new Vector2(offsetX, offsetY);
+                Vector2 offset = ColumnFormationOffset(followerIndex, rankOffset, retreatDirection, spacing);
+                followerIndex++;
                 _formationOffsets[unit] = offset;
 
                 float offsetLength = offset.Length();
@@ -1753,31 +1766,30 @@ namespace NHN.Simulation.Battle
                 var anchor = new Vector2(
                     direction * (_config.FrontLineOffsetX + squad.Anchor.X),
                     squad.Anchor.Y);
+                float spacing = role.UnitRadius * _config.FormationSpacingMultiplier;
 
-                int rows = (int)MathF.Ceiling(MathF.Sqrt(squad.Count));
-                float spacing = role.UnitRadius * 2.5f;
-                float jitter = role.UnitRadius * 0.5f;
+                // 최초 스폰 배치도 재정렬(ReflowSquadFormation)과 같은 공식 — 장군이 맨 앞(대형
+                // 기준점)에 서고 병사는 그 뒤로 N열 종대 (2026-08-09, 사용자 요청). 장군의 정확한
+                // 선두 위치는 데이터(LeadRankOffset, 랭크 단위 −1~+1)로 살짝 조정 가능.
+                Vector2 generalPosition = anchor;
+                int rankOffset = 0;
+                if (squad.General != null)
+                {
+                    generalPosition = anchor + new Vector2(direction * -squad.General.LeadRankOffset * spacing, 0f);
+                    rankOffset = 1; // 병사는 장군 바로 뒤 랭크부터 시작
+                }
 
                 for (int k = 0; k < squad.Count; k++)
                 {
-                    int row = k / rows;
-                    int col = k % rows;
-                    float x = anchor.X + direction * (row - rows * 0.5f) * spacing
-                              + ((float)_random.NextDouble() * 2f - 1f) * jitter;
-                    float y = anchor.Y + (col - rows * 0.5f) * spacing
-                              + ((float)_random.NextDouble() * 2f - 1f) * jitter;
-
-                    SpawnUnit(role, roleIndex, team, squadIndex, new Vector2(x, y), isLeader: false);
+                    Vector2 offset = ColumnFormationOffset(k, rankOffset, direction, spacing);
+                    SpawnUnit(role, roleIndex, team, squadIndex, generalPosition + offset, isLeader: false);
                 }
 
                 if (squad.General != null)
                 {
-                    // 장군 스폰 위치 = 분대 선두 (기획 §5), 측면 중앙.
-                    // 앞뒤 정도는 데이터(LeadRankOffset, 랭크 단위 −1~+1)가 결정한다 — 밸런싱 튜닝 대상.
                     RoleDefinition generalRole = squad.General.CombatRole;
                     int generalRoleIndex = IndexOfRole(_roles, _roles.Length, generalRole);
-                    float frontX = anchor.X + direction * (-(rows * 0.5f) - squad.General.LeadRankOffset) * spacing;
-                    int generalUnit = SpawnUnit(generalRole, generalRoleIndex, team, squadIndex, new Vector2(frontX, anchor.Y), isLeader: true);
+                    int generalUnit = SpawnUnit(generalRole, generalRoleIndex, team, squadIndex, generalPosition, isLeader: true);
                     _squadGeneralUnits[squadIndex] = generalUnit;
                 }
 

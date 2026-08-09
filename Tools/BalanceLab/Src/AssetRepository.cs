@@ -105,7 +105,9 @@ namespace BalanceLab
                 c.GetFloat("separationOverlapRatio"),
                 c.GetFloat("separationStrength"),
                 c.GetFloat("formationTightnessTolerance"),
-                c.GetFloat("formationEngageRangeMargin"));
+                c.GetFloat("formationEngageRangeMargin"),
+                c.GetInt("formationColumnWidth"),
+                c.GetFloat("formationSpacingMultiplier"));
         }
 
         /// <summary>
