@@ -110,6 +110,13 @@ namespace NHN.Presentation.Battle
         [SerializeField] private float hitFxScale = 0.2f;
         [SerializeField] private float deathFxScale = 0.09f;
 
+        [Header("유닛 위치 감쇠 (2026-08-10: 겹침 분리로 인한 미세 진동 완화)")]
+        [Tooltip("렌더 위치가 시뮬 목표 위치를 프레임마다 따라가는 비율(초당 기준, 프레임레이트 " +
+                 "보정됨). 1 = 즉시 스냅(감쇠 없음), 낮을수록 부드럽지만 지연이 커진다. 겹침 분리가 " +
+                 "정지 유닛을 틱마다 미세하게 밀었다 놨다 하면서 생기는 떨림을 완화하려는 용도 — " +
+                 "시뮬 값 자체는 그대로고 화면에 그리는 위치만 완만하게 뒤따라간다.")]
+        [SerializeField, Range(0.05f, 1f)] private float unitPositionFollowRate = 0.5f;
+
         [Header("아웃게임 연동 선행 준비 (RunBattle 경로 — BattleBridge 커넥터가 사용)")]
         [SerializeField] private BattleCatalog catalog;
         [SerializeField] private EncounterTable encounterTable;
@@ -725,11 +732,11 @@ namespace NHN.Presentation.Battle
                     ApplyUnitVisual(i, stealthed, statusMask);
                 }
 
-                Vector3 position = SimViewMapper.ToWorld(_sim.GetInterpolatedPosition(i, alpha));
+                Vector3 renderTarget = SimViewMapper.ToWorld(_sim.GetInterpolatedPosition(i, alpha));
                 float deltaTime = Time.deltaTime;
                 if (deltaTime > 0.0001f)
                 {
-                    Vector3 delta = position - _unitPrevPositions[i];
+                    Vector3 delta = renderTarget - _unitPrevPositions[i];
                     float speed = delta.magnitude / deltaTime;
                     // Idle/Run 전환은 뷰가 위치 변화(속도)로 판단 — 시뮬에 뷰 전용 API를 요구하지 않는다.
                     Animator unitAnimator = _unitViewSets[i].Animator;
@@ -755,7 +762,7 @@ namespace NHN.Presentation.Battle
                     else if (targetIndex >= 0 && _sim.IsAlive(targetIndex))
                     {
                         Vector3 targetPosition = SimViewMapper.ToWorld(_sim.GetPosition(targetIndex));
-                        Vector3 toTarget = targetPosition - position;
+                        Vector3 toTarget = targetPosition - renderTarget;
                         toTarget.y = 0f;
                         if (toTarget.sqrMagnitude > 1e-8f)
                         {
@@ -779,8 +786,14 @@ namespace NHN.Presentation.Battle
                         }
                     }
                 }
-                _unitPrevPositions[i] = position;
-                _unitTransforms[i].localPosition = position;
+                _unitPrevPositions[i] = renderTarget;
+
+                // 렌더 위치는 시뮬 목표(renderTarget)로 즉시 스냅하지 않고 프레임마다 감쇠 추종한다
+                // (2026-08-10) — 겹침 분리가 정지 유닛을 틱마다 미세하게 밀었다 놨다 하면서 생기는
+                // 떨림을 완화하려는 용도. unitPositionFollowRate=1이면 감쇠 없이 기존과 동일(즉시 스냅).
+                float followT = 1f - Mathf.Pow(1f - unitPositionFollowRate, deltaTime * 60f);
+                _unitTransforms[i].localPosition =
+                    Vector3.Lerp(_unitTransforms[i].localPosition, renderTarget, followT);
             }
         }
 
