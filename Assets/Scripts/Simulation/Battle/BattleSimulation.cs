@@ -25,9 +25,7 @@ namespace NHN.Simulation.Battle
         /// <summary>아군 2명 이상 물고 있는 타겟의 가중치 감쇠 지수 — 클수록 3번째부터 급격히 덜 뽑힌다.</summary>
         private const float OverflowPenaltyExponent = 3f;
 
-        // ── 좌/우 공격 슬롯 (근접 전용, 2026-08-09: 겹침 없이 배치해 공격하기 위해 도입) ──
-        /// <summary>슬롯을 못 받은 근접 유닛이 대기하는 거리 배율 (AttackRange 기준) — 1보다 커야 공격 사거리 밖에서 대기한다.</summary>
-        private const float WaitingStandoffMultiplier = 1.6f;
+        // ── 근접 공격 위치 (2026-08-09) ──
         /// <summary>공격 목적지를 AttackRange 경계보다 살짝 안쪽으로 잡는 여유 배율 — 정확히 경계에
         /// 도착하면 부동소수 오차로 "<=AttackRange" 판정이 영원히 거짓이 되는 문제를 막는다
         /// (실측으로 확인: 유닛이 dist=AttackRange에서 멈춘 채 공격을 영원히 못 함, 2026-08-09).</summary>
@@ -46,13 +44,10 @@ namespace NHN.Simulation.Battle
             private readonly TargetPriority _priority;
             /// <summary>집중 대상 적 분대 (NoTarget = 제한 없음) — 분대 단위 타게팅(2026-08-04).</summary>
             private readonly int _focusSquad;
-            /// <summary>true면 근접 2명 캡을 무시한다 — 캡이 전부 찬 상황에서 대기 위치 계산용 참조
-            /// 타겟을 구할 때만 쓰는 최종 폴백 전용 플래그 (2026-08-09).</summary>
-            private readonly bool _bypassCap;
 
             public AliveEnemyFilter(
                 BattleSimulation sim, byte targetTeam, int excludeIndex,
-                bool hasPriority, TargetPriority priority, int focusSquad, bool bypassCap = false)
+                bool hasPriority, TargetPriority priority, int focusSquad)
             {
                 _sim = sim;
                 _targetTeam = targetTeam;
@@ -60,7 +55,6 @@ namespace NHN.Simulation.Battle
                 _hasPriority = hasPriority;
                 _priority = priority;
                 _focusSquad = focusSquad;
-                _bypassCap = bypassCap;
             }
 
             public bool Accept(int unitIndex)
@@ -73,12 +67,6 @@ namespace NHN.Simulation.Battle
                     return false;
                 }
                 if (_focusSquad != NoTarget && _sim._squadIndices[unitIndex] != _focusSquad)
-                {
-                    return false;
-                }
-                // 근접 공격자 전용 2명 캡 — 이미 좌/우가 다 찬 타겟은 후보에서 제외해 겹침을 원천 차단.
-                // 원거리는 애초에 옆에 안 붙으니 캡과 무관 (겹칠 일이 없다).
-                if (!_bypassCap && !_sim._isRangedUnit[_excludeIndex] && _sim._assignedAttackerCounts[unitIndex] >= 2)
                 {
                     return false;
                 }
@@ -137,15 +125,14 @@ namespace NHN.Simulation.Battle
         private readonly int[] _queryBuffer;
         /// <summary>타겟(적) 유닛 인덱스로 색인 — 그 유닛을 현재 타겟으로 물고 있는 "근접" 아군 수
         /// (원거리는 옆에 안 붙으니 미포함, 2026-08-09). SetTarget()이 대칭으로 증감시키며,
-        /// 가중치 룰렛 휠 선택의 "몰림" 페널티와 근접 2명 캡 판정 둘 다 이 값을 참조한다.</summary>
+        /// 가중치 룰렛 휠 선택의 "몰림" 페널티 판단에 참조한다 (2026-08-09: 캡 강제는 제거, 확률적 유도만 남음).</summary>
         private readonly int[] _assignedAttackerCounts;
         /// <summary>가중치 룰렛 휠 선택의 스크래치 가중치 버퍼 — _queryBuffer와 같은 크기·생명주기.</summary>
         private readonly float[] _weightBuffer;
-        /// <summary>타겟(적) 유닛 인덱스로 색인 — 그 타겟의 왼쪽(-X)에서 근접 공격 중인 아군 유닛 인덱스.
-        /// NoTarget = 비어 있음. SetTarget()이 대칭으로 점유·반납한다 (근접 전용, 2026-08-09).</summary>
-        private readonly int[] _leftSlotOwner;
-        /// <summary>_leftSlotOwner와 동일하되 오른쪽(+X) 슬롯.</summary>
-        private readonly int[] _rightSlotOwner;
+        /// <summary>공격자(자기 자신) 유닛 인덱스로 색인 — 근접 공격 시 타겟의 좌(-1)/우(+1)
+        /// 어느 쪽에 설 지. 새 타겟이 배정될 때 한 번만 무작위로 정해지고 그 타겟을 유지하는
+        /// 동안 고정된다 (2026-08-09: 점유/예약 없이 각자 독립적으로 좌우만 무작위 선택).</summary>
+        private readonly float[] _attackSide;
 
         // ── 뷰 전용 전투 이벤트 (공격/치명타/피격 연출용) ──
         // 시뮬 상태에는 아무 영향이 없다: 결과·RNG 소비·틱 순서 불변 (결정론 유지, BalanceLab 무관).
@@ -248,10 +235,7 @@ namespace NHN.Simulation.Battle
             _queryBuffer = new int[totalUnits];
             _assignedAttackerCounts = new int[totalUnits];
             _weightBuffer = new float[totalUnits];
-            _leftSlotOwner = new int[totalUnits];
-            _rightSlotOwner = new int[totalUnits];
-            Array.Fill(_leftSlotOwner, NoTarget);
-            Array.Fill(_rightSlotOwner, NoTarget);
+            _attackSide = new float[totalUnits];
 
             _projLaunchPos = new Vector2[config.MaxProjectiles];
             _projImpactPos = new Vector2[config.MaxProjectiles];
@@ -614,17 +598,15 @@ namespace NHN.Simulation.Battle
                 }
 
                 RoleDefinition role = _roles[_roleIndices[i]];
-                // 근접은 좌/우 슬롯을 점유했을 때만 공격 가능 — 못 받았으면(대기) 접근만 하고 공격은 안 함.
-                // 원거리는 슬롯 개념 자체가 없다 (옆에 안 붙으니 겹칠 일이 없다).
-                bool holdsSlot = !role.IsRanged && (_leftSlotOwner[target] == i || _rightSlotOwner[target] == i);
-                bool canAttack = role.IsRanged || holdsSlot;
                 // 공격 판정은 실제 타겟과의 거리(사거리 이내)로 — 목적지 좌표는 "어디로 이동할지"만
-                // 정할 뿐 공격 허가의 하드 게이트로 쓰지 않는다. 좌표에 정확히 안착해야만 공격 가능하게
-                // 하면, 타겟도 계속 움직이는 상대좌표라 미세하게 못 맞고 재탐색에 튕기는 일이 반복돼
-                // 아무도 제대로 못 붙는 문제가 생긴다(실측으로 확인 — 전투가 수천 틱까지 안 끝남).
+                // 정할 뿐 공격 허가의 하드 게이트로 쓰지 않는다. 도착을 하드 게이트로 쓰면, 타겟이
+                // 아직 자기 타겟을 쫓아 계속 움직이는 중일 때(교전 락이 없어 멈추지 않음) 목적지도
+                // 계속 흔들려서 영원히 못 붙는다(실측으로 확인 — 전투가 시간 상한까지 안 끝나고
+                // 무승부가 남). 캡 제거로는 이 문제가 안 풀린다 — 별도로 교전 락을 넣기 전까지는
+                // 이 완화된 판정을 유지한다.
                 float centerDistance = Vector2.Distance(_positions[i], _positions[target]);
 
-                if (canAttack && centerDistance <= role.AttackRange)
+                if (centerDistance <= role.AttackRange)
                 {
                     if (_attackCooldowns[i] <= 0f)
                     {
@@ -636,7 +618,7 @@ namespace NHN.Simulation.Battle
                 {
                     // ApproachTarget과 StealthDash 모두 목적지 접근 — StealthDash의 차이(은신)는 상태로 처리.
                     // 이동 궤적이 다른 새 패턴은 여기서 케이스 추가.
-                    Vector2 destination = ComputeApproachDestination(i, target, role, holdsSlot);
+                    Vector2 destination = ComputeApproachDestination(i, target, role);
                     Vector2 toDestination = destination - _positions[i];
                     float destDistance = toDestination.Length();
                     if (destDistance > 1e-5f)
@@ -1160,9 +1142,6 @@ namespace NHN.Simulation.Battle
                 }
             }
 
-            // 슬롯 없는 대기 상태는 목적지가 AttackRange × WaitingStandoffMultiplier로 더 멀어서
-            // 이 조건이 자연히 거짓이 되고, 재탐색 주기마다 SelectTarget()을 다시 타서
-            // 슬롯이 비었는지 계속 확인하게 된다 — 별도 분기 없이 그대로 재사용.
             float centerDistance = Vector2.Distance(_positions[unitIndex], _positions[currentTarget]);
             if (centerDistance <= role.AttackRange)
             {
@@ -1257,108 +1236,60 @@ namespace NHN.Simulation.Battle
         }
 
         /// <summary>
-        /// _targets 배정을 갱신하며 _assignedAttackerCounts와 좌/우 슬롯(근접 전용)을 대칭으로
-        /// 증감·점유/반납한다. _targets[unitIndex]를 직접 대입하는 대신 반드시 이 메서드를 거칠 것
-        /// (KillUnit의 반납도 동일 경로).
+        /// _targets 배정을 갱신하며 _assignedAttackerCounts를 대칭으로 증감한다. 근접 유닛이 새
+        /// 타겟을 받으면 좌/우 공격 위치(_attackSide)를 한 번 무작위로 정해 그 타겟을 유지하는
+        /// 동안 고정한다 (2026-08-09: 점유/예약 없이 각자 독립적으로 선택 — 여러 명이 같은 쪽을
+        /// 골라도 충돌이 없으니 무방하다). _targets[unitIndex]를 직접 대입하는 대신 반드시 이
+        /// 메서드를 거칠 것 (KillUnit의 반납도 동일 경로).
         /// </summary>
         private void SetTarget(int unitIndex, int newTarget)
         {
             int oldTarget = _targets[unitIndex];
             if (oldTarget == newTarget)
             {
-                // 타겟이 실제로 안 바뀌었으면 아무것도 하지 않는다 — 재탐색 주기마다 같은 타겟이
-                // 재확인될 때 슬롯을 반납했다가 다시 잡으면, 그 사이 이동으로 좌/우 관계가 뒤집혀
-                // 목적지가 반대편으로 튕기는 진동이 생길 수 있다 (실측으로 확인).
+                // 타겟이 실제로 안 바뀌었으면 아무것도 하지 않는다 — 재확인마다 다시 굴리면
+                // 좌/우가 매번 바뀌어 목적지가 흔들리는 문제가 생긴다 (실측으로 확인).
                 return;
             }
             bool isMelee = !_isRangedUnit[unitIndex];
             if (oldTarget != NoTarget && isMelee)
             {
                 _assignedAttackerCounts[oldTarget]--;
-                ReleaseSlot(oldTarget, unitIndex);
             }
             _targets[unitIndex] = newTarget;
             if (newTarget != NoTarget && isMelee)
             {
                 _assignedAttackerCounts[newTarget]++;
-                ClaimSlotIfOpen(newTarget, unitIndex);
-            }
-        }
-
-        /// <summary>내가 점유하고 있던 좌/우 슬롯이 있으면 비운다 (타겟 변경·사망 시 반납).</summary>
-        private void ReleaseSlot(int target, int attacker)
-        {
-            if (_leftSlotOwner[target] == attacker)
-            {
-                _leftSlotOwner[target] = NoTarget;
-            }
-            else if (_rightSlotOwner[target] == attacker)
-            {
-                _rightSlotOwner[target] = NoTarget;
+                _attackSide[unitIndex] = _random.NextDouble() < 0.5 ? -1f : 1f;
             }
         }
 
         /// <summary>
-        /// 새 타겟의 좌/우 슬롯 중 빈 곳을 점유한다. 둘 다 비었으면 공격자의 현재 X좌표가
-        /// 타겟보다 작은 쪽(왼쪽)인지로 더 가까운 슬롯을 고른다. 둘 다 찼으면 아무것도 안 함
-        /// (대기 상태 — Tick()의 canAttack이 false로 판정해 접근만 하고 공격은 안 하게 된다).
-        /// </summary>
-        private void ClaimSlotIfOpen(int target, int attacker)
-        {
-            bool leftOpen = _leftSlotOwner[target] == NoTarget;
-            bool rightOpen = _rightSlotOwner[target] == NoTarget;
-            if (leftOpen && rightOpen)
-            {
-                if (_positions[attacker].X <= _positions[target].X)
-                {
-                    _leftSlotOwner[target] = attacker;
-                }
-                else
-                {
-                    _rightSlotOwner[target] = attacker;
-                }
-            }
-            else if (leftOpen)
-            {
-                _leftSlotOwner[target] = attacker;
-            }
-            else if (rightOpen)
-            {
-                _rightSlotOwner[target] = attacker;
-            }
-        }
-
-        /// <summary>
-        /// 공격/대기 목적지 좌표 계산 (2026-08-09). 반경 합은 쓰지 않는다 — 충돌이 없으니
-        /// AttackRange 하나만 "거리" 기준으로 삼는다.
+        /// 공격 목적지 좌표 계산 (2026-08-09). 반경 합은 쓰지 않는다 — 충돌이 없으니 AttackRange
+        /// 하나만 "거리" 기준으로 삼는다.
         /// · 원거리: 공격자→타겟 직선상에서 AttackRange만큼 떨어진 지점.
-        /// · 근접(슬롯 보유): 타겟 위치에서 화면 좌/우(시뮬 X축) 방향으로 AttackRange만큼 떨어진 지점.
-        /// · 근접(대기, 슬롯 없음): 공격자→타겟 직선상에서 AttackRange × WaitingStandoffMultiplier
-        ///   만큼 떨어진 지점 — 사거리 밖에서 슬롯이 빌 때까지 대기.
+        /// · 근접: 타겟 위치에서 화면 좌/우(시뮬 X축) 중 SetTarget()이 정해둔 방향으로
+        ///   AttackRange만큼 떨어진 지점.
         /// </summary>
-        private Vector2 ComputeApproachDestination(int attacker, int target, RoleDefinition role, bool holdsSlot)
+        private Vector2 ComputeApproachDestination(int attacker, int target, RoleDefinition role)
         {
             Vector2 targetPos = _positions[target];
 
-            if (holdsSlot)
+            if (!role.IsRanged)
             {
-                float side = _leftSlotOwner[target] == attacker ? -1f : 1f;
-                return targetPos + new Vector2(side * role.AttackRange * AttackApproachMargin, 0f);
+                return targetPos + new Vector2(_attackSide[attacker] * role.AttackRange * AttackApproachMargin, 0f);
             }
 
             Vector2 toTarget = targetPos - _positions[attacker];
             float distance = toTarget.Length();
             Vector2 direction = distance > 1e-5f ? toTarget / distance : new Vector2(1f, 0f);
-            float standoff = role.IsRanged
-                ? role.AttackRange * AttackApproachMargin
-                : role.AttackRange * WaitingStandoffMultiplier;
-            return targetPos - direction * standoff;
+            return targetPos - direction * role.AttackRange * AttackApproachMargin;
         }
 
         /// <summary>
-        /// 타겟팅: ① 우선순위 목록(중독·표식 기믹)은 적군 전체에서 찾는다 — 의도된 분대 이탈이라
-        /// 집중 제한을 받지 않는다. ② 기본 위치 필터는 분대 집중 대상 안에서만 골라
-        /// 분대가 반으로 갈라지지 않게 하고, 못 찾으면(전원 은신 등) 제한 없이 폴백.
+        /// 타겟팅: 우선순위 목록(중독·표식 기믹)도 기본 탐색도 전부 focusSquad(분대가 집중하는
+        /// 적 분대) 안에서만 찾는다 (2026-08-09: 분대는 항상 같이 다닌다 — 예외 없음).
+        /// focusSquad 안에 유효한 후보가 없으면 NoTarget — 다음 재탐색 주기에 다시 시도한다.
         /// </summary>
         private int SelectTarget(int unitIndex)
         {
@@ -1372,9 +1303,9 @@ namespace NHN.Simulation.Battle
                 return NoTarget;
             }
 
-            // 분대는 항상 같이 다닌다 (2026-08-09 사용자 결정) — 우선순위 기믹도, 일반 탐색도,
-            // 캡이 다 찼을 때의 대기용 폴백도 전부 focusSquad 경계를 절대 넘지 않는다.
-            // 그 분대가 전멸하면 UpdateSquadFocus()가 다음 틱에 자동으로 새 분대를 배정한다.
+            // 분대는 항상 같이 다닌다 (2026-08-09 사용자 결정) — 우선순위 기믹도 일반 탐색도
+            // focusSquad 경계를 절대 넘지 않는다. 그 분대가 전멸하면 UpdateSquadFocus()가
+            // 다음 틱에 자동으로 새 분대를 배정한다.
             TargetPriority[] priorities = role.Priorities;
             for (int p = 0; p < priorities.Length; p++)
             {
@@ -1385,16 +1316,7 @@ namespace NHN.Simulation.Battle
                 }
             }
 
-            int found = SelectWeightedTarget(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, focusSquad), role.PositionFilter);
-            if (found != NoTarget)
-            {
-                return found;
-            }
-
-            // 캡(근접 2명)이 다 찼을 때의 대기용 폴백 — 캡만 무시하고, 분대 경계는 여전히 지킨다.
-            return SelectWeightedTarget(
-                unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, focusSquad, bypassCap: true),
-                role.PositionFilter);
+            return SelectWeightedTarget(unitIndex, new AliveEnemyFilter(this, enemyTeam, unitIndex, hasPriority: false, default, focusSquad), role.PositionFilter);
         }
 
         /// <summary>

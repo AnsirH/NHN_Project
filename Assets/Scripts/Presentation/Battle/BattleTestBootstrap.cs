@@ -737,15 +737,37 @@ namespace NHN.Presentation.Battle
                     {
                         unitAnimator.SetFloat(SpeedParamId, speed);
                     }
-                    // 이동 방향으로 부드럽게 회전 — 밀림·분리 같은 미세 이동(문턱 미만)에는 돌지 않아
-                    // 난전에서 방향이 파닥거리지 않는다. 멈추면 마지막 방향을 유지한다.
-                    delta.y = 0f;
-                    if (speed > TurnSpeedThreshold && delta.sqrMagnitude > 1e-8f)
+
+                    // 회전: 살아있는 타겟이 있으면 이동량과 무관하게 항상 타겟 방향을 본다 —
+                    // "이동 방향 = 타겟 방향"이 항상 성립하던 예전 직선 접근 방식과 달리, 지금은
+                    // 좌/우 오프셋 지점으로 걸어가기 때문에 이동 방향만으로는 타겟을 안 보고 공격하는
+                    // 문제가 생긴다(2026-08-09). 타겟이 없을 때만 기존 이동 방향 기반으로 폴백.
+                    int targetIndex = _sim.GetTargetIndex(i);
+                    if (targetIndex >= 0 && _sim.IsAlive(targetIndex))
                     {
-                        _unitTransforms[i].localRotation = Quaternion.RotateTowards(
-                            _unitTransforms[i].localRotation,
-                            Quaternion.LookRotation(delta),
-                            UnitTurnDegreesPerSecond * deltaTime);
+                        Vector3 targetPosition = SimViewMapper.ToWorld(_sim.GetPosition(targetIndex));
+                        Vector3 toTarget = targetPosition - position;
+                        toTarget.y = 0f;
+                        if (toTarget.sqrMagnitude > 1e-8f)
+                        {
+                            _unitTransforms[i].localRotation = Quaternion.RotateTowards(
+                                _unitTransforms[i].localRotation,
+                                Quaternion.LookRotation(toTarget),
+                                UnitTurnDegreesPerSecond * deltaTime);
+                        }
+                    }
+                    else
+                    {
+                        // 이동 방향으로 부드럽게 회전 — 밀림·분리 같은 미세 이동(문턱 미만)에는 돌지
+                        // 않아 방향이 파닥거리지 않는다. 멈추면 마지막 방향을 유지한다.
+                        delta.y = 0f;
+                        if (speed > TurnSpeedThreshold && delta.sqrMagnitude > 1e-8f)
+                        {
+                            _unitTransforms[i].localRotation = Quaternion.RotateTowards(
+                                _unitTransforms[i].localRotation,
+                                Quaternion.LookRotation(delta),
+                                UnitTurnDegreesPerSecond * deltaTime);
+                        }
                     }
                 }
                 _unitPrevPositions[i] = position;
