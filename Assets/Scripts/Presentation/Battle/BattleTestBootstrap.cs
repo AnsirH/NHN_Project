@@ -171,12 +171,9 @@ namespace NHN.Presentation.Battle
         private static readonly int DieParamId = Animator.StringToHash("Die");
         private static readonly int AttackParamId = Animator.StringToHash("Attack");
         private static readonly int CritParamId = Animator.StringToHash("Crit");
-        private static readonly int HitParamId = Animator.StringToHash("Hit");
         private static readonly int AttackSpeedParamId = Animator.StringToHash("AttackSpeed");
         private static readonly int CritSpeedParamId = Animator.StringToHash("CritSpeed");
         private static readonly int IdleStateId = Animator.StringToHash("Idle");
-        private static readonly int AttackStateId = Animator.StringToHash("Attack");
-        private static readonly int CritStateId = Animator.StringToHash("Crit");
 
         /// <summary>
         /// 시뮬 종료 후 결과 표시·복귀 콜백까지의 연출 유예 — 마지막 유닛의 사망 애니메이션
@@ -621,18 +618,8 @@ namespace NHN.Presentation.Battle
                         break;
                     case BattleSimulation.ViewEventType.Damaged:
                         // 임팩트는 리깅 여부와 무관 — 애니메이터 없는 프리팹에서도 타격이 읽혀야 한다.
+                        // 피격 애니메이션(Hit)은 재생하지 않는다 — 이펙트만으로 타격을 표현.
                         SpawnHitFx(_unitTransforms[unit].position);
-                        if (animator == null)
-                        {
-                            break;
-                        }
-                        // 공격 스윙 중에는 피격 모션이 끼어들지 않는다 — 난전에서 피격이 매 순간
-                        // 들어와 스윙이 계속 끊기는 어색함 방지 (공격 > 피격 우선순위).
-                        AnimatorStateInfo current = animator.GetCurrentAnimatorStateInfo(0);
-                        if (current.shortNameHash != AttackStateId && current.shortNameHash != CritStateId)
-                        {
-                            animator.SetTrigger(HitParamId);
-                        }
                         break;
                 }
             }
@@ -719,7 +706,6 @@ namespace NHN.Presentation.Battle
                         // Die 상태의 시체를 공격/피격 자세로 다시 끄집어낸다 (죽다 벌떡 일어나는 버그).
                         animator.ResetTrigger(AttackParamId);
                         animator.ResetTrigger(CritParamId);
-                        animator.ResetTrigger(HitParamId);
                         animator.SetFloat(SpeedParamId, 0f);
                         animator.SetTrigger(DieParamId);
                         _unitDying[i] = true;
@@ -992,7 +978,6 @@ namespace NHN.Presentation.Battle
                 animator.ResetTrigger(DieParamId);
                 animator.ResetTrigger(AttackParamId);
                 animator.ResetTrigger(CritParamId);
-                animator.ResetTrigger(HitParamId);
                 animator.SetFloat(SpeedParamId, 0f);
                 // 스윙 1회 = 공격 1회 동기화: 클립을 끝까지 재생하되 속도를 공격 주기에 맞춘다.
                 UnitViewCache view = _unitViewSets[unitIndex];
