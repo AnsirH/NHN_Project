@@ -21,12 +21,14 @@ namespace BalanceLab
         {
             if (args.Length < 1)
             {
-                Console.Error.WriteLine("사용법: dotnet run -- <scenario.json | scenarios/all.json>");
+                Console.Error.WriteLine(
+                    "사용법: dotnet run -- <scenario.json | scenarios/all.json> [--tag <라벨>]");
                 return ExitUsage;
             }
 
             try
             {
+                string outputTag = ParseOutputTag(args);
                 string inputPath = Path.GetFullPath(args[0]);
                 if (!File.Exists(inputPath))
                 {
@@ -48,7 +50,7 @@ namespace BalanceLab
                 {
                     Scenario scenario = ScenarioLoader.Load(scenarioPath);
                     ScenarioResult result = BattleRunner.Run(scenario, repository, bands);
-                    ResultWriter.Write(result, resultsDirectory);
+                    ResultWriter.Write(result, resultsDirectory, outputTag);
                     results.Add(result);
                     PrintScenarioLine(result);
                 }
@@ -106,6 +108,22 @@ namespace BalanceLab
             {
                 Console.WriteLine($"  FAIL {failure.scenarioName} [{failure.band}] — {failure.verdict.detail}");
             }
+        }
+
+        /// <summary>
+        /// "--tag &lt;라벨&gt;" 옵션 파싱 — 있으면 결과 파일이 "&lt;시나리오명&gt;.&lt;라벨&gt;.json"으로 저장돼
+        /// 기존 정본 스냅샷("&lt;시나리오명&gt;.json")을 덮어쓰지 않는다. 없으면 기존과 동일하게 정본에 바로 쓴다.
+        /// </summary>
+        private static string ParseOutputTag(string[] args)
+        {
+            for (int i = 1; i < args.Length - 1; i++)
+            {
+                if (args[i] == "--tag")
+                {
+                    return args[i + 1];
+                }
+            }
+            return null;
         }
 
         /// <summary>시나리오 경로에서 위로 올라가며 Unity 프로젝트 루트(Assets + ProjectSettings 보유)를 찾는다.</summary>

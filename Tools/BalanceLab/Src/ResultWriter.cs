@@ -12,10 +12,17 @@ namespace BalanceLab
             WriteIndented = true,
         };
 
-        public static string Write(ScenarioResult result, string resultsDirectory)
+        /// <summary>
+        /// outputTag가 있으면 "&lt;시나리오명&gt;.&lt;태그&gt;.json"으로 저장해 기존 스냅샷(정본)을 덮어쓰지 않는다 —
+        /// 새 수치를 정본으로 승격하기 전에 나란히 놓고 비교하고 싶을 때 사용 (--tag 인자).
+        /// </summary>
+        public static string Write(ScenarioResult result, string resultsDirectory, string outputTag = null)
         {
             Directory.CreateDirectory(resultsDirectory);
-            string path = Path.Combine(resultsDirectory, result.scenarioName + ".json");
+            string fileName = string.IsNullOrEmpty(outputTag)
+                ? result.scenarioName + ".json"
+                : result.scenarioName + "." + outputTag + ".json";
+            string path = Path.Combine(resultsDirectory, fileName);
             File.WriteAllText(path, JsonSerializer.Serialize(result, Options));
             return path;
         }
