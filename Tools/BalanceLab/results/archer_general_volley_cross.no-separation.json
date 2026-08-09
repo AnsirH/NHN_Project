@@ -1,0 +1,2320 @@
+{
+  "scenarioName": "archer_general_volley_cross",
+  "band": "none",
+  "verdict": {
+    "bandId": "none",
+    "minWinRate": 0,
+    "maxWinRate": 1,
+    "passed": true,
+    "detail": null
+  },
+  "runs": 100,
+  "leftWins": 100,
+  "rightWins": 0,
+  "draws": 0,
+  "leftWinRate": 1,
+  "rightWinRate": 0,
+  "elapsedMs": 322,
+  "battles": [
+    {
+      "seed": 0,
+      "winner": "left",
+      "ticks": 187,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "winner": "left",
+      "ticks": 220,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "winner": "left",
+      "ticks": 190,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "winner": "left",
+      "ticks": 200,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "winner": "left",
+      "ticks": 200,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 5,
+      "winner": "left",
+      "ticks": 184,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 6,
+      "winner": "left",
+      "ticks": 266,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 7,
+      "winner": "left",
+      "ticks": 190,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 8,
+      "winner": "left",
+      "ticks": 182,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 9,
+      "winner": "left",
+      "ticks": 230,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 10,
+      "winner": "left",
+      "ticks": 194,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 11,
+      "winner": "left",
+      "ticks": 224,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 18,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 12,
+      "winner": "left",
+      "ticks": 195,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 13,
+      "winner": "left",
+      "ticks": 198,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 18,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 14,
+      "winner": "left",
+      "ticks": 216,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 15,
+      "winner": "left",
+      "ticks": 193,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 16,
+      "winner": "left",
+      "ticks": 198,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 17,
+      "winner": "left",
+      "ticks": 194,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 18,
+      "winner": "left",
+      "ticks": 200,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 19,
+      "winner": "left",
+      "ticks": 225,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 18,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 20,
+      "winner": "left",
+      "ticks": 189,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 21,
+      "winner": "left",
+      "ticks": 213,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 18,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 22,
+      "winner": "left",
+      "ticks": 185,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 23,
+      "winner": "left",
+      "ticks": 218,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 24,
+      "winner": "left",
+      "ticks": 198,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 25,
+      "winner": "left",
+      "ticks": 192,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 26,
+      "winner": "left",
+      "ticks": 222,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 27,
+      "winner": "left",
+      "ticks": 217,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 28,
+      "winner": "left",
+      "ticks": 224,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 29,
+      "winner": "left",
+      "ticks": 227,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 30,
+      "winner": "left",
+      "ticks": 185,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 31,
+      "winner": "left",
+      "ticks": 185,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 32,
+      "winner": "left",
+      "ticks": 215,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 33,
+      "winner": "left",
+      "ticks": 200,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 18,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 34,
+      "winner": "left",
+      "ticks": 225,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 35,
+      "winner": "left",
+      "ticks": 186,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 36,
+      "winner": "left",
+      "ticks": 219,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 37,
+      "winner": "left",
+      "ticks": 190,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 38,
+      "winner": "left",
+      "ticks": 203,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 39,
+      "winner": "left",
+      "ticks": 189,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 40,
+      "winner": "left",
+      "ticks": 201,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 41,
+      "winner": "left",
+      "ticks": 192,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 42,
+      "winner": "left",
+      "ticks": 199,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 43,
+      "winner": "left",
+      "ticks": 195,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 44,
+      "winner": "left",
+      "ticks": 193,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 45,
+      "winner": "left",
+      "ticks": 183,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 46,
+      "winner": "left",
+      "ticks": 197,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 47,
+      "winner": "left",
+      "ticks": 185,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 48,
+      "winner": "left",
+      "ticks": 197,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 49,
+      "winner": "left",
+      "ticks": 201,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 50,
+      "winner": "left",
+      "ticks": 190,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 51,
+      "winner": "left",
+      "ticks": 198,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 52,
+      "winner": "left",
+      "ticks": 195,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 53,
+      "winner": "left",
+      "ticks": 220,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 54,
+      "winner": "left",
+      "ticks": 228,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 55,
+      "winner": "left",
+      "ticks": 179,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 56,
+      "winner": "left",
+      "ticks": 201,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 57,
+      "winner": "left",
+      "ticks": 193,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 58,
+      "winner": "left",
+      "ticks": 225,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 59,
+      "winner": "left",
+      "ticks": 181,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 60,
+      "winner": "left",
+      "ticks": 188,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 61,
+      "winner": "left",
+      "ticks": 218,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 62,
+      "winner": "left",
+      "ticks": 209,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 63,
+      "winner": "left",
+      "ticks": 224,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 64,
+      "winner": "left",
+      "ticks": 179,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 65,
+      "winner": "left",
+      "ticks": 192,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 66,
+      "winner": "left",
+      "ticks": 225,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 18,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 67,
+      "winner": "left",
+      "ticks": 191,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 68,
+      "winner": "left",
+      "ticks": 205,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 69,
+      "winner": "left",
+      "ticks": 211,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 70,
+      "winner": "left",
+      "ticks": 198,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 71,
+      "winner": "left",
+      "ticks": 195,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 72,
+      "winner": "left",
+      "ticks": 193,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 73,
+      "winner": "left",
+      "ticks": 184,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 74,
+      "winner": "left",
+      "ticks": 198,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 75,
+      "winner": "left",
+      "ticks": 223,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 76,
+      "winner": "left",
+      "ticks": 195,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 77,
+      "winner": "left",
+      "ticks": 196,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 78,
+      "winner": "left",
+      "ticks": 181,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 79,
+      "winner": "left",
+      "ticks": 220,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 18,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 80,
+      "winner": "left",
+      "ticks": 183,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 81,
+      "winner": "left",
+      "ticks": 193,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 82,
+      "winner": "left",
+      "ticks": 188,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 83,
+      "winner": "left",
+      "ticks": 186,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 84,
+      "winner": "left",
+      "ticks": 194,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 85,
+      "winner": "left",
+      "ticks": 189,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 86,
+      "winner": "left",
+      "ticks": 188,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 87,
+      "winner": "left",
+      "ticks": 217,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 88,
+      "winner": "left",
+      "ticks": 176,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 89,
+      "winner": "left",
+      "ticks": 195,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 90,
+      "winner": "left",
+      "ticks": 184,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 91,
+      "winner": "left",
+      "ticks": 199,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 92,
+      "winner": "left",
+      "ticks": 228,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 93,
+      "winner": "left",
+      "ticks": 227,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 94,
+      "winner": "left",
+      "ticks": 212,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 18,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 95,
+      "winner": "left",
+      "ticks": 183,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 96,
+      "winner": "left",
+      "ticks": 224,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 97,
+      "winner": "left",
+      "ticks": 222,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 98,
+      "winner": "left",
+      "ticks": 193,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 19,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 99,
+      "winner": "left",
+      "ticks": 184,
+      "leftSquads": [
+        {
+          "squadId": "L1",
+          "survivors": 20,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "R1",
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    }
+  ]
+}
