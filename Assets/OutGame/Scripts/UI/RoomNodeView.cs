@@ -23,9 +23,16 @@ namespace OutGame.UI
         // 라벨도 게임 공용 폰트(DNFForgedBlade-Bold SDF)로 통일했다.
         [SerializeField] private TMP_Text label;
 
+        // 2026-08-10: 예전엔 반투명이 Button의 ColorTint(disabled 틴트 알파 0.5)에서 나왔다. 그런데
+        // 그 틴트는 코드가 지정한 색에 곱해지는 데다 interactable=false인 상태 전부에 똑같이 걸려서,
+        // (1) 강조돼야 할 현재 노드까지 반투명해지고 (2) 깬 노드와 잠긴 노드가 거의 같은 색이 됐다.
+        // 그래서 프리팹의 transition을 None으로 바꾸고 반투명을 여기서 직접 지정한다 —
+        // 이제 이 값들이 최종 렌더 색 그대로다(곱해지는 다른 계통 없음).
         [Header("상태 표현 (인스펙터 튜닝)")]
-        [SerializeField, Range(0f, 1f)] private float visitedDarken = 0.45f;
-        [SerializeField, Range(0f, 1f)] private float lockedDarken = 0.65f;
+        [SerializeField, Range(0f, 1f)] private float visitedDarken = 1f;   // 1 = 완전한 검정
+        [SerializeField, Range(0f, 1f)] private float lockedDarken = 1f;
+        [SerializeField, Range(0f, 1f)] private float visitedAlpha = 0.55f; // 깬 방 — 검정 반투명
+        [SerializeField, Range(0f, 1f)] private float lockedAlpha = 0.35f;  // 아직 못 가는 방 — 더 옅게
         [SerializeField] private Color selectableOutlineColor = Color.white;
         [SerializeField] private Color currentOutlineColor = new Color(1f, 0.85f, 0.2f);
         [SerializeField, Range(0f, 1f)] private float visitedLabelAlpha = 0.55f;
@@ -89,18 +96,24 @@ namespace OutGame.UI
                     label.color = currentOutlineColor;
                     break;
                 case NodeState.Visited:
-                    background.color = Color.Lerp(baseColor, Color.black, visitedDarken);
+                    background.color = Fade(Color.Lerp(baseColor, Color.black, visitedDarken), visitedAlpha);
                     outline.enabled = false;
                     button.interactable = false;
                     label.color = new Color(1f, 1f, 1f, visitedLabelAlpha);
                     break;
                 default: // Locked
-                    background.color = Color.Lerp(baseColor, Color.black, lockedDarken);
+                    background.color = Fade(Color.Lerp(baseColor, Color.black, lockedDarken), lockedAlpha);
                     outline.enabled = false;
                     button.interactable = false;
                     label.color = new Color(1f, 1f, 1f, lockedLabelAlpha);
                     break;
             }
+        }
+
+        private static Color Fade(Color color, float alpha)
+        {
+            color.a = alpha;
+            return color;
         }
     }
 }
