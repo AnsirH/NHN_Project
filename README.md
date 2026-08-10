@@ -144,7 +144,6 @@ Unity Test Runner(EditMode)에서 실행합니다.
 
 **itch.io 무료 에셋** — 정확한 배포 페이지는 확인되는 대로 채워 넣을 예정입니다.
 
-- 배경음악 3곡 (`Assets/Music`)
 - 병과별 공격 효과음·전투 함성 (`Assets/Sounds`)
 - Smoke & Steam Effects — 연기·안개 파티클
 - Hand Painted Seamless ClayGround Texture — 점토 지면 텍스처
@@ -159,3 +158,4 @@ Unity Test Runner(EditMode)에서 실행합니다.
 |---|---|
 | 병사 3D 모델 5종 · 무기 모델 5종 | NCSOFT VARCO |
 | 2D 일러스트 · 유닛 초상화 · 배경 이미지 | ChatGPT · Gemini |
+| 배경음악 3곡 (`Assets/Music`) | SUNO |
