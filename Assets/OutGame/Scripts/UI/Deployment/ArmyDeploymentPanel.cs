@@ -10,6 +10,7 @@ using OutGame.Logic.Maps;
 using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
 using OutGame.UI;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,7 +37,7 @@ namespace OutGame.UI.Deployment
     {
         [Header("구조 참조")]
         [SerializeField] private FormationGridView enemyFormationGrid; // 슬롯 격자(원형 슬롯+연결 트랙+전투력 라벨) 공용 뼈대(2026-08-07)
-        [SerializeField] private Text enemyBuffLabel;
+        [SerializeField] private TMP_Text enemyBuffLabel; // 2026-08-10: Text -> TMP_Text
         [SerializeField] private Button startBattleButton;
         [SerializeField] private CurrencyDisplay currencyDisplay; // 2026-07-26: 상단 바 재화 표시
         // 2026-08-10: 상단 바 — 선택한 캐릭터 아이콘. 방 그래프의 TopPanel과 같은 구성이다.
