@@ -27,10 +27,10 @@ MonoBehaviour:
     preBossNodeCount:
       min: 2
       max: 3
-    battleWeight: 40
-    eventWeight: 25
-    reinforcementWeight: 15
-    augmentWeight: 20
+    battleWeight: 60
+    eventWeight: 17
+    reinforcementWeight: 10
+    augmentWeight: 13
     layerDistance: 2.4
     nodesApartDistance: 2
     positionRandomization: 0.2
