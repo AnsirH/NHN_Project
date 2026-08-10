@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +13,7 @@ namespace OutGame.UI.Deployment
     public class ItemCardView : DraggableCardBase
     {
         [SerializeField] private Image icon;
-        [SerializeField] private Text nameLabel;
+        [SerializeField] private TMP_Text nameLabel;
 
         public string ItemId { get; private set; }
 

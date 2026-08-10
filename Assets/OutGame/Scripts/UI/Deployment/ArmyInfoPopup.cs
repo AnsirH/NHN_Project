@@ -5,6 +5,7 @@ using OutGame.Logic.Augments;
 using OutGame.Logic.Items;
 using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,25 +24,25 @@ namespace OutGame.UI.Deployment
     public class ArmyInfoPopup : MonoBehaviour
     {
         [SerializeField] private Button closeButton;
-        [SerializeField] private Text currencyLabel;
+        [SerializeField] private TMP_Text currencyLabel;
 
         [SerializeField] private Image generalPortraitImage;
-        [SerializeField] private Text generalPreviewNameLabel;
-        [SerializeField] private Text upgradeLevelLabel;
+        [SerializeField] private TMP_Text generalPreviewNameLabel;
+        [SerializeField] private TMP_Text upgradeLevelLabel;
         [SerializeField] private Button upgradeButton;
-        [SerializeField] private Text generalHealthLabel;
-        [SerializeField] private Text generalAttackLabel;
-        [SerializeField] private Text generalDefenseLabel;
-        [SerializeField] private Text generalCritRateLabel;
-        [SerializeField] private Text generalMoveSpeedLabel;
+        [SerializeField] private TMP_Text generalHealthLabel;
+        [SerializeField] private TMP_Text generalAttackLabel;
+        [SerializeField] private TMP_Text generalDefenseLabel;
+        [SerializeField] private TMP_Text generalCritRateLabel;
+        [SerializeField] private TMP_Text generalMoveSpeedLabel;
 
         [SerializeField] private Image armyPortraitImage;
-        [SerializeField] private Text armyNameLabel;
-        [SerializeField] private Text soldierCountLabel;
-        [SerializeField] private Text armyDescriptionLabel;
-        [SerializeField] private Text armySoldierHealthLabel;
-        [SerializeField] private Text armySoldierAttackLabel;
-        [SerializeField] private Text armySoldierDefenseLabel;
+        [SerializeField] private TMP_Text armyNameLabel;
+        [SerializeField] private TMP_Text soldierCountLabel;
+        [SerializeField] private TMP_Text armyDescriptionLabel;
+        [SerializeField] private TMP_Text armySoldierHealthLabel;
+        [SerializeField] private TMP_Text armySoldierAttackLabel;
+        [SerializeField] private TMP_Text armySoldierDefenseLabel;
 
         private ArmyInstance army;
         private ArmyDefinition armyDef;
@@ -49,7 +50,7 @@ namespace OutGame.UI.Deployment
         private IReadOnlyDictionary<string, AugmentData> augmentDataById;
         private RunState run;
         private RunConfig runConfig;
-        private Text upgradeButtonLabel; // Render()에서 최초 1회만 찾아 캐싱 (아래 주석 참고)
+        private TMP_Text upgradeButtonLabel; // Render()에서 최초 1회만 찾아 캐싱 (아래 주석 참고)
 
         /// <summary>업그레이드로 골드가 차감됐을 때 발행 — 배치 패널 상단 재화 표시 갱신용(2026-07-26).</summary>
         public event Action Upgraded;
@@ -141,7 +142,7 @@ namespace OutGame.UI.Deployment
             // 첫 오픈 때 null이 된다 — 최초 1회만 Render() 안에서 찾고, 이후엔 캐싱된 필드를 재사용한다.
             if (upgradeButtonLabel == null)
             {
-                upgradeButtonLabel = upgradeButton.GetComponentInChildren<Text>(includeInactive: true);
+                upgradeButtonLabel = upgradeButton.GetComponentInChildren<TMP_Text>(includeInactive: true);
                 if (upgradeButtonLabel == null)
                     throw new InvalidOperationException("ArmyInfoPopup의 upgradeButton에 라벨 Text가 없습니다.");
             }

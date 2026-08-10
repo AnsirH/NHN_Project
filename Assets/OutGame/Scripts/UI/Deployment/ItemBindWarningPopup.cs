@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +13,7 @@ namespace OutGame.UI.Deployment
     {
         public const string SuppressPrefKey = "OutGame.ItemBindWarning.Suppressed";
 
-        [SerializeField] private Text messageLabel;
+        [SerializeField] private TMP_Text messageLabel;
         [SerializeField] private Toggle suppressToggle;
         [SerializeField] private Button confirmButton;
         [SerializeField] private Button cancelButton;

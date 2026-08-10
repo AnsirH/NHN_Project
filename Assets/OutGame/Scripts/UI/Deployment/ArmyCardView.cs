@@ -1,5 +1,6 @@
 using System;
 using OutGame.Logic.Armies;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -14,7 +15,7 @@ namespace OutGame.UI.Deployment
     public class ArmyCardView : DraggableCardBase, IDropHandler, IPointerClickHandler
     {
         [SerializeField] private Image portrait;
-        [SerializeField] private Text soldierCountLabel;
+        [SerializeField] private TMP_Text soldierCountLabel;
 
         public string ArmyInstanceId { get; private set; }
 
