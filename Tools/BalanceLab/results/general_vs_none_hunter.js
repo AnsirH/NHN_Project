@@ -22,37 +22,12 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
   "draws": 0,
   "leftWinRate": 1,
   "rightWinRate": 0,
-  "elapsedMs": 6742,
+  "elapsedMs": 8349,
   "battles": [
     {
       "seed": 0,
       "winner": "left",
-      "ticks": 303,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 1,
-      "winner": "left",
-      "ticks": 312,
+      "ticks": 310,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -75,14 +50,39 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 2,
+      "seed": 1,
       "winner": "left",
-      "ticks": 329,
+      "ticks": 317,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 10,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "winner": "left",
+      "ticks": 314,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -102,132 +102,7 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 3,
       "winner": "left",
-      "ticks": 313,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 4,
-      "winner": "left",
-      "ticks": 317,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 5,
-      "winner": "left",
-      "ticks": 310,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 6,
-      "winner": "left",
-      "ticks": 322,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 7,
-      "winner": "left",
-      "ticks": 313,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 8,
-      "winner": "left",
-      "ticks": 312,
+      "ticks": 311,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -250,9 +125,134 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
+      "seed": 4,
+      "winner": "left",
+      "ticks": 308,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 5,
+      "winner": "left",
+      "ticks": 328,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 6,
+      "winner": "left",
+      "ticks": 313,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 7,
+      "winner": "left",
+      "ticks": 318,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 8,
+      "winner": "left",
+      "ticks": 320,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
       "seed": 9,
       "winner": "left",
-      "ticks": 319,
+      "ticks": 324,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -277,7 +277,32 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 10,
       "winner": "left",
-      "ticks": 324,
+      "ticks": 326,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 11,
+      "winner": "left",
+      "ticks": 310,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -300,39 +325,14 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 11,
-      "winner": "left",
-      "ticks": 306,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
       "seed": 12,
       "winner": "left",
-      "ticks": 318,
+      "ticks": 315,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 12,
+          "survivors": 13,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -352,32 +352,7 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 13,
       "winner": "left",
-      "ticks": 301,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 14,
-      "winner": "left",
-      "ticks": 311,
+      "ticks": 315,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -400,14 +375,39 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 15,
+      "seed": 14,
       "winner": "left",
-      "ticks": 306,
+      "ticks": 315,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 13,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 15,
+      "winner": "left",
+      "ticks": 315,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 16,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -427,12 +427,12 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 16,
       "winner": "left",
-      "ticks": 320,
+      "ticks": 310,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 10,
+          "survivors": 15,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -452,12 +452,12 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 17,
       "winner": "left",
-      "ticks": 312,
+      "ticks": 319,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 16,
+          "survivors": 11,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -477,12 +477,12 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 18,
       "winner": "left",
-      "ticks": 309,
+      "ticks": 311,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 17,
+          "survivors": 15,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -502,12 +502,12 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 19,
       "winner": "left",
-      "ticks": 309,
+      "ticks": 316,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 16,
+          "survivors": 12,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -527,12 +527,12 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 20,
       "winner": "left",
-      "ticks": 308,
+      "ticks": 322,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 13,
+          "survivors": 12,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -552,7 +552,7 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 21,
       "winner": "left",
-      "ticks": 307,
+      "ticks": 311,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -577,12 +577,12 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 22,
       "winner": "left",
-      "ticks": 310,
+      "ticks": 312,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 11,
+          "survivors": 15,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -602,12 +602,12 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 23,
       "winner": "left",
-      "ticks": 306,
+      "ticks": 320,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 13,
+          "survivors": 15,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -627,7 +627,32 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 24,
       "winner": "left",
-      "ticks": 320,
+      "ticks": 323,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 25,
+      "winner": "left",
+      "ticks": 325,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -650,39 +675,14 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 25,
-      "winner": "left",
-      "ticks": 309,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
       "seed": 26,
       "winner": "left",
-      "ticks": 325,
+      "ticks": 318,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 10,
+          "survivors": 11,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -707,7 +707,7 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 13,
+          "survivors": 14,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -727,12 +727,12 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 28,
       "winner": "left",
-      "ticks": 313,
+      "ticks": 311,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 12,
+          "survivors": 13,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -752,7 +752,7 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 29,
       "winner": "left",
-      "ticks": 312,
+      "ticks": 311,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -777,6 +777,106 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 30,
       "winner": "left",
+      "ticks": 323,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 31,
+      "winner": "left",
+      "ticks": 329,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 32,
+      "winner": "left",
+      "ticks": 327,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 33,
+      "winner": "left",
+      "ticks": 328,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 34,
+      "winner": "left",
       "ticks": 326,
       "leftSquads": [
         {
@@ -800,114 +900,14 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 31,
-      "winner": "left",
-      "ticks": 304,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 10,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 32,
-      "winner": "left",
-      "ticks": 312,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 33,
-      "winner": "left",
-      "ticks": 309,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 34,
-      "winner": "left",
-      "ticks": 316,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
       "seed": 35,
       "winner": "left",
-      "ticks": 311,
+      "ticks": 314,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 16,
+          "survivors": 15,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -927,12 +927,12 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 36,
       "winner": "left",
-      "ticks": 336,
+      "ticks": 317,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 11,
+          "survivors": 13,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -952,7 +952,7 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 37,
       "winner": "left",
-      "ticks": 322,
+      "ticks": 309,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -977,7 +977,57 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 38,
       "winner": "left",
-      "ticks": 310,
+      "ticks": 313,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 39,
+      "winner": "left",
+      "ticks": 319,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 40,
+      "winner": "left",
+      "ticks": 312,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -1000,14 +1050,14 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 39,
+      "seed": 41,
       "winner": "left",
-      "ticks": 308,
+      "ticks": 316,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 14,
+          "survivors": 13,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -1025,13 +1075,188 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 40,
+      "seed": 42,
+      "winner": "left",
+      "ticks": 309,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 43,
       "winner": "left",
       "ticks": 311,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 44,
+      "winner": "left",
+      "ticks": 339,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 45,
+      "winner": "left",
+      "ticks": 306,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 46,
+      "winner": "left",
+      "ticks": 309,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 47,
+      "winner": "left",
+      "ticks": 315,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 48,
+      "winner": "left",
+      "ticks": 312,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 49,
+      "winner": "left",
+      "ticks": 312,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
           "survivors": 14,
           "hasGeneral": true,
           "generalAlive": true,
@@ -1050,7 +1275,7 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 41,
+      "seed": 50,
       "winner": "left",
       "ticks": 323,
       "leftSquads": [
@@ -1075,9 +1300,34 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 42,
+      "seed": 51,
       "winner": "left",
-      "ticks": 328,
+      "ticks": 313,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 52,
+      "winner": "left",
+      "ticks": 310,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -1100,264 +1350,14 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 43,
-      "winner": "left",
-      "ticks": 310,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 44,
+      "seed": 53,
       "winner": "left",
       "ticks": 308,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 45,
-      "winner": "left",
-      "ticks": 322,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
           "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 46,
-      "winner": "left",
-      "ticks": 317,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 47,
-      "winner": "left",
-      "ticks": 305,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 48,
-      "winner": "left",
-      "ticks": 327,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 7,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 49,
-      "winner": "left",
-      "ticks": 321,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 9,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 50,
-      "winner": "left",
-      "ticks": 306,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 51,
-      "winner": "left",
-      "ticks": 300,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 18,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 52,
-      "winner": "left",
-      "ticks": 303,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 53,
-      "winner": "left",
-      "ticks": 326,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 10,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -1377,7 +1377,32 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 54,
       "winner": "left",
-      "ticks": 315,
+      "ticks": 314,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 55,
+      "winner": "left",
+      "ticks": 306,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -1400,7 +1425,7 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 55,
+      "seed": 56,
       "winner": "left",
       "ticks": 313,
       "leftSquads": [
@@ -1425,39 +1450,14 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 56,
-      "winner": "left",
-      "ticks": 326,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
       "seed": 57,
       "winner": "left",
-      "ticks": 306,
+      "ticks": 307,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 17,
+          "survivors": 13,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -1477,7 +1477,7 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 58,
       "winner": "left",
-      "ticks": 316,
+      "ticks": 310,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -1502,12 +1502,12 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 59,
       "winner": "left",
-      "ticks": 319,
+      "ticks": 311,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 9,
+          "survivors": 16,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -1527,7 +1527,32 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
     {
       "seed": 60,
       "winner": "left",
-      "ticks": 306,
+      "ticks": 310,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 61,
+      "winner": "left",
+      "ticks": 311,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -1550,7 +1575,82 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 61,
+      "seed": 62,
+      "winner": "left",
+      "ticks": 320,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 63,
+      "winner": "left",
+      "ticks": 317,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 64,
+      "winner": "left",
+      "ticks": 325,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 65,
       "winner": "left",
       "ticks": 317,
       "leftSquads": [
@@ -1575,382 +1675,7 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 62,
-      "winner": "left",
-      "ticks": 313,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 63,
-      "winner": "left",
-      "ticks": 308,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 64,
-      "winner": "left",
-      "ticks": 304,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 17,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 65,
-      "winner": "left",
-      "ticks": 308,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
       "seed": 66,
-      "winner": "left",
-      "ticks": 312,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 67,
-      "winner": "left",
-      "ticks": 316,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 68,
-      "winner": "left",
-      "ticks": 315,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 69,
-      "winner": "left",
-      "ticks": 314,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 70,
-      "winner": "left",
-      "ticks": 322,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 71,
-      "winner": "left",
-      "ticks": 308,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 72,
-      "winner": "left",
-      "ticks": 315,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 73,
-      "winner": "left",
-      "ticks": 314,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 74,
-      "winner": "left",
-      "ticks": 312,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 75,
-      "winner": "left",
-      "ticks": 321,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 76,
-      "winner": "left",
-      "ticks": 318,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 77,
       "winner": "left",
       "ticks": 319,
       "leftSquads": [
@@ -1975,7 +1700,107 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 78,
+      "seed": 67,
+      "winner": "left",
+      "ticks": 313,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 68,
+      "winner": "left",
+      "ticks": 314,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 69,
+      "winner": "left",
+      "ticks": 317,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 70,
+      "winner": "left",
+      "ticks": 323,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 71,
       "winner": "left",
       "ticks": 312,
       "leftSquads": [
@@ -2000,259 +1825,9 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 79,
+      "seed": 72,
       "winner": "left",
-      "ticks": 309,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 80,
-      "winner": "left",
-      "ticks": 314,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 81,
-      "winner": "left",
-      "ticks": 309,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 82,
-      "winner": "left",
-      "ticks": 308,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 17,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 83,
-      "winner": "left",
-      "ticks": 315,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 84,
-      "winner": "left",
-      "ticks": 325,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 10,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 85,
-      "winner": "left",
-      "ticks": 306,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 86,
-      "winner": "left",
-      "ticks": 306,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 87,
-      "winner": "left",
-      "ticks": 314,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 88,
-      "winner": "left",
-      "ticks": 309,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 9,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 89,
-      "winner": "left",
-      "ticks": 330,
+      "ticks": 327,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -2275,138 +1850,13 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 90,
+      "seed": 73,
       "winner": "left",
       "ticks": 312,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 91,
-      "winner": "left",
-      "ticks": 312,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 9,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 92,
-      "winner": "left",
-      "ticks": 308,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 93,
-      "winner": "left",
-      "ticks": 322,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 94,
-      "winner": "left",
-      "ticks": 319,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 95,
-      "winner": "left",
-      "ticks": 329,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
           "survivors": 13,
           "hasGeneral": true,
           "generalAlive": true,
@@ -2425,757 +1875,7 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 96,
-      "winner": "left",
-      "ticks": 312,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 97,
-      "winner": "left",
-      "ticks": 308,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 98,
-      "winner": "left",
-      "ticks": 323,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 99,
-      "winner": "left",
-      "ticks": 325,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 100,
-      "winner": "left",
-      "ticks": 322,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 101,
-      "winner": "left",
-      "ticks": 320,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 102,
-      "winner": "left",
-      "ticks": 317,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 103,
-      "winner": "left",
-      "ticks": 313,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 104,
-      "winner": "left",
-      "ticks": 318,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 10,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 105,
-      "winner": "left",
-      "ticks": 311,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 106,
-      "winner": "left",
-      "ticks": 309,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 107,
-      "winner": "left",
-      "ticks": 333,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 108,
-      "winner": "left",
-      "ticks": 303,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 109,
-      "winner": "left",
-      "ticks": 302,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 17,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 110,
-      "winner": "left",
-      "ticks": 325,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 10,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 111,
-      "winner": "left",
-      "ticks": 317,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 112,
-      "winner": "left",
-      "ticks": 311,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 19,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 113,
-      "winner": "left",
-      "ticks": 312,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 114,
-      "winner": "left",
-      "ticks": 314,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 115,
-      "winner": "left",
-      "ticks": 308,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 116,
-      "winner": "left",
-      "ticks": 305,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 117,
-      "winner": "left",
-      "ticks": 305,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 118,
-      "winner": "left",
-      "ticks": 306,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 119,
-      "winner": "left",
-      "ticks": 310,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 120,
-      "winner": "left",
-      "ticks": 308,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 121,
-      "winner": "left",
-      "ticks": 309,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 122,
-      "winner": "left",
-      "ticks": 315,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 123,
-      "winner": "left",
-      "ticks": 308,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 124,
-      "winner": "left",
-      "ticks": 316,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 125,
-      "winner": "left",
-      "ticks": 327,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 126,
+      "seed": 74,
       "winner": "left",
       "ticks": 314,
       "leftSquads": [
@@ -3200,357 +1900,7 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 127,
-      "winner": "left",
-      "ticks": 317,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 128,
-      "winner": "left",
-      "ticks": 331,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 7,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 129,
-      "winner": "left",
-      "ticks": 307,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 130,
-      "winner": "left",
-      "ticks": 322,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 131,
-      "winner": "left",
-      "ticks": 318,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 132,
-      "winner": "left",
-      "ticks": 316,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 133,
-      "winner": "left",
-      "ticks": 310,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 134,
-      "winner": "left",
-      "ticks": 313,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 135,
-      "winner": "left",
-      "ticks": 310,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 136,
-      "winner": "left",
-      "ticks": 326,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 137,
-      "winner": "left",
-      "ticks": 314,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 138,
-      "winner": "left",
-      "ticks": 316,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 139,
-      "winner": "left",
-      "ticks": 313,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 140,
-      "winner": "left",
-      "ticks": 312,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 141,
+      "seed": 75,
       "winner": "left",
       "ticks": 305,
       "leftSquads": [
@@ -3575,7 +1925,7 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 142,
+      "seed": 76,
       "winner": "left",
       "ticks": 332,
       "leftSquads": [
@@ -3600,514 +1950,14 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 143,
-      "winner": "left",
-      "ticks": 311,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 144,
-      "winner": "left",
-      "ticks": 308,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 145,
-      "winner": "left",
-      "ticks": 307,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 146,
-      "winner": "left",
-      "ticks": 304,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 147,
-      "winner": "left",
-      "ticks": 311,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 148,
-      "winner": "left",
-      "ticks": 309,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 149,
-      "winner": "left",
-      "ticks": 323,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 150,
-      "winner": "left",
-      "ticks": 321,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 151,
-      "winner": "left",
-      "ticks": 320,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 152,
-      "winner": "left",
-      "ticks": 311,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 153,
-      "winner": "left",
-      "ticks": 312,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 154,
-      "winner": "left",
-      "ticks": 303,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 155,
-      "winner": "left",
-      "ticks": 305,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 156,
-      "winner": "left",
-      "ticks": 323,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 157,
-      "winner": "left",
-      "ticks": 310,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 158,
-      "winner": "left",
-      "ticks": 313,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 159,
-      "winner": "left",
-      "ticks": 306,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 160,
-      "winner": "left",
-      "ticks": 310,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 161,
-      "winner": "left",
-      "ticks": 331,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 162,
-      "winner": "left",
-      "ticks": 318,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 163,
+      "seed": 77,
       "winner": "left",
       "ticks": 319,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 11,
+          "survivors": 13,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -4125,184 +1975,9 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 164,
+      "seed": 78,
       "winner": "left",
-      "ticks": 310,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 165,
-      "winner": "left",
-      "ticks": 316,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 166,
-      "winner": "left",
-      "ticks": 308,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 167,
-      "winner": "left",
-      "ticks": 310,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 168,
-      "winner": "left",
-      "ticks": 310,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 169,
-      "winner": "left",
-      "ticks": 317,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 170,
-      "winner": "left",
-      "ticks": 313,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 171,
-      "winner": "left",
-      "ticks": 311,
+      "ticks": 319,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -4325,14 +2000,14 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 172,
+      "seed": 79,
       "winner": "left",
-      "ticks": 314,
+      "ticks": 320,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 11,
+          "survivors": 10,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -4350,14 +2025,14 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 173,
+      "seed": 80,
       "winner": "left",
-      "ticks": 314,
+      "ticks": 322,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 16,
+          "survivors": 9,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -4375,88 +2050,13 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 174,
-      "winner": "left",
-      "ticks": 324,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 175,
-      "winner": "left",
-      "ticks": 311,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 176,
+      "seed": 81,
       "winner": "left",
       "ticks": 316,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 177,
-      "winner": "left",
-      "ticks": 312,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
           "survivors": 12,
           "hasGeneral": true,
           "generalAlive": true,
@@ -4475,9 +2075,34 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 178,
+      "seed": 82,
       "winner": "left",
-      "ticks": 313,
+      "ticks": 319,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 83,
+      "winner": "left",
+      "ticks": 321,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -4500,7 +2125,157 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 179,
+      "seed": 84,
+      "winner": "left",
+      "ticks": 320,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 85,
+      "winner": "left",
+      "ticks": 321,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 86,
+      "winner": "left",
+      "ticks": 312,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 87,
+      "winner": "left",
+      "ticks": 326,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 88,
+      "winner": "left",
+      "ticks": 310,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 89,
+      "winner": "left",
+      "ticks": 318,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 90,
       "winner": "left",
       "ticks": 312,
       "leftSquads": [
@@ -4525,84 +2300,9 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 180,
+      "seed": 91,
       "winner": "left",
-      "ticks": 311,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 181,
-      "winner": "left",
-      "ticks": 311,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 182,
-      "winner": "left",
-      "ticks": 322,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 183,
-      "winner": "left",
-      "ticks": 319,
+      "ticks": 326,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -4625,14 +2325,14 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 184,
+      "seed": 92,
       "winner": "left",
-      "ticks": 321,
+      "ticks": 313,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 10,
+          "survivors": 11,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -4650,264 +2350,14 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 185,
-      "winner": "left",
-      "ticks": 307,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 186,
-      "winner": "left",
-      "ticks": 309,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 187,
-      "winner": "left",
-      "ticks": 307,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 188,
-      "winner": "left",
-      "ticks": 303,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 189,
-      "winner": "left",
-      "ticks": 320,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 10,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 190,
-      "winner": "left",
-      "ticks": 310,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 191,
-      "winner": "left",
-      "ticks": 323,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 9,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 192,
-      "winner": "left",
-      "ticks": 312,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 193,
-      "winner": "left",
-      "ticks": 315,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 194,
-      "winner": "left",
-      "ticks": 310,
-      "leftSquads": [
-        {
-          "squadId": "Hunter1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "HunterP1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": false,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 195,
+      "seed": 93,
       "winner": "left",
       "ticks": 306,
       "leftSquads": [
         {
           "squadId": "Hunter1",
           "soldiers": 20,
-          "survivors": 13,
+          "survivors": 11,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 1
@@ -4925,7 +2375,7 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 196,
+      "seed": 94,
       "winner": "left",
       "ticks": 325,
       "leftSquads": [
@@ -4950,7 +2400,1007 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 197,
+      "seed": 95,
+      "winner": "left",
+      "ticks": 315,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 96,
+      "winner": "left",
+      "ticks": 321,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 97,
+      "winner": "left",
+      "ticks": 321,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 98,
+      "winner": "left",
+      "ticks": 318,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 99,
+      "winner": "left",
+      "ticks": 312,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 100,
+      "winner": "left",
+      "ticks": 309,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 101,
+      "winner": "left",
+      "ticks": 325,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 102,
+      "winner": "left",
+      "ticks": 318,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 103,
+      "winner": "left",
+      "ticks": 309,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 104,
+      "winner": "left",
+      "ticks": 323,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 105,
+      "winner": "left",
+      "ticks": 328,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 106,
+      "winner": "left",
+      "ticks": 314,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 17,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 107,
+      "winner": "left",
+      "ticks": 314,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 108,
+      "winner": "left",
+      "ticks": 321,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 109,
+      "winner": "left",
+      "ticks": 312,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 110,
+      "winner": "left",
+      "ticks": 329,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 111,
+      "winner": "left",
+      "ticks": 325,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 112,
+      "winner": "left",
+      "ticks": 312,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 18,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 113,
+      "winner": "left",
+      "ticks": 307,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 114,
+      "winner": "left",
+      "ticks": 321,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 115,
+      "winner": "left",
+      "ticks": 329,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 116,
+      "winner": "left",
+      "ticks": 319,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 117,
+      "winner": "left",
+      "ticks": 319,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 118,
+      "winner": "left",
+      "ticks": 317,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 119,
+      "winner": "left",
+      "ticks": 312,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 120,
+      "winner": "left",
+      "ticks": 313,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 121,
+      "winner": "left",
+      "ticks": 311,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 122,
+      "winner": "left",
+      "ticks": 329,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 123,
+      "winner": "left",
+      "ticks": 323,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 124,
+      "winner": "left",
+      "ticks": 313,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 125,
+      "winner": "left",
+      "ticks": 326,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 9,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 126,
+      "winner": "left",
+      "ticks": 321,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 127,
+      "winner": "left",
+      "ticks": 330,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 128,
+      "winner": "left",
+      "ticks": 319,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 129,
+      "winner": "left",
+      "ticks": 312,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 130,
+      "winner": "left",
+      "ticks": 316,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 131,
+      "winner": "left",
+      "ticks": 310,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 132,
+      "winner": "left",
+      "ticks": 312,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 133,
+      "winner": "left",
+      "ticks": 312,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 134,
+      "winner": "left",
+      "ticks": 336,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 9,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 135,
       "winner": "left",
       "ticks": 310,
       "leftSquads": [
@@ -4975,9 +3425,34 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
-      "seed": 198,
+      "seed": 136,
       "winner": "left",
-      "ticks": 308,
+      "ticks": 311,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 137,
+      "winner": "left",
+      "ticks": 316,
       "leftSquads": [
         {
           "squadId": "Hunter1",
@@ -5000,9 +3475,1534 @@ window.BALANCE_RESULT["general_vs_none_hunter:"] = {
       ]
     },
     {
+      "seed": 138,
+      "winner": "left",
+      "ticks": 325,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 139,
+      "winner": "left",
+      "ticks": 320,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 140,
+      "winner": "left",
+      "ticks": 318,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 141,
+      "winner": "left",
+      "ticks": 310,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 142,
+      "winner": "left",
+      "ticks": 313,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 143,
+      "winner": "left",
+      "ticks": 324,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 144,
+      "winner": "left",
+      "ticks": 316,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 145,
+      "winner": "left",
+      "ticks": 332,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 146,
+      "winner": "left",
+      "ticks": 320,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 147,
+      "winner": "left",
+      "ticks": 331,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 148,
+      "winner": "left",
+      "ticks": 309,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 149,
+      "winner": "left",
+      "ticks": 323,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 150,
+      "winner": "left",
+      "ticks": 313,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 151,
+      "winner": "left",
+      "ticks": 313,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 152,
+      "winner": "left",
+      "ticks": 320,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 153,
+      "winner": "left",
+      "ticks": 329,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 154,
+      "winner": "left",
+      "ticks": 318,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 155,
+      "winner": "left",
+      "ticks": 321,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 156,
+      "winner": "left",
+      "ticks": 323,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 157,
+      "winner": "left",
+      "ticks": 309,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 158,
+      "winner": "left",
+      "ticks": 323,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 159,
+      "winner": "left",
+      "ticks": 316,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 160,
+      "winner": "left",
+      "ticks": 327,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 161,
+      "winner": "left",
+      "ticks": 319,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 162,
+      "winner": "left",
+      "ticks": 317,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 163,
+      "winner": "left",
+      "ticks": 327,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 164,
+      "winner": "left",
+      "ticks": 312,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 165,
+      "winner": "left",
+      "ticks": 310,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 166,
+      "winner": "left",
+      "ticks": 322,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 167,
+      "winner": "left",
+      "ticks": 330,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 168,
+      "winner": "left",
+      "ticks": 317,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 169,
+      "winner": "left",
+      "ticks": 322,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 170,
+      "winner": "left",
+      "ticks": 315,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 171,
+      "winner": "left",
+      "ticks": 313,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 172,
+      "winner": "left",
+      "ticks": 330,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 173,
+      "winner": "left",
+      "ticks": 321,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 174,
+      "winner": "left",
+      "ticks": 315,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 175,
+      "winner": "left",
+      "ticks": 317,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 176,
+      "winner": "left",
+      "ticks": 310,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 177,
+      "winner": "left",
+      "ticks": 313,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 178,
+      "winner": "left",
+      "ticks": 320,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 179,
+      "winner": "left",
+      "ticks": 312,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 180,
+      "winner": "left",
+      "ticks": 316,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 181,
+      "winner": "left",
+      "ticks": 320,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 182,
+      "winner": "left",
+      "ticks": 315,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 183,
+      "winner": "left",
+      "ticks": 327,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 184,
+      "winner": "left",
+      "ticks": 341,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 9,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 185,
+      "winner": "left",
+      "ticks": 323,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 186,
+      "winner": "left",
+      "ticks": 326,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 187,
+      "winner": "left",
+      "ticks": 323,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 188,
+      "winner": "left",
+      "ticks": 325,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 189,
+      "winner": "left",
+      "ticks": 317,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 190,
+      "winner": "left",
+      "ticks": 311,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 191,
+      "winner": "left",
+      "ticks": 312,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 192,
+      "winner": "left",
+      "ticks": 309,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 193,
+      "winner": "left",
+      "ticks": 320,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 194,
+      "winner": "left",
+      "ticks": 307,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 195,
+      "winner": "left",
+      "ticks": 311,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 196,
+      "winner": "left",
+      "ticks": 315,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 197,
+      "winner": "left",
+      "ticks": 311,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 198,
+      "winner": "left",
+      "ticks": 313,
+      "leftSquads": [
+        {
+          "squadId": "Hunter1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "HunterP1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": false,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
       "seed": 199,
       "winner": "left",
-      "ticks": 314,
+      "ticks": 309,
       "leftSquads": [
         {
           "squadId": "Hunter1",

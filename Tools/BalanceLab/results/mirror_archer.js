@@ -10,7 +10,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
   "verdict": {
     "bandId": "mirror_general",
     "metric": "sideBalance",
-    "value": 0.4883720930232558,
+    "value": 0.5,
     "minWinRate": 0.45,
     "maxWinRate": 0.55,
     "passed": true,
@@ -18,16 +18,16 @@ window.BALANCE_RESULT["mirror_archer:"] = {
   },
   "runs": 200,
   "leftWins": 21,
-  "rightWins": 22,
-  "draws": 157,
+  "rightWins": 21,
+  "draws": 158,
   "leftWinRate": 0.105,
-  "rightWinRate": 0.11,
-  "elapsedMs": 958,
+  "rightWinRate": 0.105,
+  "elapsedMs": 1531,
   "battles": [
     {
       "seed": 0,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -52,7 +52,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 1,
       "winner": "left",
-      "ticks": 1035,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -77,7 +77,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 2,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -102,7 +102,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 3,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -127,7 +127,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 4,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -152,7 +152,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 5,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -177,7 +177,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 6,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -202,7 +202,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 7,
       "winner": "right",
-      "ticks": 1035,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -227,7 +227,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 8,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -252,7 +252,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 9,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -277,7 +277,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 10,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -302,7 +302,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 11,
       "winner": "left",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -327,7 +327,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 12,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -352,7 +352,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 13,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -377,7 +377,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 14,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -402,7 +402,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 15,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -427,7 +427,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 16,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -452,7 +452,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 17,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -477,7 +477,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 18,
       "winner": "left",
-      "ticks": 1036,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -502,7 +502,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 19,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -527,7 +527,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 20,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -552,7 +552,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 21,
       "winner": "right",
-      "ticks": 1036,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -577,7 +577,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 22,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -602,7 +602,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 23,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -627,7 +627,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 24,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -652,7 +652,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 25,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -677,7 +677,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 26,
       "winner": "right",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -702,7 +702,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 27,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -727,7 +727,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 28,
       "winner": "left",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -752,7 +752,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 29,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -777,7 +777,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 30,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -802,7 +802,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 31,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -827,7 +827,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 32,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -852,7 +852,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 33,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -877,7 +877,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 34,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -901,8 +901,8 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     },
     {
       "seed": 35,
-      "winner": "right",
-      "ticks": 1034,
+      "winner": "draw",
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -919,7 +919,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
           "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": true,
+          "generalAlive": false,
           "activations": 1
         }
       ]
@@ -927,7 +927,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 36,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -952,7 +952,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 37,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -977,7 +977,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 38,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1002,7 +1002,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 39,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1027,7 +1027,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 40,
       "winner": "right",
-      "ticks": 1035,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1052,7 +1052,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 41,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1077,7 +1077,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 42,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1102,7 +1102,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 43,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1127,7 +1127,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 44,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1152,7 +1152,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 45,
       "winner": "left",
-      "ticks": 1035,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1177,7 +1177,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 46,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1202,7 +1202,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 47,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1227,7 +1227,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 48,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1252,7 +1252,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 49,
       "winner": "right",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1277,7 +1277,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 50,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1302,7 +1302,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 51,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1327,7 +1327,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 52,
       "winner": "left",
-      "ticks": 1036,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1352,7 +1352,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 53,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1377,7 +1377,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 54,
       "winner": "right",
-      "ticks": 1037,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1402,7 +1402,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 55,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1427,7 +1427,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 56,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1452,7 +1452,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 57,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1477,7 +1477,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 58,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1502,7 +1502,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 59,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1527,7 +1527,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 60,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1552,7 +1552,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 61,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1577,7 +1577,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 62,
       "winner": "left",
-      "ticks": 1035,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1602,7 +1602,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 63,
       "winner": "right",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1627,7 +1627,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 64,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1652,7 +1652,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 65,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1677,7 +1677,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 66,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1702,7 +1702,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 67,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1727,7 +1727,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 68,
       "winner": "right",
-      "ticks": 1035,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1752,7 +1752,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 69,
       "winner": "left",
-      "ticks": 1035,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1777,7 +1777,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 70,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1802,7 +1802,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 71,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1827,7 +1827,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 72,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1852,7 +1852,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 73,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1877,7 +1877,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 74,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1902,7 +1902,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 75,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1927,7 +1927,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 76,
       "winner": "left",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1952,7 +1952,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 77,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -1977,7 +1977,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 78,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2002,7 +2002,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 79,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2027,7 +2027,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 80,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2052,7 +2052,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 81,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2077,7 +2077,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 82,
       "winner": "right",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2102,7 +2102,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 83,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2127,7 +2127,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 84,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2152,7 +2152,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 85,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2177,7 +2177,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 86,
       "winner": "left",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2202,7 +2202,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 87,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2227,7 +2227,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 88,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2252,7 +2252,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 89,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2277,7 +2277,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 90,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2302,7 +2302,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 91,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2327,7 +2327,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 92,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2352,7 +2352,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 93,
       "winner": "left",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2377,7 +2377,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 94,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2402,7 +2402,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 95,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2427,7 +2427,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 96,
       "winner": "right",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2452,7 +2452,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 97,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2477,7 +2477,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 98,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2502,7 +2502,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 99,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2527,7 +2527,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 100,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2552,7 +2552,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 101,
       "winner": "right",
-      "ticks": 1036,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2577,7 +2577,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 102,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2602,7 +2602,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 103,
       "winner": "left",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2627,7 +2627,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 104,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2652,7 +2652,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 105,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2677,7 +2677,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 106,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2702,7 +2702,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 107,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2727,7 +2727,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 108,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2752,7 +2752,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 109,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2777,7 +2777,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 110,
       "winner": "draw",
-      "ticks": 1035,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2802,7 +2802,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 111,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2827,7 +2827,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 112,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2852,7 +2852,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 113,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2877,7 +2877,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 114,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2902,7 +2902,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 115,
       "winner": "right",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2927,7 +2927,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 116,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2952,7 +2952,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 117,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -2977,7 +2977,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 118,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3002,7 +3002,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 119,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3027,7 +3027,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 120,
       "winner": "left",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3052,7 +3052,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 121,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3077,7 +3077,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 122,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3102,7 +3102,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 123,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3127,7 +3127,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 124,
       "winner": "right",
-      "ticks": 1036,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3152,7 +3152,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 125,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3177,7 +3177,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 126,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3202,7 +3202,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 127,
       "winner": "left",
-      "ticks": 1036,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3227,7 +3227,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 128,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3252,7 +3252,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 129,
       "winner": "right",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3277,7 +3277,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 130,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3302,7 +3302,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 131,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3327,7 +3327,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 132,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3352,7 +3352,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 133,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3377,7 +3377,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 134,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3402,7 +3402,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 135,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3427,7 +3427,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 136,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3452,7 +3452,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 137,
       "winner": "left",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3477,7 +3477,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 138,
       "winner": "right",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3502,7 +3502,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 139,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3527,7 +3527,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 140,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3552,7 +3552,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 141,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3577,7 +3577,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 142,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3602,7 +3602,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 143,
       "winner": "right",
-      "ticks": 1035,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3627,7 +3627,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 144,
       "winner": "left",
-      "ticks": 1036,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3652,7 +3652,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 145,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3677,7 +3677,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 146,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3702,7 +3702,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 147,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3727,7 +3727,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 148,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3752,7 +3752,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 149,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3777,7 +3777,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 150,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3802,7 +3802,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 151,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3827,7 +3827,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 152,
       "winner": "right",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3852,7 +3852,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 153,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3877,7 +3877,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 154,
       "winner": "left",
-      "ticks": 1035,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3902,7 +3902,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 155,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3927,7 +3927,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 156,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3952,7 +3952,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 157,
       "winner": "right",
-      "ticks": 1036,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -3977,7 +3977,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 158,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4002,7 +4002,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 159,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4027,7 +4027,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 160,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4052,7 +4052,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 161,
       "winner": "left",
-      "ticks": 1035,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4077,7 +4077,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 162,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4102,7 +4102,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 163,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4127,7 +4127,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 164,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4152,7 +4152,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 165,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4177,7 +4177,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 166,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4202,7 +4202,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 167,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4227,7 +4227,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 168,
       "winner": "left",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4252,7 +4252,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 169,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4277,7 +4277,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 170,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4302,7 +4302,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 171,
       "winner": "right",
-      "ticks": 1035,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4327,7 +4327,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 172,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4352,7 +4352,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 173,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4377,7 +4377,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 174,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4402,7 +4402,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 175,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4427,7 +4427,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 176,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4452,7 +4452,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 177,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4477,7 +4477,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 178,
       "winner": "left",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4502,7 +4502,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 179,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4527,7 +4527,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 180,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4552,7 +4552,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 181,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4577,7 +4577,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 182,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4602,7 +4602,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 183,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4627,7 +4627,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 184,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4652,7 +4652,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 185,
       "winner": "draw",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4677,7 +4677,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 186,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4702,7 +4702,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 187,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4727,7 +4727,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 188,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4752,7 +4752,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 189,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4777,7 +4777,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 190,
       "winner": "right",
-      "ticks": 1037,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4802,7 +4802,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 191,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4827,7 +4827,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 192,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4852,7 +4852,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 193,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4877,7 +4877,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 194,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4902,7 +4902,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 195,
       "winner": "left",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4927,7 +4927,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 196,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4952,7 +4952,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 197,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -4977,7 +4977,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 198,
       "winner": "draw",
-      "ticks": 1083,
+      "ticks": 1376,
       "leftSquads": [
         {
           "squadId": "Archer1",
@@ -5002,7 +5002,7 @@ window.BALANCE_RESULT["mirror_archer:"] = {
     {
       "seed": 199,
       "winner": "right",
-      "ticks": 1034,
+      "ticks": 1327,
       "leftSquads": [
         {
           "squadId": "Archer1",
