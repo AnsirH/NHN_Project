@@ -1,4 +1,5 @@
-{
+window.BALANCE_RESULT = window.BALANCE_RESULT || {};
+window.BALANCE_RESULT["mirror_warrior:"] = {
   "scenarioName": "mirror_warrior",
   "scenarioPath": "Tools/BalanceLab/scenarios/matrix/mirror_warrior.json",
   "tag": null,
@@ -5024,4 +5025,4 @@
       ]
     }
   ]
-}
+};

@@ -1,4 +1,5 @@
-{
+window.BALANCE_RESULT = window.BALANCE_RESULT || {};
+window.BALANCE_RESULT["general_vs_none_hunter:"] = {
   "scenarioName": "general_vs_none_hunter",
   "scenarioPath": "Tools/BalanceLab/scenarios/matrix/general_vs_none_hunter.json",
   "tag": null,
@@ -5022,4 +5023,4 @@
       ]
     }
   ]
-}
+};
