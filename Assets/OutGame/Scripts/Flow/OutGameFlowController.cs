@@ -1,9 +1,7 @@
 using System;
 using OutGame.Logic.Audio;
 using OutGame.Logic.Runs;
-using OutGame.UI;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace OutGame.Flow
 {
@@ -15,9 +13,16 @@ namespace OutGame.Flow
     /// 바로 이 클래스의 Start(). 환경 설정은 2026-07-31부터 PausePopup(ESC/뒤로가기로 토글)을 거쳐서만
     /// 열 수 있다 — 이 컨트롤러가 직접 관여하지 않는 자기 완결형 컴포넌트.
     ///
-    /// pendingRun이 있는 경우 = 전투 종료 후 이 씬이 다시 로드된 경우(§7.4) — 그 순간에만
-    /// LoreFragmentOverlayPanel("의지의 파편")을 한 번 거친다(Docs/OutGame/로딩 화면 - 의지의 파편 설계.md).
-    /// 맵 선택→진영, 진영→전투시작 두 지점은 origin의 Loading.unity(LoadingHandoff)가 이미 전담하므로
+    /// pendingRun이 있는 경우 = 전투 종료 후 이 씬이 다시 로드된 경우(§7.4) — 방 그래프로 곧장
+    /// 진입한다.
+    ///
+    /// 2026-08-10: 이 지점에서 한 번 거치던 LoreFragmentOverlayPanel("의지의 파편",
+    /// Docs/OutGame/로딩 화면 - 의지의 파편 설계.md)을 흐름에서 제거했다(사용자 요청) — 파편이 뜨지
+    /// 않는 경우에도 검은 화면에서 매번 [계속하기]를 눌러야 해서 전투 복귀가 번거로웠다. 기능 자체는
+    /// 남겨뒀다(LoreFragmentOverlay.prefab, LoreFragmentOverlayPanel/Selector, 설화 12종, 테스트) —
+    /// 되살리려면 이 클래스에 필드를 다시 두고 아래 방 그래프 진입을 Begin(...) 콜백으로 감싸면 된다.
+    ///
+    /// 맵 선택→진영, 진영→전투시작 두 지점은 origin의 Loading.unity(LoadingHandoff)가 전담하므로
     /// 여기서 건드리지 않는다.
     /// </summary>
     public class OutGameFlowController : MonoBehaviour
@@ -25,12 +30,10 @@ namespace OutGame.Flow
         [SerializeField] private MapSelectPanel mapSelectPanel;
         [SerializeField] private CharacterSelectPanel characterSelectPanel;
         [SerializeField] private InGameFlowController roomGraphController;
-        [FormerlySerializedAs("loadingOverlay")] [SerializeField] private LoreFragmentOverlayPanel loreFragmentOverlay;
 
         private void Awake()
         {
-            if (mapSelectPanel == null || characterSelectPanel == null || roomGraphController == null
-                || loreFragmentOverlay == null)
+            if (mapSelectPanel == null || characterSelectPanel == null || roomGraphController == null)
                 throw new InvalidOperationException("OutGameFlowController의 필드가 배선되지 않았습니다.");
 
             // MainMenu를 거치지 않고 OutGame.unity가 곧장 열리는 경로(테스트 등)에 대비한 방어적 적용
@@ -51,12 +54,8 @@ namespace OutGame.Flow
             {
                 // 씬 교체 전투(§7.4)에서 복귀한 경우 — 맵/캐릭터 선택이 이미 끝난 런이라 방 그래프로
                 // 곧장 진입한다(2026-07-30: 메인 메뉴 "이어하기" 제거 이후 이 경로의 유일한 발생지).
-                // 그 직전에 "의지의 파편" 오버레이를 한 번 거친다 — 전투 종료 → 맵 복귀 시점에만.
-                loreFragmentOverlay.Begin(() =>
-                {
-                    ShowOnly(roomGraphController.gameObject);
-                    roomGraphController.Begin(pendingRun);
-                });
+                ShowOnly(roomGraphController.gameObject);
+                roomGraphController.Begin(pendingRun);
             }
             else
             {
