@@ -56,6 +56,7 @@ namespace OutGame.UI
         [SerializeField, Range(0f, 1f)] private float lineBlobBumpAmount = 0.3f;  // 점선 조각 울퉁불퉁함
 
         private Material lineMaterialBase;
+        private float contentMinY; // Rebuild가 쓴 좌표 기준점 — FocusOnNext가 같은 식으로 역산한다
         private readonly List<RoomNodeView> nodeViews = new List<RoomNodeView>();
         private readonly List<(Image image, GridPoint from, GridPoint to)> lines
             = new List<(Image, GridPoint, GridPoint)>();
@@ -178,6 +179,40 @@ namespace OutGame.UI
                 image.color = IsTraveledEdge(from, to) ? lineTraveledColor : lineDimColor;
         }
 
+        /// <summary>다음에 갈 수 있는 층이 화면 가운데 오도록 스크롤한다 (2026-08-10 사용자 요청).
+        /// 전투에서 복귀하면 씬이 다시 로드되며 Rebuild가 도는데, 예전엔 항상 맨 아래(1층)로
+        /// 되돌아가서 위층까지 직접 스크롤해 올려야 했다.
+        ///
+        /// 기준은 "선택 가능한 노드들의 평균 높이"다 — 갈림길이면 후보들의 중간을 잡아준다.
+        /// 선택지가 없으면(런 종료 직전 등) 현재 노드로 맞춘다. 아직 아무 데도 안 갔으면 시작층이
+        /// 곧 선택 가능한 층이라 기존과 같은 맨 아래가 된다.</summary>
+        public void FocusOnNext()
+        {
+            if (scrollRect == null || Map == null || scrollRect.viewport == null) return;
+
+            List<MapNode> targets = MapProgress.GetSelectableNodes(Map).ToList();
+            float targetPosY;
+            if (targets.Count > 0)
+                targetPosY = targets.Average(n => n.posY);
+            else if (Map.visitedPath.Count > 0)
+            {
+                GridPoint last = Map.visitedPath[Map.visitedPath.Count - 1];
+                MapNode node = Map.nodes.FirstOrDefault(n => n.point.Equals(last));
+                if (node == null) return;
+                targetPosY = node.posY;
+            }
+            else return;
+
+            Canvas.ForceUpdateCanvases(); // 레이아웃 확정 전 rect를 읽으면 0이 나온다
+            float scrollable = content.rect.height - scrollRect.viewport.rect.height;
+            if (scrollable <= 0f) { scrollRect.verticalNormalizedPosition = 0f; return; }
+
+            // Rebuild의 ToContentPos와 같은 식 — content는 아래쪽 기준(pivot y=0)이라 그대로 쓴다.
+            float contentY = contentPadding + (targetPosY - contentMinY) * unitScale;
+            float fromBottom = contentY - scrollRect.viewport.rect.height * 0.5f; // 화면 중앙에 오도록
+            scrollRect.verticalNormalizedPosition = Mathf.Clamp01(fromBottom / scrollable);
+        }
+
         private bool IsTraveledEdge(GridPoint from, GridPoint to)
         {
             for (int i = 0; i < Map.visitedPath.Count - 1; i++)
@@ -198,6 +233,7 @@ namespace OutGame.UI
             float maxX = Map.nodes.Max(n => n.posX);
             float minY = Map.nodes.Min(n => n.posY);
             float maxY = Map.nodes.Max(n => n.posY);
+            contentMinY = minY;
 
             float width = (maxX - minX) * unitScale + contentPadding * 2f;
             float height = (maxY - minY) * unitScale + contentPadding * 2f;
@@ -233,11 +269,7 @@ namespace OutGame.UI
             BuildLegend();
             Refresh();
 
-            if (scrollRect != null)
-            {
-                Canvas.ForceUpdateCanvases(); // 레이아웃 확정 전에 스크롤 위치를 잡으면 무시될 수 있음
-                scrollRect.verticalNormalizedPosition = 0f; // 1층(아래)부터 시작
-            }
+            FocusOnNext(); // 새 런이면 시작층(= 맨 아래), 전투 복귀면 다음에 갈 층
         }
 
         private void Clear()

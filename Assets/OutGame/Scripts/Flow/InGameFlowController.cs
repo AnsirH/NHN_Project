@@ -425,6 +425,9 @@ namespace OutGame.Flow
             mapPanel.Show(); // OnRoomSelected/OnBattleResult에서 닫아둔 방 그래프를 다시 보여준다
             mapPanel.Refresh();
             mapPanel.SetGold(run.gold); // 이벤트/전투 보상으로 바뀐 골드를 방 그래프 복귀 시 반영
+            // 방을 하나 끝냈으니 다음 선택지가 보이는 위치로 옮겨준다(2026-08-10 사용자 요청) —
+            // 맵을 열어둔 채 진행하는 이벤트/증원/증강 방은 Rebuild가 돌지 않아 여기서 처리해야 한다.
+            mapPanel.FocusOnNext();
             SaveProgress();
         }
 
