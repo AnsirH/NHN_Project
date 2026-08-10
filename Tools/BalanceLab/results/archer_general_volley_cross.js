@@ -1,4 +1,5 @@
-{
+window.BALANCE_RESULT = window.BALANCE_RESULT || {};
+window.BALANCE_RESULT["archer_general_volley_cross:"] = {
   "scenarioName": "archer_general_volley_cross",
   "scenarioPath": "Tools/BalanceLab/scenarios/archer_general_volley_cross.json",
   "tag": null,
@@ -2522,4 +2523,4 @@
       ]
     }
   ]
-}
+};

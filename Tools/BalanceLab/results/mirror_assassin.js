@@ -9,23 +9,25 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
   "band": "mirror_general",
   "verdict": {
     "bandId": "mirror_general",
+    "metric": "sideBalance",
+    "value": 0.35,
     "minWinRate": 0.45,
     "maxWinRate": 0.55,
     "passed": false,
-    "detail": "\uC88C\uAD70 \uC2B9\uB960 15.5 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 45 %~55 %\uB97C \uBC97\uC5B4\uB0A8 (\uBBF8\uB2EC)"
+    "detail": "\uC2B9\uBD80 \uB09C \uD310\uC758 \uC88C\uAD70 \uBE44\uC728 35.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 45 %~55 %\uB97C \uBC97\uC5B4\uB0A8 (\uBBF8\uB2EC)"
   },
   "runs": 200,
-  "leftWins": 31,
-  "rightWins": 169,
+  "leftWins": 70,
+  "rightWins": 130,
   "draws": 0,
-  "leftWinRate": 0.155,
-  "rightWinRate": 0.845,
-  "elapsedMs": 1068,
+  "leftWinRate": 0.35,
+  "rightWinRate": 0.65,
+  "elapsedMs": 1097,
   "battles": [
     {
       "seed": 0,
       "winner": "right",
-      "ticks": 399,
+      "ticks": 629,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -40,17 +42,17 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 13,
+          "survivors": 1,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 0
         }
       ]
     },
     {
       "seed": 1,
       "winner": "right",
-      "ticks": 394,
+      "ticks": 464,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -65,22 +67,22 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 14,
+          "survivors": 11,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 1
         }
       ]
     },
     {
       "seed": 2,
-      "winner": "right",
-      "ticks": 375,
+      "winner": "left",
+      "ticks": 513,
       "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 0,
+          "survivors": 5,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 0
@@ -90,267 +92,17 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 15,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 0
         }
       ]
     },
     {
       "seed": 3,
       "winner": "right",
-      "ticks": 393,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 4,
-      "winner": "right",
-      "ticks": 392,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 5,
-      "winner": "right",
-      "ticks": 394,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 6,
-      "winner": "right",
-      "ticks": 395,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 7,
-      "winner": "right",
-      "ticks": 375,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 8,
-      "winner": "right",
-      "ticks": 559,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 3,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 9,
-      "winner": "right",
-      "ticks": 399,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 10,
-      "winner": "right",
-      "ticks": 376,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 11,
-      "winner": "right",
-      "ticks": 421,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 2
-        }
-      ]
-    },
-    {
-      "seed": 12,
-      "winner": "right",
-      "ticks": 397,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 13,
-      "winner": "right",
-      "ticks": 539,
+      "ticks": 536,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -373,70 +125,10 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 14,
-      "winner": "right",
-      "ticks": 397,
+      "seed": 4,
+      "winner": "left",
+      "ticks": 463,
       "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 15,
-      "winner": "right",
-      "ticks": 577,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 2,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 16,
-      "winner": "right",
-      "ticks": 443,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
@@ -445,221 +137,6 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
           "generalAlive": false,
           "activations": 2
         }
-      ]
-    },
-    {
-      "seed": 17,
-      "winner": "right",
-      "ticks": 394,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 18,
-      "winner": "right",
-      "ticks": 392,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 19,
-      "winner": "left",
-      "ticks": 394,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 3
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 20,
-      "winner": "right",
-      "ticks": 394,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 21,
-      "winner": "right",
-      "ticks": 377,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 22,
-      "winner": "right",
-      "ticks": 513,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 8,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 23,
-      "winner": "right",
-      "ticks": 445,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 24,
-      "winner": "left",
-      "ticks": 418,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 2
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 25,
-      "winner": "left",
-      "ticks": 377,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
       ],
       "rightSquads": [
         {
@@ -673,457 +150,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 26,
-      "winner": "right",
-      "ticks": 376,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 27,
-      "winner": "right",
-      "ticks": 391,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 28,
-      "winner": "right",
-      "ticks": 396,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 29,
-      "winner": "right",
-      "ticks": 466,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 10,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 30,
-      "winner": "right",
-      "ticks": 498,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 7,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 31,
-      "winner": "right",
-      "ticks": 398,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 32,
-      "winner": "right",
-      "ticks": 469,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 9,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 33,
-      "winner": "right",
-      "ticks": 399,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 34,
-      "winner": "right",
-      "ticks": 380,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 35,
-      "winner": "right",
-      "ticks": 517,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 5,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 36,
-      "winner": "right",
-      "ticks": 397,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 37,
-      "winner": "right",
-      "ticks": 397,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 38,
-      "winner": "right",
-      "ticks": 378,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 39,
-      "winner": "right",
-      "ticks": 418,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 2
-        }
-      ]
-    },
-    {
-      "seed": 40,
-      "winner": "right",
-      "ticks": 536,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 5,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 41,
-      "winner": "right",
-      "ticks": 391,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 42,
-      "winner": "right",
-      "ticks": 378,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 43,
-      "winner": "right",
-      "ticks": 389,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 44,
+      "seed": 5,
       "winner": "right",
       "ticks": 393,
       "leftSquads": [
@@ -1140,7 +167,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 14,
+          "survivors": 13,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 5
@@ -1148,9 +175,9 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 45,
+      "seed": 6,
       "winner": "right",
-      "ticks": 396,
+      "ticks": 538,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -1165,17 +192,17 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 14,
+          "survivors": 3,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 0
         }
       ]
     },
     {
-      "seed": 46,
+      "seed": 7,
       "winner": "right",
-      "ticks": 516,
+      "ticks": 517,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -1198,70 +225,10 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 47,
+      "seed": 8,
       "winner": "left",
-      "ticks": 375,
+      "ticks": 468,
       "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 48,
-      "winner": "right",
-      "ticks": 393,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 49,
-      "winner": "right",
-      "ticks": 471,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
@@ -1270,10 +237,70 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
           "generalAlive": false,
           "activations": 1
         }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
       ]
     },
     {
-      "seed": 50,
+      "seed": 9,
+      "winner": "right",
+      "ticks": 565,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 4,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 10,
+      "winner": "left",
+      "ticks": 516,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 11,
       "winner": "right",
       "ticks": 395,
       "leftSquads": [
@@ -1290,17 +317,17 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 13,
+          "survivors": 15,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 4
         }
       ]
     },
     {
-      "seed": 51,
+      "seed": 12,
       "winner": "right",
-      "ticks": 393,
+      "ticks": 520,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -1315,25 +342,25 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 17,
+          "survivors": 5,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 0
         }
       ]
     },
     {
-      "seed": 52,
+      "seed": 13,
       "winner": "left",
-      "ticks": 378,
+      "ticks": 516,
       "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 16,
+          "survivors": 5,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 0
         }
       ],
       "rightSquads": [
@@ -1348,7 +375,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 53,
+      "seed": 14,
       "winner": "right",
       "ticks": 535,
       "leftSquads": [
@@ -1373,59 +400,9 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 54,
-      "winner": "right",
-      "ticks": 396,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 55,
+      "seed": 15,
       "winner": "left",
-      "ticks": 399,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 3
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 56,
-      "winner": "left",
-      "ticks": 376,
+      "ticks": 394,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -1448,238 +425,13 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 57,
-      "winner": "right",
-      "ticks": 376,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 58,
-      "winner": "right",
+      "seed": 16,
+      "winner": "left",
       "ticks": 393,
       "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 59,
-      "winner": "right",
-      "ticks": 442,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 60,
-      "winner": "right",
-      "ticks": 397,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 61,
-      "winner": "right",
-      "ticks": 373,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 62,
-      "winner": "left",
-      "ticks": 416,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 3
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 63,
-      "winner": "right",
-      "ticks": 510,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 8,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 64,
-      "winner": "right",
-      "ticks": 444,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 65,
-      "winner": "right",
-      "ticks": 444,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 66,
-      "winner": "left",
-      "ticks": 458,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
           "survivors": 13,
           "hasGeneral": true,
           "generalAlive": true,
@@ -1693,64 +445,14 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 67,
-      "winner": "right",
-      "ticks": 466,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
           "activations": 0
         }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
       ]
     },
     {
-      "seed": 68,
-      "winner": "right",
-      "ticks": 399,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 69,
+      "seed": 17,
       "winner": "left",
-      "ticks": 519,
+      "ticks": 513,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -1773,282 +475,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 70,
-      "winner": "right",
-      "ticks": 395,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 71,
-      "winner": "right",
-      "ticks": 467,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 8,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 2
-        }
-      ]
-    },
-    {
-      "seed": 72,
-      "winner": "right",
-      "ticks": 394,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 73,
-      "winner": "right",
-      "ticks": 376,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 74,
-      "winner": "right",
-      "ticks": 464,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 10,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 75,
-      "winner": "right",
-      "ticks": 396,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 76,
-      "winner": "left",
-      "ticks": 379,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 77,
-      "winner": "right",
-      "ticks": 421,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 2
-        }
-      ]
-    },
-    {
-      "seed": 78,
-      "winner": "left",
-      "ticks": 416,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 79,
-      "winner": "left",
-      "ticks": 420,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 10,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 3
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 80,
-      "winner": "left",
-      "ticks": 396,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 81,
+      "seed": 18,
       "winner": "right",
       "ticks": 398,
       "leftSquads": [
@@ -2073,9 +500,9 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 82,
+      "seed": 19,
       "winner": "right",
-      "ticks": 380,
+      "ticks": 589,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -2090,47 +517,22 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 83,
-      "winner": "right",
-      "ticks": 396,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
+          "survivors": 2,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 0
         }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
       ]
     },
     {
-      "seed": 84,
+      "seed": 20,
       "winner": "left",
-      "ticks": 537,
+      "ticks": 535,
       "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 5,
+          "survivors": 4,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 0
@@ -2148,7 +550,107 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 85,
+      "seed": 21,
+      "winner": "right",
+      "ticks": 584,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 3,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 22,
+      "winner": "left",
+      "ticks": 445,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 23,
+      "winner": "left",
+      "ticks": 561,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 4,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 24,
+      "winner": "left",
+      "ticks": 497,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 25,
       "winner": "right",
       "ticks": 379,
       "leftSquads": [
@@ -2173,9 +675,184 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 86,
+      "seed": 26,
       "winner": "right",
-      "ticks": 395,
+      "ticks": 423,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 27,
+      "winner": "left",
+      "ticks": 490,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 9,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 28,
+      "winner": "left",
+      "ticks": 539,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 3,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 29,
+      "winner": "left",
+      "ticks": 558,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 3,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 30,
+      "winner": "right",
+      "ticks": 539,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 31,
+      "winner": "right",
+      "ticks": 610,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 2,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 32,
+      "winner": "right",
+      "ticks": 379,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 33,
+      "winner": "right",
+      "ticks": 397,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -2198,7 +875,2032 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
+      "seed": 34,
+      "winner": "right",
+      "ticks": 378,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 35,
+      "winner": "right",
+      "ticks": 540,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 5,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 36,
+      "winner": "right",
+      "ticks": 493,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 9,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 37,
+      "winner": "right",
+      "ticks": 509,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 38,
+      "winner": "left",
+      "ticks": 492,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 8,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 39,
+      "winner": "right",
+      "ticks": 398,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 40,
+      "winner": "right",
+      "ticks": 400,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 41,
+      "winner": "left",
+      "ticks": 395,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 42,
+      "winner": "right",
+      "ticks": 491,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 8,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 43,
+      "winner": "right",
+      "ticks": 538,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 4,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 44,
+      "winner": "right",
+      "ticks": 515,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 45,
+      "winner": "left",
+      "ticks": 614,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 2,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 46,
+      "winner": "right",
+      "ticks": 377,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 47,
+      "winner": "right",
+      "ticks": 464,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 8,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 48,
+      "winner": "left",
+      "ticks": 396,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 49,
+      "winner": "left",
+      "ticks": 632,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 1,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 50,
+      "winner": "right",
+      "ticks": 398,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ]
+    },
+    {
+      "seed": 51,
+      "winner": "right",
+      "ticks": 605,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 3,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 52,
+      "winner": "right",
+      "ticks": 517,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 53,
+      "winner": "right",
+      "ticks": 504,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 8,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 54,
+      "winner": "right",
+      "ticks": 400,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 55,
+      "winner": "right",
+      "ticks": 395,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 56,
+      "winner": "left",
+      "ticks": 541,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 57,
+      "winner": "right",
+      "ticks": 444,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 58,
+      "winner": "right",
+      "ticks": 515,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 5,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 59,
+      "winner": "right",
+      "ticks": 581,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 3,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 60,
+      "winner": "left",
+      "ticks": 393,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 61,
+      "winner": "right",
+      "ticks": 534,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 62,
+      "winner": "right",
+      "ticks": 417,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 63,
+      "winner": "right",
+      "ticks": 538,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 4,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 64,
+      "winner": "left",
+      "ticks": 509,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 65,
+      "winner": "right",
+      "ticks": 515,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 66,
+      "winner": "left",
+      "ticks": 614,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 2,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 67,
+      "winner": "left",
+      "ticks": 633,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 2,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 68,
+      "winner": "right",
+      "ticks": 490,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 69,
+      "winner": "right",
+      "ticks": 462,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 70,
+      "winner": "right",
+      "ticks": 395,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 4
+        }
+      ]
+    },
+    {
+      "seed": 71,
+      "winner": "right",
+      "ticks": 400,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ]
+    },
+    {
+      "seed": 72,
+      "winner": "left",
+      "ticks": 459,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 73,
+      "winner": "right",
+      "ticks": 537,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 5,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 74,
+      "winner": "left",
+      "ticks": 493,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 75,
+      "winner": "right",
+      "ticks": 396,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 76,
+      "winner": "right",
+      "ticks": 446,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 77,
+      "winner": "left",
+      "ticks": 399,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 78,
+      "winner": "right",
+      "ticks": 379,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 79,
+      "winner": "right",
+      "ticks": 443,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 80,
+      "winner": "right",
+      "ticks": 396,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 81,
+      "winner": "right",
+      "ticks": 446,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 82,
+      "winner": "right",
+      "ticks": 399,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 17,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ]
+    },
+    {
+      "seed": 83,
+      "winner": "right",
+      "ticks": 378,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 84,
+      "winner": "right",
+      "ticks": 517,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 5,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 85,
+      "winner": "right",
+      "ticks": 423,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ]
+    },
+    {
+      "seed": 86,
+      "winner": "right",
+      "ticks": 562,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 3,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
       "seed": 87,
+      "winner": "right",
+      "ticks": 421,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 88,
+      "winner": "right",
+      "ticks": 627,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 2,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 89,
+      "winner": "right",
+      "ticks": 519,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 90,
+      "winner": "left",
+      "ticks": 541,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 4,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 91,
+      "winner": "right",
+      "ticks": 464,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 92,
+      "winner": "left",
+      "ticks": 379,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 93,
+      "winner": "left",
+      "ticks": 514,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 94,
+      "winner": "right",
+      "ticks": 395,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 95,
+      "winner": "left",
+      "ticks": 611,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 1,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 96,
+      "winner": "left",
+      "ticks": 569,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 4,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 97,
+      "winner": "left",
+      "ticks": 584,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 3,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 98,
+      "winner": "left",
+      "ticks": 514,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 99,
+      "winner": "left",
+      "ticks": 578,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 3,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 100,
+      "winner": "right",
+      "ticks": 559,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 3,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 101,
+      "winner": "left",
+      "ticks": 377,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 102,
+      "winner": "right",
+      "ticks": 541,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 4,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 103,
+      "winner": "left",
+      "ticks": 400,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 104,
+      "winner": "left",
+      "ticks": 512,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 105,
+      "winner": "right",
+      "ticks": 376,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 106,
+      "winner": "right",
+      "ticks": 445,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 107,
+      "winner": "left",
+      "ticks": 395,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 108,
+      "winner": "right",
+      "ticks": 377,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 16,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 109,
+      "winner": "right",
+      "ticks": 380,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 110,
+      "winner": "right",
+      "ticks": 395,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 111,
+      "winner": "right",
+      "ticks": 396,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 112,
+      "winner": "right",
+      "ticks": 402,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 113,
+      "winner": "right",
+      "ticks": 399,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 114,
+      "winner": "right",
+      "ticks": 494,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 8,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 115,
       "winner": "right",
       "ticks": 391,
       "leftSquads": [
@@ -2223,9 +2925,9 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 88,
+      "seed": 116,
       "winner": "right",
-      "ticks": 376,
+      "ticks": 565,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -2240,97 +2942,22 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 16,
+          "survivors": 2,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 0
         }
       ]
     },
     {
-      "seed": 89,
+      "seed": 117,
       "winner": "left",
-      "ticks": 398,
+      "ticks": 403,
       "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 2
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 90,
-      "winner": "right",
-      "ticks": 396,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 91,
-      "winner": "right",
-      "ticks": 438,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 2
-        }
-      ]
-    },
-    {
-      "seed": 92,
-      "winner": "left",
-      "ticks": 396,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
+          "survivors": 11,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 5
@@ -2343,412 +2970,12 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
-          "activations": 0
+          "activations": 1
         }
       ]
     },
     {
-      "seed": 93,
-      "winner": "right",
-      "ticks": 392,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 94,
-      "winner": "left",
-      "ticks": 377,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 95,
-      "winner": "right",
-      "ticks": 514,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 7,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 96,
-      "winner": "right",
-      "ticks": 533,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 4,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 97,
-      "winner": "left",
-      "ticks": 454,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 10,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 4
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 2
-        }
-      ]
-    },
-    {
-      "seed": 98,
-      "winner": "right",
-      "ticks": 398,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 99,
-      "winner": "right",
-      "ticks": 396,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 100,
-      "winner": "right",
-      "ticks": 489,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 8,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 101,
-      "winner": "right",
-      "ticks": 399,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 102,
-      "winner": "right",
-      "ticks": 396,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 103,
-      "winner": "right",
-      "ticks": 377,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 104,
-      "winner": "right",
-      "ticks": 395,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 105,
-      "winner": "right",
-      "ticks": 393,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 106,
-      "winner": "right",
-      "ticks": 394,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 107,
-      "winner": "right",
-      "ticks": 396,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 108,
-      "winner": "left",
-      "ticks": 396,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 109,
+      "seed": 118,
       "winner": "right",
       "ticks": 378,
       "leftSquads": [
@@ -2773,109 +3000,9 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 110,
+      "seed": 119,
       "winner": "right",
-      "ticks": 398,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 111,
-      "winner": "right",
-      "ticks": 392,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 112,
-      "winner": "right",
-      "ticks": 377,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 113,
-      "winner": "right",
-      "ticks": 392,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 114,
-      "winner": "right",
-      "ticks": 375,
+      "ticks": 394,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -2898,134 +3025,9 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 115,
-      "winner": "right",
-      "ticks": 377,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 116,
-      "winner": "left",
-      "ticks": 374,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 117,
-      "winner": "left",
-      "ticks": 419,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 10,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 118,
-      "winner": "right",
-      "ticks": 393,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 119,
-      "winner": "right",
-      "ticks": 393,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
       "seed": 120,
       "winner": "right",
-      "ticks": 392,
+      "ticks": 398,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -3050,7 +3052,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
     {
       "seed": 121,
       "winner": "right",
-      "ticks": 395,
+      "ticks": 559,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -3065,18 +3067,28 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 14,
+          "survivors": 3,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 0
         }
       ]
     },
     {
       "seed": 122,
-      "winner": "right",
-      "ticks": 397,
+      "winner": "left",
+      "ticks": 396,
       "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 17,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ],
+      "rightSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
@@ -3084,28 +3096,18 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 4
         }
       ]
     },
     {
       "seed": 123,
-      "winner": "right",
-      "ticks": 400,
+      "winner": "left",
+      "ticks": 588,
       "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 0,
+          "survivors": 2,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 0
@@ -3115,32 +3117,32 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 13,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 0
         }
       ]
     },
     {
       "seed": 124,
-      "winner": "right",
-      "ticks": 474,
+      "winner": "left",
+      "ticks": 448,
       "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 0,
+          "survivors": 9,
           "hasGeneral": true,
           "generalAlive": false,
-          "activations": 0
+          "activations": 2
         }
       ],
       "rightSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 10,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3150,57 +3152,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
     {
       "seed": 125,
       "winner": "right",
-      "ticks": 448,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 126,
-      "winner": "right",
-      "ticks": 419,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 2
-        }
-      ]
-    },
-    {
-      "seed": 127,
-      "winner": "right",
-      "ticks": 469,
+      "ticks": 468,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -3223,14 +3175,14 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 128,
-      "winner": "right",
-      "ticks": 442,
+      "seed": 126,
+      "winner": "left",
+      "ticks": 518,
       "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 0,
+          "survivors": 7,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 0
@@ -3240,17 +3192,17 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 13,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
-          "activations": 1
+          "activations": 0
         }
       ]
     },
     {
-      "seed": 129,
+      "seed": 127,
       "winner": "right",
-      "ticks": 393,
+      "ticks": 398,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -3273,9 +3225,34 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 130,
+      "seed": 128,
+      "winner": "left",
+      "ticks": 561,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 4,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 129,
       "winner": "right",
-      "ticks": 379,
+      "ticks": 465,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -3290,17 +3267,42 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 15,
+          "survivors": 12,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 130,
+      "winner": "right",
+      "ticks": 541,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 4,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
         }
       ]
     },
     {
       "seed": 131,
       "winner": "right",
-      "ticks": 395,
+      "ticks": 510,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -3315,15 +3317,190 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 15,
+          "survivors": 8,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 0
         }
       ]
     },
     {
       "seed": 132,
+      "winner": "right",
+      "ticks": 503,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 8,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 133,
+      "winner": "right",
+      "ticks": 425,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ]
+    },
+    {
+      "seed": 134,
+      "winner": "right",
+      "ticks": 490,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 8,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 135,
+      "winner": "right",
+      "ticks": 446,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 136,
+      "winner": "right",
+      "ticks": 542,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 3,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 137,
+      "winner": "right",
+      "ticks": 491,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 138,
+      "winner": "right",
+      "ticks": 512,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 8,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 139,
       "winner": "right",
       "ticks": 469,
       "leftSquads": [
@@ -3340,7 +3517,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 10,
+          "survivors": 9,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3348,74 +3525,24 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 133,
-      "winner": "left",
-      "ticks": 420,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 2
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 134,
+      "seed": 140,
       "winner": "right",
-      "ticks": 444,
+      "ticks": 394,
       "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
           "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 12,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
         }
-      ]
-    },
-    {
-      "seed": 135,
-      "winner": "right",
-      "ticks": 395,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
       ],
       "rightSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 14,
+          "survivors": 13,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 5
@@ -3423,57 +3550,182 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 136,
-      "winner": "right",
-      "ticks": 440,
+      "seed": 141,
+      "winner": "left",
+      "ticks": 396,
       "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 2
-        }
-      ]
-    },
-    {
-      "seed": 137,
-      "winner": "right",
-      "ticks": 393,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
           "survivors": 15,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 3
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
         }
       ]
     },
     {
-      "seed": 138,
+      "seed": 142,
+      "winner": "right",
+      "ticks": 516,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 143,
+      "winner": "left",
+      "ticks": 395,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 144,
+      "winner": "right",
+      "ticks": 494,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 8,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 145,
+      "winner": "left",
+      "ticks": 537,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 4,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 146,
+      "winner": "right",
+      "ticks": 544,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 5,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 147,
+      "winner": "left",
+      "ticks": 415,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 148,
       "winner": "right",
       "ticks": 394,
       "leftSquads": [
@@ -3498,9 +3750,9 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 139,
+      "seed": 149,
       "winner": "right",
-      "ticks": 417,
+      "ticks": 397,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -3515,32 +3767,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 2
-        }
-      ]
-    },
-    {
-      "seed": 140,
-      "winner": "right",
-      "ticks": 379,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
+          "survivors": 12,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 5
@@ -3548,14 +3775,39 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 141,
-      "winner": "left",
-      "ticks": 579,
+      "seed": 150,
+      "winner": "right",
+      "ticks": 415,
       "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 1,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 13,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 151,
+      "winner": "left",
+      "ticks": 564,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 3,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 0
@@ -3573,7 +3825,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 142,
+      "seed": 152,
       "winner": "right",
       "ticks": 380,
       "leftSquads": [
@@ -3598,259 +3850,9 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 143,
-      "winner": "left",
-      "ticks": 462,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 2
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 144,
-      "winner": "right",
-      "ticks": 376,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 145,
-      "winner": "right",
-      "ticks": 517,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 6,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 146,
-      "winner": "right",
-      "ticks": 401,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 147,
-      "winner": "right",
-      "ticks": 467,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 10,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 148,
-      "winner": "left",
-      "ticks": 496,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 10,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 2
-        }
-      ]
-    },
-    {
-      "seed": 149,
-      "winner": "right",
-      "ticks": 490,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 9,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 150,
-      "winner": "right",
-      "ticks": 389,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 151,
-      "winner": "right",
-      "ticks": 392,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 152,
-      "winner": "left",
-      "ticks": 375,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
       "seed": 153,
       "winner": "right",
-      "ticks": 493,
+      "ticks": 398,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -3865,42 +3867,17 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 7,
+          "survivors": 12,
           "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
+          "generalAlive": true,
+          "activations": 5
         }
       ]
     },
     {
       "seed": 154,
       "winner": "right",
-      "ticks": 397,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 155,
-      "winner": "right",
-      "ticks": 392,
+      "ticks": 377,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -3916,6 +3893,31 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
           "squadId": "Assassin1",
           "soldiers": 20,
           "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 155,
+      "winner": "right",
+      "ticks": 395,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 13,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 5
@@ -3949,23 +3951,23 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
     },
     {
       "seed": 157,
-      "winner": "right",
-      "ticks": 515,
+      "winner": "left",
+      "ticks": 392,
       "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 0,
+          "survivors": 15,
           "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
+          "generalAlive": true,
+          "activations": 5
         }
       ],
       "rightSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 4,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 0
@@ -3974,13 +3976,13 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
     },
     {
       "seed": 158,
-      "winner": "right",
-      "ticks": 375,
+      "winner": "left",
+      "ticks": 517,
       "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 0,
+          "survivors": 6,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 0
@@ -3990,367 +3992,42 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 17,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 0
         }
       ]
     },
     {
       "seed": 159,
-      "winner": "right",
-      "ticks": 395,
+      "winner": "left",
+      "ticks": 463,
       "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 0,
+          "survivors": 6,
           "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
+          "generalAlive": true,
+          "activations": 5
         }
       ],
       "rightSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 15,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 2
         }
       ]
     },
     {
       "seed": 160,
       "winner": "right",
-      "ticks": 374,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 17,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 161,
-      "winner": "right",
-      "ticks": 394,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 162,
-      "winner": "right",
-      "ticks": 395,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 163,
-      "winner": "right",
-      "ticks": 399,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 164,
-      "winner": "left",
-      "ticks": 458,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 5
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 165,
-      "winner": "right",
-      "ticks": 389,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 166,
-      "winner": "right",
-      "ticks": 531,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 4,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 167,
-      "winner": "left",
-      "ticks": 372,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ]
-    },
-    {
-      "seed": 168,
-      "winner": "right",
-      "ticks": 445,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 12,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 169,
-      "winner": "right",
-      "ticks": 397,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 15,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 170,
-      "winner": "right",
-      "ticks": 449,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 11,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 171,
-      "winner": "right",
-      "ticks": 393,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 172,
-      "winner": "right",
-      "ticks": 440,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 173,
-      "winner": "right",
-      "ticks": 534,
+      "ticks": 536,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -4373,9 +4050,9 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 174,
+      "seed": 161,
       "winner": "right",
-      "ticks": 414,
+      "ticks": 517,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -4390,17 +4067,17 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 14,
+          "survivors": 6,
           "hasGeneral": true,
           "generalAlive": false,
-          "activations": 3
+          "activations": 0
         }
       ]
     },
     {
-      "seed": 175,
+      "seed": 162,
       "winner": "right",
-      "ticks": 379,
+      "ticks": 633,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -4415,15 +4092,190 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 14,
+          "survivors": 2,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 163,
+      "winner": "right",
+      "ticks": 537,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 3,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 164,
+      "winner": "left",
+      "ticks": 469,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 165,
+      "winner": "left",
+      "ticks": 520,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 166,
+      "winner": "left",
+      "ticks": 394,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 15,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 5
         }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
       ]
     },
     {
-      "seed": 176,
+      "seed": 167,
+      "winner": "left",
+      "ticks": 463,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 11,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 168,
+      "winner": "left",
+      "ticks": 580,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 1,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 169,
+      "winner": "right",
+      "ticks": 563,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 2,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 170,
       "winner": "right",
       "ticks": 394,
       "leftSquads": [
@@ -4440,7 +4292,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 14,
+          "survivors": 15,
           "hasGeneral": true,
           "generalAlive": true,
           "activations": 5
@@ -4448,32 +4300,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 177,
-      "winner": "right",
-      "ticks": 397,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 178,
+      "seed": 171,
       "winner": "right",
       "ticks": 377,
       "leftSquads": [
@@ -4498,292 +4325,67 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 179,
-      "winner": "left",
-      "ticks": 486,
+      "seed": 172,
+      "winner": "right",
+      "ticks": 586,
       "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 2,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 173,
+      "winner": "right",
+      "ticks": 488,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
           "survivors": 11,
           "hasGeneral": true,
           "generalAlive": false,
-          "activations": 2
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 180,
-      "winner": "right",
-      "ticks": 376,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 17,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 181,
-      "winner": "right",
-      "ticks": 376,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 182,
-      "winner": "right",
-      "ticks": 395,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 3
-        }
-      ]
-    },
-    {
-      "seed": 183,
-      "winner": "right",
-      "ticks": 394,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 184,
-      "winner": "right",
-      "ticks": 420,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 2
-        }
-      ]
-    },
-    {
-      "seed": 185,
-      "winner": "right",
-      "ticks": 394,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 16,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 186,
-      "winner": "right",
-      "ticks": 495,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 8,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 1
-        }
-      ]
-    },
-    {
-      "seed": 187,
-      "winner": "right",
-      "ticks": 393,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 188,
-      "winner": "right",
-      "ticks": 378,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 14,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 189,
-      "winner": "right",
-      "ticks": 579,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 3,
-          "hasGeneral": true,
-          "generalAlive": false,
           "activations": 0
         }
       ]
     },
     {
-      "seed": 190,
+      "seed": 174,
       "winner": "left",
-      "ticks": 376,
+      "ticks": 534,
       "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 15,
+          "survivors": 6,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 0
         }
       ],
       "rightSquads": [
@@ -4798,7 +4400,57 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 191,
+      "seed": 175,
+      "winner": "right",
+      "ticks": 540,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 5,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 176,
+      "winner": "right",
+      "ticks": 539,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 4,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 177,
       "winner": "right",
       "ticks": 396,
       "leftSquads": [
@@ -4823,9 +4475,109 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
       ]
     },
     {
-      "seed": 192,
+      "seed": 178,
+      "winner": "left",
+      "ticks": 558,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 3,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 179,
+      "winner": "left",
+      "ticks": 490,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 9,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 180,
       "winner": "right",
-      "ticks": 374,
+      "ticks": 561,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 4,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ]
+    },
+    {
+      "seed": 181,
+      "winner": "left",
+      "ticks": 514,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 182,
+      "winner": "right",
+      "ticks": 516,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -4837,6 +4589,121 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         }
       ],
       "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 6,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 183,
+      "winner": "left",
+      "ticks": 391,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 15,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 184,
+      "winner": "right",
+      "ticks": 459,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ]
+    },
+    {
+      "seed": 185,
+      "winner": "right",
+      "ticks": 516,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 186,
+      "winner": "right",
+      "ticks": 511,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 187,
+      "winner": "left",
+      "ticks": 394,
+      "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
@@ -4845,12 +4712,22 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
           "generalAlive": true,
           "activations": 5
         }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
       ]
     },
     {
-      "seed": 193,
+      "seed": 188,
       "winner": "right",
-      "ticks": 485,
+      "ticks": 489,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -4865,7 +4742,132 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 8,
+          "survivors": 9,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 189,
+      "winner": "left",
+      "ticks": 380,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 14,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 190,
+      "winner": "right",
+      "ticks": 469,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 3
+        }
+      ]
+    },
+    {
+      "seed": 191,
+      "winner": "left",
+      "ticks": 399,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 12,
+          "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 192,
+      "winner": "right",
+      "ticks": 468,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 10,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 1
+        }
+      ]
+    },
+    {
+      "seed": 193,
+      "winner": "right",
+      "ticks": 518,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 5,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 0
@@ -4875,7 +4877,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
     {
       "seed": 194,
       "winner": "right",
-      "ticks": 491,
+      "ticks": 494,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -4890,7 +4892,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 9,
+          "survivors": 7,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4900,7 +4902,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
     {
       "seed": 195,
       "winner": "right",
-      "ticks": 398,
+      "ticks": 496,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -4912,6 +4914,21 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         }
       ],
       "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 7,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 196,
+      "winner": "left",
+      "ticks": 378,
+      "leftSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
@@ -4920,27 +4937,12 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
           "generalAlive": true,
           "activations": 5
         }
-      ]
-    },
-    {
-      "seed": 196,
-      "winner": "right",
-      "ticks": 470,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
       ],
       "rightSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 9,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 0
@@ -4950,7 +4952,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
     {
       "seed": 197,
       "winner": "right",
-      "ticks": 374,
+      "ticks": 518,
       "leftSquads": [
         {
           "squadId": "Assassin1",
@@ -4965,60 +4967,60 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
         {
           "squadId": "Assassin1",
           "soldiers": 20,
-          "survivors": 17,
+          "survivors": 6,
           "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
+          "generalAlive": false,
+          "activations": 0
         }
       ]
     },
     {
       "seed": 198,
-      "winner": "right",
-      "ticks": 393,
+      "winner": "left",
+      "ticks": 395,
       "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 13,
-          "hasGeneral": true,
-          "generalAlive": true,
-          "activations": 5
-        }
-      ]
-    },
-    {
-      "seed": 199,
-      "winner": "right",
-      "ticks": 415,
-      "leftSquads": [
-        {
-          "squadId": "Assassin1",
-          "soldiers": 20,
-          "survivors": 0,
-          "hasGeneral": true,
-          "generalAlive": false,
-          "activations": 0
-        }
-      ],
-      "rightSquads": [
         {
           "squadId": "Assassin1",
           "soldiers": 20,
           "survivors": 14,
           "hasGeneral": true,
+          "generalAlive": true,
+          "activations": 5
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
           "generalAlive": false,
-          "activations": 3
+          "activations": 0
+        }
+      ]
+    },
+    {
+      "seed": 199,
+      "winner": "left",
+      "ticks": 614,
+      "leftSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 2,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "Assassin1",
+          "soldiers": 20,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 0
         }
       ]
     }

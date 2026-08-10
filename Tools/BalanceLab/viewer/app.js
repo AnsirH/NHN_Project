@@ -107,6 +107,19 @@
     });
   }
 
+  /**
+   * 밴드가 실제로 판정한 값. 미러 매치업은 무승부가 정답이라 좌군 승률로는 통과할 수 없어
+   * "승부 난 판의 좌군 비율"로 잰다(bands.json의 metric). 화면도 판정과 같은 값을 그려야
+   * "0.0%인데 통과" 같은 모순이 안 생긴다. 구버전 결과에는 metricValue가 없으니 승률로 폴백한다.
+   */
+  function judged(entry) {
+    return typeof entry.metricValue === 'number' ? entry.metricValue : entry.leftWinRate;
+  }
+
+  function metricLabel(entry) {
+    return entry.metric === 'sideBalance' ? '승부 난 판의 좌군 비율' : '좌군 승률';
+  }
+
   /** 목표 밴드를 배경 띠로, 실측을 세로선으로 — 숫자를 머릿속에서 비교하는 단계를 없앤다. */
   function bandTrack(entry, ghostRate) {
     var band = el('span', {
@@ -117,12 +130,16 @@
     if (typeof ghostRate === 'number') {
       kids.push(el('span', { class: 'ghost', style: 'left:calc(' + (ghostRate * 100) + '% - 1px)' }));
     }
+    var value = judged(entry);
     kids.push(el('span', {
       class: 'mark',
-      style: 'left:calc(' + (entry.leftWinRate * 100) + '% - 1px);background:' + (entry.passed ? 'var(--ok)' : 'var(--bad)'),
+      style: 'left:calc(' + (value * 100) + '% - 1px);background:' + (entry.passed ? 'var(--ok)' : 'var(--bad)'),
     }));
-    kids.push(el('span', { class: 'val', text: pct(entry.leftWinRate) }));
-    return el('span', { class: 'track', title: '목표 ' + pct0(entry.bandMin) + '~' + pct0(entry.bandMax) }, kids);
+    kids.push(el('span', { class: 'val', text: pct(value) }));
+    return el('span', {
+      class: 'track',
+      title: metricLabel(entry) + ' · 목표 ' + pct0(entry.bandMin) + '~' + pct0(entry.bandMax),
+    }, kids);
   }
 
   // ---------- 라우팅 ----------
@@ -221,7 +238,7 @@
 
     var head = el('tr', {}, [
       el('th', { text: '시나리오' }), el('th', { text: '밴드' }),
-      el('th', { text: '좌군 승률 / 목표 구간', style: 'width:38%' }),
+      el('th', { text: '판정 지표 / 목표 구간', style: 'width:38%' }),
       el('th', { text: filters.compare ? '실험 대비' : '판수' }),
       el('th', { text: '판정', style: 'text-align:right' }),
     ]);
@@ -236,8 +253,8 @@
           cmp ? el('div', { class: 'sub', text: cmp.overrideNote || ('태그 ' + cmp.tag) }) : null,
         ]),
         el('td', {}, [el('span', { class: 'sub', text: e.band })]),
-        el('td', {}, [bandTrack(shown, cmp ? e.leftWinRate : undefined)]),
-        el('td', {}, [cmp ? deltaNode(e.leftWinRate, cmp.leftWinRate) : el('span', { class: 'sub', text: e.runs + '판' })]),
+        el('td', {}, [bandTrack(shown, cmp ? judged(e) : undefined)]),
+        el('td', {}, [cmp ? deltaNode(judged(e), judged(cmp)) : el('span', { class: 'sub', text: e.runs + '판' })]),
         el('td', { style: 'text-align:right' }, [verdictPill(shown)]),
       ]);
       body.appendChild(tr);
@@ -306,7 +323,7 @@
       entry.tag ? el('span', { class: 'pill info', text: '실험 ' + entry.tag }) : null,
       verdictPill(entry),
       el('span', { class: 'spacer' }),
-      el('span', { class: 'sub', text: '밴드 ' + entry.band + ' ' + pct0(entry.bandMin) + '~' + pct0(entry.bandMax) + ' · 좌군 ' + pct(entry.leftWinRate) }),
+      el('span', { class: 'sub', text: '밴드 ' + entry.band + ' ' + pct0(entry.bandMin) + '~' + pct0(entry.bandMax) + ' · ' + metricLabel(entry) + ' ' + pct(judged(entry)) }),
     ]);
 
     var cards = el('div', { class: 'cards' }, [

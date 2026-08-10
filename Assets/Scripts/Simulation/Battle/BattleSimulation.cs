@@ -680,7 +680,13 @@ namespace NHN.Simulation.Battle
                 // 계속 흔들려서 영원히 못 붙는다(실측으로 확인 — 전투가 시간 상한까지 안 끝나고
                 // 무승부가 남). 캡 제거로는 이 문제가 안 풀린다 — 별도로 교전 락을 넣기 전까지는
                 // 이 완화된 판정을 유지한다.
-                float centerDistance = Vector2.Distance(_positions[i], _positions[target]);
+                // 상대 위치는 _prevPositions(틱 시작 스냅샷)에서 읽는다 — 이 루프가 _positions를 순회
+                // 도중에 갱신하므로, 현재 배열을 읽으면 인덱스가 큰 유닛만 "이번 틱에 이미 움직인" 상대를
+                // 보게 된다. 좌군은 인덱스 0..L-1, 우군은 L..N-1로 스폰되므로(SpawnArmy 순서) 그 정보
+                // 격차가 곧 진영별 유불리가 되고, 동일 구성 미러 매치가 200판 전부 한쪽으로 쏠렸다.
+                // 4단계가 데미지에 적용한 "동시 처리의 순서 이점 제거"를 위치에도 적용하는 것이다.
+                // 자기 위치는 이 시점에 아직 안 건드려졌으므로 _positions[i] == _prevPositions[i]다.
+                float centerDistance = Vector2.Distance(_positions[i], _prevPositions[target]);
 
                 if (centerDistance <= role.AttackRange)
                 {
@@ -892,7 +898,7 @@ namespace NHN.Simulation.Battle
 
             int p = _projectileCount++;
             _projLaunchPos[p] = _positions[attacker];
-            _projImpactPos[p] = _positions[target];
+            _projImpactPos[p] = _prevPositions[target]; // 발사를 허가한 사거리 판정과 같은 스냅샷
             _projLaunchTime[p] = _time;
             float flightTime = MathF.Max(centerDistance / role.ProjectileSpeed, _config.TickDeltaTime);
             _projImpactTime[p] = _time + flightTime;
@@ -1083,7 +1089,10 @@ namespace NHN.Simulation.Battle
                 {
                     continue;
                 }
-                int neighborCount = _grid.QueryCircle(_positions[u], scatterRadius, _queryBuffer);
+                // 여기도 틱 시작 스냅샷 — 액티브는 2단계(공격 → 충전 → 발동) 도중에도 터지므로,
+                // _positions를 읽으면 발동 시점의 순회 위치에 따라 밀집 지점이 달라진다.
+                // 조회에 쓰는 _grid도 틱 시작에 rebuild된 것이라 스냅샷 쪽이 정합적이다.
+                int neighborCount = _grid.QueryCircle(_prevPositions[u], scatterRadius, _queryBuffer);
                 int count = 0;
                 for (int k = 0; k < neighborCount; k++)
                 {
@@ -1096,7 +1105,7 @@ namespace NHN.Simulation.Battle
                 if (count > bestCount)
                 {
                     bestCount = count;
-                    densest = _positions[u];
+                    densest = _prevPositions[u];
                 }
             }
             if (bestCount < 0)
@@ -1120,11 +1129,11 @@ namespace NHN.Simulation.Battle
                 Vector2 impact = ClampToArena(densest + new Vector2(MathF.Cos(angle) * offset, MathF.Sin(angle) * offset));
 
                 int p = _projectileCount++;
-                _projLaunchPos[p] = _positions[i];
+                _projLaunchPos[p] = _prevPositions[i]; // 분대 전원이 같은 시간 슬라이스에서 쏜다
                 _projImpactPos[p] = impact;
                 _projLaunchTime[p] = _time;
                 float speed = MathF.Max(role.ProjectileSpeed, 1f); // 근접 유닛 방어적 하한 — 데이터는 원거리 부대 전제
-                _projImpactTime[p] = _time + MathF.Max(Vector2.Distance(_positions[i], impact) / speed, _config.TickDeltaTime);
+                _projImpactTime[p] = _time + MathF.Max(Vector2.Distance(_prevPositions[i], impact) / speed, _config.TickDeltaTime);
                 _projDamage[p] = role.AttackDamage * general.ActiveParamB;
                 _projTeam[p] = _teams[i];
                 _projArcHeight[p] = role.ProjectileArcHeight;
@@ -1608,7 +1617,9 @@ namespace NHN.Simulation.Battle
         /// </summary>
         private Vector2 ComputeApproachDestination(int attacker, int target, RoleDefinition role)
         {
-            Vector2 targetPos = _positions[target];
+            // 틱 시작 스냅샷 — 호출부(2단계 이동)가 _positions를 순회 도중 갱신하므로, 목적지 계산도
+            // 사거리 판정과 같은 시간 슬라이스를 봐야 처리 순서와 무관해진다.
+            Vector2 targetPos = _prevPositions[target];
 
             if (!role.IsRanged)
             {

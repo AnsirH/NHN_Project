@@ -19,6 +19,8 @@ window.BALANCE_RESULT["role_archer_vs_assassin:archer-nerf"] = {
   "band": "role_matchup",
   "verdict": {
     "bandId": "role_matchup",
+    "metric": "leftWinRate",
+    "value": 0.61,
     "minWinRate": 0.3,
     "maxWinRate": 0.7,
     "passed": true,
@@ -30,7 +32,7 @@ window.BALANCE_RESULT["role_archer_vs_assassin:archer-nerf"] = {
   "draws": 0,
   "leftWinRate": 0.61,
   "rightWinRate": 0.39,
-  "elapsedMs": 1526,
+  "elapsedMs": 1559,
   "battles": [
     {
       "seed": 0,

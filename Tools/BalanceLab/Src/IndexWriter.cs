@@ -20,6 +20,10 @@ namespace BalanceLab
         public double bandMin;
         public double bandMax;
         public bool passed;
+        /// <summary>판정 지표 이름 — 뷰어는 승률이 아니라 이 지표를 밴드 위에 그려야 한다.</summary>
+        public string metric;
+        /// <summary>실제로 판정된 값 (지표에 따라 좌군 승률이거나 승부 난 판의 좌군 비율).</summary>
+        public double metricValue;
         /// <summary>밴드 이탈 사유 (통과 시 null).</summary>
         public string detail;
         public int runs;
@@ -156,6 +160,8 @@ namespace BalanceLab
                 bandMin = result.verdict.minWinRate,
                 bandMax = result.verdict.maxWinRate,
                 passed = result.verdict.passed,
+                metric = result.verdict.metric,
+                metricValue = result.verdict.value,
                 detail = result.verdict.detail,
                 runs = result.runs,
                 leftWins = result.leftWins,
