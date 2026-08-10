@@ -13,20 +13,26 @@ MonoBehaviour:
   m_Name: EventDefinition_AltarStone
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.EventDefinition
   eventId: evt_altar_stone
-  illustration: {fileID: 0}
-  bodyText: 폐허가 된 성소 중심, 룬의 흔적이 남은 제단석이 있다. 표면에는 아직도 옛 전쟁의 힘이 옅게 스며 있다.
+  illustration: {fileID: 21300000, guid: 5e9f450529ec9684a9977590944ec0c5, type: 3}
+  bodyText: "\uD3D0\uD5C8\uAC00 \uB41C \uC131\uC18C \uC911\uC2EC, \uB8EC\uC758 \uD754\uC801\uC774
+    \uB0A8\uC740 \uC81C\uB2E8\uC11D\uC774 \uC788\uB2E4. \uD45C\uBA74\uC5D0\uB294
+    \uC544\uC9C1\uB3C4 \uC61B \uC804\uC7C1\uC758 \uD798\uC774 \uC605\uAC8C \uC2A4\uBA70
+    \uC788\uB2E4."
   choices:
-  - choiceText: 제단석의 힘으로 병사를 빚는다
+  - choiceText: "\uC81C\uB2E8\uC11D\uC758 \uD798\uC73C\uB85C \uBCD1\uC0AC\uB97C \uBE5A\uB294\uB2E4"
     rewards:
     - type: 1
       armyClass: 0
       itemDef: {fileID: 0}
       goldAmount: 0
-    resultText: 돌에 손을 얹자, 힘이 흙으로 흘러들어 형상을 갖추기 시작했다.
-  - choiceText: 손대지 않고 지나간다
+    resultText: "\uB3CC\uC5D0 \uC190\uC744 \uC5B9\uC790, \uD798\uC774 \uD759\uC73C\uB85C
+      \uD758\uB7EC\uB4E4\uC5B4 \uD615\uC0C1\uC744 \uAC16\uCD94\uAE30 \uC2DC\uC791\uD588\uB2E4."
+  - choiceText: "\uC190\uB300\uC9C0 \uC54A\uACE0 \uC9C0\uB098\uAC04\uB2E4"
     rewards:
     - type: 3
       armyClass: 0
       itemDef: {fileID: 0}
       goldAmount: 25
-    resultText: 제단 아래에서 오래된 헌금함을 발견했다. 안에 든 건 이제 아무도 쓰지 않는 옛 화폐뿐이었다.
+    resultText: "\uC81C\uB2E8 \uC544\uB798\uC5D0\uC11C \uC624\uB798\uB41C \uD5CC\uAE08\uD568\uC744
+      \uBC1C\uACAC\uD588\uB2E4. \uC548\uC5D0 \uB4E0 \uAC74 \uC774\uC81C \uC544\uBB34\uB3C4
+      \uC4F0\uC9C0 \uC54A\uB294 \uC61B \uD654\uD3D0\uBFD0\uC774\uC5C8\uB2E4."

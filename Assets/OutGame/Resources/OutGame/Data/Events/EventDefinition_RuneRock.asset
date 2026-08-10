@@ -13,20 +13,26 @@ MonoBehaviour:
   m_Name: EventDefinition_RuneRock
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.EventDefinition
   eventId: evt_rune_rock
-  illustration: {fileID: 0}
-  bodyText: 숲길 한켠, 이끼 덮인 바위 하나가 유난히 서늘한 기운을 뿜는다. 룬 전쟁의 잔재가 이 바위 속 깊이 가라앉아 있는 듯하다.
+  illustration: {fileID: 21300000, guid: 32108f04fdcfeb5409f1d882ab52a015, type: 3}
+  bodyText: "\uC232\uAE38 \uD55C\uCF20, \uC774\uB07C \uB36E\uC778 \uBC14\uC704 \uD558\uB098\uAC00
+    \uC720\uB09C\uD788 \uC11C\uB298\uD55C \uAE30\uC6B4\uC744 \uBFDC\uB294\uB2E4.
+    \uB8EC \uC804\uC7C1\uC758 \uC794\uC7AC\uAC00 \uC774 \uBC14\uC704 \uC18D \uAE4A\uC774
+    \uAC00\uB77C\uC549\uC544 \uC788\uB294 \uB4EF\uD558\uB2E4."
   choices:
-  - choiceText: 바위의 기운으로 병사를 빚는다
+  - choiceText: "\uBC14\uC704\uC758 \uAE30\uC6B4\uC73C\uB85C \uBCD1\uC0AC\uB97C \uBE5A\uB294\uB2E4"
     rewards:
     - type: 1
       armyClass: 0
       itemDef: {fileID: 0}
       goldAmount: 0
-    resultText: 바위에 손을 얹자, 서늘한 기운이 흙으로 옮겨 붙어 서서히 형상을 갖췄다.
-  - choiceText: 그냥 지나간다
+    resultText: "\uBC14\uC704\uC5D0 \uC190\uC744 \uC5B9\uC790, \uC11C\uB298\uD55C
+      \uAE30\uC6B4\uC774 \uD759\uC73C\uB85C \uC62E\uACA8 \uBD99\uC5B4 \uC11C\uC11C\uD788
+      \uD615\uC0C1\uC744 \uAC16\uCDC4\uB2E4."
+  - choiceText: "\uADF8\uB0E5 \uC9C0\uB098\uAC04\uB2E4"
     rewards:
     - type: 3
       armyClass: 0
       itemDef: {fileID: 0}
       goldAmount: 15
-    resultText: 바위 밑에서 반쯤 삭은 배낭과 은화 몇 닢을 발견했다.
+    resultText: "\uBC14\uC704 \uBC11\uC5D0\uC11C \uBC18\uCBE4 \uC0AD\uC740 \uBC30\uB0AD\uACFC
+      \uC740\uD654 \uBA87 \uB2E2\uC744 \uBC1C\uACAC\uD588\uB2E4."

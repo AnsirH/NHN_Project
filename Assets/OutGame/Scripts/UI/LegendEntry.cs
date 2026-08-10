@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +11,9 @@ namespace OutGame.UI
     public class LegendEntry : MonoBehaviour
     {
         [SerializeField] private Image swatch;
-        [SerializeField] private Text label;
+        // 2026-08-10: UnityEngine.UI.Text → TMP_Text. 노드 라벨(RoomNodeView)과 같은 폰트를 쓰도록
+        // 통일 — 둘 다 RoomTypeVisualSet에서 같은 문구를 받는데 폰트만 달라 보이던 문제.
+        [SerializeField] private TMP_Text label;
 
         public void Setup(RoomTypeVisualSet.Entry entry, string displayName)
         {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using OutGame.Logic.Battle;
 using OutGame.ScriptableObjects;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,7 +27,7 @@ namespace OutGame.UI.Deployment
     public class FormationGridView : MonoBehaviour
     {
         [SerializeField] private DeploySlotView[] slots; // 인스펙터(프리팹)에 미리 배선된 슬롯 전체
-        [SerializeField] private Text powerLabel;
+        [SerializeField] private TMP_Text powerLabel; // 2026-08-10: UnityEngine.UI.Text → TMP_Text
         [SerializeField] private BattleFieldConfig fieldConfig; // 슬롯 수 검증 전용(재생성 누락 감지)
 
         private readonly Dictionary<int, DeploySlotView> slotViewsById = new Dictionary<int, DeploySlotView>();
@@ -51,11 +52,12 @@ namespace OutGame.UI.Deployment
         /// 이미 여러 번 겪은 것과 동일한 Awake 타이밍 문제 — 업그레이드 버튼 라벨, CurrencyDisplay 등).
         /// slotsWired 플래그로 중복 실행(이벤트 이중 구독)은 막는다 — Awake는 원래 한 번만 돌지만,
         /// Initialize()는 Open()마다 반복 호출되므로 가드가 없으면 두 번째 Open()부터 어긋난다.</summary>
-        public void Initialize(bool enableEmptyIndicator = true)
+        /// <param name="enemySide">true면 빈 슬롯을 'x'로 표기한다(적 진영 — 배치 불가).
+        /// false(기본)면 '+'로 표기한다(아군 — 배치 가능). 2026-08-10 사용자 확정.</param>
+        public void Initialize(bool enemySide = false)
         {
             WireSlotsIfNeeded();
-            if (enableEmptyIndicator) return;
-            foreach (DeploySlotView slot in slotViewsById.Values) slot.SetOccupied(true);
+            foreach (DeploySlotView slot in slotViewsById.Values) slot.SetEnemySlot(enemySide);
         }
 
         private void WireSlotsIfNeeded()

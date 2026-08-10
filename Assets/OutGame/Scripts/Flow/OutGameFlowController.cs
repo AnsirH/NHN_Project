@@ -39,6 +39,7 @@ namespace OutGame.Flow
 
             mapSelectPanel.MapConfirmed += OnMapConfirmed;
             characterSelectPanel.CharacterConfirmed += OnCharacterConfirmed;
+            characterSelectPanel.BackRequested += OnCharacterSelectBack;
         }
 
         private void Start()
@@ -66,7 +67,11 @@ namespace OutGame.Flow
         private void OnDestroy()
         {
             if (mapSelectPanel != null) mapSelectPanel.MapConfirmed -= OnMapConfirmed;
-            if (characterSelectPanel != null) characterSelectPanel.CharacterConfirmed -= OnCharacterConfirmed;
+            if (characterSelectPanel != null)
+            {
+                characterSelectPanel.CharacterConfirmed -= OnCharacterConfirmed;
+                characterSelectPanel.BackRequested -= OnCharacterSelectBack;
+            }
         }
 
         private void OnMapConfirmed(RunState run)
@@ -79,6 +84,13 @@ namespace OutGame.Flow
         {
             ShowOnly(roomGraphController.gameObject);
             roomGraphController.Begin(run);
+        }
+
+        /// <summary>캐릭터 선택의 [뒤로] — 맵 선택 패널로 되돌린다. 씬을 다시 로드하지 않으므로
+        /// MapSelectPanel.Awake()는 재실행되지 않고 이미 배치된 지점들이 그대로 남아 있다.</summary>
+        private void OnCharacterSelectBack()
+        {
+            ShowOnly(mapSelectPanel.gameObject);
         }
 
         private void ShowOnly(GameObject target)

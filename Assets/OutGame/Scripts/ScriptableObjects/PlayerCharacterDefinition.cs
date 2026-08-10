@@ -14,6 +14,11 @@ namespace OutGame.ScriptableObjects
         [TextArea] [SerializeField] private string description;
         [SerializeField] private Sprite portrait;
 
+        // 2026-08-10: 아이콘을 초상화와 분리(사용자 확정). portrait는 캐릭터 선택 화면의 전신 배경용
+        // 대형 이미지(2MB대)라, 100px 남짓한 아이콘 슬롯에 그대로 쓰면 얼굴이 뭉개지고 메모리도 낭비다.
+        // icon은 같은 캐릭터의 얼굴 클로즈업 크롭.
+        [SerializeField] private Sprite icon;
+
         [Header("스킬 (§4-2x) — 세부 효과는 인게임 스킬 시스템 책임, 여기서는 어떤 스킬인지만")]
         [SerializeField] private string skillId;
         [SerializeField] private string skillName;
@@ -23,6 +28,7 @@ namespace OutGame.ScriptableObjects
         [SerializeField] private int sortOrder;
 
         public Sprite Portrait => portrait;
+        public Sprite Icon => icon;
         public string DisplayName => displayName;
         public string Description => description;
         public string SkillName => skillName;

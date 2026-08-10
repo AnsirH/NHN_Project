@@ -29,6 +29,8 @@ namespace OutGame.UI
         [SerializeField] private RectTransform legendContainer;
         [SerializeField] private CurrencyDisplay currencyDisplay; // 2026-07-26: 범례가 있던 우측 상단 자리로 이동
         [SerializeField] private Button formationButton; // 2026-07-26: 좌측 하단 "진영" 버튼
+        [SerializeField] private Image playerImage; // 2026-08-10: 상단 바의 선택된 캐릭터 초상화
+        [SerializeField] private Button settingsButton; // 2026-08-10: 상단 바 "환경설정"
 
         [Header("요소 프리팹 (비주얼은 각 프리팹에서 수정)")]
         [SerializeField] private RoomNodeView nodePrefab;
@@ -67,17 +69,28 @@ namespace OutGame.UI
         /// <summary>"진영" 버튼 클릭 시 발행 — 진영 팝업을 여는 것은 구독자(InGameFlowController) 책임.</summary>
         public event Action FormationRequested;
 
+        /// <summary>"환경설정" 버튼 클릭 시 발행 (2026-08-10) — 무엇을 열지는 구독자 책임이다.
+        /// 현재 구독자는 일시정지 팝업을 연다(그 안에 환경설정 + 메인메뉴 복귀가 모두 있다).
+        /// 이 패널이 직접 참조하지 않는 이유: PausePopup은 씬 오브젝트라 프리팹인 이 패널이 참조를
+        /// 가질 수 없다. FormationRequested와 같은 구조.</summary>
+        public event Action SettingsRequested;
+
+
         private void Awake()
         {
             formationButton.onClick.AddListener(OnFormationButtonClicked);
+            settingsButton.onClick.AddListener(OnSettingsButtonClicked);
         }
 
         private void OnDestroy()
         {
             formationButton.onClick.RemoveListener(OnFormationButtonClicked);
+            settingsButton.onClick.RemoveListener(OnSettingsButtonClicked);
         }
 
         private void OnFormationButtonClicked() => FormationRequested?.Invoke();
+
+        private void OnSettingsButtonClicked() => SettingsRequested?.Invoke();
 
         public void Open(MapState map)
         {
@@ -103,6 +116,10 @@ namespace OutGame.UI
                 throw new InvalidOperationException("RoomGraphPanel의 currencyDisplay가 배선되지 않았습니다");
             if (formationButton == null)
                 throw new InvalidOperationException("RoomGraphPanel의 formationButton이 배선되지 않았습니다");
+            if (playerImage == null)
+                throw new InvalidOperationException("RoomGraphPanel의 playerImage가 배선되지 않았습니다");
+            if (settingsButton == null)
+                throw new InvalidOperationException("RoomGraphPanel의 settingsButton이 배선되지 않았습니다");
             if (visuals == null)
                 throw new InvalidOperationException(
                     "RoomGraphPanel.visuals(RoomTypeVisualSet)가 할당되지 않았습니다");
@@ -122,6 +139,16 @@ namespace OutGame.UI
 
         /// <summary>재화 표시를 갱신한다 — 이벤트/전투 보상으로 골드가 바뀐 뒤 맵으로 돌아올 때 호출.</summary>
         public void SetGold(int amount) => currencyDisplay.SetAmount(amount);
+
+        /// <summary>상단 바에 선택된 캐릭터의 아이콘을 표시한다 — 런 시작 시 InGameFlowController가 호출.
+        /// 캐릭터 id → 정의 조회는 이미 캐릭터 풀을 들고 있는 호출자 책임이다(이 패널은 표시만 담당).
+        /// 전신 초상화가 아니라 아이콘을 쓴다 — 이 슬롯은 100px이라 대형 이미지를 넣으면 얼굴이 뭉개진다.
+        /// 아이콘이 없는 캐릭터면 이미지를 숨긴다 — 스프라이트가 빈 Image는 흰 사각형으로 그려진다.</summary>
+        public void SetPlayerIcon(Sprite icon)
+        {
+            playerImage.sprite = icon;
+            playerImage.enabled = icon != null;
+        }
 
         /// <summary>방문 기록이 바뀐 뒤(MapProgress.Visit 후) 호출 — 노드 상태와 경로 강조를 갱신한다.</summary>
         public void Refresh()

@@ -127,9 +127,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2025567614}
     m_Modifications:
+    - target: {fileID: 765226681992510694, guid: b7cd776e3086c3d4b83c8bee3c17c7e5, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 765226681992510694, guid: b7cd776e3086c3d4b83c8bee3c17c7e5, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 883870007174535219, guid: b7cd776e3086c3d4b83c8bee3c17c7e5, type: 3}
       propertyPath: m_Name
       value: MainMenuScreen
+      objectReference: {fileID: 0}
+    - target: {fileID: 1709683567927422680, guid: b7cd776e3086c3d4b83c8bee3c17c7e5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6879504792986563579, guid: b7cd776e3086c3d4b83c8bee3c17c7e5, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6879504792986563579, guid: b7cd776e3086c3d4b83c8bee3c17c7e5, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6879504792986563579, guid: b7cd776e3086c3d4b83c8bee3c17c7e5, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7335982582557632575, guid: b7cd776e3086c3d4b83c8bee3c17c7e5, type: 3}
       propertyPath: m_Pivot.x
@@ -642,7 +666,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
   m_UseReflectionProbes: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0

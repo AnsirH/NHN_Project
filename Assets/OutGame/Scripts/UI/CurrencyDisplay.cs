@@ -1,13 +1,16 @@
 using System;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace OutGame.UI
 {
-    /// <summary>재화(골드) 표시 — 아이콘 + 숫자. 방 그래프 패널/배치 패널에서 공용으로 재사용한다(2026-07-26).</summary>
+    /// <summary>재화(골드) 표시 — 아이콘 + 숫자. 방 그래프 패널/배치 패널에서 공용으로 재사용한다(2026-07-26).
+    ///
+    /// 2026-08-10: amountLabel을 UnityEngine.UI.Text → TMP_Text로 교체 — 프리팹 쪽이 TextMeshProUGUI로
+    /// 바뀌면서 기존 타입으로는 배선이 불가능해졌다.</summary>
     public class CurrencyDisplay : MonoBehaviour
     {
-        [SerializeField] private Text amountLabel;
+        [SerializeField] private TMP_Text amountLabel;
 
         // Awake()가 아니라 여기서 검증한다 — ArmyDeploymentPanel.Open()은 아직 비활성 상태에서
         // RefreshLayout()(SetAmount 호출 포함)을 먼저 실행하는데, Unity는 비활성 GameObject의

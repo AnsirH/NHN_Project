@@ -1,5 +1,6 @@
 using System;
 using OutGame.Logic.Maps;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +19,9 @@ namespace OutGame.UI
         [SerializeField] private Button button;
         [SerializeField] private Image background;
         [SerializeField] private Outline outline;
-        [SerializeField] private Text label;
+        // 2026-08-10: UnityEngine.UI.Text → TMP_Text. 노드 배경이 색 사각형에서 아이콘으로 바뀌면서
+        // 라벨도 게임 공용 폰트(DNFForgedBlade-Bold SDF)로 통일했다.
+        [SerializeField] private TMP_Text label;
 
         [Header("상태 표현 (인스펙터 튜닝)")]
         [SerializeField, Range(0f, 1f)] private float visitedDarken = 0.45f;

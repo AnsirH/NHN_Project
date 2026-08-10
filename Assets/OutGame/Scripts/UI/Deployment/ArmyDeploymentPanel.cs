@@ -39,6 +39,8 @@ namespace OutGame.UI.Deployment
         [SerializeField] private Text enemyBuffLabel;
         [SerializeField] private Button startBattleButton;
         [SerializeField] private CurrencyDisplay currencyDisplay; // 2026-07-26: 상단 바 재화 표시
+        // 2026-08-10: 상단 바 — 선택한 캐릭터 아이콘. 방 그래프의 TopPanel과 같은 구성이다.
+        [SerializeField] private Image playerImage;
 
         [Header("요소 프리팹")]
         [SerializeField] private ArmyCardView armyCardPrefab; // 적 카드 표시용(interactable=false)
@@ -118,6 +120,15 @@ namespace OutGame.UI.Deployment
                 characterDataById[data.id] = data;
             }
 
+            // 2026-08-10: 상단 바 캐릭터 아이콘. 방 그래프와 달리 이 패널은 이미 characterDefsById를
+            // 들고 있어 별도 주입이 필요 없다. id 조회 실패 시 아이콘만 숨긴다 — 선택 캐릭터의 실제
+            // 유효성은 DeploymentState가 명확한 예외로 검증하므로 여기서 먼저 터뜨리지 않는다.
+            PlayerCharacterDefinition selectedCharacter;
+            playerImage.sprite = characterDefsById.TryGetValue(run.selectedCharacterId ?? string.Empty, out selectedCharacter)
+                ? selectedCharacter.Icon
+                : null;
+            playerImage.enabled = playerImage.sprite != null;
+
             BuildEnemySlots();
             UpdateEnemyPowerLabel();
 
@@ -151,7 +162,7 @@ namespace OutGame.UI.Deployment
         private void ValidateWiring()
         {
             if (enemyFormationGrid == null || enemyBuffLabel == null || startBattleButton == null
-                || currencyDisplay == null)
+                || currencyDisplay == null || playerImage == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 구조 참조가 배선되지 않았습니다.");
             if (armyCardPrefab == null)
                 throw new InvalidOperationException("ArmyDeploymentPanel의 요소 프리팹이 배선되지 않았습니다.");
@@ -183,14 +194,19 @@ namespace OutGame.UI.Deployment
 
         private void BuildEnemySlots()
         {
-            // 적 진영은 빈 슬롯도 체크 표시 없이 그냥 빈 상태로 둔다(§ 사용자 확정 — 배치 자체가 불가능하므로).
-            enemyFormationGrid.Initialize(enableEmptyIndicator: false);
+            // 2026-08-10: 적 진영의 빈 슬롯은 'x'로 표기한다(사용자 확정) — 배치가 불가능한 자리라
+            // 아군의 '+'(배치 가능)와 같은 기호를 쓰면 안 된다.
+            enemyFormationGrid.Initialize(enemySide: true);
 
             // 슬롯 자체는 더 이상 매 Open()마다 파괴/재생성되지 않는 정적 프리팹이라(2026-08-07), 이전
             // Open()의 적 카드가 CardContainer에 남아있을 수 있다 — 새로 배치하기 전에 직접 지운다.
+            // 표시도 같이 초기화한다(이전 Open()에서 적이 있던 자리가 비어도 'x'가 다시 나오도록).
             foreach (DeploySlotView slotView in enemyFormationGrid.SlotViewsById.Values)
+            {
                 foreach (Transform child in slotView.CardContainer.Cast<Transform>().ToArray())
                     Destroy(child.gameObject);
+                slotView.SetOccupied(false);
+            }
 
             BattleFieldConfigData fieldData = fieldConfig.ToData();
             List<SlotDefinition> slots = fieldData.GenerateSlots();
@@ -213,6 +229,8 @@ namespace OutGame.UI.Deployment
                 enemy.slotY = slot.y;
 
                 if (!enemyFormationGrid.SlotViewsById.TryGetValue(slot.slotId, out DeploySlotView slotView)) continue;
+
+                slotView.SetOccupied(true); // 적이 선 자리는 'x'를 숨긴다
 
                 ArmyCardView card = Instantiate(armyCardPrefab, slotView.CardContainer);
                 // 적 유닛은 run.armies에 속하지 않는 임시 표시용이라 실제 armyInstanceId가 없다 —

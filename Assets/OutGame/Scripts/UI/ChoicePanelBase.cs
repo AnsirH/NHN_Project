@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +15,8 @@ namespace OutGame.UI
     {
         [SerializeField] private RectTransform choiceContainer;
         [SerializeField] private Button choiceButtonPrefab;
-        [SerializeField] private Text resultText;
+        // 2026-08-10: UnityEngine.UI.Text → TMP_Text (EventPanel/AugmentPanel 공통).
+        [SerializeField] private TMP_Text resultText;
         [SerializeField] private Button continueButton;
 
         private readonly List<Button> spawnedChoiceButtons = new List<Button>();
@@ -44,7 +46,7 @@ namespace OutGame.UI
         protected void SpawnChoiceButton(string label, Action onClick)
         {
             Button button = Instantiate(choiceButtonPrefab, choiceContainer);
-            button.GetComponentInChildren<Text>().text = label;
+            button.GetComponentInChildren<TMP_Text>().text = label;
             button.onClick.AddListener(() => onClick());
             spawnedChoiceButtons.Add(button);
         }
