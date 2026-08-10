@@ -353,12 +353,15 @@ namespace OutGame.Flow
             // NodeLayer가 Canvas(order 1)라 하이어라키와 무관한 전역 버킷으로 비교되어 노드가 팝업
             // 위로 올라온 것이었다(OnRoomSelected 주석의 이벤트/증원/증강 방과 동일한 원인).
             // ItemRewardPopup에 Canvas(order 5)를 줘서 해결했으므로 이제 방 그래프를 열어둔 채로
-            // 팝업만 위에 띄운다(사용자 요청). 런 종료 화면(패배/클리어)은 방 그래프를 남겨둘 이유가
-            // 없으므로 각 분기에서 닫는다.
+            // 팝업만 위에 띄운다(사용자 요청).
+            //
+            // 2026-08-11: 런 종료 화면(패배/클리어)도 같은 이유로 맵을 열어둔다(사용자 요청) —
+            // 다른 팝업처럼 dim 뒤로 노드가 비쳐야 어디까지 갔는지 보인다. 닫아버리면 OutGame 씬에는
+            // 3D 오브젝트가 하나도 없어서 기본 스카이박스만 남아 배경이 텅 빈다.
+            // RunResultPanel에도 Canvas(order 5)를 줘서 노드(1)·상단 바(2) 위로 올렸다.
 
             if (!result.victory)
             {
-                mapPanel.Close();
                 runEnded = true;
                 RunSaveService.DeleteSave(savePath); // 패배 — 런 종료 (§4-14)
                 runResultPanel.ShowDefeat();
@@ -403,7 +406,8 @@ namespace OutGame.Flow
         {
             if (bossVictory)
             {
-                mapPanel.Close(); // 런 클리어 화면 뒤로 방 그래프가 비쳐 보일 이유가 없다
+                // 2026-08-11: 패배 분기와 동일하게 방 그래프를 열어둔다 — 클리어한 경로가 뒤로 보이는
+                // 편이 낫고, 닫으면 배경이 기본 스카이박스만 남는다.
                 // 보스 "방문"이 아니라 "승리"가 런 클리어 조건이다 (MapProgress.HasVisitedBoss와 혼동 주의).
                 runEnded = true;
                 RunSaveService.DeleteSave(savePath); // 런 종료 — 이어하기 대상에서 제외 (§5.1)
