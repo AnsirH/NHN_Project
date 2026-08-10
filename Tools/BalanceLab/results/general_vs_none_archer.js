@@ -22,7 +22,7 @@ window.BALANCE_RESULT["general_vs_none_archer:"] = {
   "draws": 0,
   "leftWinRate": 1,
   "rightWinRate": 0,
-  "elapsedMs": 267,
+  "elapsedMs": 290,
   "battles": [
     {
       "seed": 0,

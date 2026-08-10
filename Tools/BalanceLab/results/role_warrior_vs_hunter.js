@@ -22,7 +22,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
   "draws": 0,
   "leftWinRate": 1,
   "rightWinRate": 0,
-  "elapsedMs": 4442,
+  "elapsedMs": 4566,
   "battles": [
     {
       "seed": 0,

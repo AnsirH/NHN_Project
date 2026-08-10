@@ -24,7 +24,7 @@ window.BALANCE_RESULT["mirror_warrior:"] = {
   "draws": 200,
   "leftWinRate": 0,
   "rightWinRate": 0,
-  "elapsedMs": 1815,
+  "elapsedMs": 1973,
   "battles": [
     {
       "seed": 0,

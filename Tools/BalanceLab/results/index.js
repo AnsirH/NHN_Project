@@ -1,5 +1,5 @@
 window.BALANCE_INDEX = {
-  "generatedAt": "2026-08-10T13:26:29Z",
+  "generatedAt": "2026-08-10T13:53:07Z",
   "scenarios": [
     {
       "name": "archer_general_volley_cross",
@@ -44,12 +44,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 267,
+      "elapsedMs": 290,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "general_vs_none_archer.json",
-      "generatedAt": "2026-08-10T13:24:31Z"
+      "generatedAt": "2026-08-10T13:52:36Z"
     },
     {
       "name": "general_vs_none_assassin",
@@ -69,12 +69,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 1025,
+      "elapsedMs": 1100,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "general_vs_none_assassin.json",
-      "generatedAt": "2026-08-10T13:24:31Z"
+      "generatedAt": "2026-08-10T13:52:36Z"
     },
     {
       "name": "general_vs_none_hunter",
@@ -94,12 +94,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 8349,
+      "elapsedMs": 8445,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "general_vs_none_hunter.json",
-      "generatedAt": "2026-08-10T13:24:31Z"
+      "generatedAt": "2026-08-10T13:52:36Z"
     },
     {
       "name": "general_vs_none_warrior",
@@ -119,12 +119,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 1020,
+      "elapsedMs": 1103,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "general_vs_none_warrior.json",
-      "generatedAt": "2026-08-10T13:24:31Z"
+      "generatedAt": "2026-08-10T13:52:36Z"
     },
     {
       "name": "mirror_archer",
@@ -139,17 +139,17 @@ window.BALANCE_INDEX = {
       "metricValue": 0.5,
       "detail": null,
       "runs": 200,
-      "leftWins": 21,
-      "rightWins": 21,
-      "draws": 158,
-      "leftWinRate": 0.105,
-      "rightWinRate": 0.105,
-      "elapsedMs": 1531,
+      "leftWins": 0,
+      "rightWins": 0,
+      "draws": 200,
+      "leftWinRate": 0,
+      "rightWinRate": 0,
+      "elapsedMs": 1592,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "mirror_archer.json",
-      "generatedAt": "2026-08-10T13:24:31Z"
+      "generatedAt": "2026-08-10T13:52:36Z"
     },
     {
       "name": "mirror_assassin",
@@ -169,12 +169,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 0.525,
       "rightWinRate": 0.475,
-      "elapsedMs": 1406,
+      "elapsedMs": 1350,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "mirror_assassin.json",
-      "generatedAt": "2026-08-10T13:24:31Z"
+      "generatedAt": "2026-08-10T13:52:36Z"
     },
     {
       "name": "mirror_hunter",
@@ -194,12 +194,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 0.49,
       "rightWinRate": 0.51,
-      "elapsedMs": 11001,
+      "elapsedMs": 11133,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "mirror_hunter.json",
-      "generatedAt": "2026-08-10T13:24:31Z"
+      "generatedAt": "2026-08-10T13:52:36Z"
     },
     {
       "name": "mirror_warrior",
@@ -219,14 +219,14 @@ window.BALANCE_INDEX = {
       "draws": 200,
       "leftWinRate": 0,
       "rightWinRate": 0,
-      "elapsedMs": 1815,
+      "elapsedMs": 1973,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [
         0
       ],
       "file": "mirror_warrior.json",
-      "generatedAt": "2026-08-10T13:26:26Z"
+      "generatedAt": "2026-08-10T13:53:01Z"
     },
     {
       "name": "role_archer_vs_assassin",
@@ -236,24 +236,24 @@ window.BALANCE_INDEX = {
       "band": "role_matchup",
       "bandMin": 0.3,
       "bandMax": 0.7,
-      "passed": false,
+      "passed": true,
       "metric": "leftWinRate",
-      "metricValue": 0.715,
-      "detail": "\uC88C\uAD70 \uC2B9\uB960 71.5 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 30 %~70 %\uB97C \uBC97\uC5B4\uB0A8 (\uCD08\uACFC)",
+      "metricValue": 0.59,
+      "detail": null,
       "runs": 200,
-      "leftWins": 143,
-      "rightWins": 57,
+      "leftWins": 118,
+      "rightWins": 82,
       "draws": 0,
-      "leftWinRate": 0.715,
-      "rightWinRate": 0.285,
-      "elapsedMs": 1592,
+      "leftWinRate": 0.59,
+      "rightWinRate": 0.41,
+      "elapsedMs": 1806,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [
         17
       ],
       "file": "role_archer_vs_assassin.json",
-      "generatedAt": "2026-08-10T13:26:29Z"
+      "generatedAt": "2026-08-10T13:53:04Z"
     },
     {
       "name": "role_archer_vs_hunter",
@@ -273,12 +273,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 2599,
+      "elapsedMs": 2987,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "role_archer_vs_hunter.json",
-      "generatedAt": "2026-08-10T13:24:31Z"
+      "generatedAt": "2026-08-10T13:52:36Z"
     },
     {
       "name": "role_assassin_vs_hunter",
@@ -298,12 +298,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 3781,
+      "elapsedMs": 4313,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "role_assassin_vs_hunter.json",
-      "generatedAt": "2026-08-10T13:24:31Z"
+      "generatedAt": "2026-08-10T13:52:36Z"
     },
     {
       "name": "role_warrior_vs_archer",
@@ -323,12 +323,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 1077,
+      "elapsedMs": 955,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "role_warrior_vs_archer.json",
-      "generatedAt": "2026-08-10T13:24:31Z"
+      "generatedAt": "2026-08-10T13:52:36Z"
     },
     {
       "name": "role_warrior_vs_assassin",
@@ -348,12 +348,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 0.975,
       "rightWinRate": 0.025,
-      "elapsedMs": 1880,
+      "elapsedMs": 1839,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "role_warrior_vs_assassin.json",
-      "generatedAt": "2026-08-10T13:24:31Z"
+      "generatedAt": "2026-08-10T13:52:36Z"
     },
     {
       "name": "role_warrior_vs_hunter",
@@ -373,12 +373,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 4442,
+      "elapsedMs": 4566,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "role_warrior_vs_hunter.json",
-      "generatedAt": "2026-08-10T13:24:31Z"
+      "generatedAt": "2026-08-10T13:52:36Z"
     },
     {
       "name": "warrior_general_vs_plain",
@@ -423,14 +423,14 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 0.59,
       "rightWinRate": 0.41,
-      "elapsedMs": 1808,
+      "elapsedMs": 1840,
       "hasOverrides": true,
       "overrideNote": "\uAD81\uC218 \uC0AC\uAC70\uB9AC\u00B7\uD654\uB825 \uD558\uD5A5 1\uC548",
       "replaySeeds": [
         17
       ],
       "file": "role_archer_vs_assassin.archer-nerf.json",
-      "generatedAt": "2026-08-10T13:26:23Z"
+      "generatedAt": "2026-08-10T13:53:07Z"
     }
   ]
 };

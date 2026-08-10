@@ -22,7 +22,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
   "draws": 0,
   "leftWinRate": 0.525,
   "rightWinRate": 0.475,
-  "elapsedMs": 1406,
+  "elapsedMs": 1350,
   "battles": [
     {
       "seed": 0,

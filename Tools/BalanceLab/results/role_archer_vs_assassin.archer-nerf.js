@@ -32,7 +32,7 @@ window.BALANCE_RESULT["role_archer_vs_assassin:archer-nerf"] = {
   "draws": 0,
   "leftWinRate": 0.59,
   "rightWinRate": 0.41,
-  "elapsedMs": 1808,
+  "elapsedMs": 1840,
   "battles": [
     {
       "seed": 0,

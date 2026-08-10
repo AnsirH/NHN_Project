@@ -2,7 +2,7 @@ window.BALANCE_ASSETS = {
   "squads": {
     "Archer": {
       "maxHp": 55,
-      "attackDamage": 9,
+      "attackDamage": 8,
       "defense": 0,
       "critChancePercent": 0,
       "attackInterval": 1.6,

@@ -22,7 +22,7 @@ window.BALANCE_RESULT["general_vs_none_assassin:"] = {
   "draws": 0,
   "leftWinRate": 1,
   "rightWinRate": 0,
-  "elapsedMs": 1025,
+  "elapsedMs": 1100,
   "battles": [
     {
       "seed": 0,
