@@ -1,4 +1,5 @@
-{
+window.BALANCE_RESULT = window.BALANCE_RESULT || {};
+window.BALANCE_RESULT["warrior_general_vs_plain:"] = {
   "scenarioName": "warrior_general_vs_plain",
   "scenarioPath": "Tools/BalanceLab/scenarios/warrior_general_vs_plain.json",
   "tag": null,
@@ -12522,4 +12523,4 @@
       ]
     }
   ]
-}
+};

@@ -20,12 +20,12 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
   "draws": 0,
   "leftWinRate": 1,
   "rightWinRate": 0,
-  "elapsedMs": 4122,
+  "elapsedMs": 3957,
   "battles": [
     {
       "seed": 0,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -50,7 +50,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 1,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -75,7 +75,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 2,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -125,7 +125,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 4,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 349,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -150,7 +150,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 5,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -175,7 +175,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 6,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 348,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -200,7 +200,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 7,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 339,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -225,7 +225,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 8,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -250,7 +250,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 9,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -275,7 +275,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 10,
       "winner": "left",
-      "ticks": 349,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -300,7 +300,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 11,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -325,7 +325,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 12,
       "winner": "left",
-      "ticks": 350,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -350,7 +350,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 13,
       "winner": "left",
-      "ticks": 340,
+      "ticks": 339,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -375,7 +375,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 14,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -400,7 +400,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 15,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -425,7 +425,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 16,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -450,7 +450,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 17,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -475,7 +475,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 18,
       "winner": "left",
-      "ticks": 348,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -500,7 +500,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 19,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 348,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -525,7 +525,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 20,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -550,7 +550,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 21,
       "winner": "left",
-      "ticks": 348,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -575,7 +575,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 22,
       "winner": "left",
-      "ticks": 342,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -600,7 +600,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 23,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 341,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -625,7 +625,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 24,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -650,7 +650,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 25,
       "winner": "left",
-      "ticks": 350,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -675,7 +675,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 26,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -700,7 +700,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 27,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 349,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -725,7 +725,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 28,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -750,7 +750,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 29,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -775,7 +775,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 30,
       "winner": "left",
-      "ticks": 348,
+      "ticks": 339,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -800,7 +800,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 31,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 341,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -875,7 +875,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 34,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 348,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -925,7 +925,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 36,
       "winner": "left",
-      "ticks": 340,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -950,7 +950,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 37,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 341,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1025,7 +1025,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 40,
       "winner": "left",
-      "ticks": 348,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1050,7 +1050,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 41,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1100,7 +1100,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 43,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1125,7 +1125,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 44,
       "winner": "left",
-      "ticks": 340,
+      "ticks": 349,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1175,7 +1175,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 46,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1200,7 +1200,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 47,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 347,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1225,7 +1225,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 48,
       "winner": "left",
-      "ticks": 342,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1250,7 +1250,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 49,
       "winner": "left",
-      "ticks": 348,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1275,7 +1275,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 50,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1300,7 +1300,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 51,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1350,7 +1350,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 53,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1375,7 +1375,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 54,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1400,7 +1400,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 55,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1425,7 +1425,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 56,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 349,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1450,7 +1450,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 57,
       "winner": "left",
-      "ticks": 350,
+      "ticks": 349,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1475,7 +1475,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 58,
       "winner": "left",
-      "ticks": 340,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1500,7 +1500,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 59,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 341,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1525,7 +1525,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 60,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1550,7 +1550,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 61,
       "winner": "left",
-      "ticks": 342,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1575,7 +1575,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 62,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1600,7 +1600,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 63,
       "winner": "left",
-      "ticks": 351,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1625,7 +1625,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 64,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1650,7 +1650,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 65,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1700,7 +1700,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 67,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1725,7 +1725,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 68,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1750,7 +1750,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 69,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 347,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1775,7 +1775,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 70,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 348,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1800,7 +1800,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 71,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1825,7 +1825,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 72,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1850,7 +1850,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 73,
       "winner": "left",
-      "ticks": 348,
+      "ticks": 341,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1900,7 +1900,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 75,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1925,7 +1925,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 76,
       "winner": "left",
-      "ticks": 342,
+      "ticks": 339,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1950,7 +1950,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 77,
       "winner": "left",
-      "ticks": 342,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -1975,7 +1975,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 78,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2000,7 +2000,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 79,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2050,7 +2050,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 81,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2075,7 +2075,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 82,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2100,7 +2100,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 83,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2125,7 +2125,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 84,
       "winner": "left",
-      "ticks": 342,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2150,7 +2150,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 85,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2175,7 +2175,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 86,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2200,7 +2200,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 87,
       "winner": "left",
-      "ticks": 351,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2225,7 +2225,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 88,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2250,7 +2250,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 89,
       "winner": "left",
-      "ticks": 349,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2275,7 +2275,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 90,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 338,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2325,7 +2325,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 92,
       "winner": "left",
-      "ticks": 348,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2350,7 +2350,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 93,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 351,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2400,7 +2400,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 95,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 347,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2425,7 +2425,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 96,
       "winner": "left",
-      "ticks": 340,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2450,7 +2450,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 97,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2475,7 +2475,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 98,
       "winner": "left",
-      "ticks": 350,
+      "ticks": 341,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2500,7 +2500,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 99,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2525,7 +2525,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 100,
       "winner": "left",
-      "ticks": 341,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2550,7 +2550,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 101,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 341,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2575,7 +2575,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 102,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 349,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2600,7 +2600,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 103,
       "winner": "left",
-      "ticks": 341,
+      "ticks": 339,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2625,7 +2625,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 104,
       "winner": "left",
-      "ticks": 341,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2650,7 +2650,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 105,
       "winner": "left",
-      "ticks": 342,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2675,7 +2675,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 106,
       "winner": "left",
-      "ticks": 340,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2725,7 +2725,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 108,
       "winner": "left",
-      "ticks": 342,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2750,7 +2750,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 109,
       "winner": "left",
-      "ticks": 351,
+      "ticks": 347,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2775,7 +2775,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 110,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2800,7 +2800,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 111,
       "winner": "left",
-      "ticks": 342,
+      "ticks": 347,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2825,7 +2825,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 112,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2850,7 +2850,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 113,
       "winner": "left",
-      "ticks": 341,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2875,7 +2875,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 114,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 347,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2900,7 +2900,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 115,
       "winner": "left",
-      "ticks": 342,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2925,7 +2925,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 116,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 348,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2950,7 +2950,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 117,
       "winner": "left",
-      "ticks": 348,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -2975,7 +2975,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 118,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 348,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3000,7 +3000,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 119,
       "winner": "left",
-      "ticks": 342,
+      "ticks": 348,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3025,7 +3025,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 120,
       "winner": "left",
-      "ticks": 349,
+      "ticks": 350,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3050,7 +3050,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 121,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3075,7 +3075,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 122,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3125,7 +3125,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 124,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3150,7 +3150,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 125,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 347,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3175,7 +3175,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 126,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 340,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3200,7 +3200,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 127,
       "winner": "left",
-      "ticks": 341,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3275,7 +3275,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 130,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 348,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3300,7 +3300,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 131,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 348,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3350,7 +3350,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 133,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3375,7 +3375,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 134,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3400,7 +3400,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 135,
       "winner": "left",
-      "ticks": 342,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3425,7 +3425,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 136,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3450,7 +3450,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 137,
       "winner": "left",
-      "ticks": 351,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3475,7 +3475,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 138,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3500,7 +3500,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 139,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 349,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3525,7 +3525,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 140,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3550,7 +3550,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 141,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3575,7 +3575,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 142,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3600,7 +3600,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 143,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3625,7 +3625,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 144,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 347,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3650,7 +3650,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 145,
       "winner": "left",
-      "ticks": 348,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3675,7 +3675,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 146,
       "winner": "left",
-      "ticks": 342,
+      "ticks": 347,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3700,7 +3700,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 147,
       "winner": "left",
-      "ticks": 350,
+      "ticks": 349,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3725,7 +3725,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 148,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 349,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3750,7 +3750,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 149,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3775,7 +3775,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 150,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3800,7 +3800,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 151,
       "winner": "left",
-      "ticks": 341,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3850,7 +3850,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 153,
       "winner": "left",
-      "ticks": 349,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3875,7 +3875,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 154,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 349,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3900,7 +3900,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 155,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3925,7 +3925,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 156,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3950,7 +3950,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 157,
       "winner": "left",
-      "ticks": 348,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -3975,7 +3975,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 158,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4000,7 +4000,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 159,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4025,7 +4025,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 160,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 349,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4050,7 +4050,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 161,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 348,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4075,7 +4075,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 162,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4125,7 +4125,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 164,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4150,7 +4150,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 165,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4175,7 +4175,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 166,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4200,7 +4200,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 167,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 348,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4225,7 +4225,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 168,
       "winner": "left",
-      "ticks": 349,
+      "ticks": 347,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4250,7 +4250,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 169,
       "winner": "left",
-      "ticks": 350,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4275,7 +4275,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 170,
       "winner": "left",
-      "ticks": 350,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4300,7 +4300,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 171,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4325,7 +4325,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 172,
       "winner": "left",
-      "ticks": 342,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4375,7 +4375,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 174,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4425,7 +4425,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 176,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4475,7 +4475,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 178,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4500,7 +4500,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 179,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4525,7 +4525,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 180,
       "winner": "left",
-      "ticks": 349,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4550,7 +4550,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 181,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4575,7 +4575,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 182,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 344,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4600,7 +4600,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 183,
       "winner": "left",
-      "ticks": 343,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4625,7 +4625,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 184,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4650,7 +4650,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 185,
       "winner": "left",
-      "ticks": 348,
+      "ticks": 349,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4675,7 +4675,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 186,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 339,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4725,7 +4725,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 188,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4750,7 +4750,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 189,
       "winner": "left",
-      "ticks": 342,
+      "ticks": 343,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4775,7 +4775,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 190,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 347,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4800,7 +4800,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 191,
       "winner": "left",
-      "ticks": 344,
+      "ticks": 350,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4825,7 +4825,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 192,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 349,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4850,7 +4850,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 193,
       "winner": "left",
-      "ticks": 348,
+      "ticks": 347,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4875,7 +4875,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 194,
       "winner": "left",
-      "ticks": 345,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4900,7 +4900,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 195,
       "winner": "left",
-      "ticks": 348,
+      "ticks": 342,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4925,7 +4925,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 196,
       "winner": "left",
-      "ticks": 346,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4950,7 +4950,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 197,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -4975,7 +4975,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 198,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 346,
       "leftSquads": [
         {
           "squadId": "Warrior1",
@@ -5000,7 +5000,7 @@ window.BALANCE_RESULT["role_warrior_vs_hunter:"] = {
     {
       "seed": 199,
       "winner": "left",
-      "ticks": 347,
+      "ticks": 345,
       "leftSquads": [
         {
           "squadId": "Warrior1",
