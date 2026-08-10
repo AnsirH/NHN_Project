@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.ArmyDefinition
   armyId: army_archer
   displayName: "\uAD81\uC218 \uBD80\uB300"
-  portrait: {fileID: 21300000, guid: cf9148c9ed4b62c4295abcd0b763699b, type: 3}
+  portrait: {fileID: 21300000, guid: 636a728c63e6fa54f87c56697e9cdc7c, type: 3}
   baseSoldierCount: 30
   maxSoldierCount: 60
   generalName: "\uC774\uB984 \uC5C6\uB294 \uC7A5\uAD70"
