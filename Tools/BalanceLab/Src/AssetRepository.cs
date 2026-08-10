@@ -30,7 +30,27 @@ namespace BalanceLab
         private readonly Dictionary<string, RoleDefinition> _roleDefinitions = new Dictionary<string, RoleDefinition>();
         private readonly Dictionary<string, GeneralDefinition> _generalDefinitions = new Dictionary<string, GeneralDefinition>();
 
-        public AssetRepository(string projectRoot)
+        // 오버라이드 적용 전 원본 스칼라 — 뷰어 튜닝 패널의 기준선.
+        private readonly Dictionary<string, Dictionary<string, string>> _baseline =
+            new Dictionary<string, Dictionary<string, string>>();
+        private Dictionary<string, string> _configBaseline;
+
+        /// <summary>에셋 이름 → .asset 원본 스칼라 필드 (오버라이드 적용 전).</summary>
+        public IReadOnlyDictionary<string, Dictionary<string, string>> SquadBaseline => _baseline;
+
+        /// <summary>BattleConfig의 .asset 원본 스칼라 필드 (오버라이드 적용 전).</summary>
+        public IReadOnlyDictionary<string, string> ConfigBaseline => _configBaseline;
+
+        private static Dictionary<string, string> Snapshot(ParsedAsset asset)
+        {
+            return new Dictionary<string, string>(asset.Scalars);
+        }
+
+        /// <summary>
+        /// overrides가 주어지면 파싱 직후 필드 사전에 패치를 얹는다 — 이 지점 하나가 모든 수치 실험의 입구다.
+        /// .asset 파일 자체는 절대 수정하지 않는다 (정본은 언제나 디스크의 에셋이다).
+        /// </summary>
+        public AssetRepository(string projectRoot, OverrideTable overrides = null)
         {
             string dataRoot = Path.Combine(projectRoot, "Assets", "Data");
             if (!Directory.Exists(dataRoot))
@@ -54,6 +74,10 @@ namespace BalanceLab
                 {
                     case SquadClassId:
                         _squadsByName[parsed.Name] = parsed;
+                        // 스냅샷은 오버라이드 적용 **전**에 뜬다 — 뷰어 슬라이더의 기준선은 언제나 .asset 원본이어야
+                        // 하고, 그래야 내보내는 overrides.json이 정본 대비 최소 패치가 된다.
+                        _baseline[parsed.Name] = Snapshot(parsed);
+                        overrides?.ApplySquad(parsed);
                         break;
                     case ConfigClassId:
                         if (_battleConfig != null)
@@ -61,6 +85,8 @@ namespace BalanceLab
                             throw new InvalidDataException($"BattleConfig 에셋이 2개 이상이다: {_battleConfig.FilePath} / {assetPath}");
                         }
                         _battleConfig = parsed;
+                        _configBaseline = Snapshot(parsed);
+                        overrides?.ApplyConfig(parsed);
                         break;
                 }
             }
@@ -70,6 +96,8 @@ namespace BalanceLab
                 throw new InvalidDataException($"BattleConfig 에셋을 찾을 수 없다 ({dataRoot})");
             }
 
+            // 에셋 이름 오타는 전 에셋을 훑은 뒤에야 판정할 수 있다 (필드 오타는 적용 시점에 이미 잡힌다).
+            overrides?.RequireAllApplied(_squadsByName.Keys);
         }
 
         public BattleConfig LoadBattleConfig()
