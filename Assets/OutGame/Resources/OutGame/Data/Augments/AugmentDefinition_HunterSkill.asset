@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: AugmentDefinition_HunterSkill
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.AugmentDefinition
   augmentId: aug_hunter_skill
-  displayName: "\uAC15\uD0C0 \uAC15\uD654"
-  description: "\uC7A5\uAD70 \uC2A4\uD0AC \uAC15\uD0C0(Smash)\uC758 \uD6A8\uACFC\uAC00
-    \uAC15\uD654\uB429\uB2C8\uB2E4."
+  displayName: "\uC0AC\uB0E5 \uC120\uD3EC \uAC15\uD654"
+  description: "\uC7A5\uAD70 \uC2A4\uD0AC \uC0AC\uB0E5 \uC120\uD3EC\uC758 \uCDA9\uC804\uC774 \uBE68\uB77C\uC838 \uB354 \uC790\uC8FC \uBC1C\uB3D9\uD569\uB2C8\uB2E4."
   icon: {fileID: 0}
   category: 0
   targetArmyClass: 12

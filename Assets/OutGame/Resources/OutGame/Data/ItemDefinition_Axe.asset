@@ -15,8 +15,7 @@ MonoBehaviour:
   itemId: item_axe
   displayName: "\uB3C4\uB07C"
   icon: {fileID: 21300000, guid: cd39961908a67fe4eac447bd4a0d59d7, type: 3}
-  description: "\uBD80\uC5EC \uC2DC \uC0AC\uB0E5\uAFBC \uAD70\uB300\uAC00 \uB418\uC5B4
-    \uC7A5\uAD70\uC774 \uAC15\uD0C0\uB97C \uC0AC\uC6A9\uD569\uB2C8\uB2E4."
+  description: "\uBD80\uC5EC \uC2DC \uC0AC\uB0E5\uAFBC \uAD70\uB300\uAC00 \uB418\uC5B4 \uC7A5\uAD70\uC774 \uC0AC\uB0E5 \uC120\uD3EC\uB97C \uC0AC\uC6A9\uD569\uB2C8\uB2E4."
   armyClass: 12
   generalSkillId: skill_smash
   category: 

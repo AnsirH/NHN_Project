@@ -13,14 +13,11 @@ MonoBehaviour:
   m_Name: PlayerCharacterDefinition_Char4
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.PlayerCharacterDefinition
   characterId: char_4
-  displayName: "\uD68C\uBCF5 \uCE90\uB9AD\uD130"
-  description: "\uC124\uBA85 \uC900\uBE44 \uC911 \u2014 \uCD94\uD6C4 \uAE30\uD68D/\uC544\uD2B8
-    \uC790\uC0B0 \uD655\uC815 \uC2DC \uAD50\uCCB4 \uC608\uC815."
+  displayName: "\uC544\uC2A4\uD2B8\uB9AC\uB4DC(Astrid)"
+  description: "\uC758\uC9C0\uC758 \uD30C\uD3B8\uC5D0\uC11C \uC783\uC5B4\uBC84\uB9B0 \uB204\uAD70\uAC00\uC758 \uD754\uC801\uC744 \uC887\uB294 \uC5B4\uB9B0 \uD0D0\uC0C9\uC790. \uD759\uC778\uD615\uB4E4\uC774 \uC2A4\uB7EC\uC9C0\uC9C0 \uC54A\uB3C4\uB85D \uBD99\uC7A1\uC544\uB450\uB294 \uC190\uAE38\uC5D0\uB294 \uADF8\uB9AC\uC6C0\uC774 \uC9D9\uAC8C \uBC30\uC5B4 \uC788\uB2E4."
   portrait: {fileID: 21300000, guid: 66f4d79d26933c64487bca3549458dbd, type: 3}
   icon: {fileID: 21300000, guid: c42721aa8aac75f43860857faf4a7da2, type: 3}
   skillId: skill_char_4
-  skillName: "\uC2A4\uD0AC 4 (\uAC00\uCE6D)"
-  skillDescription: "\uC2A4\uD0AC \uD6A8\uACFC \uC900\uBE44 \uC911 \u2014 \uC138\uBD80
-    \uC218\uCE58/\uBC1C\uB3D9 \uC870\uAC74\uC740 \uC778\uAC8C\uC784 \uC2A4\uD0AC
-    \uC2DC\uC2A4\uD15C\uC5D0\uC11C \uD655\uC815\uD55C\uB2E4."
+  skillName: "\uD790 \uC7A5\uD310"
+  skillDescription: "\uB2E4\uC815\uD55C \uBE5B\uC73C\uB85C \uC804\uC120\uC744 \uC9C0\uD0A8\uB2E4 \u2014 \uB204\uAD70\uAC00\uB97C \uB2E4\uC2DC \uC783\uC9C0 \uC54A\uAE30 \uC704\uD574, \uC624\uB298\uB3C4 \uD759\uC778\uD615\uB4E4\uC744 \uB193\uC9C0 \uC54A\uB294\uB2E4."
   sortOrder: 3

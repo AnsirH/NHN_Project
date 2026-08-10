@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: AugmentDefinition_WarriorSkill
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.AugmentDefinition
   augmentId: aug_warrior_skill
-  displayName: "\uB3C4\uBC1C \uAC15\uD654"
-  description: "\uC7A5\uAD70 \uC2A4\uD0AC \uB3C4\uBC1C(Taunt)\uC758 \uBC94\uC704\uAC00
-    \uB113\uC5B4\uC9D1\uB2C8\uB2E4."
+  displayName: "\uBC29\uC9C4 \uAC15\uD654"
+  description: "\uC7A5\uAD70 \uC2A4\uD0AC \uBC29\uC9C4\uC758 \uCDA9\uC804\uC774 \uBE68\uB77C\uC838 \uB354 \uC790\uC8FC \uBC1C\uB3D9\uD569\uB2C8\uB2E4."
   icon: {fileID: 0}
   category: 0
   targetArmyClass: 11

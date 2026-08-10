@@ -15,8 +15,7 @@ MonoBehaviour:
   itemId: item_shield
   displayName: "\uAC80+\uBC29\uD328"
   icon: {fileID: 21300000, guid: 9c63d6a9ca485ec489eb598b0edc441f, type: 3}
-  description: "\uBD80\uC5EC \uC2DC \uC804\uC0AC \uAD70\uB300\uAC00 \uB418\uC5B4
-    \uC7A5\uAD70\uC774 \uB3C4\uBC1C\uC744 \uC0AC\uC6A9\uD569\uB2C8\uB2E4."
+  description: "\uBD80\uC5EC \uC2DC \uC804\uC0AC \uAD70\uB300\uAC00 \uB418\uC5B4 \uC7A5\uAD70\uC774 \uBC29\uC9C4\uC744 \uC0AC\uC6A9\uD569\uB2C8\uB2E4."
   armyClass: 11
   generalSkillId: skill_taunt
   category: 

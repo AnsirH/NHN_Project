@@ -13,14 +13,11 @@ MonoBehaviour:
   m_Name: PlayerCharacterDefinition_Char2
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.PlayerCharacterDefinition
   characterId: char_2
-  displayName: "\uC804\uAE30 \uCE90\uB9AD\uD130"
-  description: "\uC124\uBA85 \uC900\uBE44 \uC911 \u2014 \uCD94\uD6C4 \uAE30\uD68D/\uC544\uD2B8
-    \uC790\uC0B0 \uD655\uC815 \uC2DC \uAD50\uCCB4 \uC608\uC815."
+  displayName: "\uC5D0\uC774\uB9AC\uD06C(Eirik)"
+  description: "\uBCF5\uC6D0 \uC758\uC2DD\uC744 \uC2E0\uC131\uD55C \uC720\uC0B0\uC73C\uB85C \uC5EC\uAE30\uBA70 \uBA85\uB9E5\uC744 \uC787\uB294 \uC790. \uADF8\uAC00 \uD130\uB728\uB9AC\uB294 \uBC88\uAC1C\uB294 \uB8EC \uC804\uC7C1\uC758 \uC794\uC7AC\uB97C \uC791\uAC8C \uC7AC\uD604\uD55C \uAC83\uC77C \uBFD0\uC774\uB2E4."
   portrait: {fileID: 21300000, guid: 7e57216fd1f21114fadb0e6d80ed0602, type: 3}
   icon: {fileID: 21300000, guid: 6319e4a51dd415d4aab96c95cffab909, type: 3}
   skillId: skill_char_2
-  skillName: "\uC2A4\uD0AC 2 (\uAC00\uCE6D)"
-  skillDescription: "\uC2A4\uD0AC \uD6A8\uACFC \uC900\uBE44 \uC911 \u2014 \uC138\uBD80
-    \uC218\uCE58/\uBC1C\uB3D9 \uC870\uAC74\uC740 \uC778\uAC8C\uC784 \uC2A4\uD0AC
-    \uC2DC\uC2A4\uD15C\uC5D0\uC11C \uD655\uC815\uD55C\uB2E4."
+  skillName: "\uBC88\uAC1C"
+  skillDescription: "\uB8EC \uC804\uC7C1\uC758 \uD798\uC744 \uC190\uB05D\uC73C\uB85C \uC18C\uD658\uD574 \uC804\uC7A5\uC744 \uC5BC\uB824\uBD99\uC778\uB2E4 \u2014 \uC4F8 \uB54C\uB9C8\uB2E4, \uADF8\uB294 \uC790\uAE30\uB3C4 \uBAA8\uB974\uAC8C \uADF8 \uC61B \uC758\uC2DD\uC744 \uB2E4\uC2DC \uCE58\uB974\uACE0 \uC788\uB2E4."
   sortOrder: 1

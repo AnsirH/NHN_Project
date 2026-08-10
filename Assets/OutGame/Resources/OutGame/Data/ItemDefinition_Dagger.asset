@@ -15,8 +15,7 @@ MonoBehaviour:
   itemId: item_dagger
   displayName: "\uB2E8\uAC80"
   icon: {fileID: 21300000, guid: d31e0f15092fcfb47bd6e1a8defa5cbc, type: 3}
-  description: "\uBD80\uC5EC \uC2DC \uC554\uC0B4\uC790 \uAD70\uB300\uAC00 \uB418\uC5B4
-    \uC7A5\uAD70\uC774 \uAE30\uC2B5\uC744 \uC0AC\uC6A9\uD569\uB2C8\uB2E4."
+  description: "\uBD80\uC5EC \uC2DC \uC554\uC0B4\uC790 \uAD70\uB300\uAC00 \uB418\uC5B4 \uC7A5\uAD70\uC774 \uADF8\uB9BC\uC790 \uC2B5\uACA9\uC744 \uC0AC\uC6A9\uD569\uB2C8\uB2E4."
   armyClass: 13
   generalSkillId: skill_ambush
   category: 
