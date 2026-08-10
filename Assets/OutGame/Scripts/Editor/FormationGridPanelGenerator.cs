@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using OutGame.Logic.Battle;
 using OutGame.ScriptableObjects;
 using OutGame.UI.Deployment;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,6 +31,7 @@ namespace OutGame.Editor
         private const string SlotPrefabPath = "Assets/OutGame/Resources/OutGame/Widgets/DeploySlotView.prefab";
         private const string ConnectorPrefabPath = "Assets/OutGame/Resources/OutGame/Widgets/FormationConnector.prefab";
         private const string OutputPath = "Assets/OutGame/Resources/OutGame/Widgets/FormationGridPanel.prefab";
+        private const string PowerLabelFontPath = "Assets/GameAssets/Font/DNFForgedBlade-Bold SDF.asset";
 
         [MenuItem("OutGame/Formation/Regenerate Grid Panel")]
         private static void Regenerate()
@@ -86,7 +88,7 @@ namespace OutGame.Editor
                 slotsProp.arraySize = slotViews.Count;
                 for (int i = 0; i < slotViews.Count; i++)
                     slotsProp.GetArrayElementAtIndex(i).objectReferenceValue = slotViews[i];
-                gridViewSO.FindProperty("powerLabel").objectReferenceValue = powerLabelGo.GetComponent<Text>();
+                gridViewSO.FindProperty("powerLabel").objectReferenceValue = powerLabelGo.GetComponent<TextMeshProUGUI>();
                 gridViewSO.FindProperty("fieldConfig").objectReferenceValue = fieldConfig;
                 gridViewSO.ApplyModifiedPropertiesWithoutUndo();
 
@@ -115,7 +117,7 @@ namespace OutGame.Editor
 
         private static GameObject CreatePowerLabel(Transform parent)
         {
-            GameObject go = new GameObject("PowerLabel", typeof(RectTransform), typeof(Text));
+            GameObject go = new GameObject("PowerLabel", typeof(RectTransform), typeof(TextMeshProUGUI));
             go.transform.SetParent(parent, worldPositionStays: false);
             var rect = (RectTransform)go.transform;
             rect.anchorMin = new Vector2(0.5f, 0f);
@@ -124,10 +126,12 @@ namespace OutGame.Editor
             rect.anchoredPosition = new Vector2(0f, 4f);
             rect.sizeDelta = new Vector2(300f, 30f);
 
-            var text = go.GetComponent<Text>();
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            // 2026-08-11: FormationGridView.powerLabel이 TMP_Text로 바뀐 뒤에도 여기서만 레거시
+            // Text를 만들고 있어 아래 배선이 조용히 null로 들어가던 것을 맞춘다.
+            var text = go.GetComponent<TextMeshProUGUI>();
+            text.font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(PowerLabelFontPath);
             text.fontSize = 20;
-            text.alignment = TextAnchor.MiddleCenter;
+            text.alignment = TextAlignmentOptions.Center;
             text.color = Color.white;
             text.text = string.Empty; // 런타임에 FormationGridView.SetPower()가 채운다
             return go;

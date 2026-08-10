@@ -4,6 +4,7 @@ using System.Linq;
 using OutGame.Flow;
 using OutGame.Logic.Narrative;
 using OutGame.ScriptableObjects;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,7 +28,7 @@ namespace OutGame.UI
     public class LoreFragmentOverlayPanel : MonoBehaviour
     {
         [SerializeField] private GameObject fragmentRoot;
-        [SerializeField] private Text fragmentText;
+        [SerializeField] private TMP_Text fragmentText; // 2026-08-11: UnityEngine.UI.Text → TMP로 통일
         [SerializeField] private Button continueButton;
 
         /// <summary>테스트에서 0(항상 안 뜸)/1(항상 뜸)로 고정해 결정적으로 검증할 수 있도록 공개.</summary>

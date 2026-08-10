@@ -5,7 +5,8 @@
         "OutGame.Logic",
         "OutGame.ScriptableObjects",
         "OutGame",
-        "UnityEngine.UI"
+        "UnityEngine.UI",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [
         "Editor"

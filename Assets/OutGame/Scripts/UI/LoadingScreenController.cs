@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using OutGame.Flow;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,7 +17,7 @@ namespace OutGame.UI
     {
         [SerializeField] private RectTransform spinner;
         [SerializeField] private Image progressFillImage;
-        [SerializeField] private Text statusText;
+        [SerializeField] private TMP_Text statusText; // 2026-08-11: UnityEngine.UI.Text → TMP로 통일
         [SerializeField] private float minDisplaySeconds = 0.7f;
         [SerializeField] private float spinnerDegreesPerSecond = 220f;
 

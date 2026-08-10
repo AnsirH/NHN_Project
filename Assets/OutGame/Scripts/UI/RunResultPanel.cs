@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,8 +13,10 @@ namespace OutGame.UI
     /// </summary>
     public class RunResultPanel : MonoBehaviour
     {
-        [SerializeField] private Text titleText;
-        [SerializeField] private Text bodyText;
+        // 2026-08-11: UnityEngine.UI.Text → TMP_Text. 프로젝트 UI가 TMP로 통일돼 있어 이 패널만
+        // 레거시로 남아 아틀라스가 따로 구워지고(배칭 분리) 아웃라인 등 TMP 효과를 못 쓰고 있었다.
+        [SerializeField] private TMP_Text titleText;
+        [SerializeField] private TMP_Text bodyText;
         [SerializeField] private Button completeButton;
 
         /// <summary>[완료] 클릭 시 발행 — 플로우가 메인 메뉴 복귀를 처리한다.</summary>
