@@ -24,7 +24,10 @@ namespace OutGame.UI.Deployment
     public class ArmyInfoPopup : MonoBehaviour
     {
         [SerializeField] private Button closeButton;
-        [SerializeField] private TMP_Text currencyLabel;
+        // 2026-08-10: 단독 라벨 → 공용 CurrencyDisplay 위젯. 프리팹 상단이 아이콘+숫자 위젯으로
+        // 교체되면서 기존 라벨 참조가 끊겼고, 위젯이 숫자 서식을 직접 관리하므로 텍스트를 밖에서
+        // 덮어쓰지 않고 SetAmount로 넘긴다(ArmyFormationPopup과 동일한 방식).
+        [SerializeField] private CurrencyDisplay currencyDisplay;
 
         [SerializeField] private Image generalPortraitImage;
         [SerializeField] private TMP_Text generalPreviewNameLabel;
@@ -57,7 +60,19 @@ namespace OutGame.UI.Deployment
 
         private void Awake()
         {
-            if (closeButton == null || currencyLabel == null
+            ValidateWiring();
+
+            closeButton.onClick.AddListener(Hide);
+            upgradeButton.onClick.AddListener(OnUpgradeClicked);
+        }
+
+        // Awake()뿐 아니라 Open()에서도 호출한다 — Open()은 아직 비활성 상태에서 Render()를 먼저
+        // 실행하는데(Open() 참고), Unity는 비활성 GameObject의 Awake()를 활성화 시점까지 미루므로
+        // Awake() 쪽 검증만으로는 첫 오픈 때 그냥 지나간다. 실제로 currencyDisplay 배선이 끊긴 채
+        // Render()가 먼저 돌아 원인을 알기 어려운 NRE로 터졌다(2026-08-10).
+        private void ValidateWiring()
+        {
+            if (closeButton == null || currencyDisplay == null
                 || generalPortraitImage == null || generalPreviewNameLabel == null
                 || upgradeLevelLabel == null || upgradeButton == null
                 || generalHealthLabel == null || generalAttackLabel == null || generalDefenseLabel == null
@@ -66,9 +81,6 @@ namespace OutGame.UI.Deployment
                 || armyDescriptionLabel == null
                 || armySoldierHealthLabel == null || armySoldierAttackLabel == null || armySoldierDefenseLabel == null)
                 throw new InvalidOperationException("ArmyInfoPopup 프리팹의 필드가 배선되지 않았습니다.");
-
-            closeButton.onClick.AddListener(Hide);
-            upgradeButton.onClick.AddListener(OnUpgradeClicked);
         }
 
         private void OnDestroy()
@@ -99,6 +111,7 @@ namespace OutGame.UI.Deployment
             runConfig = runConfigValue;
             augmentDataById = augmentDataByIdValue;
 
+            ValidateWiring();
             Render();
 
             gameObject.SetActive(true);
@@ -127,9 +140,12 @@ namespace OutGame.UI.Deployment
             float attackMultiplier = ArmyStatCalculator.GetStatMultiplier(army.upgradeLevel, armyClass, AugmentStat.Attack, selectedAugments);
             float defenseMultiplier = ArmyStatCalculator.GetStatMultiplier(army.upgradeLevel, armyClass, AugmentStat.Defense, selectedAugments);
 
-            currencyLabel.text = $"재화: {run.gold}";
+            currencyDisplay.SetAmount(run.gold);
 
-            generalPortraitImage.sprite = armyDef.GeneralPortrait;
+            // 2026-08-10: GeneralPortrait → Portrait(슬롯 카드와 같은 스프라이트, 사용자 요청).
+            // 전용 장군 아트는 모든 ArmyDefinition에서 비어 있어 프로필이 빈 칸으로 나왔다. 슬롯이
+            // 쓰는 것과 같은 필드를 참조하므로 유닛 아트를 교체해도 따로 맞출 필요가 없다.
+            generalPortraitImage.sprite = armyDef.Portrait;
             // 병사 프리뷰(soldierCountLabel)와 대응 — 프리뷰 아이콘 아래에 이름을 표시(2026-07-19 사용자
             // 요청). 큰 초상화 박스(GeneralPortrait)는 삭제돼 이 프리뷰 아이콘이 초상화 스프라이트도
             // 겸한다(2026-07-19).
