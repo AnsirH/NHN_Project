@@ -24,14 +24,11 @@ namespace NHN.Presentation.Battle
         /// <summary>은신 유닛 표시 알파 — 뷰 표현 상수.</summary>
         private const float StealthAlpha = 0.35f;
 
-        // 스킬 조준/장판/플래시 디스크 표현 상수 — 전부 뷰 전용.
+        // 스킬 조준/플래시 디스크 표현 상수 — 전부 뷰 전용.
         private const float DiscThickness = 0.02f;
         private const float AimDiscY = 0.05f;
-        private const float ZoneDiscY = 0.03f;
+        private const float ZoneDiscY = 0.03f; // 캐스트 플래시 높이 오프셋으로도 재사용
         private const float AimAlpha = 0.3f;
-        private const float ZoneAlpha = 0.25f;
-        /// <summary>장판이 사라지기 전 알파 페이드 구간(초).</summary>
-        private const float ZoneFadeSeconds = 1f;
         private const int MaxFlashFx = 8;
         private const float FlashDuration = 0.4f;
         private const float FlashAlpha = 0.55f;
@@ -253,11 +250,13 @@ namespace NHN.Presentation.Battle
         /// 놓으면 그 지점에 즉시 시전한다. 버튼 위에서 그대로 떼면 기존 탭-탭(무장→전장 탭) 방식.
         /// </summary>
         private int _dragCastSlot = -1;
-        private Transform _aimIndicator;
-        private Renderer _aimRenderer;
-        private Transform[] _zoneDiscs;
-        private Renderer[] _zoneRenderers;
-        private int _zoneShownCount;
+        /// <summary>슬롯별 조준(범위) 표시 — 커스텀 프리팹(SkillData.RangeIndicatorPrefab)이 있으면 그 인스턴스,
+        /// 없으면 기존 반투명 원반. 로드아웃이 바뀔 때마다 RebuildSkillFxPools에서 다시 만든다.</summary>
+        private Transform[] _aimIndicators;
+        /// <summary>슬롯별 원반 렌더러 — 커스텀 프리팹을 쓰는 슬롯은 null(틴트 없이 프리팹 원본 그대로 표시).</summary>
+        private Renderer[] _aimRenderers;
+        /// <summary>현재 활성 표시 중인 조준 인디케이터 슬롯(-1 = 없음) — 다른 스킬로 바뀌면 이전 걸 숨긴다.</summary>
+        private int _shownAimSlot = -1;
         private Transform[] _flashTransforms;
         private Renderer[] _flashRenderers;
         private float[] _flashRemainings;
@@ -581,7 +580,6 @@ namespace NHN.Presentation.Battle
             SyncUnitViews(alpha);
             SyncProjectileViews(alpha);
             HandleSkillInput();
-            SyncZoneViews();
             UpdateFlashFx(Time.deltaTime);
             UpdateSkillFx(Time.deltaTime);
             UpdateImpactFxPool(_hitFxPool, _hitFxRemainings, Time.deltaTime);
@@ -1281,10 +1279,7 @@ namespace NHN.Presentation.Battle
 
             if (_armedSkillSlot < 0)
             {
-                if (_aimIndicator.gameObject.activeSelf)
-                {
-                    _aimIndicator.gameObject.SetActive(false);
-                }
+                HideAimIndicator();
                 return;
             }
 
@@ -1296,17 +1291,12 @@ namespace NHN.Presentation.Battle
             Vector2 screenPosition = pointer.position.ReadValue();
             if (!TryGetGroundPoint(screenPosition, out Vector3 groundPoint))
             {
-                _aimIndicator.gameObject.SetActive(false);
+                HideAimIndicator();
                 return;
             }
 
             SkillDefinition skill = _skillDefinitions[_armedSkillSlot];
-            _aimIndicator.gameObject.SetActive(true);
-            _aimIndicator.position = groundPoint + Vector3.up * AimDiscY;
-            _aimIndicator.localScale = new Vector3(skill.Radius * 2f, DiscThickness, skill.Radius * 2f);
-            Color aimColor = _skillColors[_armedSkillSlot];
-            aimColor.a = AimAlpha;
-            SetDiscColor(_aimRenderer, aimColor);
+            ShowAimIndicator(_armedSkillSlot, groundPoint, skill);
 
             // 시전은 "탭"(누른 자리에서 거의 움직이지 않고 뗌)에서만 — 드래그는 카메라 팬이다.
             // 문턱은 BattleCameraController.DragThresholdPixels 공유 (2026-08-02 카메라 조작 설계).
@@ -1329,8 +1319,42 @@ namespace NHN.Presentation.Battle
                     SpawnCastFlash(_armedSkillSlot, groundPoint, skill.Radius);
                     PlaySkillFx(_armedSkillSlot, groundPoint, skill);
                     _armedSkillSlot = -1;
-                    _aimIndicator.gameObject.SetActive(false);
+                    HideAimIndicator();
                 }
+            }
+        }
+
+        /// <summary>슬롯의 조준(범위) 표시를 갱신·노출한다 — 커스텀 프리팹이 있으면 그 인스턴스를
+        /// 위치만 옮기고(스케일은 RebuildSkillFxPools가 미리 맞춰둠), 없으면 기존 원반을 스킬 반경대로
+        /// 스케일하고 스킬 색으로 틴트한다. 이전에 다른 슬롯이 보이고 있었다면 그건 숨긴다.</summary>
+        private void ShowAimIndicator(int slot, Vector3 groundPoint, in SkillDefinition skill)
+        {
+            if (_shownAimSlot >= 0 && _shownAimSlot != slot)
+            {
+                _aimIndicators[_shownAimSlot].gameObject.SetActive(false);
+            }
+            _shownAimSlot = slot;
+
+            Transform indicator = _aimIndicators[slot];
+            indicator.gameObject.SetActive(true);
+            indicator.position = groundPoint + Vector3.up * AimDiscY;
+
+            Renderer discRenderer = _aimRenderers[slot];
+            if (discRenderer != null)
+            {
+                indicator.localScale = new Vector3(skill.Radius * 2f, DiscThickness, skill.Radius * 2f);
+                Color aimColor = _skillColors[slot];
+                aimColor.a = AimAlpha;
+                SetDiscColor(discRenderer, aimColor);
+            }
+        }
+
+        private void HideAimIndicator()
+        {
+            if (_shownAimSlot >= 0)
+            {
+                _aimIndicators[_shownAimSlot].gameObject.SetActive(false);
+                _shownAimSlot = -1;
             }
         }
 
@@ -1356,23 +1380,18 @@ namespace NHN.Presentation.Battle
             {
                 if (!overUi && hasGround)
                 {
-                    _aimIndicator.gameObject.SetActive(true);
-                    _aimIndicator.position = groundPoint + Vector3.up * AimDiscY;
-                    _aimIndicator.localScale = new Vector3(skill.Radius * 2f, DiscThickness, skill.Radius * 2f);
-                    Color aimColor = _skillColors[_dragCastSlot];
-                    aimColor.a = AimAlpha;
-                    SetDiscColor(_aimRenderer, aimColor);
+                    ShowAimIndicator(_dragCastSlot, groundPoint, skill);
                 }
-                else if (_aimIndicator.gameObject.activeSelf)
+                else
                 {
-                    _aimIndicator.gameObject.SetActive(false);
+                    HideAimIndicator();
                 }
                 return;
             }
 
             int slot = _dragCastSlot;
             _dragCastSlot = -1;
-            _aimIndicator.gameObject.SetActive(false);
+            HideAimIndicator();
             if (!overUi && hasGround && _sim.TryCastSkill(slot, SimViewMapper.ToSim(groundPoint)))
             {
                 SpawnCastFlash(slot, groundPoint, skill.Radius);
@@ -1400,18 +1419,10 @@ namespace NHN.Presentation.Battle
             return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
         }
 
-        /// <summary>조준/장판/플래시 디스크를 런타임 생성 — 프리팹·씬 오브젝트 추가 없이 뷰 전용.</summary>
+        /// <summary>플래시 디스크를 런타임 생성 — 프리팹·씬 오브젝트 추가 없이 뷰 전용.
+        /// 조준 인디케이터는 스킬별 커스텀 프리팹을 쓸 수 있어 로드아웃 종속이라 여기 없음 — RebuildSkillFxPools 참고.</summary>
         private void CreateSkillFxObjects()
         {
-            _aimIndicator = CreateDisc("SkillAimIndicator", out _aimRenderer);
-
-            _zoneDiscs = new Transform[config.MaxSkillZones];
-            _zoneRenderers = new Renderer[config.MaxSkillZones];
-            for (int z = 0; z < _zoneDiscs.Length; z++)
-            {
-                _zoneDiscs[z] = CreateDisc("SkillZoneDisc", out _zoneRenderers[z]);
-            }
-
             _flashTransforms = new Transform[MaxFlashFx];
             _flashRenderers = new Renderer[MaxFlashFx];
             _flashRemainings = new float[MaxFlashFx];
@@ -1450,12 +1461,7 @@ namespace NHN.Presentation.Battle
 
         private void ResetSkillFxViews()
         {
-            _aimIndicator.gameObject.SetActive(false);
-            for (int z = 0; z < _zoneDiscs.Length; z++)
-            {
-                _zoneDiscs[z].gameObject.SetActive(false);
-            }
-            _zoneShownCount = 0;
+            HideAimIndicator();
             for (int f = 0; f < MaxFlashFx; f++)
             {
                 _flashRemainings[f] = 0f;
@@ -1560,7 +1566,7 @@ namespace NHN.Presentation.Battle
         }
 
         /// <summary>
-        /// 로드아웃 변경 시 시전 이펙트 링 풀 재구축 (전투 시작 경로 — Instantiate/Destroy 허용).
+        /// 로드아웃 변경 시 시전 이펙트 링 + 조준 인디케이터 풀 재구축 (전투 시작 경로 — Instantiate/Destroy 허용).
         /// 프리팹이 없는 스킬은 슬롯을 비워두고 기존 디스크 표시만 쓴다.
         /// </summary>
         private void RebuildSkillFxPools(SkillData[] skills, int skillCount)
@@ -1578,13 +1584,43 @@ namespace NHN.Presentation.Battle
                     }
                 }
             }
+            if (_aimIndicators != null)
+            {
+                for (int s = 0; s < _aimIndicators.Length; s++)
+                {
+                    if (_aimIndicators[s] != null)
+                    {
+                        Destroy(_aimIndicators[s].gameObject);
+                    }
+                }
+            }
             _skillFxObjects = new GameObject[skillCount, SkillFxPerSlot];
             _skillFxParticles = new ParticleSystem[skillCount, SkillFxPerSlot];
             _skillFxRemainings = new float[skillCount, SkillFxPerSlot];
             _skillFxStopping = new bool[skillCount, SkillFxPerSlot];
             _skillFxNext = new int[skillCount];
+            _aimIndicators = new Transform[skillCount];
+            _aimRenderers = new Renderer[skillCount];
+            _shownAimSlot = -1;
             for (int s = 0; s < skillCount; s++)
             {
+                // 조준(범위) 표시 — 커스텀 프리팹이 있으면 스킬 반경대로 스케일해 그대로 쓰고(틴트 없음,
+                // castEffectPrefab과 같은 원칙), 없으면 기존처럼 색 틴트 가능한 반투명 원반을 만든다.
+                GameObject indicatorPrefab = skills[s].RangeIndicatorPrefab;
+                if (indicatorPrefab != null)
+                {
+                    float indicatorScale = _skillDefinitions[s].Radius / Mathf.Max(skills[s].RangeIndicatorBaseRadius, 0.01f);
+                    GameObject indicator = Instantiate(indicatorPrefab, transform);
+                    indicator.name = $"SkillAimIndicator_{skills[s].name}";
+                    indicator.transform.localScale = Vector3.one * indicatorScale;
+                    indicator.SetActive(false);
+                    _aimIndicators[s] = indicator.transform;
+                }
+                else
+                {
+                    _aimIndicators[s] = CreateDisc($"SkillAimIndicator_{skills[s].name}", out _aimRenderers[s]);
+                }
+
                 GameObject prefab = skills[s].CastEffectPrefab;
                 if (prefab == null)
                 {
@@ -1667,32 +1703,6 @@ namespace NHN.Presentation.Battle
                     }
                 }
             }
-        }
-
-        /// <summary>시뮬 장판 상태를 디스크로 동기화. 마지막 1초 구간은 알파 페이드.</summary>
-        private void SyncZoneViews()
-        {
-            int activeCount = _sim.ZoneCount;
-            for (int z = 0; z < activeCount; z++)
-            {
-                BattleSimulation.SkillZoneState state = _sim.GetZoneState(z);
-                Transform disc = _zoneDiscs[z];
-                if (!disc.gameObject.activeSelf)
-                {
-                    disc.gameObject.SetActive(true);
-                }
-                disc.position = SimViewMapper.ToWorld(state.Position) + Vector3.up * ZoneDiscY;
-                disc.localScale = new Vector3(state.Radius * 2f, DiscThickness, state.Radius * 2f);
-
-                Color color = _skillColors[state.SkillSlot];
-                color.a = ZoneAlpha * Mathf.Clamp01(state.RemainingSeconds / ZoneFadeSeconds);
-                SetDiscColor(_zoneRenderers[z], color);
-            }
-            for (int z = activeCount; z < _zoneShownCount; z++)
-            {
-                _zoneDiscs[z].gameObject.SetActive(false);
-            }
-            _zoneShownCount = activeCount;
         }
 
         /// <summary>시전 피드백 플래시 — 짧게 밝아졌다 사라지는 디스크 (뷰 전용, 순환 사용).</summary>

@@ -38,12 +38,20 @@ namespace NHN.Data
         [SerializeField] private GameObject castEffectPrefab;
         [Tooltip("이펙트 프리팹이 기본 크기로 덮는 반경(월드 유닛) — 스킬 반경에 맞춰 스케일하는 기준")]
         [SerializeField] private float castEffectBaseRadius = 2.5f;
+        [Tooltip("조준(범위 표시) 중 보여줄 프리팹 — 비우면 기존 반투명 원반 표시 사용")]
+        [SerializeField] private GameObject rangeIndicatorPrefab;
+        [Tooltip("조준 프리팹이 기본 크기로 덮는 반경(월드 유닛) — 스킬 반경에 맞춰 스케일하는 기준")]
+        [SerializeField] private float rangeIndicatorBaseRadius = 2.5f;
 
         public Color SkillColor => skillColor;
 
         public GameObject CastEffectPrefab => castEffectPrefab;
 
         public float CastEffectBaseRadius => castEffectBaseRadius;
+
+        public GameObject RangeIndicatorPrefab => rangeIndicatorPrefab;
+
+        public float RangeIndicatorBaseRadius => rangeIndicatorBaseRadius;
 
         public SkillDefinition ToDefinition()
         {
