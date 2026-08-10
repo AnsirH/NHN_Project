@@ -114,6 +114,22 @@ namespace NHN.Simulation.Battle
         private readonly float[] _stealthRemaining;
         /// <summary>다음 공격 데미지 배율 (기본 1). 그림자 습격이 배율로 설정, 공격 시 소비.</summary>
         private readonly float[] _critPending;
+
+        // 틱 안에서 순서 의존을 없애기 위한 지연 적용 버퍼.
+        // 은신은 첫 공격으로 풀리고 장군 액티브로 다시 걸리는데, 둘 다 2단계(이동/공격) 도중에
+        // 일어난다. 그 자리에서 _stealthRemaining을 고치면 인덱스가 큰 유닛만 "방금 드러난"
+        // 또는 "방금 숨은" 상대를 보게 되고, 좌군이 먼저 스폰되므로(인덱스 0..L-1) 그게 곧
+        // 진영별 유불리가 된다. 데미지와 마찬가지로 4단계에서 일괄 반영한다.
+        private readonly bool[] _stealthBreakQueued;
+        /// <summary>이번 틱에 예약된 재은신 지속시간 (음수 = 없음).</summary>
+        private readonly float[] _restealthQueued;
+        /// <summary>이번 틱에 예약된 다음 공격 치명타 배율 (음수 = 없음).</summary>
+        private readonly float[] _critPendingQueued;
+
+        // 겹침 분리를 Jacobi 방식으로 계산하기 위한 버퍼 (읽기 원본 / 누적 변위 / 밀기 대상 여부).
+        private readonly Vector2[] _sepBase;
+        private readonly Vector2[] _sepDelta;
+        private readonly bool[] _sepEligible;
         private readonly int[] _queryBuffer;
         /// <summary>공격자(자기 자신) 유닛 인덱스로 색인 — 근접 공격 시 타겟의 좌(-1)/우(+1)
         /// 어느 쪽에 설 지. 새 타겟이 배정될 때 한 번만 무작위로 정해지고 그 타겟을 유지하는
@@ -252,6 +268,19 @@ namespace NHN.Simulation.Battle
             _critPending = new float[totalUnits];
             _queryBuffer = new int[totalUnits];
             _attackSide = new float[totalUnits];
+            _stealthBreakQueued = new bool[totalUnits];
+            // 0이 유효값(= 즉시 해제)이라 "예약 없음"은 음수로 표시한다. 기본값 0을 그대로 두면
+            // 첫 틱에 전원이 은신 해제·치명타 초기화되는 조용한 버그가 된다.
+            _restealthQueued = new float[totalUnits];
+            _critPendingQueued = new float[totalUnits];
+            for (int i = 0; i < totalUnits; i++)
+            {
+                _restealthQueued[i] = -1f;
+                _critPendingQueued[i] = -1f;
+            }
+            _sepBase = new Vector2[totalUnits];
+            _sepDelta = new Vector2[totalUnits];
+            _sepEligible = new bool[totalUnits];
 
             _projLaunchPos = new Vector2[config.MaxProjectiles];
             _projImpactPos = new Vector2[config.MaxProjectiles];
@@ -782,6 +811,29 @@ namespace NHN.Simulation.Battle
                 }
             }
 
+            // 4.5) 은신 상태 정산 — 데미지와 같은 이유로 여기서 일괄 반영한다. 2단계 내내
+            //      모든 유닛이 "틱 시작 시점의 은신 상태"라는 하나의 세계를 보게 하는 것이 목적이다.
+            //      해제를 먼저, 재은신을 나중에 적용한다 — 공격으로 풀린 유닛이 같은 틱에 장군
+            //      액티브로 다시 숨는 것이 액티브의 의도(그림자 습격)다.
+            for (int i = 0; i < _unitCount; i++)
+            {
+                if (_stealthBreakQueued[i])
+                {
+                    _stealthBreakQueued[i] = false;
+                    _stealthRemaining[i] = 0f;
+                }
+                if (_restealthQueued[i] >= 0f)
+                {
+                    _stealthRemaining[i] = _restealthQueued[i];
+                    _restealthQueued[i] = -1f;
+                }
+                if (_critPendingQueued[i] >= 0f)
+                {
+                    _critPending[i] = _critPendingQueued[i];
+                    _critPendingQueued[i] = -1f;
+                }
+            }
+
             // 5) 겹침 분리 (이동 후 위치 기준 재구축, 생존 유닛만).
             //    이번 틱에 실제로 이동한(행군 중이거나 타겟에 접근 중인) 유닛은 밀기 대상에서
             //    제외한다 — 밀리면 대형 타이트니스·공격 사거리 판정이 다음 틱에 다시 어긋나 전투가
@@ -791,31 +843,37 @@ namespace NHN.Simulation.Battle
             //    쌍 중 한쪽만 은신이면 스킵 — 은신 유닛이 전열을 '통과'해 돌진하기 위한 규칙.
             //    은신 유닛끼리는 분리를 유지한다: 꺼두면 같은 타겟으로 돌진하는 은신 블롭이 한 점에
             //    완전히 겹쳐 스플래시 한 발을 전원이 공유하는 동시 몰살이 난다 (헤드리스 실측으로 확인).
+            //    계산은 Jacobi 방식이다: 모든 쌍이 '분리 시작 시점의 위치'(_sepBase)만 읽고 변위는
+            //    _sepDelta에 누적한 뒤, 루프가 끝난 다음 한 번에 적용한다. 예전처럼 _positions를
+            //    순회 도중 고치면 (a) 뒤에 오는 쌍이 앞선 밀기의 결과를 보고 (b) 앞서 밀린 유닛이
+            //    "이번 틱에 이동함" 판정에 걸려 밀기 대상에서 빠진다. 둘 다 인덱스 순서에 의존하고,
+            //    좌군이 먼저 스폰되므로(0..L-1) 그 의존이 곧 진영별 유불리가 된다.
             _grid.Rebuild(_positions, _unitCount);
             for (int i = 0; i < _unitCount; i++)
             {
-                if (!_alives[i])
+                _sepBase[i] = _positions[i];
+                _sepDelta[i] = Vector2.Zero;
+                // 밀기 대상 여부도 밀기 '전'에 한 번만 판정한다 — 누적 변위가 이 판정을 흔들면 안 된다.
+                _sepEligible[i] = _alives[i]
+                    && Vector2.DistanceSquared(_positions[i], _prevPositions[i]) <= 1e-8f;
+            }
+
+            for (int i = 0; i < _unitCount; i++)
+            {
+                if (!_sepEligible[i])
                 {
                     continue;
-                }
-                if (Vector2.DistanceSquared(_positions[i], _prevPositions[i]) > 1e-8f)
-                {
-                    continue; // 이번 틱에 이동함 — 밀기 대상 아님
                 }
                 bool stealthedI = _stealthRemaining[i] > 0f;
                 RoleDefinition role = _roles[_roleIndices[i]];
                 float queryRadius = role.UnitRadius + _maxUnitRadius;
-                int neighborCount = _grid.QueryCircle(_positions[i], queryRadius, _queryBuffer);
+                int neighborCount = _grid.QueryCircle(_sepBase[i], queryRadius, _queryBuffer);
                 for (int k = 0; k < neighborCount; k++)
                 {
                     int j = _queryBuffer[k];
-                    if (j <= i || !_alives[j] || stealthedI != (_stealthRemaining[j] > 0f))
+                    if (j <= i || !_sepEligible[j] || stealthedI != (_stealthRemaining[j] > 0f))
                     {
                         continue;
-                    }
-                    if (Vector2.DistanceSquared(_positions[j], _prevPositions[j]) > 1e-8f)
-                    {
-                        continue; // 상대도 이번 틱에 이동했으면 역시 밀기 대상 아님
                     }
 
                     // 부분 겹침 허용: 반경 합 × 비율 안까지 파고들어야 분리를 시작하고,
@@ -823,7 +881,7 @@ namespace NHN.Simulation.Battle
                     // 난전에서 만들던 밀림·튕김을 없애고 밀집 전투를 허용한다 (수치는 BattleConfig).
                     float separationDistance =
                         (role.UnitRadius + _roles[_roleIndices[j]].UnitRadius) * _config.SeparationOverlapRatio;
-                    Vector2 delta = _positions[j] - _positions[i];
+                    Vector2 delta = _sepBase[j] - _sepBase[i];
                     float distance = delta.Length();
                     if (distance >= separationDistance)
                     {
@@ -833,8 +891,16 @@ namespace NHN.Simulation.Battle
                     Vector2 normal = distance > 1e-5f ? delta / distance : new Vector2(1f, 0f);
                     Vector2 separation =
                         normal * ((separationDistance - distance) * 0.5f * _config.SeparationStrength);
-                    _positions[i] = ClampToArena(_positions[i] - separation);
-                    _positions[j] = ClampToArena(_positions[j] + separation);
+                    _sepDelta[i] -= separation;
+                    _sepDelta[j] += separation;
+                }
+            }
+
+            for (int i = 0; i < _unitCount; i++)
+            {
+                if (_sepEligible[i] && _sepDelta[i] != Vector2.Zero)
+                {
+                    _positions[i] = ClampToArena(_sepBase[i] + _sepDelta[i]);
                 }
             }
 
@@ -862,7 +928,9 @@ namespace NHN.Simulation.Battle
         {
             if (_stealthRemaining[attacker] > 0f)
             {
-                _stealthRemaining[attacker] = 0f; // 첫 공격으로 은신 해제
+                // 첫 공격으로 은신 해제 — 반영은 4단계로 미룬다. 여기서 바로 지우면 이번 틱에
+                // 아직 처리되지 않은 유닛(= 인덱스가 큰 쪽, 곧 우군)만 이 유닛을 타겟으로 볼 수 있다.
+                _stealthBreakQueued[attacker] = true;
             }
 
             float critMultiplier = RollCritMultiplier(attacker, role);
@@ -1039,8 +1107,10 @@ namespace NHN.Simulation.Battle
                     {
                         if (_alives[i] && _squadIndices[i] == squadIndex)
                         {
-                            _stealthRemaining[i] = general.ActiveParamA;
-                            _critPending[i] = general.ActiveParamB;
+                            // 액티브도 2단계 도중(공격 → 충전 → 발동)에 터지므로 지연 반영한다 —
+                            // 즉시 걸면 아직 처리 안 된 유닛만 "방금 숨은" 이 분대를 놓치게 된다.
+                            _restealthQueued[i] = general.ActiveParamA;
+                            _critPendingQueued[i] = general.ActiveParamB;
                         }
                     }
                     break;
