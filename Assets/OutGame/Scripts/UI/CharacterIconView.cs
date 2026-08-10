@@ -25,7 +25,7 @@ namespace OutGame.UI
             if (portrait == null || highlightFrame == null || button == null)
                 throw new InvalidOperationException("CharacterIconView 프리팹의 필드가 배선되지 않았습니다.");
 
-            portrait.sprite = characterDef.Portrait;
+            portrait.sprite = characterDef.Icon;
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() => onSelected());
         }

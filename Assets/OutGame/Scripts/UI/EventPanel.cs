@@ -2,6 +2,7 @@ using System;
 using OutGame.Logic.Events;
 using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +16,8 @@ namespace OutGame.UI
     public class EventPanel : ChoicePanelBase
     {
         [SerializeField] private Image illustrationImage;
-        [SerializeField] private Text bodyText;
+        // 2026-08-10: UnityEngine.UI.Text → TMP_Text.
+        [SerializeField] private TMP_Text bodyText;
 
         private RunState run;
         private int maxArmyCount;
@@ -36,7 +38,10 @@ namespace OutGame.UI
             maxArmyCount = maxArmyCountValue;
             EventData data = definition.ToData(); // 콘텐츠 결함(선택지 부족 등)은 여기서 즉시 드러남
 
-            illustrationImage.gameObject.SetActive(definition.Illustration != null);
+            // 2026-08-10: SetActive가 아니라 enabled를 토글한다. illustrationImage가 붙은 Window는
+            // 본문·선택지·계속 버튼을 모두 담은 부모라, 일러스트가 없다고 GameObject를 끄면 창 전체가
+            // 사라진다(일러스트 미배정 상태에서 이벤트 방에 들어가면 아무것도 안 보이던 원인).
+            illustrationImage.enabled = definition.Illustration != null;
             if (definition.Illustration != null) illustrationImage.sprite = definition.Illustration;
             bodyText.text = data.bodyText;
 

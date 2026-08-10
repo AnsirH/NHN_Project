@@ -8,6 +8,7 @@ using OutGame.Logic.Reinforcement;
 using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
 using OutGame.UI.Deployment;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,7 +28,8 @@ namespace OutGame.UI
     {
         [SerializeField] private AllyFormationView allyFormationView;
         [SerializeField] private GameObject resultPopupRoot;
-        [SerializeField] private Text resultText;
+        // 2026-08-10: UnityEngine.UI.Text → TMP_Text (프리팹이 TextMeshProUGUI로 교체됨).
+        [SerializeField] private TMP_Text resultText;
         [SerializeField] private Button continueButton;
 
         private RunState run;

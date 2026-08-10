@@ -12,8 +12,13 @@ namespace OutGame.UI.Deployment
     {
         [SerializeField] private Image background;
         [SerializeField] private RectTransform cardContainer;
-        [SerializeField] private GameObject emptyIndicator; // 빈 슬롯 초록 체크(2026-08-05, 배치 가능 표시)
+        [SerializeField] private GameObject emptyIndicator; // 빈 슬롯 '+' (아군 — 배치 가능 표시)
+        // 2026-08-10: 적 진영의 빈 슬롯은 '+'가 아니라 'x'로 표기한다(사용자 확정) — 배치가 불가능한
+        // 자리라는 뜻이라, 아군의 "여기 놓을 수 있음"과 같은 기호를 쓰면 안 된다.
+        [SerializeField] private GameObject enemyIndicator;
         [SerializeField] private int slotId; // 2026-08-07: 런타임 주입 대신 프리팹에 직접 구워 넣는다(에디터 가시성 요구사항).
+
+        private bool isEnemySlot;
 
         public int SlotId => slotId;
         public RectTransform CardContainer => cardContainer;
@@ -26,13 +31,26 @@ namespace OutGame.UI.Deployment
 
         private void Awake()
         {
-            if (background == null || cardContainer == null || emptyIndicator == null)
+            if (background == null || cardContainer == null || emptyIndicator == null || enemyIndicator == null)
                 throw new InvalidOperationException("DeploySlotView 프리팹의 필드가 배선되지 않았습니다.");
         }
 
-        /// <summary>occupied=false면 빈 슬롯 체크 표시를 보여준다(§ 사용자 확정 — 적 진영은 이 메서드를
-        /// 호출하지 않아 항상 빈 상태로 표시).</summary>
-        public void SetOccupied(bool occupied) => emptyIndicator.SetActive(!occupied);
+        /// <summary>이 슬롯이 적 진영인지 지정한다 — 빈 슬롯에 '+'(아군)를 띄울지 'x'(적)를 띄울지
+        /// 가른다. FormationGridView.Initialize()가 격자 단위로 한 번에 지정한다.</summary>
+        public void SetEnemySlot(bool value)
+        {
+            isEnemySlot = value;
+            RefreshIndicators(!emptyIndicator.activeSelf && !enemyIndicator.activeSelf);
+        }
+
+        /// <summary>occupied=false면 빈 슬롯 표시를 보여준다 — 아군은 '+', 적은 'x'.</summary>
+        public void SetOccupied(bool occupied) => RefreshIndicators(occupied);
+
+        private void RefreshIndicators(bool occupied)
+        {
+            emptyIndicator.SetActive(!occupied && !isEnemySlot);
+            enemyIndicator.SetActive(!occupied && isEnemySlot);
+        }
 
         public void OnDrop(PointerEventData eventData)
         {
