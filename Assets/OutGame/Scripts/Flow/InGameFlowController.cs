@@ -346,13 +346,19 @@ namespace OutGame.Flow
             // (씬 교체 경로에서는 복귀 시 OutGameFlowController.Start가 이미 소비해 null이라 무해하다.)
             RunSessionContext.ConsumePendingRun();
 
-            // 씬 교체 복귀 경로(Begin())는 이 시점에 mapPanel을 이미 다시 열어둔 상태다 — 아이템 획득
-            // 팝업/런 종료 화면도 dim 배경 뒤로 방 그래프가 겹쳐 보이지 않도록 확실히 닫는다
-            // (2026-08-04, OnRoomSelected의 mapPanel.Close()와 동일한 이유).
-            mapPanel.Close();
+            // 씬 교체 복귀 경로(Begin())는 이 시점에 mapPanel을 이미 다시 열어둔 상태다.
+            //
+            // 2026-08-10: 예전엔 여기서 무조건 mapPanel.Close()를 했다 — dim 배경 뒤로 노드가 겹쳐
+            // 보인다는 리포트(2026-08-04) 때문이었는데, 그 원인은 "맵이 열려 있어서"가 아니라
+            // NodeLayer가 Canvas(order 1)라 하이어라키와 무관한 전역 버킷으로 비교되어 노드가 팝업
+            // 위로 올라온 것이었다(OnRoomSelected 주석의 이벤트/증원/증강 방과 동일한 원인).
+            // ItemRewardPopup에 Canvas(order 5)를 줘서 해결했으므로 이제 방 그래프를 열어둔 채로
+            // 팝업만 위에 띄운다(사용자 요청). 런 종료 화면(패배/클리어)은 방 그래프를 남겨둘 이유가
+            // 없으므로 각 분기에서 닫는다.
 
             if (!result.victory)
             {
+                mapPanel.Close();
                 runEnded = true;
                 RunSaveService.DeleteSave(savePath); // 패배 — 런 종료 (§4-14)
                 runResultPanel.ShowDefeat();
@@ -380,6 +386,11 @@ namespace OutGame.Flow
                     ProceedAfterBattle(bossVictory);
                 }
 
+                // 팝업 뒤로 보이는 상단 바가 전투 보상 반영 전 골드를 들고 있으면 어색하다 —
+                // ApplyVictoryReward가 이미 적용된 값으로 맞춰둔다(노드 상태는 방 완료 처리 전이라
+                // 여기서 Refresh하지 않는다 — OnRoomCompleted가 담당).
+                mapPanel.SetGold(run.gold);
+
                 itemRewardPopup.Closed += OnRewardPopupClosed;
                 itemRewardPopup.Open(drops, itemDefsById);
                 return;
@@ -392,6 +403,7 @@ namespace OutGame.Flow
         {
             if (bossVictory)
             {
+                mapPanel.Close(); // 런 클리어 화면 뒤로 방 그래프가 비쳐 보일 이유가 없다
                 // 보스 "방문"이 아니라 "승리"가 런 클리어 조건이다 (MapProgress.HasVisitedBoss와 혼동 주의).
                 runEnded = true;
                 RunSaveService.DeleteSave(savePath); // 런 종료 — 이어하기 대상에서 제외 (§5.1)
