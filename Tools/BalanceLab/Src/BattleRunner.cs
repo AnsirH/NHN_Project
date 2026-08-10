@@ -147,7 +147,7 @@ namespace BalanceLab
             result.elapsedMs = stopwatch.ElapsedMilliseconds;
             result.leftWinRate = (double)result.leftWins / scenario.runs;
             result.rightWinRate = (double)result.rightWins / scenario.runs;
-            result.verdict = BandTable.Judge(bandRule, result.leftWinRate);
+            result.verdict = BandTable.Judge(bandRule, result.leftWins, result.rightWins, result.leftWinRate);
             return result;
         }
 

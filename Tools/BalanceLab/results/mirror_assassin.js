@@ -9,10 +9,12 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
   "band": "mirror_general",
   "verdict": {
     "bandId": "mirror_general",
+    "metric": "sideBalance",
+    "value": 0.35,
     "minWinRate": 0.45,
     "maxWinRate": 0.55,
     "passed": false,
-    "detail": "\uC88C\uAD70 \uC2B9\uB960 35.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 45 %~55 %\uB97C \uBC97\uC5B4\uB0A8 (\uBBF8\uB2EC)"
+    "detail": "\uC2B9\uBD80 \uB09C \uD310\uC758 \uC88C\uAD70 \uBE44\uC728 35.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 45 %~55 %\uB97C \uBC97\uC5B4\uB0A8 (\uBBF8\uB2EC)"
   },
   "runs": 200,
   "leftWins": 70,
@@ -20,7 +22,7 @@ window.BALANCE_RESULT["mirror_assassin:"] = {
   "draws": 0,
   "leftWinRate": 0.35,
   "rightWinRate": 0.65,
-  "elapsedMs": 1098,
+  "elapsedMs": 1097,
   "battles": [
     {
       "seed": 0,

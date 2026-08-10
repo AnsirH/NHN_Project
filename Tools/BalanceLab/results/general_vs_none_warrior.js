@@ -9,6 +9,8 @@ window.BALANCE_RESULT["general_vs_none_warrior:"] = {
   "band": "general_vs_none",
   "verdict": {
     "bandId": "general_vs_none",
+    "metric": "leftWinRate",
+    "value": 1,
     "minWinRate": 0.65,
     "maxWinRate": 0.75,
     "passed": false,
@@ -20,7 +22,7 @@ window.BALANCE_RESULT["general_vs_none_warrior:"] = {
   "draws": 0,
   "leftWinRate": 1,
   "rightWinRate": 0,
-  "elapsedMs": 813,
+  "elapsedMs": 732,
   "battles": [
     {
       "seed": 0,

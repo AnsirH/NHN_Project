@@ -8,10 +8,12 @@
   "band": "mirror_general",
   "verdict": {
     "bandId": "mirror_general",
+    "metric": "sideBalance",
+    "value": 0.4883720930232558,
     "minWinRate": 0.45,
     "maxWinRate": 0.55,
-    "passed": false,
-    "detail": "\uC88C\uAD70 \uC2B9\uB960 10.5 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 45 %~55 %\uB97C \uBC97\uC5B4\uB0A8 (\uBBF8\uB2EC)"
+    "passed": true,
+    "detail": null
   },
   "runs": 200,
   "leftWins": 21,
@@ -19,7 +21,7 @@
   "draws": 157,
   "leftWinRate": 0.105,
   "rightWinRate": 0.11,
-  "elapsedMs": 986,
+  "elapsedMs": 958,
   "battles": [
     {
       "seed": 0,

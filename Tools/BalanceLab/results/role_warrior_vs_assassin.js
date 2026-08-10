@@ -9,6 +9,8 @@ window.BALANCE_RESULT["role_warrior_vs_assassin:"] = {
   "band": "role_matchup",
   "verdict": {
     "bandId": "role_matchup",
+    "metric": "leftWinRate",
+    "value": 0.995,
     "minWinRate": 0.3,
     "maxWinRate": 0.7,
     "passed": false,
@@ -20,7 +22,7 @@ window.BALANCE_RESULT["role_warrior_vs_assassin:"] = {
   "draws": 0,
   "leftWinRate": 0.995,
   "rightWinRate": 0.005,
-  "elapsedMs": 1123,
+  "elapsedMs": 1227,
   "battles": [
     {
       "seed": 0,

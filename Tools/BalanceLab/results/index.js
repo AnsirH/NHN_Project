@@ -1,5 +1,5 @@
 window.BALANCE_INDEX = {
-  "generatedAt": "2026-08-10T12:31:32Z",
+  "generatedAt": "2026-08-10T13:15:17Z",
   "scenarios": [
     {
       "name": "archer_general_volley_cross",
@@ -10,6 +10,8 @@ window.BALANCE_INDEX = {
       "bandMin": 0,
       "bandMax": 1,
       "passed": true,
+      "metric": null,
+      "metricValue": 0,
       "detail": null,
       "runs": 100,
       "leftWins": 100,
@@ -33,6 +35,8 @@ window.BALANCE_INDEX = {
       "bandMin": 0.65,
       "bandMax": 0.75,
       "passed": false,
+      "metric": "leftWinRate",
+      "metricValue": 1,
       "detail": "\uC88C\uAD70 \uC2B9\uB960 100.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 65 %~75 %\uB97C \uBC97\uC5B4\uB0A8 (\uCD08\uACFC)",
       "runs": 200,
       "leftWins": 200,
@@ -40,12 +44,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 227,
+      "elapsedMs": 207,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "general_vs_none_archer.json",
-      "generatedAt": "2026-08-10T12:31:24Z"
+      "generatedAt": "2026-08-10T13:14:16Z"
     },
     {
       "name": "general_vs_none_assassin",
@@ -56,6 +60,8 @@ window.BALANCE_INDEX = {
       "bandMin": 0.65,
       "bandMax": 0.75,
       "passed": false,
+      "metric": "leftWinRate",
+      "metricValue": 1,
       "detail": "\uC88C\uAD70 \uC2B9\uB960 100.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 65 %~75 %\uB97C \uBC97\uC5B4\uB0A8 (\uCD08\uACFC)",
       "runs": 200,
       "leftWins": 200,
@@ -63,12 +69,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 885,
+      "elapsedMs": 855,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "general_vs_none_assassin.json",
-      "generatedAt": "2026-08-10T12:31:24Z"
+      "generatedAt": "2026-08-10T13:14:16Z"
     },
     {
       "name": "general_vs_none_hunter",
@@ -79,6 +85,8 @@ window.BALANCE_INDEX = {
       "bandMin": 0.65,
       "bandMax": 0.75,
       "passed": false,
+      "metric": "leftWinRate",
+      "metricValue": 1,
       "detail": "\uC88C\uAD70 \uC2B9\uB960 100.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 65 %~75 %\uB97C \uBC97\uC5B4\uB0A8 (\uCD08\uACFC)",
       "runs": 200,
       "leftWins": 200,
@@ -86,12 +94,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 7685,
+      "elapsedMs": 6742,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "general_vs_none_hunter.json",
-      "generatedAt": "2026-08-10T12:31:24Z"
+      "generatedAt": "2026-08-10T13:14:16Z"
     },
     {
       "name": "general_vs_none_warrior",
@@ -102,6 +110,8 @@ window.BALANCE_INDEX = {
       "bandMin": 0.65,
       "bandMax": 0.75,
       "passed": false,
+      "metric": "leftWinRate",
+      "metricValue": 1,
       "detail": "\uC88C\uAD70 \uC2B9\uB960 100.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 65 %~75 %\uB97C \uBC97\uC5B4\uB0A8 (\uCD08\uACFC)",
       "runs": 200,
       "leftWins": 200,
@@ -109,12 +119,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 813,
+      "elapsedMs": 732,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "general_vs_none_warrior.json",
-      "generatedAt": "2026-08-10T12:31:24Z"
+      "generatedAt": "2026-08-10T13:14:16Z"
     },
     {
       "name": "mirror_archer",
@@ -124,20 +134,22 @@ window.BALANCE_INDEX = {
       "band": "mirror_general",
       "bandMin": 0.45,
       "bandMax": 0.55,
-      "passed": false,
-      "detail": "\uC88C\uAD70 \uC2B9\uB960 10.5 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 45 %~55 %\uB97C \uBC97\uC5B4\uB0A8 (\uBBF8\uB2EC)",
+      "passed": true,
+      "metric": "sideBalance",
+      "metricValue": 0.4883720930232558,
+      "detail": null,
       "runs": 200,
       "leftWins": 21,
       "rightWins": 22,
       "draws": 157,
       "leftWinRate": 0.105,
       "rightWinRate": 0.11,
-      "elapsedMs": 986,
+      "elapsedMs": 958,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "mirror_archer.json",
-      "generatedAt": "2026-08-10T12:31:24Z"
+      "generatedAt": "2026-08-10T13:14:16Z"
     },
     {
       "name": "mirror_assassin",
@@ -148,19 +160,21 @@ window.BALANCE_INDEX = {
       "bandMin": 0.45,
       "bandMax": 0.55,
       "passed": false,
-      "detail": "\uC88C\uAD70 \uC2B9\uB960 35.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 45 %~55 %\uB97C \uBC97\uC5B4\uB0A8 (\uBBF8\uB2EC)",
+      "metric": "sideBalance",
+      "metricValue": 0.35,
+      "detail": "\uC2B9\uBD80 \uB09C \uD310\uC758 \uC88C\uAD70 \uBE44\uC728 35.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 45 %~55 %\uB97C \uBC97\uC5B4\uB0A8 (\uBBF8\uB2EC)",
       "runs": 200,
       "leftWins": 70,
       "rightWins": 130,
       "draws": 0,
       "leftWinRate": 0.35,
       "rightWinRate": 0.65,
-      "elapsedMs": 1098,
+      "elapsedMs": 1097,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "mirror_assassin.json",
-      "generatedAt": "2026-08-10T12:31:24Z"
+      "generatedAt": "2026-08-10T13:14:16Z"
     },
     {
       "name": "mirror_hunter",
@@ -171,19 +185,21 @@ window.BALANCE_INDEX = {
       "bandMin": 0.45,
       "bandMax": 0.55,
       "passed": false,
-      "detail": "\uC88C\uAD70 \uC2B9\uB960 27.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 45 %~55 %\uB97C \uBC97\uC5B4\uB0A8 (\uBBF8\uB2EC)",
+      "metric": "sideBalance",
+      "metricValue": 0.27,
+      "detail": "\uC2B9\uBD80 \uB09C \uD310\uC758 \uC88C\uAD70 \uBE44\uC728 27.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 45 %~55 %\uB97C \uBC97\uC5B4\uB0A8 (\uBBF8\uB2EC)",
       "runs": 200,
       "leftWins": 54,
       "rightWins": 146,
       "draws": 0,
       "leftWinRate": 0.27,
       "rightWinRate": 0.73,
-      "elapsedMs": 9237,
+      "elapsedMs": 8920,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "mirror_hunter.json",
-      "generatedAt": "2026-08-10T12:31:24Z"
+      "generatedAt": "2026-08-10T13:14:16Z"
     },
     {
       "name": "mirror_warrior",
@@ -193,22 +209,24 @@ window.BALANCE_INDEX = {
       "band": "mirror_general",
       "bandMin": 0.45,
       "bandMax": 0.55,
-      "passed": false,
-      "detail": "\uC88C\uAD70 \uC2B9\uB960 0.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 45 %~55 %\uB97C \uBC97\uC5B4\uB0A8 (\uBBF8\uB2EC)",
+      "passed": true,
+      "metric": "sideBalance",
+      "metricValue": 0.5,
+      "detail": null,
       "runs": 200,
       "leftWins": 0,
       "rightWins": 0,
       "draws": 200,
       "leftWinRate": 0,
       "rightWinRate": 0,
-      "elapsedMs": 1566,
+      "elapsedMs": 1515,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [
         0
       ],
       "file": "mirror_warrior.json",
-      "generatedAt": "2026-08-10T12:31:27Z"
+      "generatedAt": "2026-08-10T13:15:13Z"
     },
     {
       "name": "role_archer_vs_assassin",
@@ -219,6 +237,8 @@ window.BALANCE_INDEX = {
       "bandMin": 0.3,
       "bandMax": 0.7,
       "passed": false,
+      "metric": "leftWinRate",
+      "metricValue": 0.8,
       "detail": "\uC88C\uAD70 \uC2B9\uB960 80.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 30 %~70 %\uB97C \uBC97\uC5B4\uB0A8 (\uCD08\uACFC)",
       "runs": 200,
       "leftWins": 160,
@@ -226,14 +246,14 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 0.8,
       "rightWinRate": 0.2,
-      "elapsedMs": 1445,
+      "elapsedMs": 1451,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [
         17
       ],
       "file": "role_archer_vs_assassin.json",
-      "generatedAt": "2026-08-10T12:31:29Z"
+      "generatedAt": "2026-08-10T13:15:15Z"
     },
     {
       "name": "role_archer_vs_hunter",
@@ -244,6 +264,8 @@ window.BALANCE_INDEX = {
       "bandMin": 0.3,
       "bandMax": 0.7,
       "passed": false,
+      "metric": "leftWinRate",
+      "metricValue": 1,
       "detail": "\uC88C\uAD70 \uC2B9\uB960 100.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 30 %~70 %\uB97C \uBC97\uC5B4\uB0A8 (\uCD08\uACFC)",
       "runs": 200,
       "leftWins": 200,
@@ -251,12 +273,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 2174,
+      "elapsedMs": 2139,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "role_archer_vs_hunter.json",
-      "generatedAt": "2026-08-10T12:31:24Z"
+      "generatedAt": "2026-08-10T13:14:16Z"
     },
     {
       "name": "role_assassin_vs_hunter",
@@ -267,6 +289,8 @@ window.BALANCE_INDEX = {
       "bandMin": 0.3,
       "bandMax": 0.7,
       "passed": false,
+      "metric": "leftWinRate",
+      "metricValue": 1,
       "detail": "\uC88C\uAD70 \uC2B9\uB960 100.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 30 %~70 %\uB97C \uBC97\uC5B4\uB0A8 (\uCD08\uACFC)",
       "runs": 200,
       "leftWins": 200,
@@ -274,12 +298,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 3101,
+      "elapsedMs": 2868,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "role_assassin_vs_hunter.json",
-      "generatedAt": "2026-08-10T12:31:24Z"
+      "generatedAt": "2026-08-10T13:14:16Z"
     },
     {
       "name": "role_warrior_vs_archer",
@@ -290,6 +314,8 @@ window.BALANCE_INDEX = {
       "bandMin": 0.3,
       "bandMax": 0.7,
       "passed": false,
+      "metric": "leftWinRate",
+      "metricValue": 1,
       "detail": "\uC88C\uAD70 \uC2B9\uB960 100.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 30 %~70 %\uB97C \uBC97\uC5B4\uB0A8 (\uCD08\uACFC)",
       "runs": 200,
       "leftWins": 200,
@@ -297,12 +323,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 719,
+      "elapsedMs": 793,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "role_warrior_vs_archer.json",
-      "generatedAt": "2026-08-10T12:31:24Z"
+      "generatedAt": "2026-08-10T13:14:16Z"
     },
     {
       "name": "role_warrior_vs_assassin",
@@ -313,6 +339,8 @@ window.BALANCE_INDEX = {
       "bandMin": 0.3,
       "bandMax": 0.7,
       "passed": false,
+      "metric": "leftWinRate",
+      "metricValue": 0.995,
       "detail": "\uC88C\uAD70 \uC2B9\uB960 99.5 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 30 %~70 %\uB97C \uBC97\uC5B4\uB0A8 (\uCD08\uACFC)",
       "runs": 200,
       "leftWins": 199,
@@ -320,12 +348,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 0.995,
       "rightWinRate": 0.005,
-      "elapsedMs": 1123,
+      "elapsedMs": 1227,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "role_warrior_vs_assassin.json",
-      "generatedAt": "2026-08-10T12:31:24Z"
+      "generatedAt": "2026-08-10T13:14:16Z"
     },
     {
       "name": "role_warrior_vs_hunter",
@@ -336,6 +364,8 @@ window.BALANCE_INDEX = {
       "bandMin": 0.3,
       "bandMax": 0.7,
       "passed": false,
+      "metric": "leftWinRate",
+      "metricValue": 1,
       "detail": "\uC88C\uAD70 \uC2B9\uB960 100.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 30 %~70 %\uB97C \uBC97\uC5B4\uB0A8 (\uCD08\uACFC)",
       "runs": 200,
       "leftWins": 200,
@@ -343,12 +373,12 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 1,
       "rightWinRate": 0,
-      "elapsedMs": 3957,
+      "elapsedMs": 3622,
       "hasOverrides": false,
       "overrideNote": null,
       "replaySeeds": [],
       "file": "role_warrior_vs_hunter.json",
-      "generatedAt": "2026-08-10T12:31:24Z"
+      "generatedAt": "2026-08-10T13:14:16Z"
     },
     {
       "name": "warrior_general_vs_plain",
@@ -359,6 +389,8 @@ window.BALANCE_INDEX = {
       "bandMin": 0,
       "bandMax": 1,
       "passed": true,
+      "metric": null,
+      "metricValue": 0,
       "detail": null,
       "runs": 500,
       "leftWins": 500,
@@ -382,6 +414,8 @@ window.BALANCE_INDEX = {
       "bandMin": 0.3,
       "bandMax": 0.7,
       "passed": true,
+      "metric": "leftWinRate",
+      "metricValue": 0.61,
       "detail": null,
       "runs": 200,
       "leftWins": 122,
@@ -389,14 +423,14 @@ window.BALANCE_INDEX = {
       "draws": 0,
       "leftWinRate": 0.61,
       "rightWinRate": 0.39,
-      "elapsedMs": 1580,
+      "elapsedMs": 1559,
       "hasOverrides": true,
       "overrideNote": "\uAD81\uC218 \uC0AC\uAC70\uB9AC\u00B7\uD654\uB825 \uD558\uD5A5 1\uC548",
       "replaySeeds": [
         17
       ],
       "file": "role_archer_vs_assassin.archer-nerf.json",
-      "generatedAt": "2026-08-10T12:31:32Z"
+      "generatedAt": "2026-08-10T13:15:17Z"
     }
   ]
 };
