@@ -13,20 +13,25 @@ MonoBehaviour:
   m_Name: EventDefinition_RuneRavine
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.EventDefinition
   eventId: evt_rune_ravine
-  illustration: {fileID: 0}
-  bodyText: 룬 전쟁의 격전지였다는 협곡. 그 바닥의 흙이 스스로 사람의 형상을 빚어낼 만큼, 룬의 기운이 짙게 남아 있다.
+  illustration: {fileID: 21300000, guid: 6376628741a14534ba1e61636adc823a, type: 3}
+  bodyText: "\uB8EC \uC804\uC7C1\uC758 \uACA9\uC804\uC9C0\uC600\uB2E4\uB294 \uD611\uACE1.
+    \uADF8 \uBC14\uB2E5\uC758 \uD759\uC774 \uC2A4\uC2A4\uB85C \uC0AC\uB78C\uC758
+    \uD615\uC0C1\uC744 \uBE5A\uC5B4\uB0BC \uB9CC\uD07C, \uB8EC\uC758 \uAE30\uC6B4\uC774
+    \uC9D9\uAC8C \uB0A8\uC544 \uC788\uB2E4."
   choices:
-  - choiceText: 기운을 끌어와 형상을 완성한다
+  - choiceText: "\uAE30\uC6B4\uC744 \uB04C\uC5B4\uC640 \uD615\uC0C1\uC744 \uC644\uC131\uD55C\uB2E4"
     rewards:
     - type: 1
       armyClass: 0
       itemDef: {fileID: 0}
       goldAmount: 0
-    resultText: 손을 대자, 흙이 스스로 자세를 고쳐 세웠다.
-  - choiceText: 그대로 두고 지나간다
+    resultText: "\uC190\uC744 \uB300\uC790, \uD759\uC774 \uC2A4\uC2A4\uB85C \uC790\uC138\uB97C
+      \uACE0\uCCD0 \uC138\uC6E0\uB2E4."
+  - choiceText: "\uADF8\uB300\uB85C \uB450\uACE0 \uC9C0\uB098\uAC04\uB2E4"
     rewards:
     - type: 3
       armyClass: 0
       itemDef: {fileID: 0}
       goldAmount: 20
-    resultText: 협곡을 벗어나는 길, 반쯤 흙에 묻힌 옛 룬 조각 몇 개를 주웠다.
+    resultText: "\uD611\uACE1\uC744 \uBC97\uC5B4\uB098\uB294 \uAE38, \uBC18\uCBE4
+      \uD759\uC5D0 \uBB3B\uD78C \uC61B \uB8EC \uC870\uAC01 \uBA87 \uAC1C\uB97C \uC8FC\uC6E0\uB2E4."

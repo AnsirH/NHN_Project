@@ -1,40 +1,45 @@
 {
   "scenarioName": "mirror_archer",
+  "scenarioPath": "Tools/BalanceLab/scenarios/matrix/mirror_archer.json",
+  "tag": null,
+  "appliedOverrides": null,
+  "appliedOverridesPath": null,
+  "replaySeeds": [],
   "band": "mirror_general",
   "verdict": {
     "bandId": "mirror_general",
     "minWinRate": 0.45,
     "maxWinRate": 0.55,
-    "passed": true,
-    "detail": null
+    "passed": false,
+    "detail": "\uC88C\uAD70 \uC2B9\uB960 100.0 %\uC774 \uBAA9\uD45C \uBC34\uB4DC 45 %~55 %\uB97C \uBC97\uC5B4\uB0A8 (\uCD08\uACFC)"
   },
   "runs": 200,
-  "leftWins": 104,
-  "rightWins": 96,
+  "leftWins": 200,
+  "rightWins": 0,
   "draws": 0,
-  "leftWinRate": 0.52,
-  "rightWinRate": 0.48,
-  "elapsedMs": 1151,
+  "leftWinRate": 1,
+  "rightWinRate": 0,
+  "elapsedMs": 1023,
   "battles": [
     {
       "seed": 0,
-      "winner": "right",
-      "ticks": 412,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -43,23 +48,23 @@
     },
     {
       "seed": 1,
-      "winner": "right",
-      "ticks": 459,
+      "winner": "left",
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -69,21 +74,21 @@
     {
       "seed": 2,
       "winner": "left",
-      "ticks": 360,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -93,23 +98,23 @@
     },
     {
       "seed": 3,
-      "winner": "right",
-      "ticks": 463,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -119,21 +124,21 @@
     {
       "seed": 4,
       "winner": "left",
-      "ticks": 426,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -144,21 +149,21 @@
     {
       "seed": 5,
       "winner": "left",
-      "ticks": 415,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -169,21 +174,21 @@
     {
       "seed": 6,
       "winner": "left",
-      "ticks": 460,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -194,21 +199,21 @@
     {
       "seed": 7,
       "winner": "left",
-      "ticks": 375,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -219,21 +224,21 @@
     {
       "seed": 8,
       "winner": "left",
-      "ticks": 417,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -243,23 +248,23 @@
     },
     {
       "seed": 9,
-      "winner": "right",
-      "ticks": 388,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 6,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -269,21 +274,21 @@
     {
       "seed": 10,
       "winner": "left",
-      "ticks": 393,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 6,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -293,23 +298,23 @@
     },
     {
       "seed": 11,
-      "winner": "right",
-      "ticks": 494,
+      "winner": "left",
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -319,21 +324,21 @@
     {
       "seed": 12,
       "winner": "left",
-      "ticks": 411,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -344,21 +349,21 @@
     {
       "seed": 13,
       "winner": "left",
-      "ticks": 364,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 6,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -369,21 +374,21 @@
     {
       "seed": 14,
       "winner": "left",
-      "ticks": 408,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -393,23 +398,23 @@
     },
     {
       "seed": 15,
-      "winner": "right",
-      "ticks": 380,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -418,23 +423,23 @@
     },
     {
       "seed": 16,
-      "winner": "right",
-      "ticks": 461,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -444,21 +449,21 @@
     {
       "seed": 17,
       "winner": "left",
-      "ticks": 411,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -469,21 +474,21 @@
     {
       "seed": 18,
       "winner": "left",
-      "ticks": 394,
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -494,21 +499,21 @@
     {
       "seed": 19,
       "winner": "left",
-      "ticks": 412,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -519,21 +524,21 @@
     {
       "seed": 20,
       "winner": "left",
-      "ticks": 431,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -543,23 +548,23 @@
     },
     {
       "seed": 21,
-      "winner": "right",
-      "ticks": 492,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -568,23 +573,23 @@
     },
     {
       "seed": 22,
-      "winner": "right",
-      "ticks": 458,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -594,21 +599,21 @@
     {
       "seed": 23,
       "winner": "left",
-      "ticks": 436,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -619,21 +624,21 @@
     {
       "seed": 24,
       "winner": "left",
-      "ticks": 514,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -644,21 +649,21 @@
     {
       "seed": 25,
       "winner": "left",
-      "ticks": 395,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -669,21 +674,21 @@
     {
       "seed": 26,
       "winner": "left",
-      "ticks": 414,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -694,21 +699,21 @@
     {
       "seed": 27,
       "winner": "left",
-      "ticks": 461,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -719,21 +724,21 @@
     {
       "seed": 28,
       "winner": "left",
-      "ticks": 367,
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -743,23 +748,23 @@
     },
     {
       "seed": 29,
-      "winner": "right",
-      "ticks": 358,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 6,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -769,21 +774,21 @@
     {
       "seed": 30,
       "winner": "left",
-      "ticks": 412,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -793,23 +798,23 @@
     },
     {
       "seed": 31,
-      "winner": "right",
-      "ticks": 513,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -819,21 +824,21 @@
     {
       "seed": 32,
       "winner": "left",
-      "ticks": 429,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -843,23 +848,23 @@
     },
     {
       "seed": 33,
-      "winner": "right",
-      "ticks": 415,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -869,21 +874,21 @@
     {
       "seed": 34,
       "winner": "left",
-      "ticks": 481,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -894,21 +899,21 @@
     {
       "seed": 35,
       "winner": "left",
-      "ticks": 366,
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -919,21 +924,21 @@
     {
       "seed": 36,
       "winner": "left",
-      "ticks": 458,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -944,21 +949,21 @@
     {
       "seed": 37,
       "winner": "left",
-      "ticks": 430,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -968,23 +973,23 @@
     },
     {
       "seed": 38,
-      "winner": "right",
-      "ticks": 371,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 6,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -994,21 +999,21 @@
     {
       "seed": 39,
       "winner": "left",
-      "ticks": 416,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1018,23 +1023,23 @@
     },
     {
       "seed": 40,
-      "winner": "right",
-      "ticks": 459,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1043,23 +1048,23 @@
     },
     {
       "seed": 41,
-      "winner": "right",
-      "ticks": 529,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1068,23 +1073,23 @@
     },
     {
       "seed": 42,
-      "winner": "right",
-      "ticks": 416,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1093,23 +1098,23 @@
     },
     {
       "seed": 43,
-      "winner": "right",
-      "ticks": 429,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1118,23 +1123,23 @@
     },
     {
       "seed": 44,
-      "winner": "right",
-      "ticks": 500,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1143,23 +1148,23 @@
     },
     {
       "seed": 45,
-      "winner": "right",
-      "ticks": 460,
+      "winner": "left",
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 6,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1169,21 +1174,21 @@
     {
       "seed": 46,
       "winner": "left",
-      "ticks": 472,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1194,21 +1199,21 @@
     {
       "seed": 47,
       "winner": "left",
-      "ticks": 494,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1219,21 +1224,21 @@
     {
       "seed": 48,
       "winner": "left",
-      "ticks": 413,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1244,21 +1249,21 @@
     {
       "seed": 49,
       "winner": "left",
-      "ticks": 361,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1269,21 +1274,21 @@
     {
       "seed": 50,
       "winner": "left",
-      "ticks": 365,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1293,23 +1298,23 @@
     },
     {
       "seed": 51,
-      "winner": "right",
-      "ticks": 460,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1318,23 +1323,23 @@
     },
     {
       "seed": 52,
-      "winner": "right",
-      "ticks": 373,
+      "winner": "left",
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1343,23 +1348,23 @@
     },
     {
       "seed": 53,
-      "winner": "right",
-      "ticks": 340,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 9,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1369,21 +1374,21 @@
     {
       "seed": 54,
       "winner": "left",
-      "ticks": 459,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1393,23 +1398,23 @@
     },
     {
       "seed": 55,
-      "winner": "right",
-      "ticks": 385,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1418,23 +1423,23 @@
     },
     {
       "seed": 56,
-      "winner": "right",
-      "ticks": 365,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1444,21 +1449,21 @@
     {
       "seed": 57,
       "winner": "left",
-      "ticks": 459,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1469,21 +1474,21 @@
     {
       "seed": 58,
       "winner": "left",
-      "ticks": 376,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 7,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1494,21 +1499,21 @@
     {
       "seed": 59,
       "winner": "left",
-      "ticks": 459,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1519,21 +1524,21 @@
     {
       "seed": 60,
       "winner": "left",
-      "ticks": 514,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1544,21 +1549,21 @@
     {
       "seed": 61,
       "winner": "left",
-      "ticks": 489,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1568,23 +1573,23 @@
     },
     {
       "seed": 62,
-      "winner": "right",
-      "ticks": 393,
+      "winner": "left",
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1594,21 +1599,21 @@
     {
       "seed": 63,
       "winner": "left",
-      "ticks": 428,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1619,21 +1624,21 @@
     {
       "seed": 64,
       "winner": "left",
-      "ticks": 392,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1644,21 +1649,21 @@
     {
       "seed": 65,
       "winner": "left",
-      "ticks": 363,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 7,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1669,21 +1674,21 @@
     {
       "seed": 66,
       "winner": "left",
-      "ticks": 399,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1694,21 +1699,21 @@
     {
       "seed": 67,
       "winner": "left",
-      "ticks": 414,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1718,23 +1723,23 @@
     },
     {
       "seed": 68,
-      "winner": "right",
-      "ticks": 473,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1743,23 +1748,23 @@
     },
     {
       "seed": 69,
-      "winner": "right",
-      "ticks": 358,
+      "winner": "left",
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1768,23 +1773,23 @@
     },
     {
       "seed": 70,
-      "winner": "right",
-      "ticks": 447,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1793,23 +1798,23 @@
     },
     {
       "seed": 71,
-      "winner": "right",
-      "ticks": 389,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 7,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1818,23 +1823,23 @@
     },
     {
       "seed": 72,
-      "winner": "right",
-      "ticks": 362,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1844,21 +1849,21 @@
     {
       "seed": 73,
       "winner": "left",
-      "ticks": 366,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1868,23 +1873,23 @@
     },
     {
       "seed": 74,
-      "winner": "right",
-      "ticks": 517,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1893,23 +1898,23 @@
     },
     {
       "seed": 75,
-      "winner": "right",
-      "ticks": 460,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1918,23 +1923,23 @@
     },
     {
       "seed": 76,
-      "winner": "right",
-      "ticks": 405,
+      "winner": "left",
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1943,23 +1948,23 @@
     },
     {
       "seed": 77,
-      "winner": "right",
-      "ticks": 360,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 6,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -1969,21 +1974,21 @@
     {
       "seed": 78,
       "winner": "left",
-      "ticks": 442,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -1993,23 +1998,23 @@
     },
     {
       "seed": 79,
-      "winner": "right",
-      "ticks": 466,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2019,21 +2024,21 @@
     {
       "seed": 80,
       "winner": "left",
-      "ticks": 461,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2043,23 +2048,23 @@
     },
     {
       "seed": 81,
-      "winner": "right",
-      "ticks": 410,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 6,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2069,21 +2074,21 @@
     {
       "seed": 82,
       "winner": "left",
-      "ticks": 444,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2094,21 +2099,21 @@
     {
       "seed": 83,
       "winner": "left",
-      "ticks": 410,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2118,23 +2123,23 @@
     },
     {
       "seed": 84,
-      "winner": "right",
-      "ticks": 405,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2143,23 +2148,23 @@
     },
     {
       "seed": 85,
-      "winner": "right",
-      "ticks": 389,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 6,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2168,23 +2173,23 @@
     },
     {
       "seed": 86,
-      "winner": "right",
-      "ticks": 418,
+      "winner": "left",
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2194,21 +2199,21 @@
     {
       "seed": 87,
       "winner": "left",
-      "ticks": 513,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2219,21 +2224,21 @@
     {
       "seed": 88,
       "winner": "left",
-      "ticks": 516,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2244,21 +2249,21 @@
     {
       "seed": 89,
       "winner": "left",
-      "ticks": 462,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2268,23 +2273,23 @@
     },
     {
       "seed": 90,
-      "winner": "right",
-      "ticks": 459,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2293,23 +2298,23 @@
     },
     {
       "seed": 91,
-      "winner": "right",
-      "ticks": 413,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2319,21 +2324,21 @@
     {
       "seed": 92,
       "winner": "left",
-      "ticks": 421,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2344,21 +2349,21 @@
     {
       "seed": 93,
       "winner": "left",
-      "ticks": 431,
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2369,21 +2374,21 @@
     {
       "seed": 94,
       "winner": "left",
-      "ticks": 366,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2393,23 +2398,23 @@
     },
     {
       "seed": 95,
-      "winner": "right",
-      "ticks": 361,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 7,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2418,23 +2423,23 @@
     },
     {
       "seed": 96,
-      "winner": "right",
-      "ticks": 389,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2444,21 +2449,21 @@
     {
       "seed": 97,
       "winner": "left",
-      "ticks": 365,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2469,21 +2474,21 @@
     {
       "seed": 98,
       "winner": "left",
-      "ticks": 458,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2494,21 +2499,21 @@
     {
       "seed": 99,
       "winner": "left",
-      "ticks": 412,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2519,21 +2524,21 @@
     {
       "seed": 100,
       "winner": "left",
-      "ticks": 419,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2543,23 +2548,23 @@
     },
     {
       "seed": 101,
-      "winner": "right",
-      "ticks": 493,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2568,23 +2573,23 @@
     },
     {
       "seed": 102,
-      "winner": "right",
-      "ticks": 395,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2594,21 +2599,21 @@
     {
       "seed": 103,
       "winner": "left",
-      "ticks": 413,
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2618,23 +2623,23 @@
     },
     {
       "seed": 104,
-      "winner": "right",
-      "ticks": 364,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 8,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2643,23 +2648,23 @@
     },
     {
       "seed": 105,
-      "winner": "right",
-      "ticks": 511,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2668,23 +2673,23 @@
     },
     {
       "seed": 106,
-      "winner": "right",
-      "ticks": 429,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2694,21 +2699,21 @@
     {
       "seed": 107,
       "winner": "left",
-      "ticks": 464,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2719,21 +2724,21 @@
     {
       "seed": 108,
       "winner": "left",
-      "ticks": 408,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2743,23 +2748,23 @@
     },
     {
       "seed": 109,
-      "winner": "right",
-      "ticks": 416,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2769,21 +2774,21 @@
     {
       "seed": 110,
       "winner": "left",
-      "ticks": 413,
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2794,21 +2799,21 @@
     {
       "seed": 111,
       "winner": "left",
-      "ticks": 441,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2818,23 +2823,23 @@
     },
     {
       "seed": 112,
-      "winner": "right",
-      "ticks": 449,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2844,21 +2849,21 @@
     {
       "seed": 113,
       "winner": "left",
-      "ticks": 411,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 6,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -2868,23 +2873,23 @@
     },
     {
       "seed": 114,
-      "winner": "right",
-      "ticks": 513,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2893,23 +2898,23 @@
     },
     {
       "seed": 115,
-      "winner": "right",
-      "ticks": 411,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2918,23 +2923,23 @@
     },
     {
       "seed": 116,
-      "winner": "right",
-      "ticks": 330,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 10,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2943,23 +2948,23 @@
     },
     {
       "seed": 117,
-      "winner": "right",
-      "ticks": 458,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2968,23 +2973,23 @@
     },
     {
       "seed": 118,
-      "winner": "right",
-      "ticks": 558,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -2993,23 +2998,23 @@
     },
     {
       "seed": 119,
-      "winner": "right",
-      "ticks": 418,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3019,21 +3024,21 @@
     {
       "seed": 120,
       "winner": "left",
-      "ticks": 404,
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3044,21 +3049,21 @@
     {
       "seed": 121,
       "winner": "left",
-      "ticks": 509,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3069,21 +3074,21 @@
     {
       "seed": 122,
       "winner": "left",
-      "ticks": 450,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3094,21 +3099,21 @@
     {
       "seed": 123,
       "winner": "left",
-      "ticks": 409,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3118,23 +3123,23 @@
     },
     {
       "seed": 124,
-      "winner": "right",
-      "ticks": 370,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3144,21 +3149,21 @@
     {
       "seed": 125,
       "winner": "left",
-      "ticks": 493,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3168,23 +3173,23 @@
     },
     {
       "seed": 126,
-      "winner": "right",
-      "ticks": 331,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3194,21 +3199,21 @@
     {
       "seed": 127,
       "winner": "left",
-      "ticks": 410,
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3219,21 +3224,21 @@
     {
       "seed": 128,
       "winner": "left",
-      "ticks": 412,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3243,23 +3248,23 @@
     },
     {
       "seed": 129,
-      "winner": "right",
-      "ticks": 458,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3268,23 +3273,23 @@
     },
     {
       "seed": 130,
-      "winner": "right",
-      "ticks": 510,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3293,23 +3298,23 @@
     },
     {
       "seed": 131,
-      "winner": "right",
-      "ticks": 413,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3318,23 +3323,23 @@
     },
     {
       "seed": 132,
-      "winner": "right",
-      "ticks": 365,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3343,23 +3348,23 @@
     },
     {
       "seed": 133,
-      "winner": "right",
-      "ticks": 358,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 6,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3368,23 +3373,23 @@
     },
     {
       "seed": 134,
-      "winner": "right",
-      "ticks": 465,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3393,23 +3398,23 @@
     },
     {
       "seed": 135,
-      "winner": "right",
-      "ticks": 589,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3418,23 +3423,23 @@
     },
     {
       "seed": 136,
-      "winner": "right",
-      "ticks": 458,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3443,23 +3448,23 @@
     },
     {
       "seed": 137,
-      "winner": "right",
-      "ticks": 458,
+      "winner": "left",
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3469,21 +3474,21 @@
     {
       "seed": 138,
       "winner": "left",
-      "ticks": 410,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3493,23 +3498,23 @@
     },
     {
       "seed": 139,
-      "winner": "right",
-      "ticks": 454,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3519,21 +3524,21 @@
     {
       "seed": 140,
       "winner": "left",
-      "ticks": 420,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3544,21 +3549,21 @@
     {
       "seed": 141,
       "winner": "left",
-      "ticks": 461,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3568,23 +3573,23 @@
     },
     {
       "seed": 142,
-      "winner": "right",
-      "ticks": 489,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3594,21 +3599,21 @@
     {
       "seed": 143,
       "winner": "left",
-      "ticks": 491,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3619,21 +3624,21 @@
     {
       "seed": 144,
       "winner": "left",
-      "ticks": 463,
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3643,23 +3648,23 @@
     },
     {
       "seed": 145,
-      "winner": "right",
-      "ticks": 414,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3668,23 +3673,23 @@
     },
     {
       "seed": 146,
-      "winner": "right",
-      "ticks": 413,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3693,23 +3698,23 @@
     },
     {
       "seed": 147,
-      "winner": "right",
-      "ticks": 414,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3719,21 +3724,21 @@
     {
       "seed": 148,
       "winner": "left",
-      "ticks": 371,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3744,21 +3749,21 @@
     {
       "seed": 149,
       "winner": "left",
-      "ticks": 454,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3769,21 +3774,21 @@
     {
       "seed": 150,
       "winner": "left",
-      "ticks": 368,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 7,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3794,21 +3799,21 @@
     {
       "seed": 151,
       "winner": "left",
-      "ticks": 492,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3819,21 +3824,21 @@
     {
       "seed": 152,
       "winner": "left",
-      "ticks": 395,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3843,23 +3848,23 @@
     },
     {
       "seed": 153,
-      "winner": "right",
-      "ticks": 546,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -3869,21 +3874,21 @@
     {
       "seed": 154,
       "winner": "left",
-      "ticks": 411,
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3894,21 +3899,21 @@
     {
       "seed": 155,
       "winner": "left",
-      "ticks": 412,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3919,21 +3924,21 @@
     {
       "seed": 156,
       "winner": "left",
-      "ticks": 474,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3944,21 +3949,21 @@
     {
       "seed": 157,
       "winner": "left",
-      "ticks": 406,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 6,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3969,21 +3974,21 @@
     {
       "seed": 158,
       "winner": "left",
-      "ticks": 410,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -3993,23 +3998,23 @@
     },
     {
       "seed": 159,
-      "winner": "right",
-      "ticks": 440,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4019,21 +4024,21 @@
     {
       "seed": 160,
       "winner": "left",
-      "ticks": 463,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4044,21 +4049,21 @@
     {
       "seed": 161,
       "winner": "left",
-      "ticks": 376,
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4068,23 +4073,23 @@
     },
     {
       "seed": 162,
-      "winner": "right",
-      "ticks": 412,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 6,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4093,23 +4098,23 @@
     },
     {
       "seed": 163,
-      "winner": "right",
-      "ticks": 538,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4119,21 +4124,21 @@
     {
       "seed": 164,
       "winner": "left",
-      "ticks": 507,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4143,23 +4148,23 @@
     },
     {
       "seed": 165,
-      "winner": "right",
-      "ticks": 390,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4168,23 +4173,23 @@
     },
     {
       "seed": 166,
-      "winner": "right",
-      "ticks": 420,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4193,23 +4198,23 @@
     },
     {
       "seed": 167,
-      "winner": "right",
-      "ticks": 557,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4218,23 +4223,23 @@
     },
     {
       "seed": 168,
-      "winner": "right",
-      "ticks": 511,
+      "winner": "left",
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4243,23 +4248,23 @@
     },
     {
       "seed": 169,
-      "winner": "right",
-      "ticks": 460,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4268,23 +4273,23 @@
     },
     {
       "seed": 170,
-      "winner": "right",
-      "ticks": 475,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4294,21 +4299,21 @@
     {
       "seed": 171,
       "winner": "left",
-      "ticks": 383,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 7,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4318,23 +4323,23 @@
     },
     {
       "seed": 172,
-      "winner": "right",
-      "ticks": 557,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4344,21 +4349,21 @@
     {
       "seed": 173,
       "winner": "left",
-      "ticks": 525,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4368,23 +4373,23 @@
     },
     {
       "seed": 174,
-      "winner": "right",
-      "ticks": 385,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4393,23 +4398,23 @@
     },
     {
       "seed": 175,
-      "winner": "right",
-      "ticks": 409,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4419,21 +4424,21 @@
     {
       "seed": 176,
       "winner": "left",
-      "ticks": 413,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4444,21 +4449,21 @@
     {
       "seed": 177,
       "winner": "left",
-      "ticks": 423,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4468,23 +4473,23 @@
     },
     {
       "seed": 178,
-      "winner": "right",
-      "ticks": 513,
+      "winner": "left",
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4493,23 +4498,23 @@
     },
     {
       "seed": 179,
-      "winner": "right",
-      "ticks": 440,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4518,23 +4523,23 @@
     },
     {
       "seed": 180,
-      "winner": "right",
-      "ticks": 411,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4544,21 +4549,21 @@
     {
       "seed": 181,
       "winner": "left",
-      "ticks": 539,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4568,23 +4573,23 @@
     },
     {
       "seed": 182,
-      "winner": "right",
-      "ticks": 448,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4594,21 +4599,21 @@
     {
       "seed": 183,
       "winner": "left",
-      "ticks": 392,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 6,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4618,23 +4623,23 @@
     },
     {
       "seed": 184,
-      "winner": "right",
-      "ticks": 392,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4643,23 +4648,23 @@
     },
     {
       "seed": 185,
-      "winner": "right",
-      "ticks": 424,
+      "winner": "left",
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 3,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4669,21 +4674,21 @@
     {
       "seed": 186,
       "winner": "left",
-      "ticks": 460,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4694,21 +4699,21 @@
     {
       "seed": 187,
       "winner": "left",
-      "ticks": 462,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4719,21 +4724,21 @@
     {
       "seed": 188,
       "winner": "left",
-      "ticks": 625,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4743,23 +4748,23 @@
     },
     {
       "seed": 189,
-      "winner": "right",
-      "ticks": 313,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 8,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4769,21 +4774,21 @@
     {
       "seed": 190,
       "winner": "left",
-      "ticks": 410,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4793,23 +4798,23 @@
     },
     {
       "seed": 191,
-      "winner": "right",
-      "ticks": 541,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4818,23 +4823,23 @@
     },
     {
       "seed": 192,
-      "winner": "right",
-      "ticks": 413,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 4,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4844,21 +4849,21 @@
     {
       "seed": 193,
       "winner": "left",
-      "ticks": 511,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4869,21 +4874,21 @@
     {
       "seed": 194,
       "winner": "left",
-      "ticks": 417,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4893,23 +4898,23 @@
     },
     {
       "seed": 195,
-      "winner": "right",
-      "ticks": 537,
+      "winner": "left",
+      "ticks": 1083,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 2,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4919,21 +4924,21 @@
     {
       "seed": 196,
       "winner": "left",
-      "ticks": 430,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4944,21 +4949,21 @@
     {
       "seed": 197,
       "winner": "left",
-      "ticks": 430,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 6,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
@@ -4968,23 +4973,23 @@
     },
     {
       "seed": 198,
-      "winner": "right",
-      "ticks": 431,
+      "winner": "left",
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 1,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,
           "activations": 1
@@ -4994,21 +4999,21 @@
     {
       "seed": 199,
       "winner": "left",
-      "ticks": 380,
+      "ticks": 1132,
       "leftSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
-          "survivors": 5,
+          "soldiers": 20,
+          "survivors": 0,
           "hasGeneral": true,
-          "generalAlive": false,
+          "generalAlive": true,
           "activations": 1
         }
       ],
       "rightSquads": [
         {
           "squadId": "Archer1",
-          "level": 0,
+          "soldiers": 20,
           "survivors": 0,
           "hasGeneral": true,
           "generalAlive": false,

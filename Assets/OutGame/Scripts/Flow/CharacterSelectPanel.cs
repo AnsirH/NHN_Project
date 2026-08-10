@@ -4,6 +4,7 @@ using System.Linq;
 using OutGame.Logic.Runs;
 using OutGame.ScriptableObjects;
 using OutGame.UI;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,24 +24,34 @@ namespace OutGame.Flow
     ///
     /// 2026-08-08: CharacterSelectController → CharacterSelectPanel로 개명(Docs/OutGame/화면 명칭
     /// 정리.md) — 한 씬 안에서 배타적으로 토글되는 화면 콘텐츠는 전부 "Panel" 접미사로 통일(사용자 확정).
+    ///
+    /// 2026-08-09: 텍스트 4개를 UnityEngine.UI.Text → TMP_Text로 교체. 프리팹 쪽이 이미
+    /// TextMeshProUGUI로 바뀌어 있어서 기존 타입으로는 배선 자체가 불가능했고, 이 패널은 부팅 시
+    /// 꺼져 있다가 맵 확정 시점에 처음 SetActive(true)되므로 Awake()의 배선 가드가 그때서야 터졌다.
     /// </summary>
     public class CharacterSelectPanel : MonoBehaviour
     {
         [Header("표시 영역")]
         [SerializeField] private Image portraitImage;
-        [SerializeField] private Text nameText;
-        [SerializeField] private Text descriptionText;
-        [SerializeField] private Text skillNameText;
-        [SerializeField] private Text skillDescriptionText;
+        [SerializeField] private TMP_Text nameText;
+        [SerializeField] private TMP_Text descriptionText;
+        [SerializeField] private TMP_Text skillNameText;
+        [SerializeField] private TMP_Text skillDescriptionText;
 
         [Header("네비게이션")]
         [SerializeField] private Button leftArrowButton;
         [SerializeField] private Button rightArrowButton;
         [SerializeField] private Button confirmButton;
+        [SerializeField] private Button backButton;
         [SerializeField] private CharacterIconView[] iconViews;
 
         /// <summary>캐릭터가 확정되었을 때 발생 — OutGameFlowController가 구독해 방 그래프로 넘긴다.</summary>
         public event Action<RunState> CharacterConfirmed;
+
+        /// <summary>[뒤로]를 눌렀을 때 발생 — OutGameFlowController가 구독해 맵 선택 패널로 되돌린다.
+        /// 맵 선택과 달리 여기서는 씬을 벗어나지 않는다(같은 OutGame.unity 안의 형제 패널이라
+        /// SceneLoadButton이 아니라 이벤트로 처리한다).</summary>
+        public event Action BackRequested;
 
         private List<PlayerCharacterDefinition> characters;
         private int currentIndex;
@@ -50,7 +61,7 @@ namespace OutGame.Flow
         {
             if (portraitImage == null || nameText == null || descriptionText == null
                 || skillNameText == null || skillDescriptionText == null || leftArrowButton == null
-                || rightArrowButton == null || confirmButton == null
+                || rightArrowButton == null || confirmButton == null || backButton == null
                 || iconViews == null || iconViews.Length == 0)
                 throw new InvalidOperationException("CharacterSelectPanel의 필드가 배선되지 않았습니다.");
 
@@ -76,6 +87,7 @@ namespace OutGame.Flow
             rightArrowButton.onClick.AddListener(
                 () => Select((currentIndex + 1) % characters.Count));
             confirmButton.onClick.AddListener(OnConfirmClicked);
+            backButton.onClick.AddListener(OnBackClicked);
 
             // 미리보기 탐색(화살표/아이콘 클릭)은 Begin() 없이도 동작해야 하므로 초기 선택은
             // 여기서도 해둔다 — Begin()의 Select(0)은 재진입 시 리셋을 보장하기 위한 것으로,
@@ -115,6 +127,15 @@ namespace OutGame.Flow
 
             run.selectedCharacterId = characters[currentIndex].ToData().id;
             CharacterConfirmed?.Invoke(run);
+        }
+
+        /// <summary>맵 선택으로 되돌아간다 — 확정 전이라 이 런은 버린다. 맵을 다시 고르면
+        /// MapSelectPanel이 새 RunState를 만들어 Begin()으로 넘겨준다. run을 비워두면 혹시라도
+        /// Begin() 없이 이 패널이 열렸을 때 [시작하기]가 stale한 런을 확정하는 대신 명확히 실패한다.</summary>
+        private void OnBackClicked()
+        {
+            run = null;
+            BackRequested?.Invoke();
         }
     }
 }

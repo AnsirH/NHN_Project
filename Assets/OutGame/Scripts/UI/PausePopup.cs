@@ -20,17 +20,25 @@ namespace OutGame.UI
         [SerializeField] private GameObject panelRoot;
         [SerializeField] private Button settingsButton;
         [SerializeField] private SettingsPopup settingsPopup;
+        // 2026-08-10: 화면상 닫기 경로. 원래는 ESC/뒤로가기만으로 닫게 뒀는데, 방 그래프 상단 바에
+        // 이 팝업을 여는 버튼이 생기면서 키 없이 닫을 방법도 필요해졌다(사용자 확정).
+        [SerializeField] private Button closeButton;
 
         private void Awake()
         {
-            if (panelRoot == null || settingsButton == null || settingsPopup == null)
+            if (panelRoot == null || settingsButton == null || settingsPopup == null || closeButton == null)
                 throw new InvalidOperationException("PausePopup의 필드가 배선되지 않았습니다.");
 
             settingsButton.onClick.AddListener(OnSettingsClicked);
+            closeButton.onClick.AddListener(Hide);
             panelRoot.SetActive(false);
         }
 
-        private void OnDestroy() => settingsButton.onClick.RemoveListener(OnSettingsClicked);
+        private void OnDestroy()
+        {
+            settingsButton.onClick.RemoveListener(OnSettingsClicked);
+            closeButton.onClick.RemoveListener(Hide);
+        }
 
         private void Update()
         {

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EventDefinition_HermitCabin
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.EventDefinition
   eventId: evt_hermit_cabin
-  illustration: {fileID: 0}
+  illustration: {fileID: 21300000, guid: b37cf791f3d021c45b8183b5bea4f5e2, type: 3}
   bodyText: "\uC778\uC801 \uC5C6\uB294 \uACE8\uC9DC\uAE30 \uAE4A\uC219\uD55C \uACF3,
     \uB0A1\uC740 \uC624\uB450\uB9C9 \uC790\uB9AC\uC5D0 \uD759\uC778\uD615 \uC5EC\uB7FF\uC774
     \uC904\uC9C0\uC5B4 \uC11C \uC788\uB2E4. \uC774\uAC78 \uBE5A\uC740 \uC190\uC740

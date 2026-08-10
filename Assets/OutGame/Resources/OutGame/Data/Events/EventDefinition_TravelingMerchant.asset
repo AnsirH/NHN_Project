@@ -13,27 +13,34 @@ MonoBehaviour:
   m_Name: EventDefinition_TravelingMerchant
   m_EditorClassIdentifier: OutGame.ScriptableObjects::OutGame.ScriptableObjects.EventDefinition
   eventId: evt_traveling_merchant
-  illustration: {fileID: 0}
-  bodyText: '흙 묻은 수레를 끄는 상인이 있다. 실려 있는 것들은 하나같이 전장에서 건너온 물건들이다. "마지막입니다. 하나만 가져가시죠."'
+  illustration: {fileID: 21300000, guid: 5a7c6e335dde2cc4fbdb8d12c30c30a4, type: 3}
+  bodyText: "\uD759 \uBB3B\uC740 \uC218\uB808\uB97C \uB044\uB294 \uC0C1\uC778\uC774
+    \uC788\uB2E4. \uC2E4\uB824 \uC788\uB294 \uAC83\uB4E4\uC740 \uD558\uB098\uAC19\uC774
+    \uC804\uC7A5\uC5D0\uC11C \uAC74\uB108\uC628 \uBB3C\uAC74\uB4E4\uC774\uB2E4. \"\uB9C8\uC9C0\uB9C9\uC785\uB2C8\uB2E4.
+    \uD558\uB098\uB9CC \uAC00\uC838\uAC00\uC2DC\uC8E0.\""
   choices:
-  - choiceText: 활을 받는다
+  - choiceText: "\uD65C\uC744 \uBC1B\uB294\uB2E4"
     rewards:
     - type: 2
       armyClass: 0
       itemDef: {fileID: 11400000, guid: 69f7fb86cb054f14bb8ff5bbb6981409, type: 2}
       goldAmount: 0
-    resultText: 활시위가 팽팽하다 — 누군가 매일 손질해온 흔적이다.
-  - choiceText: 검과 방패를 받는다
+    resultText: "\uD65C\uC2DC\uC704\uAC00 \uD33D\uD33D\uD558\uB2E4 \u2014 \uB204\uAD70\uAC00
+      \uB9E4\uC77C \uC190\uC9C8\uD574\uC628 \uD754\uC801\uC774\uB2E4."
+  - choiceText: "\uAC80\uACFC \uBC29\uD328\uB97C \uBC1B\uB294\uB2E4"
     rewards:
     - type: 2
       armyClass: 0
       itemDef: {fileID: 11400000, guid: 61d51b3066726404b810295714b8b94d, type: 2}
       goldAmount: 0
-    resultText: 방패에 새겨진 흠집들이, 그 방패가 지나온 전장들을 말해준다.
-  - choiceText: 도끼를 받는다
+    resultText: "\uBC29\uD328\uC5D0 \uC0C8\uACA8\uC9C4 \uD760\uC9D1\uB4E4\uC774,
+      \uADF8 \uBC29\uD328\uAC00 \uC9C0\uB098\uC628 \uC804\uC7A5\uB4E4\uC744 \uB9D0\uD574\uC900\uB2E4."
+  - choiceText: "\uB3C4\uB07C\uB97C \uBC1B\uB294\uB2E4"
     rewards:
     - type: 2
       armyClass: 0
       itemDef: {fileID: 11400000, guid: e15897dd52ccba1574c6c7a0d7d5decf, type: 2}
       goldAmount: 0
-    resultText: 도끼날은 무디지만, 자루를 쥔 손자국만은 선명하게 남아 있다.
+    resultText: "\uB3C4\uB07C\uB0A0\uC740 \uBB34\uB514\uC9C0\uB9CC, \uC790\uB8E8\uB97C
+      \uC954 \uC190\uC790\uAD6D\uB9CC\uC740 \uC120\uBA85\uD558\uAC8C \uB0A8\uC544
+      \uC788\uB2E4."

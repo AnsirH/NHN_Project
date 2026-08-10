@@ -37,6 +37,15 @@ namespace BalanceLab
 
         public bool Has(string key) => _scalars.ContainsKey(key) || _lists.ContainsKey(key);
 
+        /// <summary>오버라이드 적용용 — 원본 스칼라 문자열을 그대로 꺼낸다 (덮어쓰기 전 값 비교에 쓴다).</summary>
+        public bool TryGetRawScalar(string key, out string value) => _scalars.TryGetValue(key, out value);
+
+        /// <summary>오버라이드 적용용 — 리스트 필드는 패치 대상이 아니므로 구분해야 한다.</summary>
+        public bool IsListKey(string key) => _lists.ContainsKey(key);
+
+        /// <summary>스칼라 필드 전체 (뷰어 튜닝 패널의 기준선 스냅샷용). 리스트는 조절 대상이 아니라 뺀다.</summary>
+        public IReadOnlyDictionary<string, string> Scalars => _scalars;
+
         public float GetFloat(string key)
         {
             string raw = GetRequiredScalar(key);

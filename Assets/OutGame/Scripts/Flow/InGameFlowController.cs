@@ -40,6 +40,9 @@ namespace OutGame.Flow
         [SerializeField] private ArmyDeploymentPanel deploymentPanel;
         [SerializeField] private ArmyFormationPopup armyFormationPopup; // 2026-07-26: 방 그래프의 "진영" 팝업
         [SerializeField] private ItemRewardPopup itemRewardPopup; // 2026-07-26: 전투 승리 아이템 드롭 알림
+        // 2026-08-10: 방 그래프 상단 바 "환경설정" 버튼이 여는 대상. 씬 오브젝트라 RoomGraphPanel
+        // 프리팹이 직접 참조할 수 없어 여기서 받는다(진영 팝업과 동일한 구조).
+        [SerializeField] private PausePopup pausePopup;
         [SerializeField] private RoomTypeVisualSet visuals;
         [SerializeField] private RunConfigAsset runConfig;
         [SerializeField] private EnemyCompositionConfigAsset enemyCompositionConfigAsset; // §4-28
@@ -143,6 +146,7 @@ namespace OutGame.Flow
         {
             mapPanel.RoomSelected += OnRoomSelected;
             mapPanel.FormationRequested += OnFormationRequested;
+            mapPanel.SettingsRequested += OnSettingsRequested;
             runResultPanel.Completed += OnRoomCompleted;
             eventPanel.Completed += OnRoomCompleted;
             reinforcementPanel.Completed += OnRoomCompleted;
@@ -181,6 +185,14 @@ namespace OutGame.Flow
 
             mapPanel.Open(run.mapState);
             mapPanel.SetGold(run.gold); // 2026-07-26: 방 그래프 우측 상단 재화 표시
+            // 2026-08-10: 상단 바에 선택된 캐릭터 아이콘. id가 풀에 없으면 아이콘만 비운다 — 선택
+            // 캐릭터의 실제 유효성은 DeploymentState가 이미 명확한 예외로 검증하므로, 여기서 런을
+            // 중단시키면 진짜 원인보다 먼저 터져 헷갈린다.
+            PlayerCharacterDefinition selectedCharacter;
+            mapPanel.SetPlayerIcon(
+                characterDefsById.TryGetValue(run.selectedCharacterId ?? string.Empty, out selectedCharacter)
+                    ? selectedCharacter.Icon
+                    : null);
 
             // 씬 교체 전투에서 복귀한 경우(§7.4): 파괴 전 보관해둔 컨텍스트를 복원하고 기존 결과 경로를
             // 그대로 태운다 — 패배: 세이브 삭제+패배 화면→메인 메뉴, 승리: 보상 팝업→맵 갱신+저장.
@@ -198,6 +210,7 @@ namespace OutGame.Flow
         {
             if (mapPanel != null) mapPanel.RoomSelected -= OnRoomSelected;
             if (mapPanel != null) mapPanel.FormationRequested -= OnFormationRequested;
+            if (mapPanel != null) mapPanel.SettingsRequested -= OnSettingsRequested;
             if (runResultPanel != null) runResultPanel.Completed -= OnRoomCompleted;
             if (eventPanel != null) eventPanel.Completed -= OnRoomCompleted;
             if (reinforcementPanel != null) reinforcementPanel.Completed -= OnRoomCompleted;
@@ -211,6 +224,12 @@ namespace OutGame.Flow
             armyFormationPopup.Open(run, runConfig.ToData(),
                 armyDefsById.Values.ToList(), itemDefsById.Values.ToList(), augmentDefsById.Values.ToList());
         }
+
+        /// <summary>방 그래프 상단 바의 "환경설정" (2026-08-10) — 일시정지 팝업을 연다(사용자 확정).
+        /// 그 안에 환경설정과 메인메뉴 복귀가 모두 있고, 모바일에는 ESC 키가 없어 PausePopup에 닿을
+        /// 화면상 진입점이 필요했다. Toggle이 아니라 Show인 이유: 팝업이 열리면 dim(Canvas order 5)이
+        /// 상단 바(order 2)를 덮어 이 버튼을 다시 누를 수 없다.</summary>
+        private void OnSettingsRequested() => pausePopup.Show();
 
         /// <summary>진영 팝업 안에서 업그레이드로 골드를 쓰면 방 그래프 재화 표시도 즉시 최신 상태로
         /// 유지한다(2026-07-26 사용자 확정) — 팝업이 전체화면 dim이라 그 표시가 가려져 있는 동안에도
@@ -232,11 +251,18 @@ namespace OutGame.Flow
             MapProgress.Visit(run.mapState, node.point);
             mapPanel.Refresh();
 
-            // 방 그래프는 진영 팝업(OnFormationRequested)에서만 의도적으로 dim 배경 뒤에 계속 보이게
-            // 둔다 — 실제 방 콘텐츠(이벤트/증원/증강/전투)로 넘어갈 때는 65% 반투명 dim 배경 뒤로
-            // 그래프가 그대로 겹쳐 보이던 문제가 있었다(2026-08-04 사용자 리포트) — 방 처리가 끝나
-            // OnRoomCompleted가 부를 때까지 확실히 닫아둔다.
-            mapPanel.Close();
+            // 2026-08-10: 이벤트/증원/증강 방은 dim 배경 뒤로 맵이 비치도록 열어둔다(사용자 확정).
+            // 원래는 세 방 모두 닫았다 — 65% 반투명 dim 뒤로 그래프가 겹쳐 보이던 문제(2026-08-04
+            // 사용자 리포트) 때문이었는데, 그 원인은 "맵이 열려 있어서"가 아니라 NodeLayer가
+            // Canvas(overrideSorting order 1)라 하이어라키와 무관한 전역 버킷으로 비교되어 노드가
+            // 패널 위로 올라온 것이었다. 각 방 패널에 Canvas(order 3)를 줘서 노드(1)·상단 바(2)보다
+            // 위, 팝업(5)보다는 아래에 오게 해결했다.
+            //
+            // 전투 방은 씬 자체가 교체되므로 여기서 닫아둔다 — 복귀 시 Begin()이 다시 연다.
+            bool keepMapVisible = node.roomType == RoomType.Event
+                                  || node.roomType == RoomType.Reinforcement
+                                  || node.roomType == RoomType.Augment;
+            if (!keepMapVisible) mapPanel.Close();
 
             // 주의: MapProgress.HasVisitedBoss는 보스 "방문" 여부이지 "승리" 여부가 아니다.
             // 런 클리어는 보스 전투에서 승리했을 때만 성립하므로(OnBattleResult), 여기서 미리 판정하지 않는다.
@@ -320,10 +346,19 @@ namespace OutGame.Flow
             // (씬 교체 경로에서는 복귀 시 OutGameFlowController.Start가 이미 소비해 null이라 무해하다.)
             RunSessionContext.ConsumePendingRun();
 
-            // 씬 교체 복귀 경로(Begin())는 이 시점에 mapPanel을 이미 다시 열어둔 상태다 — 아이템 획득
-            // 팝업/런 종료 화면도 dim 배경 뒤로 방 그래프가 겹쳐 보이지 않도록 확실히 닫는다
-            // (2026-08-04, OnRoomSelected의 mapPanel.Close()와 동일한 이유).
-            mapPanel.Close();
+            // 씬 교체 복귀 경로(Begin())는 이 시점에 mapPanel을 이미 다시 열어둔 상태다.
+            //
+            // 2026-08-10: 예전엔 여기서 무조건 mapPanel.Close()를 했다 — dim 배경 뒤로 노드가 겹쳐
+            // 보인다는 리포트(2026-08-04) 때문이었는데, 그 원인은 "맵이 열려 있어서"가 아니라
+            // NodeLayer가 Canvas(order 1)라 하이어라키와 무관한 전역 버킷으로 비교되어 노드가 팝업
+            // 위로 올라온 것이었다(OnRoomSelected 주석의 이벤트/증원/증강 방과 동일한 원인).
+            // ItemRewardPopup에 Canvas(order 5)를 줘서 해결했으므로 이제 방 그래프를 열어둔 채로
+            // 팝업만 위에 띄운다(사용자 요청).
+            //
+            // 2026-08-11: 런 종료 화면(패배/클리어)도 같은 이유로 맵을 열어둔다(사용자 요청) —
+            // 다른 팝업처럼 dim 뒤로 노드가 비쳐야 어디까지 갔는지 보인다. 닫아버리면 OutGame 씬에는
+            // 3D 오브젝트가 하나도 없어서 기본 스카이박스만 남아 배경이 텅 빈다.
+            // RunResultPanel에도 Canvas(order 5)를 줘서 노드(1)·상단 바(2) 위로 올렸다.
 
             if (!result.victory)
             {
@@ -354,6 +389,11 @@ namespace OutGame.Flow
                     ProceedAfterBattle(bossVictory);
                 }
 
+                // 팝업 뒤로 보이는 상단 바가 전투 보상 반영 전 골드를 들고 있으면 어색하다 —
+                // ApplyVictoryReward가 이미 적용된 값으로 맞춰둔다(노드 상태는 방 완료 처리 전이라
+                // 여기서 Refresh하지 않는다 — OnRoomCompleted가 담당).
+                mapPanel.SetGold(run.gold);
+
                 itemRewardPopup.Closed += OnRewardPopupClosed;
                 itemRewardPopup.Open(drops, itemDefsById);
                 return;
@@ -366,6 +406,8 @@ namespace OutGame.Flow
         {
             if (bossVictory)
             {
+                // 2026-08-11: 패배 분기와 동일하게 방 그래프를 열어둔다 — 클리어한 경로가 뒤로 보이는
+                // 편이 낫고, 닫으면 배경이 기본 스카이박스만 남는다.
                 // 보스 "방문"이 아니라 "승리"가 런 클리어 조건이다 (MapProgress.HasVisitedBoss와 혼동 주의).
                 runEnded = true;
                 RunSaveService.DeleteSave(savePath); // 런 종료 — 이어하기 대상에서 제외 (§5.1)
@@ -387,6 +429,9 @@ namespace OutGame.Flow
             mapPanel.Show(); // OnRoomSelected/OnBattleResult에서 닫아둔 방 그래프를 다시 보여준다
             mapPanel.Refresh();
             mapPanel.SetGold(run.gold); // 이벤트/전투 보상으로 바뀐 골드를 방 그래프 복귀 시 반영
+            // 방을 하나 끝냈으니 다음 선택지가 보이는 위치로 옮겨준다(2026-08-10 사용자 요청) —
+            // 맵을 열어둔 채 진행하는 이벤트/증원/증강 방은 Rebuild가 돌지 않아 여기서 처리해야 한다.
+            mapPanel.FocusOnNext();
             SaveProgress();
         }
 
