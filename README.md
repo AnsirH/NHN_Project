@@ -102,3 +102,60 @@ Unity Test Runner(EditMode)에서 실행합니다.
 | [Assets/Docs/ai_usage_log.md](Assets/Docs/ai_usage_log.md) | AI 활용 작업 로그 (시행착오 포함 원본 기록) |
 | [Tools/BalanceLab/README.md](Tools/BalanceLab/README.md) | 밸런싱 파이프라인 사용법 |
 | [Tools/BalanceLab/밸런스 뷰어 설계.md](Tools/BalanceLab/밸런스%20뷰어%20설계.md) | 밸런스 뷰어 설계 문서 |
+
+## 외부 에셋 및 크레딧
+
+게임에 사용한 외부 리소스와 출처입니다. 개발 과정에서 활용한 AI 도구는
+[AI 활용 기술 문서](AI%20활용%20기술%20문서.md)에 따로 정리되어 있습니다.
+
+**Unity Asset Store**
+
+| 에셋 | 제작자 | 사용처 |
+|---|---|---|
+| Magic Effects Pack | Hovl Studio | 스킬·전투 이펙트 |
+| Medieval Castle | Advance Studios | 전장 배경 (성·성벽·다리) |
+| Skymon Icon Pack Free | Skymon | 아이템·UI 아이콘 |
+| Game VFX - Magic Circle (Free) | Eric VFX Studio | 버프·힐·독·번개 마법진 이펙트 |
+| Yughues Free Ground Materials | Yughues (Nobiax) | 지면 머티리얼 |
+| Stylized Rock - Desert style free | — | 전장 장식 바위 |
+| Flat Icons [Free] | Heathen Engineering | 아웃게임 UI 아이콘 |
+
+**라이브러리 · 코드**
+
+| 이름 | 제작자 | 사용처 | 라이선스 |
+|---|---|---|---|
+| [DOTween](http://dotween.demigiant.com) (무료판) | Demigiant (Daniele Giardini) | UI·연출 트위닝 | [DOTween License](http://dotween.demigiant.com/license.php) |
+| Slay the Spire 스타일 맵 구현 | silverua | 방 그래프 생성 알고리즘 이식 | MIT (GitHub) |
+
+**폰트**
+
+| 폰트 | 배포처 | 사용처 |
+|---|---|---|
+| 던파 비트비트체 v2 · 던파 연단된 칼날 | 네오플 무료 배포 폰트 | UI·타이틀 |
+| NEXON Warhaven | 넥슨 무료 배포 폰트 | UI |
+| Liberation Sans | TextMesh Pro 동봉 (SIL OFL) | TMP 기본 폰트 |
+
+**웹 배포 리소스**
+
+| 리소스 | 출처 | 사용처 |
+|---|---|---|
+| 유닛 애니메이션 클립 | [Adobe Mixamo](https://www.mixamo.com) | 병과별 공격·이동·사망 모션 |
+| 아웃게임 공용 UI 아이콘 (도형·화살표 등) | [freegameui.net](https://freegameui.net/?tab=shapes) | 아웃게임 UI |
+
+**itch.io 무료 에셋** — 정확한 배포 페이지는 확인되는 대로 채워 넣을 예정입니다.
+
+- 배경음악 3곡 (`Assets/Music`)
+- 병과별 공격 효과음·전투 함성 (`Assets/Sounds`)
+- Smoke & Steam Effects — 연기·안개 파티클
+- Hand Painted Seamless ClayGround Texture — 점토 지면 텍스처
+- 지형 텍스처 (`Assets/Terain`)
+- 자원 아이콘 (Coins·Food·Gems·Iron·Tools·Wood)
+- 2D Simple UI Pack (OArielG) — 아웃게임 버튼·패널 스프라이트
+- OkDanDan-Bold 폰트
+
+**AI 생성 리소스 (자체 제작)**
+
+| 리소스 | 생성 도구 |
+|---|---|
+| 병사 3D 모델 5종 · 무기 모델 5종 | NCSOFT VARCO |
+| 2D 일러스트 · 유닛 초상화 · 배경 이미지 | ChatGPT · Gemini |
