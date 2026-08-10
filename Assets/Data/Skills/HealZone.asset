@@ -24,3 +24,5 @@ MonoBehaviour:
   displayName: "\uD790 \uC7A5\uD310"
   castEffectPrefab: {fileID: 7986504087968017091, guid: 12a56ee4630040c4eb17ae9707ed4cef, type: 3}
   castEffectBaseRadius: 4.4
+  rangeIndicatorPrefab: {fileID: 8883919025765829949, guid: 3a85ce5ea8efb714b81e4fb07c66a9b6, type: 3}
+  rangeIndicatorBaseRadius: 2.5
