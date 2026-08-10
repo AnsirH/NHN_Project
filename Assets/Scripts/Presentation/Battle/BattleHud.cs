@@ -18,14 +18,30 @@ namespace NHN.Presentation.Battle
         /// <summary>클론 버튼 배치 간격 대체값 — 씬 버튼이 1개뿐일 때만 사용 (뷰 표현 상수).</summary>
         private static readonly Vector2 FallbackButtonStep = new Vector2(140f, 0f);
 
-        /// <summary>재시작 버튼 왼쪽으로 시간 제어 버튼을 놓는 간격 — 오른쪽 스킬 버튼 간격과 대칭.</summary>
-        private const float TimeButtonStepX = 250f;
         /// <summary>배속 토글 상한 (2026-08-05 사용자 결정: 2배까지만).</summary>
         private const float FastSpeedMultiplier = 2f;
+
+        // 시간 제어 배치 (2026-08-11 사용자 요청: 정지·배속은 화면 왼쪽 하단에 모은다).
+        private static readonly Vector2 PauseButtonPosition = new Vector2(40f, 40f);
+        private static readonly Vector2 SpeedButtonPosition = new Vector2(148f, 40f);
+        private static readonly Vector2 TimeButtonSize = new Vector2(92f, 92f);
+        /// <summary>정지 버튼 안 아이콘 크기 — 버튼보다 작게 둬서 여백을 남긴다.</summary>
+        private const float PauseIconSize = 48f;
+
+        // 스킬 버튼 아이콘 — 라벨 왼쪽에 세로 중앙 정렬로 놓는다.
+        private const string SkillIconName = "Icon";
+        private const float SkillIconSize = 48f;
+        private const float SkillIconInset = 14f;
 
         [SerializeField] private TMP_Text resultText;
         [SerializeField] private Button[] skillButtons;
         [SerializeField] private TMP_Text[] skillLabels;
+
+        [Header("시간 제어 아이콘 (Skymon white)")]
+        [Tooltip("일시정지 상태가 아닐 때 표시 — 누르면 멈춘다")]
+        [SerializeField] private Sprite pauseIcon;
+        [Tooltip("일시정지 중일 때 표시 — 누르면 재개한다")]
+        [SerializeField] private Sprite playIcon;
 
         private BattleTestBootstrap _bootstrap;
         private Graphic[] _buttonGraphics;
@@ -38,7 +54,8 @@ namespace NHN.Presentation.Battle
         // 시간 제어 (일시정지·배속) — 씬 수정 없이 재시작 버튼을 복제해 만든다 (스킬 버튼 확장과 같은 방식).
         private Button _restartButton;
         private Button _pauseButton;
-        private TMP_Text _pauseLabel;
+        /// <summary>정지/재생 아이콘을 갈아끼우는 이미지 — 라벨 대신 이 아이콘으로 상태를 표시한다.</summary>
+        private Image _pauseIconImage;
         private TMP_Text _speedLabel;
         private bool _paused;
         private float _speedMultiplier = 1f;
@@ -110,8 +127,9 @@ namespace NHN.Presentation.Battle
             rootRect.SetParent(transform, false);
             rootRect.anchorMin = rootRect.anchorMax = new Vector2(0.5f, 1f);
             rootRect.pivot = new Vector2(0.5f, 1f);
-            rootRect.sizeDelta = new Vector2(640f, 26f);
-            rootRect.anchoredPosition = new Vector2(0f, -8f);
+            // 2026-08-11: 전황이 한눈에 안 들어온다는 요청으로 확대 (640x26 → 1000x52).
+            rootRect.sizeDelta = new Vector2(1000f, 52f);
+            rootRect.anchoredPosition = new Vector2(0f, -16f);
 
             CreateBarImage("Background", rootRect, Vector2.zero, Vector2.one,
                 new Color(0f, 0f, 0f, 0.55f), 0f);
@@ -119,8 +137,8 @@ namespace NHN.Presentation.Battle
                 AllyHpColor, pivotX: 0f);
             _enemyHpFill = CreateBarImage("EnemyFill", rootRect, new Vector2(0.5f, 0f), new Vector2(1f, 1f),
                 EnemyHpColor, pivotX: 1f);
-            _allyHpText = CreateBarText("AllyHpText", rootRect, TextAlignmentOptions.Left, new Vector2(10f, 0f));
-            _enemyHpText = CreateBarText("EnemyHpText", rootRect, TextAlignmentOptions.Right, new Vector2(-10f, 0f));
+            _allyHpText = CreateBarText("AllyHpText", rootRect, TextAlignmentOptions.Left, new Vector2(18f, 0f));
+            _enemyHpText = CreateBarText("EnemyHpText", rootRect, TextAlignmentOptions.Right, new Vector2(-18f, 0f));
             TMP_Text vs = CreateBarText("VsText", rootRect, TextAlignmentOptions.Center, Vector2.zero);
             vs.text = "VS";
         }
@@ -154,7 +172,7 @@ namespace NHN.Presentation.Battle
             rect.offsetMax = new Vector2(Mathf.Min(padding.x, 0f), 0f);
             var text = go.AddComponent<TextMeshProUGUI>();
             text.font = resultText.font; // 씬 텍스트와 같은 폰트 자산 재사용
-            text.fontSize = 15f;
+            text.fontSize = 26f; // 바 확대(26 → 52)에 맞춰 같은 비율로
             text.color = Color.white;
             text.alignment = alignment;
             text.raycastTarget = false;
@@ -179,25 +197,62 @@ namespace NHN.Presentation.Battle
                 return; // 씬에 재시작 버튼이 없으면 시간 제어도 생략 (테스트 씬 전용 방어)
             }
             _restartButton = restart.GetComponent<Button>();
-            _pauseButton = CreateTimeButton("Button_Pause", -TimeButtonStepX, OnPauseButton, out _pauseLabel);
-            CreateTimeButton("Button_Speed", -TimeButtonStepX * 2f, OnSpeedButton, out _speedLabel);
+
+            // 정지: 배경 버튼 + 아이콘 이미지 (라벨은 지운다 — 상태는 아이콘으로만 표시).
+            _pauseButton = CreateTimeButton("Button_Pause", PauseButtonPosition, OnPauseButton, out TMP_Text pauseLabel);
+            if (pauseLabel != null)
+            {
+                Destroy(pauseLabel.gameObject);
+            }
+            _pauseIconImage = CreateIconChild(_pauseButton.transform, "Icon", PauseIconSize);
+
+            // 배속: 배경 없이 글자만 (2026-08-11 사용자 요청). 이미지는 투명으로 두고 지우지 않는다 —
+            // Button의 targetGraphic이자 레이캐스트 대상이라 없애면 클릭이 안 먹는다.
+            Button speedButton = CreateTimeButton("Button_Speed", SpeedButtonPosition, OnSpeedButton, out _speedLabel);
+            var speedBackground = speedButton.GetComponent<Image>();
+            if (speedBackground != null)
+            {
+                speedBackground.color = new Color(0f, 0f, 0f, 0f);
+                speedBackground.sprite = null;
+            }
+
             SetPaused(false);
             SetSpeed(1f);
         }
 
+        /// <summary>
+        /// 재시작 버튼을 복제해 시간 제어 버튼을 만든다. 위치는 화면 왼쪽 하단 고정 —
+        /// 복제 원본(하단 중앙)의 앵커를 그대로 물고 오므로 앵커·피벗까지 여기서 다시 잡는다.
+        /// </summary>
         private Button CreateTimeButton(
-            string buttonName, float offsetX, UnityEngine.Events.UnityAction onClick, out TMP_Text label)
+            string buttonName, Vector2 position, UnityEngine.Events.UnityAction onClick, out TMP_Text label)
         {
-            var restartRect = (RectTransform)_restartButton.transform;
             Button clone = Instantiate(_restartButton, _restartButton.transform.parent);
             clone.name = buttonName;
             clone.gameObject.SetActive(true); // 재시작 버튼이 숨겨진 상태에서 복제돼도 시간 제어는 항상 보인다
-            ((RectTransform)clone.transform).anchoredPosition =
-                restartRect.anchoredPosition + new Vector2(offsetX, 0f);
+            var rect = (RectTransform)clone.transform;
+            rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero; // 왼쪽 하단 기준
+            rect.sizeDelta = TimeButtonSize;
+            rect.anchoredPosition = position;
             clone.onClick = new Button.ButtonClickedEvent(); // 원본이 물고 온 씬 리스너(재시작) 제거
             clone.onClick.AddListener(onClick);
             label = clone.GetComponentInChildren<TMP_Text>();
             return clone;
+        }
+
+        /// <summary>버튼 안 중앙에 아이콘 이미지를 만든다 (정지 아이콘·스킬 아이콘 공용).</summary>
+        private static Image CreateIconChild(Transform parent, string iconName, float size)
+        {
+            var go = new GameObject(iconName);
+            var rect = go.AddComponent<RectTransform>();
+            rect.SetParent(parent, false);
+            rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.sizeDelta = new Vector2(size, size);
+            rect.anchoredPosition = Vector2.zero;
+            var image = go.AddComponent<Image>();
+            image.raycastTarget = false; // 클릭은 부모 버튼이 받는다
+            image.preserveAspect = true;
+            return image;
         }
 
         /// <summary>
@@ -251,6 +306,34 @@ namespace NHN.Presentation.Battle
             if (slot >= 0 && slot < _skillColors.Length)
             {
                 _skillColors[slot] = color;
+            }
+        }
+
+        /// <summary>
+        /// 슬롯별 스킬 아이콘 (2026-08-11). 아이콘은 라벨 왼쪽에 놓고 라벨은 그만큼 안으로 밀어
+        /// 겹치지 않게 한다 — 라벨은 쿨다운 숫자도 쓰는 자리라 아이콘 위에 올릴 수 없다.
+        /// 아이콘이 없는 스킬은 기존처럼 라벨만 표시한다.
+        /// </summary>
+        public void SetSkillIcon(int slot, Sprite icon)
+        {
+            if (icon == null || slot < 0 || slot >= skillButtons.Length || skillButtons[slot] == null)
+            {
+                return;
+            }
+            Transform button = skillButtons[slot].transform;
+            Transform existing = button.Find(SkillIconName);
+            Image image = existing != null
+                ? existing.GetComponent<Image>()
+                : CreateIconChild(button, SkillIconName, SkillIconSize);
+            image.sprite = icon;
+
+            var iconRect = (RectTransform)image.transform;
+            iconRect.anchorMin = iconRect.anchorMax = iconRect.pivot = new Vector2(0f, 0.5f);
+            iconRect.anchoredPosition = new Vector2(SkillIconInset, 0f);
+
+            if (slot < skillLabels.Length && skillLabels[slot] != null)
+            {
+                skillLabels[slot].margin = new Vector4(SkillIconInset * 2f + SkillIconSize, 0f, 0f, 0f);
             }
         }
 
@@ -360,9 +443,11 @@ namespace NHN.Presentation.Battle
         {
             _paused = paused;
             Time.timeScale = paused ? 0f : _speedMultiplier;
-            if (_pauseLabel != null)
+            if (_pauseIconImage != null)
             {
-                _pauseLabel.text = paused ? "재개" : "일시정지";
+                // 멈춰 있으면 재생(▶), 돌아가고 있으면 정지(❚❚) — 버튼을 누르면 일어날 일을 보여준다.
+                _pauseIconImage.sprite = paused ? playIcon : pauseIcon;
+                _pauseIconImage.enabled = _pauseIconImage.sprite != null;
             }
         }
 

@@ -22,6 +22,7 @@ MonoBehaviour:
   targetsAllies: 1
   skillColor: {r: 1, g: 0.6, b: 0.2, a: 1}
   displayName: "\uC804\uD22C \uD568\uC131"
+  icon: {fileID: 21300000, guid: 2c541aa4b89997d48b5e46055fc7f0be, type: 3}
   castEffectPrefab: {fileID: 4932088507883938021, guid: 4e5d63caf5b81934cbf7ad3269f53fe4, type: 3}
   castEffectBaseRadius: 4
   rangeIndicatorPrefab: {fileID: 348291441642749557, guid: 72ed267a04bf396419f3230844bb29f1, type: 3}

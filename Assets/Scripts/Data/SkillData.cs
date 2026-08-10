@@ -34,6 +34,8 @@ namespace NHN.Data
         [SerializeField] private Color skillColor = Color.white;
         [Tooltip("HUD 버튼 라벨 — 비우면 에셋 이름 사용")]
         [SerializeField] private string displayName;
+        [Tooltip("HUD 버튼 아이콘 — 비우면 아이콘 없이 라벨만 표시")]
+        [SerializeField] private Sprite icon;
         [Tooltip("시전 지점에 재생할 파티클 프리팹 — 비우면 기존 디스크 표시만 사용")]
         [SerializeField] private GameObject castEffectPrefab;
         [Tooltip("이펙트 프리팹이 기본 크기로 덮는 반경(월드 유닛) — 스킬 반경에 맞춰 스케일하는 기준")]
@@ -44,6 +46,9 @@ namespace NHN.Data
         [SerializeField] private float rangeIndicatorBaseRadius = 2.5f;
 
         public Color SkillColor => skillColor;
+
+        /// <summary>HUD 버튼 아이콘 — 시뮬은 모르는 뷰 전용 자산이라 SkillDefinition에 싣지 않는다.</summary>
+        public Sprite Icon => icon;
 
         public GameObject CastEffectPrefab => castEffectPrefab;
 

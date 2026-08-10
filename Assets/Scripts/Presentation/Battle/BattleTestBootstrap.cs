@@ -357,6 +357,7 @@ namespace NHN.Presentation.Battle
             for (int s = 0; s < skillCount; s++)
             {
                 hud.SetSkillColor(s, _skillColors[s]);
+                hud.SetSkillIcon(s, skills[s].Icon);
             }
         }
 
