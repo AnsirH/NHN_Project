@@ -1,5 +1,10 @@
 # ClayWars
 
+**WebGL:** [Play in browser](https://ansirh.github.io/NHN_Project/) · [CI setup and requirements](Tools/CI/README.md)
+
+Pushes to `main`/`dev` automatically test and build with Unity CLI. Successful `main` builds
+are published to GitHub Pages after browser verification. The Windows build runner PC must be online.
+
 > **점토 병사들에게 아이템으로 "역할"을 부여하고, 로그라이크 맵을 헤쳐 나가며
 > 수백 명 규모의 군단 전투를 관람·개입하는 3D 전략 게임.**
 

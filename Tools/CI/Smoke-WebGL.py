@@ -37,7 +37,8 @@ def main():
         server = ThreadingHTTPServer(('127.0.0.1', 0), handler)
         threading.Thread(target=server.serve_forever, daemon=True).start()
         url = f'http://127.0.0.1:{server.server_port}/NHN_Project/'
-    events = {'url': url, 'page_errors': [], 'http_errors': [], 'console_errors': []}
+    events = {'url': url, 'page_errors': [], 'http_errors': [], 'console_errors': [], 'network_errors': []}
+    page = None
     try:
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(args=[
@@ -46,6 +47,8 @@ def main():
             ])
             page = browser.new_page(viewport={'width': 1280, 'height': 900})
             page.on('pageerror', lambda error: events['page_errors'].append(str(error)))
+            page.on('requestfailed', lambda request: events['network_errors'].append(
+                f'{request.failure} {request.url}'))
             page.on('response', lambda response: events['http_errors'].append(
                 f'{response.status} {response.url}') if response.status >= 400 else None)
             page.on('console', lambda message: events['console_errors'].append(message.text)
@@ -62,10 +65,18 @@ def main():
             if not info.ok:
                 raise RuntimeError('Build metadata is unavailable.')
             events['build_info'] = info.json()
-            if events['page_errors'] or events['http_errors'] or events['console_errors']:
+            if any(events[key] for key in ('page_errors', 'http_errors', 'console_errors', 'network_errors')):
                 raise RuntimeError('WebGL runtime or HTTP errors occurred; see browser/results.json.')
             print('WebGL browser smoke passed:', json.dumps(events['build_info']))
             browser.close()
+    except Exception as error:
+        events['failure'] = str(error)
+        if page and not page.is_closed():
+            try:
+                page.screenshot(path=str(output / 'failure.png'), timeout=10000)
+            except Exception:
+                pass
+        raise
     finally:
         (output / 'results.json').write_text(json.dumps(events, indent=2), encoding='utf-8')
         if server:
