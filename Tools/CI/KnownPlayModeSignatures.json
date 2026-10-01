@@ -1,0 +1,235 @@
+﻿[
+    {
+        "name":  "OutGame.Tests.PlayMode.ArmyDeploymentPanelPlayTests.ArmyInfoPopup_ShowsCurrentGold",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "ArmyDeploymentPanelPlayTests.cs:911"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.ArmyDeploymentPanelPlayTests.ArmyInfoPopup_UpgradeButton_ShowsMaxAtMaxLevel",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "ArmyDeploymentPanelPlayTests.cs:871"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.ArmyDeploymentPanelPlayTests.ArmyInfoPopup_UpgradeButton_ShowsNextLevelCost",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "ArmyDeploymentPanelPlayTests.cs:850"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.ArmyDeploymentPanelPlayTests.Click_OnArmyCard_OpensArmyInfoPopupWithResolvedData",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "ArmyDeploymentPanelPlayTests.cs:653"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.ArmyDeploymentPanelPlayTests.Click_OnArmyCard_ShowsArmyDescription",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "ArmyDeploymentPanelPlayTests.cs:779"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.ArmyDeploymentPanelPlayTests.Click_OnArmyCard_ShowsArmyStatGridWithoutCritOrSpeed",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "ArmyDeploymentPanelPlayTests.cs:689"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.ArmyDeploymentPanelPlayTests.Click_OnArmyCard_ShowsGeneralNameUnderPreviewIcon",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "ArmyDeploymentPanelPlayTests.cs:727"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.ArmyDeploymentPanelPlayTests.Click_OnArmyCard_ShowsGeneralStatGridIconValues",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "ArmyDeploymentPanelPlayTests.cs:669"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.ArmyDeploymentPanelPlayTests.Click_OnArmyCard_ShowsSoldierCountUnderPreviewIcon",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "ArmyDeploymentPanelPlayTests.cs:765"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.ArmyDeploymentPanelPlayTests.Click_OnArmyCard_ShowsUpgradeLevelZeroInitially",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "ArmyDeploymentPanelPlayTests.cs:795"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.ArmyDeploymentPanelPlayTests.Click_OnUpgradeButton_WithEnoughGold_IncrementsLevelAndDeductsGold",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "ArmyDeploymentPanelPlayTests.cs:815"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.ArmyDeploymentPanelPlayTests.Open_ComputesRealEnemyPowerFromComposition",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "ArmyDeploymentPanelPlayTests.cs:299"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.ArmyDeploymentPanelPlayTests.Open_EnemySlotsGenerateOneCardPerEnemyAndHideSoldierCount",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "ArmyDeploymentPanelPlayTests.cs:219"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.AugmentPanelPlayTests.SelectChoice_AddsToSelectedAugmentIdsAndShowsResult",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "AugmentPanelPlayTests.cs:74"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.CharacterSelectPanelPlayTests.ConfirmButton_SetsSelectedCharacterIdAndRaisesCharacterConfirmed",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "CharacterSelectPanelPlayTests.cs:104"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.CharacterSelectPanelPlayTests.ConfirmButton_WithoutBegin_Throws",
+        "messageContains":  [
+                                "Expected: \u003cSystem.InvalidOperationException\u003e",
+                                "System.NullReferenceException"
+                            ],
+        "stackContains":  "CharacterSelectPanelPlayTests.cs:117"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.CharacterSelectPanelPlayTests.IconClick_SelectsThatCharacterDirectly",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "CharacterSelectPanelPlayTests.cs:93"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.CharacterSelectPanelPlayTests.LeftArrow_FromFirstCharacter_WrapsToLast",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "CharacterSelectPanelPlayTests.cs:79"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.CharacterSelectPanelPlayTests.RightArrow_AdvancesToNextCharacter",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "CharacterSelectPanelPlayTests.cs:68"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.CharacterSelectPanelPlayTests.Start_SpawnsOneIconPerCharacterDefinitionAndSelectsFirst",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "CharacterSelectPanelPlayTests.cs:59"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.EventPanelPlayTests.SelectChoice_AppliesRewardAndShowsResult",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "EventPanelPlayTests.cs:72"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.EventPanelPlayTests.SelectChoice_ArmyRewardAtCap_ShowsFailureMessageAndDoesNotAddArmy",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "EventPanelPlayTests.cs:95"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.InGameFlowControllerFormationPopupPlayTests.Upgrade_InsideFormationPopup_SyncsMapGoldDisplayImmediately",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "InGameFlowControllerFormationPopupPlayTests.cs:142"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.LoreFragmentOverlayPanelPlayTests.Begin_ChanceOne_ShowsFragmentTextWithNonEmptyText",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "LoreFragmentOverlayPanelPlayTests.cs:69"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.LoreFragmentOverlayPanelPlayTests.Begin_ChanceZero_HidesFragmentTextButStillWaitsForClick",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "LoreFragmentOverlayPanelPlayTests.cs:58"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.MainMenuControllerPlayTests.StartButton_LoadsOutGameScene",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "MainMenuControllerPlayTests.cs:42"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.MapSelectPanelPlayTests.BackButton_LoadsMainMenu",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "MapSelectPanelPlayTests.cs:83"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.OutGameFlowControllerPlayTests.CharacterConfirmed_SwitchesToRoomGraphOnly",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "OutGameFlowControllerPlayTests.cs:134"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.OutGameFlowControllerPlayTests.Load_NoPendingRun_ShowsOnlyMapSelectPanel",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "OutGameFlowControllerPlayTests.cs:74"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.OutGameFlowControllerPlayTests.Load_WithPendingRun_ContinueClick_ShowsOnlyRoomGraph",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "OutGameFlowControllerPlayTests.cs:100"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.OutGameFlowControllerPlayTests.Load_WithPendingRun_ShowsLoreFragmentOverlayBeforeRoomGraph",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "OutGameFlowControllerPlayTests.cs:87"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.ReinforcementPanelPlayTests.ClickCard_ReinforcesBy20PercentOfBase",
+        "messageContains":  [
+                                "Expected: 6",
+                                "But was:  2"
+                            ],
+        "stackContains":  "ReinforcementPanelPlayTests.cs:123"
+    },
+    {
+        "name":  "OutGame.Tests.PlayMode.ReinforcementPanelPlayTests.Open_WithNoArmies_SkipsGridAndShowsFallbackMessage",
+        "messageContains":  [
+                                "System.NullReferenceException : Object reference not set to an instance of an object"
+                            ],
+        "stackContains":  "ReinforcementPanelPlayTests.cs:162"
+    }
+]

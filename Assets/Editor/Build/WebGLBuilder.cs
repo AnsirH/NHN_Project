@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -26,7 +27,7 @@ namespace ClayWars.Build
 
             WithWebGLSettings(() =>
             {
-                Directory.CreateDirectory(output);
+                PrepareOutput(output);
                 var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
                 {
                     scenes = scenes,
@@ -100,6 +101,34 @@ namespace ClayWars.Build
                 PlayerSettings.WebGL.initialMemorySize = memory;
                 PlayerSettings.WebGL.nameFilesAsHashes = hashes;
             }
+        }
+
+        private static void PrepareOutput(string output)
+        {
+            // ResolveOutput already restricts this path to Build/<directory>.
+            // Reject junctions/symlinks before recursively removing generated files.
+            for (var ancestor = new DirectoryInfo(output); ancestor != null; ancestor = ancestor.Parent)
+            {
+                if (ancestor.Exists && (ancestor.Attributes & FileAttributes.ReparsePoint) != 0)
+                    throw new IOException("Build output cannot traverse a junction or symbolic link.");
+            }
+            if (Directory.Exists(output))
+            {
+                var pending = new Stack<string>();
+                pending.Push(output);
+                while (pending.Count > 0)
+                {
+                    foreach (var entry in Directory.EnumerateFileSystemEntries(pending.Pop()))
+                    {
+                        var attributes = File.GetAttributes(entry);
+                        if ((attributes & FileAttributes.ReparsePoint) != 0)
+                            throw new IOException("Build output contains a junction or symbolic link.");
+                        if ((attributes & FileAttributes.Directory) != 0) pending.Push(entry);
+                    }
+                }
+                Directory.Delete(output, true);
+            }
+            Directory.CreateDirectory(output);
         }
 
         [Serializable]

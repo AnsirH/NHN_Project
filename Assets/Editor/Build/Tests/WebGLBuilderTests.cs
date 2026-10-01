@@ -39,6 +39,13 @@ namespace ClayWars.Build.Tests
         }
 
         [Test]
+        public void Output_RejectsDuplicateArgument()
+        {
+            Assert.Throws<ArgumentException>(() => WebGLBuilder.ResolveOutput(Root,
+                new[] { "-buildOutput", "Build/One", "-buildOutput", "Build/Two" }));
+        }
+
+        [Test]
         public void Scenes_PreserveEnabledSceneOrderAndOmitDisabledScenes()
         {
             var scenes = new[]
@@ -63,15 +70,18 @@ namespace ClayWars.Build.Tests
             var compression = PlayerSettings.WebGL.compressionFormat;
             var fallback = PlayerSettings.WebGL.decompressionFallback;
             var memory = PlayerSettings.WebGL.initialMemorySize;
+            var hashes = PlayerSettings.WebGL.nameFilesAsHashes;
             WebGLBuilder.WithWebGLSettings(() =>
             {
                 Assert.That(PlayerSettings.WebGL.compressionFormat, Is.EqualTo(WebGLCompressionFormat.Gzip));
                 Assert.That(PlayerSettings.WebGL.decompressionFallback, Is.True);
                 Assert.That(PlayerSettings.WebGL.initialMemorySize, Is.EqualTo(256));
+                Assert.That(PlayerSettings.WebGL.nameFilesAsHashes, Is.True);
             });
             Assert.That(PlayerSettings.WebGL.compressionFormat, Is.EqualTo(compression));
             Assert.That(PlayerSettings.WebGL.decompressionFallback, Is.EqualTo(fallback));
             Assert.That(PlayerSettings.WebGL.initialMemorySize, Is.EqualTo(memory));
+            Assert.That(PlayerSettings.WebGL.nameFilesAsHashes, Is.EqualTo(hashes));
         }
 
         [Test]
@@ -79,10 +89,12 @@ namespace ClayWars.Build.Tests
         {
             var compression = PlayerSettings.WebGL.compressionFormat;
             var fallback = PlayerSettings.WebGL.decompressionFallback;
+            var hashes = PlayerSettings.WebGL.nameFilesAsHashes;
             Assert.Throws<InvalidOperationException>(() => WebGLBuilder.WithWebGLSettings(() =>
                 throw new InvalidOperationException("simulated build failure")));
             Assert.That(PlayerSettings.WebGL.compressionFormat, Is.EqualTo(compression));
             Assert.That(PlayerSettings.WebGL.decompressionFallback, Is.EqualTo(fallback));
+            Assert.That(PlayerSettings.WebGL.nameFilesAsHashes, Is.EqualTo(hashes));
         }
     }
 }
