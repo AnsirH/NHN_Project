@@ -1,0 +1,7 @@
+{
+  "name": "ClayWars.Build.Editor",
+  "rootNamespace": "ClayWars.Build",
+  "includePlatforms": ["Editor"],
+  "references": [],
+  "autoReferenced": true
+}
