@@ -40,3 +40,8 @@ starts hidden at Windows user login. Browser smoke runs on GitHub-hosted Linux a
 HTTP/JavaScript/Unity console errors at `/NHN_Project/`, captures the main menu, and reads metadata.
 
 Build, browser, and deployment results are recorded below after the actual runs complete.
+
+- First automatic main run: [36854209818](https://github.com/AnsirH/NHN_Project/actions/runs/36854209818).
+  Native tests/build and downloadable artifact succeeded. Windows Pages packaging selected the
+  WSL `bash.exe` without an installed distribution and failed. Packaging was moved to the Linux
+  browser job, after runtime verification, to remove that Windows shell dependency.

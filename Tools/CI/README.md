@@ -17,7 +17,7 @@ The build job uses the Windows self-hosted runner **ClayWars-WebGL-user**, label
 It uses the existing Unity license and Unity CLI; no Unity account password is stored in GitHub.
 The PC must be powered on, connected to the internet, and logged in with the licensed Windows account.
 An offline runner leaves builds queued until it comes back online. This is not an always-on cloud builder.
-The Pages deployment job runs on a GitHub-hosted Linux runner.
+The browser verification, Pages packaging, and Pages deployment jobs run on GitHub-hosted Linux runners.
 
 Only trusted `main`/`dev` source runs on the workstation. There is no pull-request event, and manual
 execution of other branches is rejected. Do not add fork PR execution to this self-hosted workflow.
