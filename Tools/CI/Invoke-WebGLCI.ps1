@@ -35,6 +35,7 @@ try {
     }
     $buildLog = Join-Path $projectRoot 'Logs/webgl-build.log'
     for ($attempt = 1; $attempt -le 2; $attempt++) {
+        if (Test-Path -LiteralPath $buildLog) { Remove-Item -LiteralPath $buildLog }
         & $cli build $projectRoot --target WebGL --execute-method ClayWars.Build.WebGLBuilder.Build `
             --output-path (Join-Path $projectRoot 'Build/WebGL') --log-file $buildLog `
             --non-interactive --no-tail

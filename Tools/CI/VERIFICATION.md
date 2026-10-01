@@ -22,6 +22,12 @@ worktree under `Temp/WebGLValidation`. The original editor and its unsaved scene
 - Native CLI WebGL output: **164 MB**, artifact structure passed. First cold build reached the
   Bee six-rescan limit; the next full CI run completed successfully using the populated cache.
   The specific failure now has a single bounded retry, preserving the original log.
+- Local Chromium smoke passed: no HTTP, network, JavaScript, or console errors; main menu rendered.
+- Interactive WebGL acceptance: main menu -> map selection -> character selection -> room graph ->
+  deployment -> rendered 3D battle -> room graph return. Gold changed from 0 to 20 and the completed
+  battle node changed color. Formation popup opened and closed after return; no browser errors.
+  Screenshots are under `Logs/gameplay/` in the validation worktree. The skill-button click happened
+  after the battle had already ended, so it does not verify skill execution.
 
 The release gate does not run the two BalanceLab cross-runtime cases. There is no measured
 coverage percentage. Batch-mode capture skips do not substitute for browser verification.

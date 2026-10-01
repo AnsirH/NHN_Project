@@ -12,6 +12,7 @@
 #
 .utmp/
 /Tools/CI/.runner/
+/Tools/CI/__pycache__/
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
