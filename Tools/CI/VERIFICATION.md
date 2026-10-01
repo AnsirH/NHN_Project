@@ -39,9 +39,20 @@ The registered Windows runner is `ClayWars-WebGL-user`, label `unity-webgl`; its
 starts hidden at Windows user login. Browser smoke runs on GitHub-hosted Linux and checks
 HTTP/JavaScript/Unity console errors at `/NHN_Project/`, captures the main menu, and reads metadata.
 
-Build, browser, and deployment results are recorded below after the actual runs complete.
+Automatic run evidence:
 
 - First automatic main run: [36854209818](https://github.com/AnsirH/NHN_Project/actions/runs/36854209818).
   Native tests/build and downloadable artifact succeeded. Windows Pages packaging selected the
   WSL `bash.exe` without an installed distribution and failed. Packaging was moved to the Linux
   browser job, after runtime verification, to remove that Windows shell dependency.
+- Corrected automatic main run: [36855875374](https://github.com/AnsirH/NHN_Project/actions/runs/36855875374),
+  source `8d0e256a1d4c76af3ebb12647baa4166daf0973c`: **build, Linux Chromium smoke, Pages packaging,
+  and deployment all succeeded**. Library cache saved: 2,286,973,179 bytes. The exact cold-cache
+  Bee failure triggered the single retry and its original log was retained.
+- Public [build metadata](https://ansirh.github.io/NHN_Project/build-info.json) returned HTTP 200
+  with the same revision as the successful workflow. Public site: https://ansirh.github.io/NHN_Project/.
+
+Final acceptance publishes this evidence as a follow-up main push and syncs the same CI configuration
+to dev. The [workflow history](https://github.com/AnsirH/NHN_Project/actions/workflows/webgl.yml)
+records their cache restoration, build/browser outcome, and main-only deployment. Compare the live
+metadata revision to the latest successful main run, since later pushes supersede the revision above.
