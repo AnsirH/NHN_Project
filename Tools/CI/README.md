@@ -23,6 +23,13 @@ Only trusted `main`/`dev` source runs on the workstation. There is no pull-reque
 execution of other branches is rejected. Do not add fork PR execution to this self-hosted workflow.
 Runner credentials and working files are under `Tools/CI/.runner/`, which is ignored by Git.
 
+The dedicated runner preserves its local `Library/` between jobs. Before checkout it verifies the
+repository root, resets tracked files, and removes all generated/untracked files except `Library/`.
+Checkout then forces the requested revision and fetches real LFS assets. Unity's incremental importer
+revalidates changed assets, packages, and editor/target settings. Source/build/log output is never
+reused as a release artifact. A new runner or removed Library performs a cold import/build.
+This avoids transferring a multi-GB Library over GitHub's cache service on every push.
+
 Required local tools:
 
 - Unity CLI `1.0.0-beta.9` or newer (`unity --version`).

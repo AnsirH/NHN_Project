@@ -52,7 +52,12 @@ Automatic run evidence:
 - Public [build metadata](https://ansirh.github.io/NHN_Project/build-info.json) returned HTTP 200
   with the same revision as the successful workflow. Public site: https://ansirh.github.io/NHN_Project/.
 
-Final acceptance publishes this evidence as a follow-up main push and syncs the same CI configuration
-to dev. The [workflow history](https://github.com/AnsirH/NHN_Project/actions/workflows/webgl.yml)
-records their cache restoration, build/browser outcome, and main-only deployment. Compare the live
+The follow-up remote cache restore became a multi-minute bottleneck. The self-hosted workflow now
+preserves the dedicated runner's local Library while resetting/cleaning source and generated output.
+The actual workflow cleanup script was exercised against an isolated Git fixture: tracked source
+restored, root Library preserved, Build/Logs and an untracked nested Library removed. The exclude
+pattern is anchored as `/Library/`. Superseded main/dev acceptance runs for `09fd990` were cancelled.
+The earlier cloud cache remains historical evidence, not the final cache design. Final acceptance
+checks local Library reuse on main/dev. The [workflow history](https://github.com/AnsirH/NHN_Project/actions/workflows/webgl.yml)
+records their build/browser outcome and main-only deployment. Compare the live
 metadata revision to the latest successful main run, since later pushes supersede the revision above.

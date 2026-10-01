@@ -22,19 +22,29 @@ jobs:
       run:
         shell: powershell
     steps:
+      - name: Clean previous source and preserve local Unity cache
+        run: |
+          $root = [IO.Path]::GetFullPath($env:GITHUB_WORKSPACE)
+          if (Test-Path -LiteralPath (Join-Path $root '.git')) {
+            Push-Location $root
+            try {
+              $actual = & git rev-parse --show-toplevel
+              if ($LASTEXITCODE -ne 0 -or [IO.Path]::GetFullPath($actual.Trim()) -ne $root) {
+                throw 'Refusing to clean a repository outside GITHUB_WORKSPACE.'
+              }
+              & git reset --hard
+              if ($LASTEXITCODE -ne 0) { throw 'Cannot reset the previous CI checkout.' }
+              & git clean -ffdx -e /Library/
+              if ($LASTEXITCODE -ne 0) { throw 'Cannot clean the previous CI checkout.' }
+            } finally { Pop-Location }
+          }
+
       - name: Checkout source and real LFS assets
         uses: actions/checkout@v4
         with:
           lfs: true
+          clean: false
           persist-credentials: false
-
-      - name: Restore Unity import cache
-        uses: actions/cache@v4
-        with:
-          path: Library/
-          key: unity-${{ runner.os }}-6000.5.3f1-WebGL-${{ hashFiles('Packages/manifest.json', 'Packages/packages-lock.json') }}-${{ github.sha }}
-          restore-keys: |
-            unity-${{ runner.os }}-6000.5.3f1-WebGL-${{ hashFiles('Packages/manifest.json', 'Packages/packages-lock.json') }}-
 
       - name: Test and build with Unity CLI
         run: ./Tools/CI/Invoke-WebGLCI.ps1
