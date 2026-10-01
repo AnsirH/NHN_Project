@@ -33,10 +33,18 @@ try {
         if ($playExit -notin @(0, 2, 8)) { throw 'PlayMode execution failed. See Logs/playmode.xml.' }
         & (Join-Path $PSScriptRoot 'Test-PlayModeResults.ps1') -ResultsPath $playResults
     }
-    & $cli build $projectRoot --target WebGL --execute-method ClayWars.Build.WebGLBuilder.Build `
-        --output-path (Join-Path $projectRoot 'Build/WebGL') --log-file (Join-Path $projectRoot 'Logs/webgl-build.log') `
-        --non-interactive --no-tail
-    if ($LASTEXITCODE -ne 0) { throw 'WebGL build failed. See Logs/webgl-build.log.' }
+    $buildLog = Join-Path $projectRoot 'Logs/webgl-build.log'
+    for ($attempt = 1; $attempt -le 2; $attempt++) {
+        & $cli build $projectRoot --target WebGL --execute-method ClayWars.Build.WebGLBuilder.Build `
+            --output-path (Join-Path $projectRoot 'Build/WebGL') --log-file $buildLog `
+            --non-interactive --no-tail
+        if ($LASTEXITCODE -eq 0) { break }
+        $knownBackendError = (Test-Path -LiteralPath $buildLog) -and
+            (Select-String -LiteralPath $buildLog -SimpleMatch 'Internal build system error. Backend has requested a buildprogram run 6 times.' -Quiet)
+        if ($attempt -eq 2 -or -not $knownBackendError) { throw 'WebGL build failed. See Logs/webgl-build.log.' }
+        Copy-Item -LiteralPath $buildLog -Destination (Join-Path $projectRoot 'Logs/webgl-first-attempt.log') -Force
+        Write-Warning 'Unity Bee cold-cache dependency rescan limit hit. Retrying once with populated cache; first-attempt log retained.'
+    }
     & (Join-Path $PSScriptRoot 'Test-WebGLArtifact.ps1')
 } finally {
     Pop-Location

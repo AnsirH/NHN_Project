@@ -19,6 +19,9 @@ worktree under `Temp/WebGLValidation`. The original editor and its unsaved scene
   explicit baseline and checked against error messages/source locations. They are not counted as passing.
 - CI report guard: known baseline accepted; cancelled/incomplete/suite/new/changed-reason/
   changed-location reports all rejected.
+- Native CLI WebGL output: **164 MB**, artifact structure passed. First cold build reached the
+  Bee six-rescan limit; the next full CI run completed successfully using the populated cache.
+  The specific failure now has a single bounded retry, preserving the original log.
 
 The release gate does not run the two BalanceLab cross-runtime cases. There is no measured
 coverage percentage. Batch-mode capture skips do not substitute for browser verification.

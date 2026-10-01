@@ -103,6 +103,9 @@ require fresh, complete NUnit results before this baseline can be accepted.
 - **License error**: confirm the same Windows account can run the editor and its license is active.
 - **Missing module**: `unity editors -i --format json` must list Web for `6000.5.3f1`.
 - **Test/build error**: download `webgl-logs-<run-id>` from the failed Actions run.
+- **Bee dependency rescan limit**: the cold-cache local build hit the exact six-buildprogram-runs
+  error; the next native CLI build succeeded. CI retries that specific error once and preserves
+  `webgl-first-attempt.log`. Other build failures and a failed retry stop deployment.
 - **Browser load error**: inspect HTTP failures and JavaScript/WebAssembly errors. Pages builds use
   `.unityweb` decompression fallback, so they don't require custom Content-Encoding headers.
 - **Site not updated**: compare `build-info.json` revision with the successful main workflow SHA.
