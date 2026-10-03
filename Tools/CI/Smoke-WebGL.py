@@ -26,6 +26,8 @@ def main():
     parser.add_argument('--artifact', default='Build/WebGL')
     parser.add_argument('--url')
     parser.add_argument('--output', default='Logs/browser')
+    parser.add_argument('--width', type=int, default=1280)
+    parser.add_argument('--height', type=int, default=900)
     args = parser.parse_args()
     output = Path(args.output)
     output.mkdir(parents=True, exist_ok=True)
@@ -45,7 +47,7 @@ def main():
                 '--enable-webgl', '--ignore-gpu-blocklist', '--use-angle=swiftshader',
                 '--enable-unsafe-swiftshader',
             ])
-            page = browser.new_page(viewport={'width': 1280, 'height': 900})
+            page = browser.new_page(viewport={'width': args.width, 'height': args.height})
             page.on('pageerror', lambda error: events['page_errors'].append(str(error)))
             page.on('requestfailed', lambda request: events['network_errors'].append(
                 f'{request.failure} {request.url}'))
@@ -60,6 +62,42 @@ def main():
                 return bar && bar.style.display === 'none' && canvas && canvas.width > 0;
             }""", timeout=240000)
             page.wait_for_timeout(5000)
+            events['layout'] = page.evaluate("""() => {
+                const canvas = document.querySelector('#unity-canvas');
+                const rect = canvas.getBoundingClientRect();
+                return {
+                    x: rect.x, y: rect.y, width: rect.width, height: rect.height,
+                    viewportWidth: innerWidth, viewportHeight: innerHeight,
+                    scrollWidth: document.documentElement.scrollWidth,
+                    scrollHeight: document.documentElement.scrollHeight,
+                    bodyBackground: getComputedStyle(document.body).backgroundColor,
+                    footerPresent: !!document.querySelector('#unity-footer'),
+                    renderWidth: canvas.width, renderHeight: canvas.height,
+                };
+            }""")
+            layout = events['layout']
+            if (abs(layout['x']) > 1 or abs(layout['y']) > 1
+                    or abs(layout['width'] - layout['viewportWidth']) > 1
+                    or abs(layout['height'] - layout['viewportHeight']) > 1
+                    or layout['scrollWidth'] > layout['viewportWidth']
+                    or layout['scrollHeight'] > layout['viewportHeight']
+                    or layout['bodyBackground'] != 'rgb(0, 0, 0)'
+                    or layout['footerPresent']
+                    or layout['renderWidth'] > layout['width'] * 2 + 1
+                    or layout['renderHeight'] > layout['height'] * 2 + 1):
+                raise RuntimeError('WebGL canvas does not fill its viewport; see layout evidence.')
+            page.evaluate("""() => {
+                document.querySelector('#unity-canvas').addEventListener('keydown', event => {
+                    window.__smokeCanvasKey = event.key;
+                }, { once: true });
+            }""")
+            page.locator('#unity-canvas').click(position={'x': 5, 'y': 5})
+            if not page.evaluate("document.activeElement.id === 'unity-canvas'"):
+                raise RuntimeError('Canvas click did not acquire keyboard focus.')
+            page.keyboard.press('Shift')
+            if page.evaluate('window.__smokeCanvasKey') != 'Shift':
+                raise RuntimeError('Focused canvas did not receive keyboard input.')
+            events['canvas_keyboard_input'] = True
             page.screenshot(path=str(output / 'main-menu.png'))
             info = page.request.get(url.rstrip('/') + '/build-info.json')
             if not info.ok:

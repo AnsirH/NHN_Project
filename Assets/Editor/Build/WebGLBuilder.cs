@@ -86,12 +86,14 @@ namespace ClayWars.Build
             var fallback = PlayerSettings.WebGL.decompressionFallback;
             var memory = PlayerSettings.WebGL.initialMemorySize;
             var hashes = PlayerSettings.WebGL.nameFilesAsHashes;
+            var template = PlayerSettings.WebGL.template;
             try
             {
                 PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
                 PlayerSettings.WebGL.decompressionFallback = true;
                 PlayerSettings.WebGL.initialMemorySize = 256;
                 PlayerSettings.WebGL.nameFilesAsHashes = true;
+                PlayerSettings.WebGL.template = "PROJECT:ClayWarsFill";
                 action();
             }
             finally
@@ -100,6 +102,7 @@ namespace ClayWars.Build
                 PlayerSettings.WebGL.decompressionFallback = fallback;
                 PlayerSettings.WebGL.initialMemorySize = memory;
                 PlayerSettings.WebGL.nameFilesAsHashes = hashes;
+                PlayerSettings.WebGL.template = template;
             }
         }
 

@@ -79,6 +79,22 @@ hashed files, then restores the prior settings even after failure. Generated out
 under `Build/<directory>`; junction/symlink output is refused. Android settings aren't rewritten.
 Serve the output over HTTP; opening `index.html` with `file://` is insufficient.
 
+The `ClayWarsFill` project template fills the browser/iframe viewport with a black page background,
+no footer, and a render pixel ratio capped at 2. Unity keeps the render target synchronized to the
+canvas CSS size. The builder applies this template temporarily and restores the previous template
+in the same `finally` block as the other build settings.
+
+Verify the built artifact over a local HTTP server with the browser smoke:
+
+```powershell
+python Tools/CI/Smoke-WebGL.py --output Logs/browser-1280x900
+python Tools/CI/Smoke-WebGL.py --width 980 --height 551 --output Logs/browser-980x551
+```
+
+The smoke checks runtime errors, viewport fill, black background, absent footer, no document overflow,
+the render-size cap, click focus, and DOM keyboard delivery. Game UI/camera and game keyboard actions
+also require the interactive acceptance checks recorded in `FillTemplateVerification.md`.
+
 ## Tests and known baseline issue
 
 The clean `47afc4c` main snapshot already fails
