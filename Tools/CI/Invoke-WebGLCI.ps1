@@ -28,9 +28,7 @@ try {
             --output (Join-Path $projectRoot 'Logs/playmode.xml') `
             --junit-output (Join-Path $projectRoot 'Logs/playmode-junit.xml') --timeout 1200 --non-interactive
         $playExit = $LASTEXITCODE
-        # beta.9 returns 2 for failed tests; newer CLI versions document 8.
-        # Either requires a newly generated, complete XML with matching baseline signatures.
-        if ($playExit -notin @(0, 2, 8)) { throw 'PlayMode execution failed. See Logs/playmode.xml.' }
+        if ($playExit -ne 0) { throw 'PlayMode tests failed. See Logs/playmode.xml.' }
         & (Join-Path $PSScriptRoot 'Test-PlayModeResults.ps1') -ResultsPath $playResults
     }
     $buildLog = Join-Path $projectRoot 'Logs/webgl-build.log'

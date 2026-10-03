@@ -90,19 +90,17 @@ the two BalanceLab cross-runtime comparison cases. They remain in the repository
 failure is not represented as a passing test. Future simulation fixtures must be added to the
 release gate or the drift issue fixed and full-suite gating restored.
 
-PlayMode capture tests may be skipped in batch mode because it has no rendered frames. Browser
-checks of the actual WebGL artifact complement the tests. See `VERIFICATION.md` for measured results.
+The 2026-10-04 test audit repaired the 33 old PlayMode failures and removed the failure
+allowlist. PlayMode now requires CLI exit code 0 and a fresh, completed report with no failures.
+Missing results, execution errors, suite/setup failures, and inconclusive results block deployment.
+`Test-CIGuards.ps1` accepts a passing report and rejects six invalid/failing reports, including a
+failure that the former allowlist accepted.
 
-The unchanged main PlayMode suite also has 33 existing failures from stale prefab paths and legacy
-`UnityEngine.UI.Text` expectations after UI/TextMeshPro changes (82 pass, 11 skip). The exact test
-names are listed in `KnownPlayModeFailures.txt`. All PlayMode tests still execute and their failed
-results are retained; any failure outside that explicit baseline stops deployment. Missing test
-results, execution errors, and suite/setup failures also stop deployment. Remove names from the
-baseline when the corresponding tests are repaired. This baseline does not certify those features.
-`KnownPlayModeSignatures.json` also checks the known error messages and source locations: changed
-failure reasons/locations stop the build. `Test-CIGuards.ps1` verifies rejection using synthetic reports.
-Unity CLI beta.9 empirically returns code 2 for failed tests; newer versions document code 8. Both
-require fresh, complete NUnit results before this baseline can be accepted.
+`UICaptureTests` is marked `Explicit` and `VisualCapture`: its 11 cases are manual screenshot
+tools, excluded from normal regression runs even with rendering available. A saved screenshot
+alone does not prove visual correctness; inspect images when running those tools deliberately.
+The Chromium startup smoke continues to verify the built WebGL artifact.
+See `Tools/CI/TestAudit-2026-10-04.md` for the cleanup rationale and measured evidence.
 
 ## Troubleshooting
 

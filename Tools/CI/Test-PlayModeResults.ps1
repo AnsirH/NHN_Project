@@ -17,25 +17,7 @@ $failures = @($results.SelectNodes('//test-case[@result="Failed"]'))
 if ($failures.Count -ne [int]$run.GetAttribute('failed')) {
     throw 'PlayMode run contains an unexpected suite/setup failure.'
 }
-$known = @(Get-Content (Join-Path $PSScriptRoot 'KnownPlayModeFailures.txt') | Where-Object { $_.Trim() })
-$unexpected = @($failures | Where-Object { $_.GetAttribute('fullname') -notin $known })
-if ($unexpected.Count) {
-    throw ('New PlayMode failures: ' + (($unexpected | ForEach-Object { $_.GetAttribute('fullname') }) -join ', '))
+if ($failures.Count -or $run.GetAttribute('result') -ne 'Passed') {
+    throw ('PlayMode failures: ' + (($failures | ForEach-Object { $_.GetAttribute('fullname') }) -join ', '))
 }
-$signatures = Get-Content (Join-Path $PSScriptRoot 'KnownPlayModeSignatures.json') -Raw | ConvertFrom-Json
-foreach ($failure in $failures) {
-    $signature = @($signatures | Where-Object { $_.name -eq $failure.GetAttribute('fullname') })
-    if ($signature.Count -ne 1) { throw 'Missing unique baseline failure signature.' }
-    foreach ($fragment in $signature[0].messageContains) {
-        if (-not $failure.SelectSingleNode('failure/message').InnerText.Contains($fragment)) {
-            throw "Changed baseline failure: $($signature[0].name)"
-        }
-    }
-    if ($signature[0].stackContains -and -not $failure.SelectSingleNode('failure/stack-trace').InnerText.Contains($signature[0].stackContains)) {
-        throw "Changed baseline failure location: $($signature[0].name)"
-    }
-}
-if ($failures.Count) {
-    Write-Warning "$($failures.Count) known baseline PlayMode failures remain. See Logs/playmode.xml and Tools/CI/README.md."
-}
-Write-Host "PlayMode: $($run.GetAttribute('passed')) passed, $($failures.Count) known failures, $($run.GetAttribute('skipped')) skipped."
+Write-Host "PlayMode: $($run.GetAttribute('passed')) passed, 0 failures, $($run.GetAttribute('skipped')) skipped."

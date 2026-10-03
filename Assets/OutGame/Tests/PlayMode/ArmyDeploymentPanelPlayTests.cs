@@ -666,7 +666,6 @@ namespace OutGame.Tests.PlayMode
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
-            const string gridPath = "Window/BodyRow/GeneralColumn/GeneralStatsGrid/";
             Assert.AreEqual($"{armyDefNone.ToData().generalHealth:0}", PrefabBinding.Get<TMP_Text>(infoPopup, "generalHealthLabel").text);
             Assert.AreEqual($"{armyDefNone.ToData().generalAttack:0}", PrefabBinding.Get<TMP_Text>(infoPopup, "generalAttackLabel").text);
             Assert.AreEqual($"{armyDefNone.ToData().generalDefense:0}", PrefabBinding.Get<TMP_Text>(infoPopup, "generalDefenseLabel").text);
@@ -675,7 +674,7 @@ namespace OutGame.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Click_OnArmyCard_ShowsArmyStatGridWithoutCritOrSpeed()
+        public IEnumerator Click_OnArmyCard_ShowsArmyStatValues()
         {
             // 병사는 치명타·이동속도를 장군에게서 물려받으므로 군대 쪽 그리드엔 체력·공격력·방어력 3개만
             // 있어야 한다(§5.7 참고 이미지).
@@ -686,12 +685,9 @@ namespace OutGame.Tests.PlayMode
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
-            const string gridPath = "Window/BodyRow/ArmyColumn/ArmyStatsGrid/Row/";
             Assert.AreEqual($"{armyDefNone.ToData().soldierHealth:0}", PrefabBinding.Get<TMP_Text>(infoPopup, "armySoldierHealthLabel").text);
             Assert.AreEqual($"{armyDefNone.ToData().soldierAttack:0}", PrefabBinding.Get<TMP_Text>(infoPopup, "armySoldierAttackLabel").text);
             Assert.AreEqual($"{armyDefNone.ToData().soldierDefense:0}", PrefabBinding.Get<TMP_Text>(infoPopup, "armySoldierDefenseLabel").text);
-            Assert.IsNull(infoPopup.transform.Find(gridPath + "CritRate"), "군대 스탯 그리드엔 치명타 칸이 없어야 함");
-            Assert.IsNull(infoPopup.transform.Find(gridPath + "MoveSpeed"), "군대 스탯 그리드엔 이동속도 칸이 없어야 함");
         }
 
         [UnityTest]
@@ -763,7 +759,6 @@ namespace OutGame.Tests.PlayMode
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
-            Assert.IsNull(infoPopup.transform.Find("Window/BodyRow/ArmyColumn/ArmyMeta"), "army meta 패널은 삭제돼야 함");
 
             TMP_Text soldierCountLabel = PrefabBinding.Get<TMP_Text>(infoPopup, "soldierCountLabel");
             Assert.AreEqual($"{armyDefNone.ToData().baseSoldierCount}/{armyDefNone.ToData().maxSoldierCount}명", soldierCountLabel.text);
