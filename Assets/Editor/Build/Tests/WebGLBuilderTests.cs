@@ -85,6 +85,30 @@ namespace ClayWars.Build.Tests
         }
 
         [Test]
+        public void Settings_UseFillTemplateAndRestorePreviousTemplate()
+        {
+            var original = PlayerSettings.WebGL.template;
+            try
+            {
+                PlayerSettings.WebGL.template = "APPLICATION:Default";
+                WebGLBuilder.WithWebGLSettings(() =>
+                    Assert.That(PlayerSettings.WebGL.template, Is.EqualTo("PROJECT:ClayWarsFill")));
+                Assert.That(PlayerSettings.WebGL.template, Is.EqualTo("APPLICATION:Default"));
+
+                Assert.Throws<InvalidOperationException>(() => WebGLBuilder.WithWebGLSettings(() =>
+                {
+                    Assert.That(PlayerSettings.WebGL.template, Is.EqualTo("PROJECT:ClayWarsFill"));
+                    throw new InvalidOperationException("simulated build failure");
+                }));
+                Assert.That(PlayerSettings.WebGL.template, Is.EqualTo("APPLICATION:Default"));
+            }
+            finally
+            {
+                PlayerSettings.WebGL.template = original;
+            }
+        }
+
+        [Test]
         public void Settings_RestoreAfterBuildThrows()
         {
             var compression = PlayerSettings.WebGL.compressionFormat;
