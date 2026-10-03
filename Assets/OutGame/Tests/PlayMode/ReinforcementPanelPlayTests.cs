@@ -13,6 +13,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
+using TMPro;
 
 namespace OutGame.Tests.PlayMode
 {
@@ -72,7 +73,7 @@ namespace OutGame.Tests.PlayMode
         // 결과는 진영 그리드를 그대로 보여준 채 그 위에 dim 팝업(ResultPopup)으로 뜬다(2026-07-26
         // 사용자 요청) — resultText/continueButton 자신은 항상 active, ResultPopup(부모)만 토글된다.
         private GameObject ResultPopupRoot() => panel.transform.Find("Window/ResultPopup").gameObject;
-        private Text ResultText() => panel.transform.Find("Window/ResultPopup/ResultWindow/ResultText").GetComponent<Text>();
+        private TMP_Text ResultText() => panel.transform.Find("Window/ResultPopup/ResultWindow/ResultText").GetComponent<TMP_Text>();
         private Button ContinueButton() => panel.transform.Find("Window/ResultPopup/ResultWindow/ContinueButton").GetComponent<Button>();
 
         [UnityTest]
@@ -120,7 +121,8 @@ namespace OutGame.Tests.PlayMode
             Cards().First(c => c.ArmyInstanceId == targetId).OnPointerClick(new PointerEventData(EventSystem.current));
             yield return null;
 
-            Assert.AreEqual(6, run.GetArmy(targetId).bonusSoldierCount, "30명 기본 × 20% = 6명 증원");
+            Assert.AreEqual(Mathf.RoundToInt(armyDefNone.ToData().baseSoldierCount * 0.2f),
+                run.GetArmy(targetId).bonusSoldierCount);
 
             Assert.IsTrue(ResultPopupRoot().activeSelf, "증원 후에는 결과 팝업이 떠야 함");
             var allyFormationView = panel.GetComponentInChildren<AllyFormationView>(includeInactive: true);

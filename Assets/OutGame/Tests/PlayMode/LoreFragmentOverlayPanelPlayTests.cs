@@ -4,6 +4,7 @@ using OutGame.UI;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
+using TMPro;
 
 namespace OutGame.Tests.PlayMode
 {
@@ -32,8 +33,8 @@ namespace OutGame.Tests.PlayMode
             if (instance != null) Object.Destroy(instance);
         }
 
-        private Button ContinueButton() => instance.transform.Find("FragmentRoot/ContinueButton").GetComponent<Button>();
-        private Text FragmentText() => instance.transform.Find("FragmentRoot/FragmentText").GetComponent<Text>();
+        private Button ContinueButton() => PrefabBinding.Get<Button>(panel, "continueButton");
+        private TMP_Text FragmentText() => PrefabBinding.Get<TMP_Text>(panel, "fragmentText");
 
         [UnityTest]
         public IEnumerator Begin_ActivatesOverlay()

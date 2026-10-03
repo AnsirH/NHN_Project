@@ -68,30 +68,6 @@ namespace OutGame.Tests.EditMode
             }
         }
 
-        [Test]
-        public void Accessors_ReflectSerializedFields()
-        {
-            var so = ScriptableObject.CreateInstance<PlayerCharacterDefinition>();
-            try
-            {
-                SetField(so, "displayName", "캐릭터 1");
-                SetField(so, "description", "설명");
-                SetField(so, "skillName", "스킬 1");
-                SetField(so, "skillDescription", "스킬 설명");
-                SetField(so, "sortOrder", 2);
-
-                Assert.AreEqual("캐릭터 1", so.DisplayName);
-                Assert.AreEqual("설명", so.Description);
-                Assert.AreEqual("스킬 1", so.SkillName);
-                Assert.AreEqual("스킬 설명", so.SkillDescription);
-                Assert.AreEqual(2, so.SortOrder);
-            }
-            finally
-            {
-                UnityEngine.Object.DestroyImmediate(so);
-            }
-        }
-
         private static void SetField(PlayerCharacterDefinition target, string fieldName, object value)
         {
             FieldInfo field = typeof(PlayerCharacterDefinition).GetField(

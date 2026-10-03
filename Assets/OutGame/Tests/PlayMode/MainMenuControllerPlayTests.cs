@@ -39,7 +39,7 @@ namespace OutGame.Tests.PlayMode
         {
             yield return null;
 
-            controller.transform.Find("StartButton").GetComponent<Button>().onClick.Invoke();
+            PrefabBinding.Get<Button>(controller, "startButton").onClick.Invoke();
 
             CollectionAssert.AreEqual(new[] { SceneNames.OutGame }, loadedScenes);
         }

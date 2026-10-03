@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System.Linq;
 using OutGame.Logic.Armies;
 using OutGame.Logic.Battle;
 using OutGame.Logic.Items;
@@ -14,28 +15,44 @@ namespace OutGame.Tests.EditMode
     public class ScriptableObjectDataTests
     {
         [Test]
-        public void ArmyDefinition_ToData_MapsAllFields()
+        public void ArmyDefinition_ToData_MapsConfiguredFields()
         {
             var so = ScriptableObject.CreateInstance<ArmyDefinition>();
             try
             {
+                SetField(so, "armyId", "army_test");
+                SetField(so, "displayName", "Test army");
+                SetField(so, "baseSoldierCount", 17);
+                SetField(so, "maxSoldierCount", 43);
+                SetField(so, "generalName", "Test general");
+                SetField(so, "generalPower", 13f);
+                SetField(so, "generalHealth", 123f);
+                SetField(so, "generalAttack", 19f);
+                SetField(so, "generalDefense", 7f);
+                SetField(so, "generalCritRate", 23f);
+                SetField(so, "generalMoveSpeed", 81f);
+                SetField(so, "description", "Test description");
+                SetField(so, "soldierHealth", 67f);
+                SetField(so, "soldierAttack", 11f);
+                SetField(so, "soldierDefense", 3f);
                 var data = so.ToData();
-                Assert.AreEqual("army_basic", data.id);
-                Assert.AreEqual(30, data.baseSoldierCount);
-                Assert.AreEqual(10f, data.generalPower);
-                Assert.AreEqual(100f, data.generalHealth);
-                Assert.AreEqual(10f, data.generalAttack);
-                Assert.AreEqual(5f, data.generalDefense);
-                Assert.AreEqual(5f, data.generalCritRate);
-                Assert.AreEqual(100f, data.generalMoveSpeed);
-                Assert.AreEqual(50f, data.soldierHealth);
-                Assert.AreEqual(5f, data.soldierAttack);
-                Assert.AreEqual(2f, data.soldierDefense);
+                Assert.AreEqual("army_test", data.id);
+                Assert.AreEqual("Test army", data.displayName);
+                Assert.AreEqual(17, data.baseSoldierCount);
+                Assert.AreEqual(43, data.maxSoldierCount);
+                Assert.AreEqual("Test general", data.generalName);
+                Assert.AreEqual(13f, data.generalPower);
+                Assert.AreEqual(123f, data.generalHealth);
+                Assert.AreEqual(19f, data.generalAttack);
+                Assert.AreEqual(7f, data.generalDefense);
+                Assert.AreEqual(23f, data.generalCritRate);
+                Assert.AreEqual(81f, data.generalMoveSpeed);
+                Assert.AreEqual("Test description", data.description);
+                Assert.AreEqual(67f, data.soldierHealth);
+                Assert.AreEqual(11f, data.soldierAttack);
+                Assert.AreEqual(3f, data.soldierDefense);
             }
-            finally
-            {
-                Object.DestroyImmediate(so);
-            }
+            finally { Object.DestroyImmediate(so); }
         }
 
         [Test]
@@ -59,55 +76,66 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
-        public void BattleFieldConfig_ToData_Defaults3x3()
+        public void BattleFieldConfig_ToData_MapsCustomDimensions()
         {
             var so = ScriptableObject.CreateInstance<BattleFieldConfig>();
             try
             {
+                SetField(so, "rows", 2);
+                SetField(so, "columns", 5);
                 var data = so.ToData();
-                Assert.AreEqual(3, data.rows);
-                Assert.AreEqual(3, data.columns);
-                Assert.AreEqual(9, data.GenerateSlots().Count);
+                Assert.AreEqual(2, data.rows);
+                Assert.AreEqual(5, data.columns);
+                Assert.AreEqual(10, data.GenerateSlots().Count);
             }
-            finally
-            {
-                Object.DestroyImmediate(so);
-            }
+            finally { Object.DestroyImmediate(so); }
         }
 
         [Test]
-        public void BattlePowerConfigAsset_ToData_DefaultsMatchSpec()
+        public void BattlePowerConfigAsset_ToData_MapsCustomWeights()
         {
             var so = ScriptableObject.CreateInstance<BattlePowerConfigAsset>();
             try
             {
+                SetField(so, "baseWeight", 2f);
+                SetField(so, "archerWeight", 3f);
+                SetField(so, "warriorWeight", 4f);
+                SetField(so, "hunterWeight", 5f);
+                SetField(so, "assassinWeight", 6f);
                 var data = so.ToData();
-                Assert.AreEqual(1.0f, data.WeightOf(ArmyClass.None));
-                Assert.AreEqual(1.2f, data.WeightOf(ArmyClass.Archer));
-                Assert.AreEqual(1.5f, data.WeightOf(ArmyClass.Warrior));
-                Assert.AreEqual(1.6f, data.WeightOf(ArmyClass.Hunter));
-                Assert.AreEqual(1.4f, data.WeightOf(ArmyClass.Assassin));
+                Assert.AreEqual(2f, data.WeightOf(ArmyClass.None));
+                Assert.AreEqual(3f, data.WeightOf(ArmyClass.Archer));
+                Assert.AreEqual(4f, data.WeightOf(ArmyClass.Warrior));
+                Assert.AreEqual(5f, data.WeightOf(ArmyClass.Hunter));
+                Assert.AreEqual(6f, data.WeightOf(ArmyClass.Assassin));
             }
-            finally
-            {
-                Object.DestroyImmediate(so);
-            }
+            finally { Object.DestroyImmediate(so); }
         }
 
         [Test]
-        public void RunConfigAsset_ToData_MapsBattleVictoryGoldDefault()
+        public void RunConfigAsset_ToData_MapsConfiguredValuesAndCopiesCosts()
         {
-            var runConfigSo = ScriptableObject.CreateInstance<RunConfigAsset>();
+            var so = ScriptableObject.CreateInstance<RunConfigAsset>();
             try
             {
-                var data = runConfigSo.ToData();
-                Assert.AreEqual(20, data.battleVictoryGold, "§9 초안값 — 밸런스 튜닝 전까지 20");
-                Assert.AreEqual(28, data.maxArmyCount, "§4-7 — BattleFieldConfig 기본 4×7과 일치하는 기본값");
+                SetField(so, "startingArmyClass", ArmyClass.Hunter);
+                SetField(so, "startingArmyCount", 2);
+                SetField(so, "startingGold", 71);
+                SetField(so, "battleVictoryGold", 37);
+                SetField(so, "maxArmyCount", 12);
+                var costs = new[] { 11, 22, 33, 44, 55 };
+                SetField(so, "armyUpgradeCosts", costs);
+                var data = so.ToData();
+                Assert.AreEqual(ArmyClass.Hunter, data.startingArmyClass);
+                Assert.AreEqual(2, data.startingArmyCount);
+                Assert.AreEqual(71, data.startingGold);
+                Assert.AreEqual(37, data.battleVictoryGold);
+                Assert.AreEqual(12, data.maxArmyCount);
+                CollectionAssert.AreEqual(costs, data.armyUpgradeCosts);
+                data.armyUpgradeCosts[0] = 999;
+                Assert.AreEqual(11, so.ToData().armyUpgradeCosts[0]);
             }
-            finally
-            {
-                Object.DestroyImmediate(runConfigSo);
-            }
+            finally { Object.DestroyImmediate(so); }
         }
 
         [Test]
@@ -127,30 +155,38 @@ namespace OutGame.Tests.EditMode
             }
         }
 
-        private static void SetField(RunConfigAsset target, string fieldName, object value)
+        private static void SetField(ScriptableObject target, string fieldName, object value)
         {
-            var field = typeof(RunConfigAsset).GetField(fieldName,
+            var field = target.GetType().GetField(fieldName,
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             field.SetValue(target, value);
         }
 
         [Test]
-        public void EnemyCompositionConfigAsset_ToConfig_ReturnsDefaultValues()
+        public void EnemyCompositionConfigAsset_ToConfig_MapsConfiguredTier()
         {
-            // 2026-07-26 재설계: 평평한 baseEnemyCount/maxEnemyCount 대신 티어 리스트 — 기본값은
-            // 4단계(§4-28 초안)이고 첫 티어는 카운터 0부터 적용된다.
             var so = ScriptableObject.CreateInstance<EnemyCompositionConfigAsset>();
             try
             {
-                EnemyCompositionConfig data = so.ToConfig();
-                Assert.AreEqual(4, data.tiers.Count);
+                SetField(so, "config", new EnemyCompositionConfig
+                {
+                    tiers = new System.Collections.Generic.List<DifficultyTier>
+                    {
+                        new DifficultyTier { minCounter = 0, presetCount = 7,
+                            gradeWeights = new System.Collections.Generic.List<GradeWeight>
+                            { new GradeWeight { grade = 3, weight = 2.5f } },
+                            bossPresetIds = new System.Collections.Generic.List<string> { "boss_test" } },
+                    },
+                });
+                var data = so.ToConfig();
+                Assert.AreEqual(1, data.tiers.Count);
                 Assert.AreEqual(0, data.tiers[0].minCounter);
-                Assert.AreEqual(5, data.tiers[data.tiers.Count - 1].presetCount, "마지막 티어가 최고 난이도(프리셋 5개 조합)여야 함");
+                Assert.AreEqual(7, data.tiers[0].presetCount);
+                Assert.AreEqual(3, data.tiers[0].gradeWeights.Single().grade);
+                Assert.AreEqual(2.5f, data.tiers[0].gradeWeights.Single().weight);
+                CollectionAssert.AreEqual(new[] { "boss_test" }, data.tiers[0].bossPresetIds);
             }
-            finally
-            {
-                Object.DestroyImmediate(so);
-            }
+            finally { Object.DestroyImmediate(so); }
         }
 
         [Test]
@@ -192,19 +228,23 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
-        public void ItemDropConfigAsset_ToConfig_ReturnsDefaultValues()
+        public void ItemDropConfigAsset_ToConfig_MapsAllConfiguredChances()
         {
             var so = ScriptableObject.CreateInstance<ItemDropConfigAsset>();
             try
             {
-                ItemDropConfig data = so.ToConfig();
-                Assert.AreEqual(0.25f, data.archerDropChance);
-                Assert.AreEqual(0.25f, data.warriorDropChance);
+                SetField(so, "config", new ItemDropConfig
+                {
+                    archerDropChance = 0.1f, warriorDropChance = 0.3f,
+                    hunterDropChance = 0.6f, assassinDropChance = 0.9f,
+                });
+                var data = so.ToConfig();
+                Assert.AreEqual(0.1f, data.archerDropChance);
+                Assert.AreEqual(0.3f, data.warriorDropChance);
+                Assert.AreEqual(0.6f, data.hunterDropChance);
+                Assert.AreEqual(0.9f, data.assassinDropChance);
             }
-            finally
-            {
-                Object.DestroyImmediate(so);
-            }
+            finally { Object.DestroyImmediate(so); }
         }
 
         [Test]

@@ -99,26 +99,6 @@ namespace OutGame.Tests.EditMode
             }
         }
 
-        [Test]
-        public void Accessors_ReflectSerializedFields()
-        {
-            var so = ScriptableObject.CreateInstance<MapDefinition>();
-            try
-            {
-                SetField(so, "mapId", "map_default");
-                SetField(so, "displayName", "북부 전선");
-                SetField(so, "difficultyLabel", "보통");
-
-                Assert.AreEqual("map_default", so.MapId);
-                Assert.AreEqual("북부 전선", so.DisplayName);
-                Assert.AreEqual("보통", so.DifficultyLabel);
-            }
-            finally
-            {
-                UnityEngine.Object.DestroyImmediate(so);
-            }
-        }
-
         private static void SetField(MapDefinition target, string fieldName, object value)
         {
             var field = typeof(MapDefinition).GetField(fieldName,

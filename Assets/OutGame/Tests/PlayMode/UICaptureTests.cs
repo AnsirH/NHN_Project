@@ -21,6 +21,8 @@ namespace OutGame.Tests.PlayMode
     /// 캡처 결과: 프로젝트 루트 ui-captures/*.png → Claude가 이미지를 읽고 디자인을 판단·수정한다.
     /// batchmode(렌더 프레임 없음)에서는 자동 스킵.
     /// </summary>
+    [Explicit("Manual visual inspection tool; saved images are not automatic regression assertions.")]
+    [Category("VisualCapture")]
     public class UICaptureTests
     {
         private static string CaptureDir

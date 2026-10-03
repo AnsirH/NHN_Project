@@ -8,6 +8,7 @@ using OutGame.UI;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
+using TMPro;
 
 namespace OutGame.Tests.PlayMode
 {
@@ -68,7 +69,7 @@ namespace OutGame.Tests.PlayMode
 
             Assert.AreEqual(armiesBefore + 1, run.armies.Count, "군대 획득 선택지 — 부대가 늘어야 함");
 
-            Text resultText = panel.transform.Find("Window/ResultText").GetComponent<Text>();
+            TMP_Text resultText = panel.transform.Find("Window/ResultText").GetComponent<TMP_Text>();
             Assert.IsTrue(resultText.gameObject.activeSelf);
             Assert.IsNotEmpty(resultText.text);
 
@@ -91,7 +92,7 @@ namespace OutGame.Tests.PlayMode
 
             Assert.AreEqual(armiesBefore, run.armies.Count, "상한에 도달했으면 군대가 추가되면 안 됨");
 
-            Text resultText = panel.transform.Find("Window/ResultText").GetComponent<Text>();
+            TMP_Text resultText = panel.transform.Find("Window/ResultText").GetComponent<TMP_Text>();
             Assert.IsTrue(resultText.gameObject.activeSelf);
             StringAssert.Contains("가득 차", resultText.text);
         }

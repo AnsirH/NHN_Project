@@ -413,18 +413,19 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
-        public void BuildDeployedArmies_MatchesBuildSetupArmies()
+        public void BuildSetup_PreservesExplicitArmySlotAndSoldierData()
         {
+            run.armies[0].AddBonusSoldiers(4);
             deployment.Place(run.armies[0].instanceId, 0);
             deployment.Place(run.armies[1].instanceId, 3);
 
-            List<DeployedArmy> viaHelper = deployment.BuildDeployedArmies(run, Items, Defs, NoAugments);
-            BattleSetupData setup = deployment.BuildSetup("room_2_0", RoomType.NormalBattle, "enc", run, Items, Defs, NoAugments, Characters, NoEnemies);
+            var setup = deployment.BuildSetup("room_2_0", RoomType.NormalBattle, "enc",
+                run, Items, Defs, NoAugments, Characters, NoEnemies);
 
-            CollectionAssert.AreEqual(
-                setup.armies.Select(a => (a.armyInstanceId, a.slotId, a.soldierCount)),
-                viaHelper.Select(a => (a.armyInstanceId, a.slotId, a.soldierCount)),
-                "BuildSetup은 이 헬퍼 결과를 그대로 감싸는 것이어야 함 — 별도 로직이면 어긋날 수 있음");
+            CollectionAssert.AreEqual(new[] { run.armies[0].instanceId, run.armies[1].instanceId },
+                setup.armies.Select(a => a.armyInstanceId));
+            CollectionAssert.AreEqual(new[] { 0, 3 }, setup.armies.Select(a => a.slotId));
+            CollectionAssert.AreEqual(new[] { 34, 30 }, setup.armies.Select(a => a.soldierCount));
         }
 
         [Test]

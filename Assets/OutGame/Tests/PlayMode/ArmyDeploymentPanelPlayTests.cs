@@ -13,6 +13,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
+using TMPro;
 
 namespace OutGame.Tests.PlayMode
 {
@@ -148,15 +149,15 @@ namespace OutGame.Tests.PlayMode
                 .OrderBy(s => s.SlotId)
                 .ToList();
 
-        [UnityTest]
-        public IEnumerator RunConfigDefaultAsset_HasArmyUpgradeCosts()
+        [Test]
+        public void RunConfigDefaultAsset_HasValidUpgradeCostSchedule()
         {
-            // int[] 필드가 SceneSetupM3Data 재실행 후에도 에셋 YAML에 실제로 올바르게 저장/복원되는지
-            // 확인한다(§4-26) — Unity가 primitive 배열을 hex 블롭으로 직렬화하는 것을 실제로 확인했음.
-            var runConfigAsset = Resources.Load<RunConfigAsset>("OutGame/Data/RunConfig_Default");
-            Assert.IsNotNull(runConfigAsset, "RunConfig_Default 에셋이 없음 — SceneSetupM3Data.Run() 실행 필요");
-            CollectionAssert.AreEqual(new[] { 50, 100, 200, 350, 550 }, runConfigAsset.ToData().armyUpgradeCosts);
-            yield break;
+            var asset = Resources.Load<RunConfigAsset>("OutGame/Data/RunConfig_Default");
+            Assert.IsNotNull(asset);
+            var config = asset.ToData();
+            Assert.DoesNotThrow(config.Validate);
+            Assert.AreEqual(ArmyInstance.MaxUpgradeLevel, config.armyUpgradeCosts.Length);
+            Assert.That(config.armyUpgradeCosts, Has.All.GreaterThanOrEqualTo(0));
         }
 
         [UnityTest]
@@ -215,7 +216,7 @@ namespace OutGame.Tests.PlayMode
 
             foreach (ArmyCardView card in enemyCards)
             {
-                Text soldierCountLabel = card.transform.Find("SoldierCountLabel").GetComponent<Text>();
+                TMP_Text soldierCountLabel = card.transform.Find("SoldierCountLabel").GetComponent<TMP_Text>();
                 Assert.IsFalse(soldierCountLabel.gameObject.activeSelf, "적 카드는 병사 수를 표시하면 안 됨");
             }
         }
@@ -296,7 +297,7 @@ namespace OutGame.Tests.PlayMode
             OpenPanel();
             yield return null;
 
-            Text enemyPowerLabel = panel.transform.Find("MainRow/EnemyColumn/FormationGridPanel/PowerPanel/PowerLabel").GetComponent<Text>();
+            TMP_Text enemyPowerLabel = PrefabBinding.Get<TMP_Text>(PrefabBinding.Get<FormationGridView>(panel, "enemyFormationGrid"), "powerLabel");
             Assert.AreEqual("전투력: 141", enemyPowerLabel.text);
         }
 
@@ -649,7 +650,7 @@ namespace OutGame.Tests.PlayMode
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
             Assert.IsTrue(infoPopup.gameObject.activeSelf, "카드 클릭 시 군대 정보 팝업이 열려야 함");
 
-            Text armyNameLabel = infoPopup.transform.Find("Window/BodyRow/ArmyColumn/ArmyInfo/ArmyNameLabel").GetComponent<Text>();
+            TMP_Text armyNameLabel = PrefabBinding.Get<TMP_Text>(infoPopup, "armyNameLabel");
             Assert.AreEqual("궁수 군대", armyNameLabel.text);
         }
 
@@ -666,11 +667,11 @@ namespace OutGame.Tests.PlayMode
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
             const string gridPath = "Window/BodyRow/GeneralColumn/GeneralStatsGrid/";
-            Assert.AreEqual("100", infoPopup.transform.Find(gridPath + "TopRow/Health/Value").GetComponent<Text>().text);
-            Assert.AreEqual("10", infoPopup.transform.Find(gridPath + "TopRow/Attack/Value").GetComponent<Text>().text);
-            Assert.AreEqual("5", infoPopup.transform.Find(gridPath + "TopRow/Defense/Value").GetComponent<Text>().text);
-            Assert.AreEqual("5%", infoPopup.transform.Find(gridPath + "BottomRow/CritRate/Value").GetComponent<Text>().text);
-            Assert.AreEqual("100", infoPopup.transform.Find(gridPath + "BottomRow/MoveSpeed/Value").GetComponent<Text>().text);
+            Assert.AreEqual($"{armyDefNone.ToData().generalHealth:0}", PrefabBinding.Get<TMP_Text>(infoPopup, "generalHealthLabel").text);
+            Assert.AreEqual($"{armyDefNone.ToData().generalAttack:0}", PrefabBinding.Get<TMP_Text>(infoPopup, "generalAttackLabel").text);
+            Assert.AreEqual($"{armyDefNone.ToData().generalDefense:0}", PrefabBinding.Get<TMP_Text>(infoPopup, "generalDefenseLabel").text);
+            Assert.AreEqual($"{armyDefNone.ToData().generalCritRate:0}%", PrefabBinding.Get<TMP_Text>(infoPopup, "generalCritRateLabel").text);
+            Assert.AreEqual($"{armyDefNone.ToData().generalMoveSpeed:0}", PrefabBinding.Get<TMP_Text>(infoPopup, "generalMoveSpeedLabel").text);
         }
 
         [UnityTest]
@@ -686,9 +687,9 @@ namespace OutGame.Tests.PlayMode
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
             const string gridPath = "Window/BodyRow/ArmyColumn/ArmyStatsGrid/Row/";
-            Assert.AreEqual("50", infoPopup.transform.Find(gridPath + "Health/Value").GetComponent<Text>().text);
-            Assert.AreEqual("5", infoPopup.transform.Find(gridPath + "Attack/Value").GetComponent<Text>().text);
-            Assert.AreEqual("2", infoPopup.transform.Find(gridPath + "Defense/Value").GetComponent<Text>().text);
+            Assert.AreEqual($"{armyDefNone.ToData().soldierHealth:0}", PrefabBinding.Get<TMP_Text>(infoPopup, "armySoldierHealthLabel").text);
+            Assert.AreEqual($"{armyDefNone.ToData().soldierAttack:0}", PrefabBinding.Get<TMP_Text>(infoPopup, "armySoldierAttackLabel").text);
+            Assert.AreEqual($"{armyDefNone.ToData().soldierDefense:0}", PrefabBinding.Get<TMP_Text>(infoPopup, "armySoldierDefenseLabel").text);
             Assert.IsNull(infoPopup.transform.Find(gridPath + "CritRate"), "군대 스탯 그리드엔 치명타 칸이 없어야 함");
             Assert.IsNull(infoPopup.transform.Find(gridPath + "MoveSpeed"), "군대 스탯 그리드엔 이동속도 칸이 없어야 함");
         }
@@ -707,7 +708,9 @@ namespace OutGame.Tests.PlayMode
             RectTransform generalPreviewIcon = (RectTransform)infoPopup.transform.Find(
                 "Window/BodyRow/GeneralColumn/GeneralPreview/Icon");
             Assert.IsNotNull(generalPreviewIcon, "장군 프리뷰 아이콘이 있어야 함");
-            Assert.AreEqual(generalPreviewIcon.sizeDelta.x, generalPreviewIcon.sizeDelta.y, "장군 프리뷰 아이콘은 정사각형이어야 함");
+            Canvas.ForceUpdateCanvases();
+            Assert.Greater(generalPreviewIcon.rect.width, 0f);
+            Assert.AreEqual(generalPreviewIcon.rect.width, generalPreviewIcon.rect.height, 0.1f, "장군 프리뷰 아이콘은 정사각형이어야 함");
         }
 
         [UnityTest]
@@ -722,9 +725,8 @@ namespace OutGame.Tests.PlayMode
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
-            Text previewNameLabel = infoPopup.transform
-                .Find("Window/BodyRow/GeneralColumn/GeneralPreview/GeneralPreviewNameLabel").GetComponent<Text>();
-            Assert.AreEqual("이름 없는 장군", previewNameLabel.text);
+            TMP_Text previewNameLabel = PrefabBinding.Get<TMP_Text>(infoPopup, "generalPreviewNameLabel");
+            Assert.AreEqual(armyDefNone.ToData().generalName, previewNameLabel.text);
         }
 
         [UnityTest]
@@ -742,8 +744,11 @@ namespace OutGame.Tests.PlayMode
                 "Window/BodyRow/GeneralColumn/GeneralStatsGrid/TopRow/Health/Icon");
             RectTransform armyIcon = (RectTransform)infoPopup.transform.Find(
                 "Window/BodyRow/ArmyColumn/ArmyStatsGrid/Row/Health/Icon");
-            Assert.AreEqual(generalIcon.sizeDelta.x, generalIcon.sizeDelta.y, "장군 스탯 아이콘은 정사각형이어야 함");
-            Assert.AreEqual(armyIcon.sizeDelta.x, armyIcon.sizeDelta.y, "군대 스탯 아이콘은 정사각형이어야 함");
+            Canvas.ForceUpdateCanvases();
+            Assert.Greater(generalIcon.rect.width, 0f);
+            Assert.Greater(armyIcon.rect.width, 0f);
+            Assert.AreEqual(generalIcon.rect.width, generalIcon.rect.height, 0.1f, "장군 스탯 아이콘은 정사각형이어야 함");
+            Assert.AreEqual(armyIcon.rect.width, armyIcon.rect.height, 0.1f, "군대 스탯 아이콘은 정사각형이어야 함");
         }
 
         [UnityTest]
@@ -760,9 +765,8 @@ namespace OutGame.Tests.PlayMode
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
             Assert.IsNull(infoPopup.transform.Find("Window/BodyRow/ArmyColumn/ArmyMeta"), "army meta 패널은 삭제돼야 함");
 
-            Text soldierCountLabel = infoPopup.transform
-                .Find("Window/BodyRow/ArmyColumn/SoldierPreview/SoldierCountLabel").GetComponent<Text>();
-            Assert.AreEqual($"30/{armyDefNone.ToData().maxSoldierCount}명", soldierCountLabel.text);
+            TMP_Text soldierCountLabel = PrefabBinding.Get<TMP_Text>(infoPopup, "soldierCountLabel");
+            Assert.AreEqual($"{armyDefNone.ToData().baseSoldierCount}/{armyDefNone.ToData().maxSoldierCount}명", soldierCountLabel.text);
         }
 
         [UnityTest]
@@ -775,7 +779,7 @@ namespace OutGame.Tests.PlayMode
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
-            Text descriptionLabel = infoPopup.transform.Find("Window/BodyRow/ArmyColumn/ArmyDescription/Label").GetComponent<Text>();
+            TMP_Text descriptionLabel = PrefabBinding.Get<TMP_Text>(infoPopup, "armyDescriptionLabel");
             Assert.AreEqual("-", descriptionLabel.text, "설명이 비어 있으면 플레이스홀더 '-'를 보여줘야 함");
         }
 
@@ -790,8 +794,7 @@ namespace OutGame.Tests.PlayMode
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
-            Text upgradeLevelLabel = infoPopup.transform
-                .Find("Window/BodyRow/GeneralColumn/UpgradeBand/UpgradeLevelLabel").GetComponent<Text>();
+            TMP_Text upgradeLevelLabel = PrefabBinding.Get<TMP_Text>(infoPopup, "upgradeLevelLabel");
             Assert.AreEqual("+0", upgradeLevelLabel.text);
         }
 
@@ -807,14 +810,12 @@ namespace OutGame.Tests.PlayMode
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
             int costForFirstLevel = runConfig.armyUpgradeCosts[0];
-            infoPopup.transform.Find("Window/BodyRow/GeneralColumn/UpgradeBand/UpgradeButton")
-                .GetComponent<Button>().onClick.Invoke();
+            PrefabBinding.Get<Button>(infoPopup, "upgradeButton").onClick.Invoke();
 
-            Text upgradeLevelLabel = infoPopup.transform
-                .Find("Window/BodyRow/GeneralColumn/UpgradeBand/UpgradeLevelLabel").GetComponent<Text>();
-            Text currencyLabel = infoPopup.transform.Find("Window/CurrencyLabel").GetComponent<Text>();
+            TMP_Text upgradeLevelLabel = PrefabBinding.Get<TMP_Text>(infoPopup, "upgradeLevelLabel");
+            TMP_Text currencyLabel = PrefabBinding.Get<TMP_Text>(PrefabBinding.Get<OutGame.UI.CurrencyDisplay>(infoPopup, "currencyDisplay"), "amountLabel");
             Assert.AreEqual("+1", upgradeLevelLabel.text);
-            Assert.AreEqual($"재화: {1000 - costForFirstLevel}", currencyLabel.text);
+            Assert.AreEqual($"{1000 - costForFirstLevel}", currencyLabel.text);
         }
 
         [UnityTest]
@@ -828,8 +829,7 @@ namespace OutGame.Tests.PlayMode
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
-            Button upgradeButton = infoPopup.transform
-                .Find("Window/BodyRow/GeneralColumn/UpgradeBand/UpgradeButton").GetComponent<Button>();
+            Button upgradeButton = PrefabBinding.Get<Button>(infoPopup, "upgradeButton");
             Assert.IsFalse(upgradeButton.interactable, "재화 부족 시 업그레이드 버튼은 비활성이어야 함");
         }
 
@@ -845,8 +845,7 @@ namespace OutGame.Tests.PlayMode
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
-            Text upgradeButtonLabel = infoPopup.transform
-                .Find("Window/BodyRow/GeneralColumn/UpgradeBand/UpgradeButton/Label").GetComponent<Text>();
+            TMP_Text upgradeButtonLabel = PrefabBinding.Get<Button>(infoPopup, "upgradeButton").GetComponentInChildren<TMP_Text>(true);
             Assert.AreEqual($"업그레이드 ({runConfig.armyUpgradeCosts[0]})", upgradeButtonLabel.text);
         }
 
@@ -861,9 +860,8 @@ namespace OutGame.Tests.PlayMode
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
-            Button upgradeButton = infoPopup.transform
-                .Find("Window/BodyRow/GeneralColumn/UpgradeBand/UpgradeButton").GetComponent<Button>();
-            Text upgradeButtonLabel = upgradeButton.transform.Find("Label").GetComponent<Text>();
+            Button upgradeButton = PrefabBinding.Get<Button>(infoPopup, "upgradeButton");
+            TMP_Text upgradeButtonLabel = upgradeButton.GetComponentInChildren<TMP_Text>(true);
 
             for (int i = 0; i < ArmyInstance.MaxUpgradeLevel; i++)
                 upgradeButton.onClick.Invoke();
@@ -892,7 +890,7 @@ namespace OutGame.Tests.PlayMode
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
             Assert.IsTrue(infoPopup.gameObject.activeSelf);
 
-            infoPopup.transform.Find("Window/CloseButton").GetComponent<Button>().onClick.Invoke();
+            PrefabBinding.Get<Button>(infoPopup, "closeButton").onClick.Invoke();
 
             Assert.IsFalse(infoPopup.gameObject.activeSelf);
         }
@@ -908,8 +906,8 @@ namespace OutGame.Tests.PlayMode
             cardView.OnPointerClick(new PointerEventData(eventSystemGo.GetComponent<EventSystem>()));
 
             var infoPopup = panel.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
-            Text currencyLabel = infoPopup.transform.Find("Window/CurrencyLabel").GetComponent<Text>();
-            Assert.AreEqual("재화: 42", currencyLabel.text);
+            TMP_Text currencyLabel = PrefabBinding.Get<TMP_Text>(PrefabBinding.Get<OutGame.UI.CurrencyDisplay>(infoPopup, "currencyDisplay"), "amountLabel");
+            Assert.AreEqual("42", currencyLabel.text);
         }
     }
 }

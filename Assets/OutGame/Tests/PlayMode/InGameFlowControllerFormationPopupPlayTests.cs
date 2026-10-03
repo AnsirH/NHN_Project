@@ -13,6 +13,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
+using TMPro;
 
 namespace OutGame.Tests.PlayMode
 {
@@ -139,7 +140,8 @@ namespace OutGame.Tests.PlayMode
             formationButton.onClick.Invoke();
             yield return null;
 
-            Text mapGoldLabel = mapPanel.transform.Find("CurrencyDisplay/Amount").GetComponent<Text>();
+            TMP_Text mapGoldLabel = PrefabBinding.Get<TMP_Text>(
+                PrefabBinding.Get<CurrencyDisplay>(mapPanel, "currencyDisplay"), "amountLabel");
             Assert.AreEqual("500", mapGoldLabel.text, "선행 조건: 방 그래프 재화 표시가 최신 상태여야 함");
 
             var cardView = armyFormationPopup.GetComponentInChildren<AllyFormationView>()
@@ -148,8 +150,7 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             var infoPopup = armyFormationPopup.GetComponentInChildren<ArmyInfoPopup>(includeInactive: true);
-            Button upgradeButton = infoPopup.transform
-                .Find("Window/BodyRow/GeneralColumn/UpgradeBand/UpgradeButton").GetComponent<Button>();
+            Button upgradeButton = PrefabBinding.Get<Button>(infoPopup, "upgradeButton");
             upgradeButton.onClick.Invoke();
             yield return null;
 

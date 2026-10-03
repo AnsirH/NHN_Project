@@ -71,7 +71,13 @@ namespace OutGame.Tests.EditMode
             var so = ScriptableObject.CreateInstance<EventDefinition>();
             try
             {
-                Assert.Throws<System.InvalidOperationException>(() => so.ToData());
+                SetField(so, "choices", new System.Collections.Generic.List<EventDefinition.ChoiceEntry>
+                {
+                    new EventDefinition.ChoiceEntry { choiceText = "A" },
+                    new EventDefinition.ChoiceEntry { choiceText = "B" },
+                });
+                var error = Assert.Throws<System.InvalidOperationException>(() => so.ToData());
+                StringAssert.Contains("eventId", error.Message);
             }
             finally
             {

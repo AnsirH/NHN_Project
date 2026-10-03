@@ -32,13 +32,35 @@ namespace OutGame.Tests.EditMode
         }
 
         [Test]
-        public void PickRandomThree_DifferentSeedsProduceDifferentResults()
+        public void PickRandomThree_SameSeedReplaysAndDoesNotMutatePool()
         {
-            List<AugmentData> pool = NineItemPool();
-            var picked1 = AugmentPoolService.PickRandomThree(pool, new Random(1)).Select(a => a.id).ToList();
-            var picked2 = AugmentPoolService.PickRandomThree(pool, new Random(2)).Select(a => a.id).ToList();
+            var pool = NineItemPool();
+            var original = pool.Select(a => a.id).ToArray();
+            var first = AugmentPoolService.PickRandomThree(pool, new Random(7));
+            var second = AugmentPoolService.PickRandomThree(pool, new Random(7));
 
-            CollectionAssert.AreNotEqual(picked1, picked2, "시드가 다르면 결과도 달라야 함(결정적 셔플 확인)");
+            CollectionAssert.AreEqual(first.Select(a => a.id), second.Select(a => a.id));
+            CollectionAssert.AreEqual(original, pool.Select(a => a.id));
+        }
+
+        [Test]
+        public void PickRandomThree_UsesRandomInputToSelectItems()
+        {
+            var pool = NineItemPool();
+            var lower = AugmentPoolService.PickRandomThree(pool, new BoundaryRandom(false));
+            var upper = AugmentPoolService.PickRandomThree(pool, new BoundaryRandom(true));
+
+            CollectionAssert.AreNotEqual(lower.Select(a => a.id), upper.Select(a => a.id),
+                "Ignoring RNG and taking the first three items must not pass.");
+        }
+
+        private sealed class BoundaryRandom : Random
+        {
+            private readonly bool useUpperBound;
+
+            public BoundaryRandom(bool useUpperBound) => this.useUpperBound = useUpperBound;
+
+            public override int Next(int maxValue) => useUpperBound ? maxValue - 1 : 0;
         }
 
         [Test]

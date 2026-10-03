@@ -80,7 +80,7 @@ namespace OutGame.Tests.PlayMode
         {
             yield return null;
 
-            var backButton = controller.transform.Find("BackButton").GetComponent<Button>();
+            var backButton = controller.GetComponentsInChildren<SceneLoadButton>(true).Single().GetComponent<Button>();
             var navButton = backButton.GetComponent<SceneLoadButton>();
             var backLoadedScenes = new List<string>();
             navButton.LoadSceneAction = name => backLoadedScenes.Add(name);

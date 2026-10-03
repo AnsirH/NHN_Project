@@ -8,6 +8,7 @@ using OutGame.UI;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
+using TMPro;
 
 namespace OutGame.Tests.PlayMode
 {
@@ -70,7 +71,7 @@ namespace OutGame.Tests.PlayMode
 
             Assert.AreEqual(1, run.selectedAugmentIds.Count);
 
-            Text resultText = panel.transform.Find("Window/ResultText").GetComponent<Text>();
+            TMP_Text resultText = panel.transform.Find("Window/ResultText").GetComponent<TMP_Text>();
             Assert.IsTrue(resultText.gameObject.activeSelf);
             Assert.IsNotEmpty(resultText.text);
 

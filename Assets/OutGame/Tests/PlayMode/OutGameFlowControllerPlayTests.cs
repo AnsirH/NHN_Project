@@ -46,8 +46,6 @@ namespace OutGame.Tests.PlayMode
         private static InGameFlowController RoomGraph() =>
             Object.FindFirstObjectByType<InGameFlowController>(FindObjectsInactive.Include);
 
-        private static LoreFragmentOverlayPanel LoreFragmentOverlay() =>
-            Object.FindFirstObjectByType<LoreFragmentOverlayPanel>(FindObjectsInactive.Include);
 
         private static readonly string[] MapPointNames =
             { "MapPoint_1_SmallCastle", "MapPoint_2_CentralCastle", "MapPoint_3_Fortress" };
@@ -60,51 +58,34 @@ namespace OutGame.Tests.PlayMode
         private static RunState NewRun()
         {
             MapState map = new MapGenerator(new MapGenerationConfig(), seed: 1).Generate();
-            return RunStateFactory.Create(map, new RunConfig { startingArmyCount = 1 });
+            var run = RunStateFactory.Create(map, new RunConfig { startingArmyCount = 1 });
+            run.selectedCharacterId = Resources.LoadAll<OutGame.ScriptableObjects.PlayerCharacterDefinition>("OutGame/Data/Characters")[0].ToData().id;
+            return run;
         }
 
         [UnityTest]
         public IEnumerator Load_NoPendingRun_ShowsOnlyMapSelectPanel()
         {
+            RunSessionContext.ConsumePendingRun();
             yield return LoadScene();
 
             Assert.IsTrue(MapSelect().gameObject.activeSelf, "새 게임 진입은 맵 선택부터 시작해야 함");
             Assert.IsFalse(CharacterSelect().gameObject.activeSelf);
             Assert.IsFalse(RoomGraph().gameObject.activeSelf);
-            Assert.IsFalse(LoreFragmentOverlay().gameObject.activeSelf,
-                "의지의 파편 오버레이는 전투 종료 복귀(pendingRun) 시점에만 떠야 함");
         }
 
         [UnityTest]
-        public IEnumerator Load_WithPendingRun_ShowsLoreFragmentOverlayBeforeRoomGraph()
-        {
-            // 2026-08-08: 전투 종료 복귀(pendingRun 분기)는 이제 "의지의 파편" 오버레이를 한 번
-            // 거친 뒤에야 방 그래프로 넘어간다(Docs/OutGame/로딩 화면 - 의지의 파편 설계.md).
-            RunSessionContext.SetPendingRun(NewRun());
-
-            yield return LoadScene();
-
-            Assert.IsTrue(LoreFragmentOverlay().gameObject.activeSelf,
-                "전투 종료 복귀 시점엔 방 그래프보다 먼저 로딩 오버레이가 떠야 함");
-            Assert.IsFalse(RoomGraph().gameObject.activeSelf, "오버레이 클릭 전엔 방 그래프가 보이면 안 됨");
-            Assert.IsNull(RunSessionContext.PendingRun, "한 번 소비된 PendingRun은 다시 남아있으면 안 됨(오버레이 시작 전 소비)");
-        }
-
-        [UnityTest]
-        public IEnumerator Load_WithPendingRun_ContinueClick_ShowsOnlyRoomGraph()
+        public IEnumerator Load_WithPendingRun_ShowsRoomGraphAndConsumesRun()
         {
             RunSessionContext.SetPendingRun(NewRun());
-
             yield return LoadScene();
 
-            LoreFragmentOverlay().transform.Find("FragmentRoot/ContinueButton").GetComponent<Button>().onClick.Invoke();
-            yield return null;
-
-            Assert.IsFalse(LoreFragmentOverlay().gameObject.activeSelf, "클릭 후엔 오버레이가 닫혀야 함");
+            Assert.IsTrue(RoomGraph().gameObject.activeSelf);
             Assert.IsFalse(MapSelect().gameObject.activeSelf);
             Assert.IsFalse(CharacterSelect().gameObject.activeSelf);
-            Assert.IsTrue(RoomGraph().gameObject.activeSelf,
-                "이어하기는 맵/캐릭터 선택을 건너뛰고 방 그래프로 곧장 진입해야 함");
+            Assert.IsNull(RunSessionContext.PendingRun);
+            Assert.IsNull(Object.FindFirstObjectByType<LoreFragmentOverlayPanel>(FindObjectsInactive.Include),
+                "Battle return no longer requires the retired lore overlay.");
         }
 
         [UnityTest]
@@ -131,7 +112,7 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             CharacterSelectPanel characterSelect = CharacterSelect();
-            characterSelect.transform.Find("ConfirmButton").GetComponent<Button>().onClick.Invoke();
+            PrefabBinding.Get<Button>(characterSelect, "confirmButton").onClick.Invoke();
             yield return null;
 
             Assert.IsFalse(MapSelect().gameObject.activeSelf);

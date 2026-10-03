@@ -9,6 +9,8 @@ using OutGame.UI;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
+using TMPro;
+using OutGame.ScriptableObjects;
 
 namespace OutGame.Tests.PlayMode
 {
@@ -42,6 +44,9 @@ namespace OutGame.Tests.PlayMode
             Object.Destroy(canvasGo);
         }
 
+        private static PlayerCharacterDefinition[] Definitions() =>
+            Resources.LoadAll<PlayerCharacterDefinition>("OutGame/Data/Characters").OrderBy(c => c.SortOrder).ToArray();
+
         private static RunState NewRun()
         {
             MapState map = new MapGenerator(new MapGenerationConfig(), seed: 7).Generate();
@@ -54,10 +59,10 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             var icons = controller.GetComponentsInChildren<CharacterIconView>();
-            Assert.AreEqual(4, icons.Length, "PlayerCharacterDefinition 4종 (§5.2.5) → 아이콘 4개");
+            Assert.AreEqual(Definitions().Length, icons.Length, "PlayerCharacterDefinition 4종 (§5.2.5) → 아이콘 4개");
 
-            Text nameText = controller.transform.Find("InfoCard/NameText").GetComponent<Text>();
-            Assert.AreEqual("독 캐릭터", nameText.text, "sortOrder 0번이 초기 선택돼야 함");
+            TMP_Text nameText = PrefabBinding.Get<TMP_Text>(controller, "nameText");
+            Assert.AreEqual(Definitions()[0].DisplayName, nameText.text, "sortOrder 0번이 초기 선택돼야 함");
         }
 
         [UnityTest]
@@ -65,10 +70,10 @@ namespace OutGame.Tests.PlayMode
         {
             yield return null;
 
-            controller.transform.Find("NavRow/RightArrowButton").GetComponent<Button>().onClick.Invoke();
+            PrefabBinding.Get<Button>(controller, "rightArrowButton").onClick.Invoke();
 
-            Text nameText = controller.transform.Find("InfoCard/NameText").GetComponent<Text>();
-            Assert.AreEqual("전기 캐릭터", nameText.text);
+            TMP_Text nameText = PrefabBinding.Get<TMP_Text>(controller, "nameText");
+            Assert.AreEqual(Definitions()[1].DisplayName, nameText.text);
         }
 
         [UnityTest]
@@ -76,10 +81,10 @@ namespace OutGame.Tests.PlayMode
         {
             yield return null;
 
-            controller.transform.Find("NavRow/LeftArrowButton").GetComponent<Button>().onClick.Invoke();
+            PrefabBinding.Get<Button>(controller, "leftArrowButton").onClick.Invoke();
 
-            Text nameText = controller.transform.Find("InfoCard/NameText").GetComponent<Text>();
-            Assert.AreEqual("회복 캐릭터", nameText.text, "좌우 화살표는 순환 이동해야 함");
+            TMP_Text nameText = PrefabBinding.Get<TMP_Text>(controller, "nameText");
+            Assert.AreEqual(Definitions().Last().DisplayName, nameText.text, "좌우 화살표는 순환 이동해야 함");
         }
 
         [UnityTest]
@@ -90,8 +95,8 @@ namespace OutGame.Tests.PlayMode
             var icons = controller.GetComponentsInChildren<CharacterIconView>();
             icons[2].GetComponent<Button>().onClick.Invoke();
 
-            Text nameText = controller.transform.Find("InfoCard/NameText").GetComponent<Text>();
-            Assert.AreEqual("강화 캐릭터", nameText.text);
+            TMP_Text nameText = PrefabBinding.Get<TMP_Text>(controller, "nameText");
+            Assert.AreEqual(Definitions()[2].DisplayName, nameText.text);
         }
 
         [UnityTest]
@@ -101,12 +106,12 @@ namespace OutGame.Tests.PlayMode
             controller.Begin(run);
             yield return null;
 
-            controller.transform.Find("NavRow/RightArrowButton").GetComponent<Button>().onClick.Invoke(); // 캐릭터 2 선택
-            controller.transform.Find("ConfirmButton").GetComponent<Button>().onClick.Invoke();
+            PrefabBinding.Get<Button>(controller, "rightArrowButton").onClick.Invoke(); // 캐릭터 2 선택
+            PrefabBinding.Get<Button>(controller, "confirmButton").onClick.Invoke();
 
             Assert.AreEqual(1, confirmedRuns.Count);
             Assert.AreSame(run, confirmedRuns[0]);
-            Assert.AreEqual("char_2", run.selectedCharacterId);
+            Assert.AreEqual(Definitions()[1].ToData().id, run.selectedCharacterId);
         }
 
         [UnityTest]
@@ -115,7 +120,7 @@ namespace OutGame.Tests.PlayMode
             yield return null;
 
             Assert.Throws<System.InvalidOperationException>(() =>
-                controller.transform.Find("ConfirmButton").GetComponent<Button>().onClick.Invoke());
+                PrefabBinding.Get<Button>(controller, "confirmButton").onClick.Invoke());
         }
     }
 }

@@ -7,6 +7,7 @@
         "OutGame.Logic",
         "OutGame.ScriptableObjects",
         "UnityEngine.UI",
+        "Unity.TextMeshPro",
         "Unity.InputSystem"
     ],
     "includePlatforms": [],
