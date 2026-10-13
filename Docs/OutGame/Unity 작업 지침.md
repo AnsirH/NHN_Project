@@ -40,7 +40,9 @@ unity command eval --caller plugin --skill unity-cli '<캡처 트리거 C#>'
 ## 3. 에디터 자동화 주의사항 (실제 사고 기록)
 
 - **모달 다이얼로그를 절대 유발하지 말 것.** `SaveOpenScenes()`를 저장 경로 없는(Untitled) 씬에 호출하면 "다른 이름으로 저장" 네이티브 다이얼로그가 떠서 자동화가 영구 정지한다 (2026-07-18 실제 발생). 저장 경로가 있는 dirty 씬만 골라 `EditorSceneManager.SaveScene(scene)`.
-- **`SceneSetupM2.cs`는 파괴적이다.** `NewScene(Single)`로 `InGame.unity`를 통째로 재생성하므로, 재실행하면 M3UI/M4UI/M6UI가 배선해둔 `InGameFlowController` 필드 참조가 전부 사라진다 (2026-07-19 실제 발생 — PlayMode 테스트가 DOTween "CanvasGroup has been destroyed"로 무더기 실패해서 발견). 재실행했다면 OpenScene 방식의 나머지 마일스톤 스크립트를 순서대로 전부 재실행해 배선을 복구할 것. 사전에 `EditorSceneManager.NewScene`을 grep해서 어떤 스크립트가 파괴적인지 파악해둘 것.
+- **어떤 셋업 스크립트가 파괴적인지 먼저 파악할 것.** `Assets/OutGame/Editor/`에서 `EditorSceneManager.NewScene`을 grep하면 바로 나온다 — 현재 재생성형은 `SceneSetupOutGame.cs`(`OutGame.unity` 전체 재생성)과 `SceneSetupM5UI.cs`(`MainMenu.unity`)이고, `SceneSetupM2/M3UI/M4UI/M7UI`는 프리펛만 만들어 재실행이 안전하다(`SceneSetupLoading.cs`는 `File.Exists` 가드로 이미 있으면 건너뜀).
+- **`SceneSetupOutGame.Run()` 재실행은 뒤에 붙인 추가 배선을 전부 지운다.** `AddSettingsPopup`(우상단 환경설정 버튼+팝업), `AddPausePopup`(ESC/뒤로가기 팝업), `WireLoadingOverlayIntoOutGameScene`(로딩 오버레이)는 모두 기존 씬에 "추가"만 하는 스크립트이고 `SceneSetupOutGame`은 이들을 만들지 않는다 — 재생성했다면 위 세 스크립트를 다시 실행해 복구하고, `OutGameFlowController`의 참조 필드가 `{fileID: 0}`으로 남지 않았는지 확인한다.
+- 이 위험은 이미 한 번 현실화됐다 — 2026-07-19, 당시 씬을 전체 재생성하던 `SceneSetupM2.cs`를 에셋 추가 때문에 재실행했다가 다른 스크립트가 배선해둔 필드 참조가 전부 null로 리셋됐고, PlayMode 테스트가 DOTween "CanvasGroup has been destroyed"로 무더기 실패해서 발견됐다(그 후 `SceneSetupM2.cs`는 프리펛 전용으로 바뀜).
 - `EditorSceneManager.NewScene(...)` 직후엔 이전 에셋 참조가 끊길 수 있다 — `AssetDatabase.LoadAssetAtPath`로 재로드 후 할당.
 - `SerializedProperty` 이름은 private 포함 C# 필드명과 정확히 일치해야 한다. 저장은 `ApplyModifiedPropertiesWithoutUndo()` → `AssetDatabase.SaveAssets()` → `AssetDatabase.Refresh()`.
 - 일회성 씬 설정 스크립트는 `Assets/OutGame/Editor/SceneSetupXxx.cs`에 두고, 실행 후 삭제하거나 격리한다.
