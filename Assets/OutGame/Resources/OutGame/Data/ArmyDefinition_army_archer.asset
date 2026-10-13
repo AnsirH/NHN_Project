@@ -27,5 +27,5 @@ MonoBehaviour:
   generalMoveSpeed: 100
   description: 
   soldierHealth: 45
-  soldierAttack: 5.5
+  soldierAttack: 5
   soldierDefense: 2
