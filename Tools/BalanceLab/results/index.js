@@ -1,5 +1,5 @@
 window.BALANCE_INDEX = {
-  "generatedAt": "2026-08-10T13:53:07Z",
+  "generatedAt": "2026-10-13T08:46:32Z",
   "scenarios": [
     {
       "name": "archer_general_volley_cross",
@@ -25,6 +25,88 @@ window.BALANCE_INDEX = {
       "replaySeeds": [],
       "file": "archer_general_volley_cross.json",
       "generatedAt": "2026-08-10T13:25:04Z"
+    },
+    {
+      "name": "check_a2_formation",
+      "scenarioPath": "Tools/BalanceLab/scenarios/check_a2_formation.json",
+      "tag": null,
+      "overridesPath": null,
+      "band": "none",
+      "bandMin": 0,
+      "bandMax": 1,
+      "passed": true,
+      "metric": "leftWinRate",
+      "metricValue": 0,
+      "detail": null,
+      "runs": 50,
+      "leftWins": 0,
+      "rightWins": 0,
+      "draws": 50,
+      "leftWinRate": 0,
+      "rightWinRate": 0,
+      "elapsedMs": 189,
+      "hasOverrides": false,
+      "overrideNote": null,
+      "replaySeeds": [
+        0
+      ],
+      "file": "check_a2_formation.json",
+      "generatedAt": "2026-10-13T08:45:46Z"
+    },
+    {
+      "name": "check_a2_reform",
+      "scenarioPath": "Tools/BalanceLab/scenarios/check_a2_reform.json",
+      "tag": null,
+      "overridesPath": null,
+      "band": "none",
+      "bandMin": 0,
+      "bandMax": 1,
+      "passed": true,
+      "metric": "leftWinRate",
+      "metricValue": 1,
+      "detail": null,
+      "runs": 50,
+      "leftWins": 50,
+      "rightWins": 0,
+      "draws": 0,
+      "leftWinRate": 1,
+      "rightWinRate": 0,
+      "elapsedMs": 115,
+      "hasOverrides": false,
+      "overrideNote": null,
+      "replaySeeds": [
+        0
+      ],
+      "file": "check_a2_reform.json",
+      "generatedAt": "2026-10-13T08:46:32Z"
+    },
+    {
+      "name": "check_a3_overlap_separation",
+      "scenarioPath": "Tools/BalanceLab/scenarios/check_a3_overlap_separation.json",
+      "tag": null,
+      "overridesPath": null,
+      "band": "none",
+      "bandMin": 0,
+      "bandMax": 1,
+      "passed": true,
+      "metric": "leftWinRate",
+      "metricValue": 1,
+      "detail": null,
+      "runs": 200,
+      "leftWins": 200,
+      "rightWins": 0,
+      "draws": 0,
+      "leftWinRate": 1,
+      "rightWinRate": 0,
+      "elapsedMs": 1038,
+      "hasOverrides": false,
+      "overrideNote": null,
+      "replaySeeds": [
+        7,
+        48
+      ],
+      "file": "check_a3_overlap_separation.json",
+      "generatedAt": "2026-10-13T08:41:27Z"
     },
     {
       "name": "general_vs_none_archer",

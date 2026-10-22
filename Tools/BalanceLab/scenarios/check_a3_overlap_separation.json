@@ -1,0 +1,20 @@
+{
+  "_comment": [
+    "확인요청.md A3 — 겹침 분리를 켠 상태에서 전투가 시간 상한(180초=5400틱) 전에 정상 종료되는지.",
+    "배치는 A3의 BattleTestBootstrap Anchor를 slotX로 옮긴 것이다:",
+    "  SlotToAnchor: anchor.x = (1 - slotX) * deploymentDepth(10)",
+    "  Anchor (0, 0) -> slotX 1.0 / Anchor (6, 0) -> slotX 0.4, slotY 0.5 = 측면 중앙",
+    "band은 none — 승률 판정이 아니라 종료 틱 관찰이 목적이다."
+  ],
+  "name": "check_a3_overlap_separation",
+  "runs": 200,
+  "band": "none",
+  "left": [
+    { "squadId": "A_Warrior", "roleId": "Warrior", "generalId": "WarriorGeneral", "soldierCount": 10, "slotX": 1.0, "slotY": 0.5 },
+    { "squadId": "A_Archer", "roleId": "Archer", "generalId": "ArcherGeneral", "soldierCount": 10, "slotX": 0.4, "slotY": 0.5 }
+  ],
+  "right": [
+    { "squadId": "B_Hunter", "roleId": "Hunter", "generalId": "HunterGeneral", "soldierCount": 10, "slotX": 1.0, "slotY": 0.5 },
+    { "squadId": "B_Warrior", "roleId": "Warrior", "generalId": "WarriorGeneral", "soldierCount": 10, "slotX": 0.4, "slotY": 0.5 }
+  ]
+}

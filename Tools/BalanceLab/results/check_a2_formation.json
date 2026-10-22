@@ -1,0 +1,1279 @@
+{
+  "scenarioName": "check_a2_formation",
+  "scenarioPath": "Tools/BalanceLab/scenarios/check_a2_formation.json",
+  "tag": null,
+  "appliedOverrides": null,
+  "appliedOverridesPath": null,
+  "replaySeeds": [
+    0
+  ],
+  "band": "none",
+  "verdict": {
+    "bandId": "none",
+    "metric": "leftWinRate",
+    "value": 0,
+    "minWinRate": 0,
+    "maxWinRate": 1,
+    "passed": true,
+    "detail": null
+  },
+  "runs": 50,
+  "leftWins": 0,
+  "rightWins": 0,
+  "draws": 50,
+  "leftWinRate": 0,
+  "rightWinRate": 0,
+  "elapsedMs": 189,
+  "battles": [
+    {
+      "seed": 0,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "winner": "draw",
+      "ticks": 1300,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 5,
+      "winner": "draw",
+      "ticks": 1302,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 6,
+      "winner": "draw",
+      "ticks": 1301,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 7,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 8,
+      "winner": "draw",
+      "ticks": 1301,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 9,
+      "winner": "draw",
+      "ticks": 1300,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 10,
+      "winner": "draw",
+      "ticks": 1300,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 11,
+      "winner": "draw",
+      "ticks": 1300,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 12,
+      "winner": "draw",
+      "ticks": 1300,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 13,
+      "winner": "draw",
+      "ticks": 1300,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 14,
+      "winner": "draw",
+      "ticks": 1302,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 15,
+      "winner": "draw",
+      "ticks": 1301,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 16,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 17,
+      "winner": "draw",
+      "ticks": 1302,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 18,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 19,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 20,
+      "winner": "draw",
+      "ticks": 1300,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 21,
+      "winner": "draw",
+      "ticks": 1302,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 22,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 23,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 24,
+      "winner": "draw",
+      "ticks": 1302,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 25,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 26,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 27,
+      "winner": "draw",
+      "ticks": 1302,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 28,
+      "winner": "draw",
+      "ticks": 1300,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 29,
+      "winner": "draw",
+      "ticks": 1301,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 30,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 31,
+      "winner": "draw",
+      "ticks": 1300,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 32,
+      "winner": "draw",
+      "ticks": 1300,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 33,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 34,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 35,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 36,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 37,
+      "winner": "draw",
+      "ticks": 1300,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 38,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 39,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 40,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 41,
+      "winner": "draw",
+      "ticks": 1300,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 42,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 43,
+      "winner": "draw",
+      "ticks": 1300,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 44,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 45,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 46,
+      "winner": "draw",
+      "ticks": 1301,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 47,
+      "winner": "draw",
+      "ticks": 1302,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 48,
+      "winner": "draw",
+      "ticks": 1300,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    },
+    {
+      "seed": 49,
+      "winner": "draw",
+      "ticks": 1299,
+      "leftSquads": [
+        {
+          "squadId": "A_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ],
+      "rightSquads": [
+        {
+          "squadId": "B_Warrior",
+          "soldiers": 10,
+          "survivors": 0,
+          "hasGeneral": true,
+          "generalAlive": false,
+          "activations": 2
+        }
+      ]
+    }
+  ]
+}

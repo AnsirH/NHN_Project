@@ -1,0 +1,15 @@
+{
+  "_comment": [
+    "확인요청.md A2 — 대형 행군 / 1:1 맞붙기 / 전투 후 재정렬.",
+    "A2 지정 배치를 그대로 옮긴 것: 양쪽 모두 Warrior 10 + General Warrior, Anchor (0,0) -> slotX 1.0."
+  ],
+  "name": "check_a2_formation",
+  "runs": 50,
+  "band": "none",
+  "left": [
+    { "squadId": "A_Warrior", "roleId": "Warrior", "generalId": "WarriorGeneral", "soldierCount": 10, "slotX": 1.0, "slotY": 0.5 }
+  ],
+  "right": [
+    { "squadId": "B_Warrior", "roleId": "Warrior", "generalId": "WarriorGeneral", "soldierCount": 10, "slotX": 1.0, "slotY": 0.5 }
+  ]
+}

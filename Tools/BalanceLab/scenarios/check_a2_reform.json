@@ -1,0 +1,30 @@
+{
+  "_comment": [
+    "확인요청.md A2 세 번째 관찰(전투 후 재정렬) 전용 변형.",
+    "지정 배치(10 vs 10 동일)는 상호 전멸 무승부라 승자가 없어 재정렬을 볼 수 없다.",
+    "오른쪽을 7명으로 줄여 승자가 남게 한 배치."
+  ],
+  "name": "check_a2_reform",
+  "runs": 50,
+  "band": "none",
+  "left": [
+    {
+      "squadId": "A_Warrior",
+      "roleId": "Warrior",
+      "generalId": "WarriorGeneral",
+      "soldierCount": 10,
+      "slotX": 1.0,
+      "slotY": 0.5
+    }
+  ],
+  "right": [
+    {
+      "squadId": "B_Warrior",
+      "roleId": "Warrior",
+      "generalId": "WarriorGeneral",
+      "soldierCount": 7,
+      "slotX": 1.0,
+      "slotY": 0.5
+    }
+  ]
+}
