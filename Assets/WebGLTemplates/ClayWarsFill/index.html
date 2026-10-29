@@ -92,6 +92,20 @@
       // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
       // expected to change.
 
+      // The build names every file after a hash of its contents
+      // (PlayerSettings.WebGL.nameFilesAsHashes), so one of these URLs can never
+      // serve stale bytes: different contents mean a different URL, and index.html
+      // is what points at the new names.
+      //
+      // The loader's own default is
+      //     url == config.dataUrl || url.match(/\.bundle/) ? "must-revalidate" : "no-store"
+      // which makes a returning player re-download the wasm every single visit -
+      // the whole of the repeat-visit wait, since nothing else comes down.
+      var immutableUrls = [config.dataUrl, config.frameworkUrl, config.codeUrl].filter(Boolean);
+      config.cacheControl = function (url) {
+        return immutableUrls.indexOf(url) >= 0 ? "immutable" : "no-store";
+      };
+
       // Keep Unity's default CSS-to-render-target synchronization on all devices.
       config.devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
       canvas.addEventListener("pointerdown", () => canvas.focus({ preventScroll: true }));
