@@ -1,7 +1,11 @@
 {
   "name": "ClayWars.Build.Editor",
   "rootNamespace": "ClayWars.Build",
-  "includePlatforms": ["Editor"],
-  "references": [],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "references": [
+    "Unity.TextMeshPro"
+  ],
   "autoReferenced": true
 }
