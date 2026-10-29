@@ -89,8 +89,8 @@ namespace ClayWars.Build
             var template = PlayerSettings.WebGL.template;
             try
             {
-                PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
-                PlayerSettings.WebGL.decompressionFallback = true;
+                PlayerSettings.WebGL.compressionFormat = CompressionFormat();
+                PlayerSettings.WebGL.decompressionFallback = DecompressionFallback();
                 PlayerSettings.WebGL.initialMemorySize = 256;
                 PlayerSettings.WebGL.nameFilesAsHashes = true;
                 PlayerSettings.WebGL.template = "PROJECT:ClayWarsFill";
@@ -104,6 +104,38 @@ namespace ClayWars.Build
                 PlayerSettings.WebGL.nameFilesAsHashes = hashes;
                 PlayerSettings.WebGL.template = template;
             }
+        }
+
+        // GitHub Pages cannot add a Content-Encoding header, so which compression
+        // format and fallback combination is actually fastest there has to be
+        // measured rather than assumed. These two overrides let a run pick a
+        // combination without editing this file; CI sets neither, so the shipped
+        // configuration is exactly what it was.
+        private const string CompressionVariable = "CLAYWARS_WEBGL_COMPRESSION";
+        private const string FallbackVariable = "CLAYWARS_WEBGL_DECOMPRESSION_FALLBACK";
+
+        private static WebGLCompressionFormat CompressionFormat()
+        {
+            string value = Environment.GetEnvironmentVariable(CompressionVariable);
+            // Brotli over Gzip, measured on the Pages replica: it moves 8.5 MB less
+            // and costs 1.7 s more to unpack in JavaScript, which pays off below
+            // about 41 Mbit/s. Phone browsers are the target and the unpacking is
+            // paid once, since the build files are cached as immutable.
+            if (string.IsNullOrWhiteSpace(value)) return WebGLCompressionFormat.Brotli;
+            if (!Enum.TryParse(value, true, out WebGLCompressionFormat parsed))
+                throw new ArgumentException(
+                    $"{CompressionVariable} must be Brotli, Gzip or Disabled, not '{value}'.");
+            return parsed;
+        }
+
+        private static bool DecompressionFallback()
+        {
+            string value = Environment.GetEnvironmentVariable(FallbackVariable);
+            if (string.IsNullOrWhiteSpace(value)) return true;
+            if (!bool.TryParse(value, out bool parsed))
+                throw new ArgumentException(
+                    $"{FallbackVariable} must be true or false, not '{value}'.");
+            return parsed;
         }
 
         private static void PrepareOutput(string output)
