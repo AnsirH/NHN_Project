@@ -73,7 +73,7 @@ namespace ClayWars.Build.Tests
             var hashes = PlayerSettings.WebGL.nameFilesAsHashes;
             WebGLBuilder.WithWebGLSettings(() =>
             {
-                Assert.That(PlayerSettings.WebGL.compressionFormat, Is.EqualTo(WebGLCompressionFormat.Gzip));
+                Assert.That(PlayerSettings.WebGL.compressionFormat, Is.EqualTo(WebGLCompressionFormat.Brotli));
                 Assert.That(PlayerSettings.WebGL.decompressionFallback, Is.True);
                 Assert.That(PlayerSettings.WebGL.initialMemorySize, Is.EqualTo(256));
                 Assert.That(PlayerSettings.WebGL.nameFilesAsHashes, Is.True);
@@ -82,6 +82,47 @@ namespace ClayWars.Build.Tests
             Assert.That(PlayerSettings.WebGL.decompressionFallback, Is.EqualTo(fallback));
             Assert.That(PlayerSettings.WebGL.initialMemorySize, Is.EqualTo(memory));
             Assert.That(PlayerSettings.WebGL.nameFilesAsHashes, Is.EqualTo(hashes));
+        }
+
+        [Test]
+        public void Settings_HonourCompressionOverrideAndRestoreIt()
+        {
+            const string variable = "CLAYWARS_WEBGL_COMPRESSION";
+            string original = Environment.GetEnvironmentVariable(variable);
+            try
+            {
+                Environment.SetEnvironmentVariable(variable, "gzip");
+                WebGLBuilder.WithWebGLSettings(() =>
+                    Assert.That(PlayerSettings.WebGL.compressionFormat,
+                        Is.EqualTo(WebGLCompressionFormat.Gzip)));
+
+                Environment.SetEnvironmentVariable(variable, "nonsense");
+                Assert.Throws<ArgumentException>(() => WebGLBuilder.WithWebGLSettings(() => { }));
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable(variable, original);
+            }
+        }
+
+        [Test]
+        public void Settings_HonourDecompressionFallbackOverrideAndRestoreIt()
+        {
+            const string variable = "CLAYWARS_WEBGL_DECOMPRESSION_FALLBACK";
+            string original = Environment.GetEnvironmentVariable(variable);
+            try
+            {
+                Environment.SetEnvironmentVariable(variable, "false");
+                WebGLBuilder.WithWebGLSettings(() =>
+                    Assert.That(PlayerSettings.WebGL.decompressionFallback, Is.False));
+
+                Environment.SetEnvironmentVariable(variable, "maybe");
+                Assert.Throws<ArgumentException>(() => WebGLBuilder.WithWebGLSettings(() => { }));
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable(variable, original);
+            }
         }
 
         [Test]
