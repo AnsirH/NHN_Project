@@ -106,6 +106,16 @@
         return immutableUrls.indexOf(url) >= 0 ? "immutable" : "no-store";
       };
 
+      // iOS routes WebAudio to the ringer channel and media elements to the media
+      // channel, so with the silent switch on a player heard the outgame music -
+      // the one clip imported as Streaming, which Unity plays through an <audio>
+      // element - and nothing else: no battle music, no hit sounds, no UI clicks.
+      // Asking for the playback session puts every sound on the media channel, so
+      // the mix is consistent instead of depending on each clip's load type.
+      // Safari-only today, hence the feature test; other browsers ignore the switch
+      // anyway. Verified on iPhone 14 Pro / iOS 26.6.1 (2026-10-30).
+      if ("audioSession" in navigator) navigator.audioSession.type = "playback";
+
       // Keep Unity's default CSS-to-render-target synchronization on all devices.
       config.devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
       canvas.addEventListener("pointerdown", () => canvas.focus({ preventScroll: true }));

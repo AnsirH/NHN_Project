@@ -15,7 +15,7 @@ AudioImporter:
   platformSettingOverrides:
     WebGL:
       serializedVersion: 2
-      loadType: 0
+      loadType: 2
       sampleRateSetting: 2
       sampleRateOverride: 44100
       compressionFormat: 7
