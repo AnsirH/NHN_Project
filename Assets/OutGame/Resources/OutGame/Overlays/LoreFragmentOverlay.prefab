@@ -128,7 +128,7 @@ MonoBehaviour:
   fragmentRoot: {fileID: 5565036590727195544}
   fragmentText: {fileID: 6223719156030069290}
   continueButton: {fileID: 2261376840443518073}
-  FragmentTriggerChance: 0.15
+  FragmentTriggerChance: 0.3
 --- !u!1 &1441726382346558281
 GameObject:
   m_ObjectHideFlags: 0

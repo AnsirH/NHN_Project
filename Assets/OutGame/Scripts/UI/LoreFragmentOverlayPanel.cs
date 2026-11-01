@@ -32,10 +32,10 @@ namespace OutGame.UI
         [SerializeField] private TMP_Text fragmentText; // 2026-08-11: UnityEngine.UI.Text → TMP로 통일
         [SerializeField] private Button continueButton;
 
-        /// <summary>파편 발생 확률. 기본값은 설계 확정값(§부활 결정, 0.15). 테스트에서 0(항상 안 뜸)/
-        /// 1(항상 뜸)로 고정해 결정적으로 검증할 수 있도록 공개한다 — 디자인타임에 함부로 건드리지 말 것.</summary>
+        /// <summary>파편 발생 확률. 기본값은 설계값(§부활 결정, 0.3 — 2026-10-31 0.15에서 상향). 테스트에서
+        /// 0(항상 안 뜸)/1(항상 뜸)로 고정해 결정적으로 검증할 수 있도록 공개한다 — 디자인타임에 함부로 건드리지 말 것.</summary>
         [Range(0f, 1f)]
-        [Tooltip("파편 발생 확률(0~1). 설계값 0.15 — 테스트 외엔 변경 금지.")]
+        [Tooltip("파편 발생 확률(0~1). 설계값 0.3 — 테스트 외엔 변경 금지.")]
         public float FragmentTriggerChance = LoreFragmentSelector.DefaultTriggerChance;
 
         private System.Random rng;
