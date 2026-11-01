@@ -16,11 +16,11 @@ namespace OutGame.Flow
     /// pendingRun이 있는 경우 = 전투 종료 후 이 씬이 다시 로드된 경우(§7.4) — 방 그래프로 곧장
     /// 진입한다.
     ///
-    /// 2026-08-10: 이 지점에서 한 번 거치던 LoreFragmentOverlayPanel("의지의 파편",
-    /// Docs/OutGame/로딩 화면 - 의지의 파편 설계.md)을 흐름에서 제거했다(사용자 요청) — 파편이 뜨지
-    /// 않는 경우에도 검은 화면에서 매번 [계속하기]를 눌러야 해서 전투 복귀가 번거로웠다. 기능 자체는
-    /// 남겨뒀다(LoreFragmentOverlay.prefab, LoreFragmentOverlayPanel/Selector, 설화 12종, 테스트) —
-    /// 되살리려면 이 클래스에 필드를 다시 두고 아래 방 그래프 진입을 Begin(...) 콜백으로 감싸면 된다.
+    /// 2026-08-10: 파편이 뜨지 않는 경우에도 검은 화면에서 매번 [계속하기]를 눌러야 해서 전투 복귀가
+    /// 번거롭다는 이유로 LoreFragmentOverlayPanel("의지의 파편")을 흐름에서 뺐었다.
+    /// 2026-10-19 부활: 그 폐기 원인을 "파편이 안 걸리면 오버레이를 아예 띄우지 않고 즉시 통과"로
+    /// 개선해 되살렸다(§부활 결정). 아래 pendingRun 분기가 방 그래프 진입을 loreOverlay.Begin(...)
+    /// 콜백으로 감싸며, loreOverlay는 선택 필드(미배선이면 직행)다.
     ///
     /// 맵 선택→진영, 진영→전투시작 두 지점은 origin의 Loading.unity(LoadingHandoff)가 전담하므로
     /// 여기서 건드리지 않는다.
@@ -30,6 +30,11 @@ namespace OutGame.Flow
         [SerializeField] private MapSelectPanel mapSelectPanel;
         [SerializeField] private CharacterSelectPanel characterSelectPanel;
         [SerializeField] private InGameFlowController roomGraphController;
+
+        // 선택(graceful skip): 미배선(null)이면 오버레이를 건너뛰고 방 그래프로 직행한다. 장식적
+        // 연출이 전투 복귀라는 핵심 경로를 막지 않게 하려는 의도적 예외(프로젝트의 fail-fast null
+        // 체크 관례와 다름 — Docs/OutGame/로딩 화면 - 의지의 파편 설계.md §부활 결정 B-2).
+        [SerializeField] private OutGame.UI.LoreFragmentOverlayPanel loreOverlay;
 
         private void Awake()
         {
@@ -52,10 +57,23 @@ namespace OutGame.Flow
 
             if (pendingRun != null)
             {
-                // 씬 교체 전투(§7.4)에서 복귀한 경우 — 맵/캐릭터 선택이 이미 끝난 런이라 방 그래프로
-                // 곧장 진입한다(2026-07-30: 메인 메뉴 "이어하기" 제거 이후 이 경로의 유일한 발생지).
-                ShowOnly(roomGraphController.gameObject);
-                roomGraphController.Begin(pendingRun);
+                // 씬 교체 전투(§7.4) 복귀 — 맵/캐릭터 선택이 이미 끝난 런. 2026-10-19 부활: 이 지점에서
+                // "의지의 파편" 오버레이를 한 번 거친 뒤 방 그래프로 진입한다. 단, 파편이 걸리지 않으면
+                // (≈85%) 오버레이는 LoreFragmentOverlayPanel.Begin 내부에서 즉시 통과하므로 끊김이 없다
+                // (2026-08-10 폐기 원인이던 "빈 화면 클릭 강제"를 그렇게 해소했다).
+                void EnterRoomGraph()
+                {
+                    ShowOnly(roomGraphController.gameObject);
+                    roomGraphController.Begin(pendingRun);
+                }
+
+                if (loreOverlay != null)
+                    loreOverlay.Begin(EnterRoomGraph);
+                else
+                {
+                    Debug.LogWarning("[OutGameFlowController] loreOverlay 미배선 — 의지의 파편 오버레이를 건너뛰고 방 그래프로 직행합니다.");
+                    EnterRoomGraph();
+                }
             }
             else
             {
