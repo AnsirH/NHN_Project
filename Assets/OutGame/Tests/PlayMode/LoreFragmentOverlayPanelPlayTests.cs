@@ -36,45 +36,42 @@ namespace OutGame.Tests.PlayMode
         private Button ContinueButton() => PrefabBinding.Get<Button>(panel, "continueButton");
         private TMP_Text FragmentText() => PrefabBinding.Get<TMP_Text>(panel, "fragmentText");
 
+        // 2026-10-19 부활: 파편이 안 뜨면(≈85%) 오버레이를 띄우지 않고 즉시 통과한다
+        // (폐기 원인이던 "빈 화면 클릭 강제" 제거 — Docs/OutGame/로딩 화면 - 의지의 파편 설계.md §부활 결정).
+        // 그래서 "확률0에도 오버레이가 뜨고 클릭을 기다린다"는 옛 계약 테스트는 삭제하고 아래로 교체했다.
+
         [UnityTest]
-        public IEnumerator Begin_ActivatesOverlay()
+        public IEnumerator Begin_NoFragment_AutoPassesWithoutShowingOverlay()
         {
-            panel.FragmentTriggerChance = 0f;
+            panel.FragmentTriggerChance = 0f; // 파편 절대 안 뜸
             bool completed = false;
 
             panel.Begin(() => completed = true);
             yield return null;
 
-            Assert.IsTrue(instance.activeSelf, "Begin() 호출 시 오버레이가 즉시 보여야 함");
+            Assert.IsTrue(completed, "파편이 안 뜨면 클릭 없이 즉시 onComplete가 호출돼야 함(폐기 원인 해소)");
+            Assert.IsFalse(instance.activeSelf, "파편이 안 뜨면 오버레이는 아예 표시되지 않아야 함");
+        }
+
+        [UnityTest]
+        public IEnumerator Begin_FragmentTriggered_ShowsOverlayWithTextAndWaitsForClick()
+        {
+            panel.FragmentTriggerChance = 1f; // 파편 항상 뜸
+            bool completed = false;
+
+            panel.Begin(() => completed = true);
+            yield return null;
+
+            Assert.IsTrue(instance.activeSelf, "파편이 뜨면 오버레이가 보여야 함");
+            Assert.IsTrue(FragmentText().gameObject.activeSelf, "파편이 뜨면 텍스트가 보여야 함");
+            Assert.IsNotEmpty(FragmentText().text);
             Assert.IsFalse(completed, "클릭 전엔 onComplete가 호출되면 안 됨");
         }
 
         [UnityTest]
-        public IEnumerator Begin_ChanceZero_HidesFragmentTextButStillWaitsForClick()
-        {
-            panel.FragmentTriggerChance = 0f;
-            panel.Begin(() => { });
-            yield return null;
-
-            Assert.IsFalse(FragmentText().gameObject.activeSelf, "파편이 안 뜨면 텍스트는 숨겨야 함");
-            Assert.IsTrue(instance.activeSelf, "파편 유무와 무관하게 클릭 전까진 오버레이가 유지돼야 함");
-        }
-
-        [UnityTest]
-        public IEnumerator Begin_ChanceOne_ShowsFragmentTextWithNonEmptyText()
+        public IEnumerator ContinueClick_WhenFragmentShown_InvokesOnCompleteAndHidesOverlay()
         {
             panel.FragmentTriggerChance = 1f;
-            panel.Begin(() => { });
-            yield return null;
-
-            Assert.IsTrue(FragmentText().gameObject.activeSelf, "확률에 걸리면 파편 텍스트가 보여야 함");
-            Assert.IsNotEmpty(FragmentText().text);
-        }
-
-        [UnityTest]
-        public IEnumerator ContinueClick_InvokesOnCompleteAndHidesOverlay_RegardlessOfFragment()
-        {
-            panel.FragmentTriggerChance = 1f; // 파편이 뜨는 경우에도 클릭하면 넘어가야 함을 확인
             bool completed = false;
             panel.Begin(() => completed = true);
             yield return null;
@@ -82,7 +79,7 @@ namespace OutGame.Tests.PlayMode
             ContinueButton().onClick.Invoke();
             yield return null;
 
-            Assert.IsTrue(completed, "클릭하면 파편 유무와 무관하게 onComplete가 호출돼야 함");
+            Assert.IsTrue(completed, "클릭하면 onComplete가 호출돼야 함");
             Assert.IsFalse(instance.activeSelf, "클릭 후 오버레이는 스스로 비활성화돼야 함");
         }
     }

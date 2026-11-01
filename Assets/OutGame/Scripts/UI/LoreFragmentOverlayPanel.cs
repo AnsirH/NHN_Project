@@ -12,9 +12,10 @@ namespace OutGame.UI
 {
     /// <summary>
     /// "의지의 파편" 로딩 오버레이 (Docs/OutGame/로딩 화면 - 의지의 파편 설계.md) — 전투 종료 →
-    /// 맵 화면 복귀 전환 시점에만 검은 오버레이를 띄우고 낮은 확률로 플레이버 텍스트를 보여준다.
-    /// 파편이 뜨든 안 뜨든 항상 한 번의 클릭을 받아야 다음으로 넘어간다("탭하여 계속" 형태의
-    /// 일관된 비트).
+    /// 맵 화면 복귀 전환 시점에만 낮은 확률로 플레이버 텍스트를 보여준다.
+    /// 2026-10-19 부활: 파편이 걸릴 때만 오버레이를 띄우고 [계속하기] 클릭을 받는다. 걸리지 않으면
+    /// (≈85%) 오버레이를 아예 띄우지 않고 즉시 통과한다 — 폐기 원인이던 "빈 화면 클릭 강제"를 그렇게
+    /// 해소했다(§부활 결정).
     ///
     /// 맵 선택→진영, 진영→전투시작 두 지점은 origin의 Loading.unity(LoadingHandoff)가 이미 전담하므로
     /// 이 컴포넌트는 건드리지 않는다 — OutGameFlowController가 소유하는 일반 인스턴스로 충분하고
@@ -52,22 +53,30 @@ namespace OutGame.UI
             gameObject.SetActive(false);
         }
 
-        /// <summary>오버레이를 띄우고, 클릭을 받으면 onComplete를 호출한다.</summary>
+        /// <summary>확률 판정을 먼저 한다. 파편이 걸리지 않으면(≈85%) 오버레이를 띄우지 않고 즉시
+        /// onComplete를 호출한다(2026-10-19 부활: 폐기 원인이던 "빈 화면 클릭 강제" 제거 —
+        /// Docs/OutGame/로딩 화면 - 의지의 파편 설계.md §부활 결정). 파편이 걸릴 때만 오버레이+텍스트를
+        /// 띄우고 [계속하기] 클릭을 받는다.</summary>
         public void Begin(Action onComplete)
         {
+            if (!LoreFragmentSelector.TrySelect(fragmentPool, rng, FragmentTriggerChance, out LoreFragmentData fragment))
+            {
+                onComplete?.Invoke();
+                return;
+            }
+
             gameObject.SetActive(true);
-            StartCoroutine(RunCoroutine(onComplete));
+            StartCoroutine(RunCoroutine(fragment, onComplete));
         }
 
-        private IEnumerator RunCoroutine(Action onComplete)
+        private IEnumerator RunCoroutine(LoreFragmentData fragment, Action onComplete)
         {
-            LoreFragmentSelector.TrySelect(fragmentPool, rng, FragmentTriggerChance, out LoreFragmentData fragment);
             fragmentRoot.SetActive(true);
-            fragmentText.gameObject.SetActive(fragment != null); // 파편이 없으면 빈 화면 + 버튼만
-            if (fragment != null) fragmentText.text = fragment.text;
+            fragmentText.text = fragment.text; // 파편이 있을 때만 진입하므로 항상 내용이 있다
+            fragmentText.gameObject.SetActive(true);
 
             continueClicked = false;
-            yield return new WaitUntil(() => continueClicked); // 파편 유무와 무관하게 항상 클릭 대기
+            yield return new WaitUntil(() => continueClicked); // 파편이 떴을 때만 클릭 대기
 
             gameObject.SetActive(false);
             onComplete?.Invoke();
