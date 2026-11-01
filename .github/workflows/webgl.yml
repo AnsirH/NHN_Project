@@ -68,7 +68,11 @@ jobs:
 
   smoke:
     needs: build
-    runs-on: ubuntu-latest
+    # Pinned, not ubuntu-latest. On 2026-10-30 that label moved to Ubuntu 26.04
+    # and the browser install below stopped working mid-branch, with a build
+    # that was otherwise fine. Pinning the image means the runner changes when
+    # we change it, not when GitHub rolls the label.
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -84,7 +88,14 @@ jobs:
           python-version: '3.13'
       - name: Install browser test tools
         run: |
-          python -m pip install playwright==1.58.0
+          # 1.58.0 predates Ubuntu 26.04 and refuses to install there
+          # ("Playwright does not support chromium on ubuntu26.04-x64").
+          # 1.64.1 carries the 26.04 dependency list. It also jumps the bundled
+          # Chromium from 145 to 156, which matters because this smoke fails on
+          # any console error at all - that combination was run against the
+          # CI build of 1445f37 before this change and reported zero page,
+          # console, HTTP and network errors.
+          python -m pip install playwright==1.64.1
           python -m playwright install --with-deps chromium
       - name: Load WebGL at the Pages project path
         run: python Tools/CI/Smoke-WebGL.py
@@ -104,7 +115,8 @@ jobs:
   deploy:
     if: github.ref == 'refs/heads/main'
     needs: [build, smoke]
-    runs-on: ubuntu-latest
+    # Pinned for the same reason as smoke, though this job only publishes.
+    runs-on: ubuntu-26.04
     permissions:
       pages: write
       id-token: write
