@@ -46,6 +46,9 @@ namespace OutGame.Tests.PlayMode
         private static InGameFlowController RoomGraph() =>
             Object.FindFirstObjectByType<InGameFlowController>(FindObjectsInactive.Include);
 
+        private static LoreFragmentOverlayPanel LoreOverlay() =>
+            Object.FindFirstObjectByType<LoreFragmentOverlayPanel>(FindObjectsInactive.Include);
+
 
         private static readonly string[] MapPointNames =
             { "MapPoint_1_SmallCastle", "MapPoint_2_CentralCastle", "MapPoint_3_Fortress" };
@@ -74,18 +77,54 @@ namespace OutGame.Tests.PlayMode
             Assert.IsFalse(RoomGraph().gameObject.activeSelf);
         }
 
+        // 2026-10-19 부활: 전투 복귀(pendingRun)는 이제 "의지의 파편" 오버레이를 거친다. 파편이 걸리면
+        // 오버레이가 먼저 뜨고 클릭해야 방 그래프로, 걸리지 않으면 오버레이 없이 곧장 방 그래프로 간다.
+        // 결정성: 씬 로드로 패널이 생긴 뒤·컨트롤러 Start() 전에 FragmentTriggerChance를 0/1로 고정한다
+        // (additive 비동기 로드 완료 시점엔 Awake만 돌고 Start는 다음 프레임에 돌기 때문).
+
         [UnityTest]
-        public IEnumerator Load_WithPendingRun_ShowsRoomGraphAndConsumesRun()
+        public IEnumerator Load_WithPendingRun_FragmentTriggered_ShowsOverlayBeforeRoomGraph()
         {
             RunSessionContext.SetPendingRun(NewRun());
-            yield return LoadScene();
+            yield return SceneManager.LoadSceneAsync(SceneNames.OutGame, LoadSceneMode.Additive);
+            LoreOverlay().FragmentTriggerChance = 1f; // 파편 항상 뜨게 고정
+            yield return null; // 이제 Start()가 돌며 loreOverlay.Begin(...) 실행
 
-            Assert.IsTrue(RoomGraph().gameObject.activeSelf);
+            Assert.IsTrue(LoreOverlay().gameObject.activeSelf, "파편이 뜨면 방 그래프보다 먼저 오버레이가 떠야 함");
+            Assert.IsFalse(RoomGraph().gameObject.activeSelf, "클릭 전엔 방 그래프가 보이면 안 됨");
+            Assert.IsNull(RunSessionContext.PendingRun, "PendingRun은 Start()에서 가장 먼저 소비돼야 함");
+        }
+
+        [UnityTest]
+        public IEnumerator Load_WithPendingRun_NoFragment_SkipsOverlayStraightToRoomGraph()
+        {
+            RunSessionContext.SetPendingRun(NewRun());
+            yield return SceneManager.LoadSceneAsync(SceneNames.OutGame, LoadSceneMode.Additive);
+            LoreOverlay().FragmentTriggerChance = 0f; // 파편 절대 안 뜨게 고정
+            yield return null;
+
+            Assert.IsTrue(RoomGraph().gameObject.activeSelf, "파편이 없으면 오버레이 없이 방 그래프로 직행해야 함");
+            Assert.IsFalse(LoreOverlay().gameObject.activeSelf, "파편이 없으면 오버레이는 뜨지 않아야 함");
             Assert.IsFalse(MapSelect().gameObject.activeSelf);
             Assert.IsFalse(CharacterSelect().gameObject.activeSelf);
             Assert.IsNull(RunSessionContext.PendingRun);
-            Assert.IsNull(Object.FindFirstObjectByType<LoreFragmentOverlayPanel>(FindObjectsInactive.Include),
-                "Battle return no longer requires the retired lore overlay.");
+        }
+
+        [UnityTest]
+        public IEnumerator Load_WithPendingRun_FragmentContinueClick_ShowsOnlyRoomGraph()
+        {
+            RunSessionContext.SetPendingRun(NewRun());
+            yield return SceneManager.LoadSceneAsync(SceneNames.OutGame, LoadSceneMode.Additive);
+            LoreOverlay().FragmentTriggerChance = 1f;
+            yield return null;
+
+            PrefabBinding.Get<Button>(LoreOverlay(), "continueButton").onClick.Invoke();
+            yield return null;
+
+            Assert.IsFalse(LoreOverlay().gameObject.activeSelf, "클릭 후 오버레이는 닫혀야 함");
+            Assert.IsTrue(RoomGraph().gameObject.activeSelf, "클릭 후 방 그래프로 진입해야 함");
+            Assert.IsFalse(MapSelect().gameObject.activeSelf);
+            Assert.IsFalse(CharacterSelect().gameObject.activeSelf);
         }
 
         [UnityTest]
