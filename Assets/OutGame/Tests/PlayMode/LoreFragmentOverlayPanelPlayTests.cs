@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Reflection;
 using NUnit.Framework;
 using OutGame.UI;
 using UnityEngine;
@@ -81,6 +82,27 @@ namespace OutGame.Tests.PlayMode
 
             Assert.IsTrue(completed, "클릭하면 onComplete가 호출돼야 함");
             Assert.IsFalse(instance.activeSelf, "클릭 후 오버레이는 스스로 비활성화돼야 함");
+        }
+
+        // 코드 리뷰 반영: 오버레이가 비활성으로 씬에 놓이면 Awake가 돌지 않아 fragmentPool/rng가 null이
+        // 되는데, Begin 내부 EnsureInitialized 멱등 가드가 이를 스스로 복구해 예외 없이 동작해야 한다.
+        // Awake가 돈 상태를 리플렉션으로 초기화 전으로 되돌려 그 사고 상황을 재현한다.
+        [UnityTest]
+        public IEnumerator Begin_WhenNotInitialized_SelfInitializesAndDoesNotThrow()
+        {
+            var t = typeof(LoreFragmentOverlayPanel);
+            const BindingFlags F = BindingFlags.NonPublic | BindingFlags.Instance;
+            t.GetField("fragmentPool", F).SetValue(panel, null);
+            t.GetField("rng", F).SetValue(panel, null);
+            t.GetField("initialized", F).SetValue(panel, false);
+
+            panel.FragmentTriggerChance = 0f; // 자동 통과 경로
+            bool completed = false;
+
+            panel.Begin(() => completed = true); // 가드가 없으면 TrySelect(null pool)로 예외
+            yield return null;
+
+            Assert.IsTrue(completed, "초기화 전이라도 Begin이 스스로 초기화해 예외 없이 자동 통과해야 함");
         }
     }
 }

@@ -32,15 +32,30 @@ namespace OutGame.UI
         [SerializeField] private TMP_Text fragmentText; // 2026-08-11: UnityEngine.UI.Text → TMP로 통일
         [SerializeField] private Button continueButton;
 
-        /// <summary>테스트에서 0(항상 안 뜸)/1(항상 뜸)로 고정해 결정적으로 검증할 수 있도록 공개.</summary>
+        /// <summary>파편 발생 확률. 기본값은 설계 확정값(§부활 결정, 0.15). 테스트에서 0(항상 안 뜸)/
+        /// 1(항상 뜸)로 고정해 결정적으로 검증할 수 있도록 공개한다 — 디자인타임에 함부로 건드리지 말 것.</summary>
+        [Range(0f, 1f)]
+        [Tooltip("파편 발생 확률(0~1). 설계값 0.15 — 테스트 외엔 변경 금지.")]
         public float FragmentTriggerChance = LoreFragmentSelector.DefaultTriggerChance;
 
         private System.Random rng;
         private LoreFragmentData[] fragmentPool;
         private bool continueClicked;
+        private bool initialized;
 
         private void Awake()
         {
+            EnsureInitialized();
+            gameObject.SetActive(false);
+        }
+
+        /// <summary>풀/rng/버튼 리스너 1회 초기화. Awake에서 부르지만, 비활성 상태로 씬에 놓이면
+        /// Awake가 돌지 않아 null이 되는 사고를 막으려 <see cref="Begin"/>에서도 멱등하게 호출한다
+        /// (코드 리뷰 반영 — "오버레이는 씬에 활성으로 둬야 한다"는 암묵적 전제를 코드로 강제).</summary>
+        private void EnsureInitialized()
+        {
+            if (initialized) return;
+
             if (fragmentRoot == null || fragmentText == null || continueButton == null)
                 throw new InvalidOperationException("LoreFragmentOverlayPanel의 필드가 배선되지 않았습니다 — 프리팹 구성 확인");
 
@@ -50,7 +65,7 @@ namespace OutGame.UI
                 .ToArray();
 
             continueButton.onClick.AddListener(() => continueClicked = true);
-            gameObject.SetActive(false);
+            initialized = true;
         }
 
         /// <summary>확률 판정을 먼저 한다. 파편이 걸리지 않으면(≈85%) 오버레이를 띄우지 않고 즉시
@@ -59,6 +74,8 @@ namespace OutGame.UI
         /// 띄우고 [계속하기] 클릭을 받는다.</summary>
         public void Begin(Action onComplete)
         {
+            EnsureInitialized(); // 비활성 상태로 Begin이 호출돼도 풀/rng가 null이 아니도록 보장
+
             if (!LoreFragmentSelector.TrySelect(fragmentPool, rng, FragmentTriggerChance, out LoreFragmentData fragment))
             {
                 onComplete?.Invoke();
